@@ -5,6 +5,7 @@ const   express = require('express')
         config = require('./config/config')
         cors = require('cors')
         logger = require('./logger/logger')
+        auth = require('./auth/auth')
         db = require('./utils/db')
 
 //==================== Library =======================
@@ -12,45 +13,15 @@ const   express = require('express')
 //#region middleware
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({
-    extended:true
-}));
-
+app.use(express.urlencoded({extended:true}));
 app.use(logger.logger)
-
-app.use(function(req,res,next){
-    if (config.server.noTokenUrl.indexOf(req.url)==-1){
-        //In token url
-        const token = req.headers['x-access-token']
-
-        jwt.verify(token,config.server.secret,(err,decoded)=>{
-            if (err) {
-                res.status(403);
-                res.send({
-                    exitcode: 2,
-                    message: err
-                })
-                return
-            }
-            
-            req.payload = {
-                username: decoded.username
-            }
-            next()
-        })
-    } 
-    else {
-        //Non-token url
-        next()
-    }
-})
-
+app.use(auth.auth)
 //#endregion middleware
 
 //Bind route
 route.assignRoutes(app)
 
 //Start listen
-app.listen(config.server.port,function(){
+app.listen(config.server.port, () => {
     console.log("Begin listen on port %s...",config.server.port);
 })

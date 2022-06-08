@@ -8,7 +8,7 @@ exports.server = {
 exports.database = {
     host: 'localhost',
     user: 'postgres',
-    password: '<YOUR_PASSWORD>',
+    password: '161026',
     database: 'huimitu',
     port: 5432,
 }

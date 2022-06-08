@@ -1,5 +1,6 @@
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
+  "password" char(256),
   "phone" varchar UNIQUE,
   "fullname" varchar,
   "address" varchar,
