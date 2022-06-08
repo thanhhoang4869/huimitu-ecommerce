@@ -1,6 +1,6 @@
 CREATE DATABASE huimitu
     WITH
-    OWNER = phuc16102001
+    OWNER = postgres
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
 

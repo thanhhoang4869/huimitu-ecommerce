@@ -1,4 +1,4 @@
-CREATE TABLE "user" (
+CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
   "phone" varchar UNIQUE,
   "fullname" varchar,
@@ -113,7 +113,7 @@ CREATE TABLE "review" (
   "comment" varchar
 );
 
-ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "user" ("email");
+ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
 
@@ -143,7 +143,7 @@ ALTER TABLE "order_product" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id
 
 ALTER TABLE "order_product" ADD FOREIGN KEY ("product_id") REFERENCES "variant" ("id");
 
-ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "user" ("email");
+ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 
 ALTER TABLE "cart_product" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
