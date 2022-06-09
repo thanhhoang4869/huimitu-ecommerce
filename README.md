@@ -1,11 +1,15 @@
 # Huimitu
 
 ## Introduction
-An Ecommerce website to sell bakery accessories with B2B model. The project using:
+An Ecommerce website to sell bakery accessories with B2B model. Because of being a SPA (Single Page Application) website, we have decided to use 3-tiers model (PERN stack application) to build it up:
 - ReactJS to build up the front-end
 - ExpressJS to create RESTful API
 - Postgre database to store data
-   
+
+<p align="center">
+  <img src="./res/pern-stack.png" alt="pern"/>
+</p>
+
 ## Gallery
 
 ## Exploring code

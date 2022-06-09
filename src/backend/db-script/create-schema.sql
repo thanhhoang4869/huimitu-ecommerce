@@ -115,41 +115,22 @@ CREATE TABLE "review" (
 );
 
 ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
-
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
-
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
-
 ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-
 ALTER TABLE "product_inventory" ADD FOREIGN KEY ("product_id") REFERENCES "variant" ("id");
-
 ALTER TABLE "product_inventory" ADD FOREIGN KEY ("inventory_id") REFERENCES "inventory" ("id");
-
 ALTER TABLE "option_choice" ADD FOREIGN KEY ("option_id") REFERENCES "option" ("id");
-
 ALTER TABLE "variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-
 ALTER TABLE "variant_option" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
-
 ALTER TABLE "variant_option" ADD FOREIGN KEY ("option_id") REFERENCES "option" ("id");
-
 ALTER TABLE "variant_option" ADD FOREIGN KEY ("choice_id") REFERENCES "option_choice" ("id");
-
 ALTER TABLE "order" ADD FOREIGN KEY ("payment_id") REFERENCES "payment" ("id");
-
 ALTER TABLE "order" ADD FOREIGN KEY ("shipping_address_id") REFERENCES "shipping_address" ("id");
-
 ALTER TABLE "order_product" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
-
 ALTER TABLE "order_product" ADD FOREIGN KEY ("product_id") REFERENCES "variant" ("id");
-
 ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
-
 ALTER TABLE "cart_product" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
-
 ALTER TABLE "cart_product" ADD FOREIGN KEY ("product_id") REFERENCES "variant" ("id");
-
 ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
