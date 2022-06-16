@@ -65,7 +65,6 @@ CREATE TABLE "product_image" (
 
 CREATE TABLE "option" (
   "id" SERIAL PRIMARY KEY,
-  "product_id" int,
   "name" varchar
 );
 
@@ -79,8 +78,8 @@ DROP TABLE IF EXISTS "variant";
 CREATE TABLE "variant" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
-  "price" bigint,
-  "discount_price" bigint,
+  "price" real,
+  "discount_price" real,
   "stock" int
 );
 
@@ -174,7 +173,7 @@ ALTER TABLE "variant_option" ADD FOREIGN KEY ("variant_id") REFERENCES "variant"
 ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
-ALTER TABLE "option_choice" ADD FOREIGN KEY ("id") REFERENCES "option" ("id");
+ALTER TABLE "option_choice" ADD FOREIGN KEY ("product_id") REFERENCES "option" ("id");
 
 ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
