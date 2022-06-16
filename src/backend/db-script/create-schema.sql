@@ -1,12 +1,30 @@
+DROP TABLE IF EXISTS "account" CASCADE;
+DROP TABLE IF EXISTS "shipping_address" CASCADE;
+DROP TABLE IF EXISTS "category" CASCADE;
+DROP TABLE IF EXISTS "payment" CASCADE;
+DROP TABLE IF EXISTS "product" CASCADE;
+DROP TABLE IF EXISTS "product_image" CASCADE;
+DROP TABLE IF EXISTS "option" CASCADE;
+DROP TABLE IF EXISTS "option_choice" CASCADE;
+DROP TABLE IF EXISTS "variant_option" CASCADE;
+DROP TABLE IF EXISTS "order" CASCADE;
+DROP TABLE IF EXISTS "order_variant" CASCADE;
+DROP TABLE IF EXISTS "cart" CASCADE;
+DROP TABLE IF EXISTS "cart_variant" CASCADE;
+DROP TABLE IF EXISTS "review" CASCADE;
+DROP TABLE IF EXISTS "shipping_provider" CASCADE;
+DROP TABLE IF EXISTS "voucher" CASCADE;
+
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
-  "password" char(256),
+  "password" char(65),
   "phone" varchar UNIQUE,
   "fullname" varchar,
   "address" varchar,
   "birthday" date,
   "gender" varchar,
-  "avatar" varchar
+  "avatar" varchar,
+  "account_type" varchar
 );
 
 CREATE TABLE "shipping_address" (
@@ -57,6 +75,7 @@ CREATE TABLE "option_choice" (
   "choice_name" varchar
 );
 
+DROP TABLE IF EXISTS "variant";
 CREATE TABLE "variant" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
@@ -97,6 +116,7 @@ CREATE TABLE "cart" (
   "email" varchar
 );
 
+DROP TABLE IF EXISTS "cart_variant";
 CREATE TABLE "cart_variant" (
   "cart_id" int,
   "variant_id" int,
@@ -119,6 +139,7 @@ CREATE TABLE "shipping_provider" (
   "phone" varchar UNIQUE
 );
 
+DROP TABLE IF EXISTS "order_state";
 CREATE TABLE "order_state" (
   "order_id" int,
   "state" varchar,
@@ -143,37 +164,27 @@ ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
 
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
-
 ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
 ALTER TABLE "variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
+ALTER TABLE "variant_option" ADD FOREIGN KEY ("option_id") REFERENCES "option" ("id");
+ALTER TABLE "variant_option" ADD FOREIGN KEY ("choice_id") REFERENCES "option_choice" ("id");
+ALTER TABLE "variant_option" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
 
 ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
+ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
 ALTER TABLE "option_choice" ADD FOREIGN KEY ("id") REFERENCES "option" ("id");
 
-ALTER TABLE "variant_option" ADD FOREIGN KEY ("option_id") REFERENCES "option" ("id");
-
-ALTER TABLE "variant_option" ADD FOREIGN KEY ("choice_id") REFERENCES "option_choice" ("id");
-
-ALTER TABLE "variant_option" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
-
 ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
-
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
 
 ALTER TABLE "order" ADD FOREIGN KEY ("payment_id") REFERENCES "payment" ("id");
-
 ALTER TABLE "order" ADD FOREIGN KEY ("shipping_address_id") REFERENCES "shipping_address" ("id");
+ALTER TABLE "order" ADD FOREIGN KEY ("shipping_provider_id") REFERENCES "shipping_provider" ("id");
+ALTER TABLE "order" ADD FOREIGN KEY ("voucher_id") REFERENCES "voucher" ("id");
 
 ALTER TABLE "order_variant" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
-
-ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
-
 ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
-
-ALTER TABLE "order" ADD FOREIGN KEY ("shipping_provider_id") REFERENCES "shipping_provider" ("id");
-
-ALTER TABLE "order" ADD FOREIGN KEY ("voucher_id") REFERENCES "voucher" ("id");
