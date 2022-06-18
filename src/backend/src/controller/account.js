@@ -1,4 +1,4 @@
-const account = require('../models/account')
+const Account = require('../models/account')
 const jwt = require('jsonwebtoken')
 const config = require('../config/config')
 
@@ -7,7 +7,7 @@ const login = (req, res) => {
         email: req.body.email,
     }
     const password = req.body.password
-    account.getPassword(data, (err, result) => {
+    Account.getPassword(data, (err, result) => {
         if (err) {
             res.send({
                 exitcode: 1,
@@ -38,6 +38,26 @@ const login = (req, res) => {
     })
 }
 
+const signup = (req, res) => {
+    const data = Object.values(req.body)
+    Account.signup(data, (err, result) => {
+        if (err) {
+            res.send({
+                exitcode: 1,
+                message: "Fail to signup"
+            })
+        }
+
+        if (result) {
+            res.send({
+                exitcode: 0,
+                message: "Create account successfully"
+            })
+        }
+    })
+}
+
 module.exports = {
-    login
+    login,
+    signup
 }
