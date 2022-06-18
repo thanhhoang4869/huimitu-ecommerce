@@ -117,6 +117,18 @@ ol {
 	background-color: #ff8303;
 }
 
+.centered{
+	text-align: center;
+}
+
+.left{
+	text-align: left;
+}
+
+.right{
+	text-align: end;
+}
+
 .section-title {
 	margin-bottom: 50px;
 	text-align: center;
