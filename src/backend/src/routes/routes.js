@@ -1,5 +1,5 @@
-const checkout = require('./checkout')
-const account = require('./account')
+const checkout = require('routes/checkout')
+const account = require('routes/account')
 
 function assignRoutes(app){
     checkout.assignRoutes(app)

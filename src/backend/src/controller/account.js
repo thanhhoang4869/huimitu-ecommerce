@@ -1,6 +1,6 @@
-const Account = require('../models/account')
+const Account = require('models/account')
 const jwt = require('jsonwebtoken')
-const config = require('../config/config')
+const config = require('config/config')
 
 const login = (req, res) => {
     const data = {

@@ -1,13 +1,15 @@
+require('module-alias/register')
+
 const   express = require('express')
         app = express()
-        route = require('./routes/routes')
+        route = require('routes/routes')
         jwt = require('jsonwebtoken')
-        config = require('./config/config')
+        config = require('config/config')
         cors = require('cors')
-        logger = require('./logger/logger')
-        auth = require('./auth/auth')
-        db = require('./utils/db')
-
+        logger = require('logger/logger')
+        auth = require('auth/auth')
+        db = require('utils/db')
+        
 //==================== Library =======================
 
 //#region middleware

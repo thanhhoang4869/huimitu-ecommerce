@@ -1,4 +1,4 @@
-const checkout = require('../controller/checkout')
+const checkout = require('controller/checkout')
 
 function assignRoutes(app) {
    app.post("/create-payment",checkout.create_payment);

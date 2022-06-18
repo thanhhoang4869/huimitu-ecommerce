@@ -1,4 +1,4 @@
-const db = require('../utils/db').pool;
+const db = require('utils/db').pool;
 
 const Account = function(){}
 
