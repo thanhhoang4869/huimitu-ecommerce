@@ -2670,7 +2670,13 @@ ol {
 
 .footer__about__logo a {
 	display: inline-block;
+	color: #18AEAC;
 }
+
+.footer__about__logo:hover a {
+	color: #ff8303;
+}
+
 
 .footer__widget {
 	margin-bottom: 30px;
@@ -2716,6 +2722,10 @@ ol {
 	color: #1c1c1c;
 	height: 46px;
 	border: 1px solid #ededed;
+}
+
+.footer__widget ul li:hover a {
+	color: #18AEAC
 }
 
 .footer__widget form input::placeholder {

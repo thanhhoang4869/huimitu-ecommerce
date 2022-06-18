@@ -5,7 +5,7 @@ import logo from "../../images/logo.png";
 const Header = () => {
   return (
     <>
-      <header className="header" style={{ marginBottom: "25px" }}>
+      <header className="header border pb-1" style={{ marginBottom: "25px" }}>
         <div className="header__top">
           <div className="container">
             <div className="row">
@@ -86,7 +86,10 @@ const Header = () => {
                 </ul>
               </nav>
             </div>
-            <div className="col-lg-3 right-corner-header">
+            <div
+              className="col-lg-3 right-corner-header"
+              style={{ paddingRight: "0px" }}
+            >
               <div className="header__cart">
                 <ul>
                   <li>
