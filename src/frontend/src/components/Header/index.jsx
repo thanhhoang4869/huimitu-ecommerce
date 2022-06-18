@@ -49,7 +49,9 @@ const Header = () => {
           <div className="row container" style={{ paddingRight: "0px" }}>
             <div className="col-lg-3" style={{ paddingLeft: "0px" }}>
               <div className="header__logo logo">
-                <img src={logo} style={{ width: "50%" }} alt="humitu" />
+                <a href="/">
+                  <img src={logo} style={{ width: "50%" }} alt="humitu" />
+                </a>
               </div>
             </div>
             <div className="col-lg-6">
