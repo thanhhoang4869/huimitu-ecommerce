@@ -71,6 +71,7 @@ CREATE TABLE "option" (
 CREATE TABLE "option_choice" (
   "id" SERIAL PRIMARY KEY,
   "option_id" int,
+  "product_id" int,
   "choice_name" varchar
 );
 

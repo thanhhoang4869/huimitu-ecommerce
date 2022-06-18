@@ -1,6 +1,6 @@
 exports.server = {
     port: 8080,
-    noTokenUrl: [],
+    noTokenUrl: ['/signup'],
     expTime: 60*60*24,
     secret: 'HUIMITU'
 }
