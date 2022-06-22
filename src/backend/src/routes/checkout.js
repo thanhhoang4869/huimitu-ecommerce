@@ -1,4 +1,4 @@
-import checkout from './../controller/checkout.js'
+import checkout from '#src/controller/checkout'
 
 export default {
     assignRoutes(app) {

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Backend server for Huimitu ecommerce website",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon src/index.js"
+  },
+  "imports": {
+    "#src/*": "./src/*.js"
   },
   "license": "ISC",
   "type": "module",

@@ -1,9 +1,9 @@
 import express from 'express'
-import route from './src/routes/routes.js'
-import config from './src/config/config.js'
 import cors from 'cors'
-import logger from './src/logger/logger.js'
-import auth from './src/auth/auth.js'
+import route from '#src/routes/routes'
+import config from '#src/config/config'
+import logger from '#src/logger/logger'
+import auth from '#src/auth/auth'
 
 const app = express()
 //==================== Library =======================

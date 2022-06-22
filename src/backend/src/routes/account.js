@@ -1,4 +1,4 @@
-import account from './../controller/account.js'
+import account from '#src/controller/account'
 
 export default {
     assignRoutes(app) {

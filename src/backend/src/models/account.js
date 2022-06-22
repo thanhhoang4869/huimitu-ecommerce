@@ -1,4 +1,4 @@
-import pg from './../utils/db.js'
+import pg from '#src/utils/db'
 
 export default {
     async getPassword(email) {

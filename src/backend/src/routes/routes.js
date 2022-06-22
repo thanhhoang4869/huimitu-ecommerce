@@ -1,5 +1,5 @@
-import checkout from './../routes/checkout.js'
-import account from './../routes/account.js'
+import checkout from '#src/routes/checkout'
+import account from '#src/routes/account'
 
 export default {
     assignRoutes(app) {

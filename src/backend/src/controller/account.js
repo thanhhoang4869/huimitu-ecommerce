@@ -1,6 +1,6 @@
-import account from './../models/account.js'
+import account from '#src/models/account'
 import jwt from 'jsonwebtoken'
-import config from './../config/config.js'
+import config from '#src/config/config'
 
 export default {
     async login(req, res) {
