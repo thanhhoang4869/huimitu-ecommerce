@@ -1,9 +1,9 @@
 export default {
-    create_payment(req, res) {
+    async create_payment(req, res) {
 
     },
     
-    execute_payment(req, res) {
+    async execute_payment(req, res) {
 
     }
 }

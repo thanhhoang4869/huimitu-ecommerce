@@ -1,3 +1,5 @@
+import config from './../config/config.js'
+
 export default function auth(req, res, next) {
     if (config.server.noTokenUrl.indexOf(req.url) == -1) {
         //In token url

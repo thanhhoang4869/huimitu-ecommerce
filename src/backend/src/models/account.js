@@ -1,34 +1,28 @@
 import pg from './../utils/db.js'
 
 export default {
-
-    async getPassword(data) {
-        const email = data.email || "";
-
-        db.query(`
-            SELECT password
-            FROM account
-            WHERE email=$1
-        `, [
-            email
-        ], (err, res) => {
-            if (err) {
-                console.error(err.stack);
-                callback(err, null);
-            }
-            callback(null, res)
+    async getPassword(email) {
+        const result = await pg('account').select('password').where({
+            email: email
         })
+        return result[0].password || null;
     },
 
-    signup(data, resultCallback) {
-        db.query(`INSERT INTO account VALUES(${data.map((val, i) => `$${i + 1}`).join(',')})`, data, function (err, res) {
-            if (err) {
-                resultCallback(err, null)
-                return
-            }
+    async signup(data) {
+        return pg('account').insert(data);
+    },
 
-            resultCallback(null, data)
+    async getByEmail(email) {
+        const result = await pg('account').where({
+            email: email
         })
+        return result[0] || null;
+    },
+    
+    async getByPhone(phone) {
+        const result = await pg('account').where({
+            phone: phone
+        })
+        return result[0] || null;
     }
-
 }
