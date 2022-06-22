@@ -1,12 +1,9 @@
-const create_payment = (req, res) => {
+export default {
+    create_payment(req, res) {
 
-}
+    },
+    
+    execute_payment(req, res) {
 
-const execute_payment = (req, res) => {
-
-}
-
-module.exports = {
-    create_payment,
-    execute_payment
+    }
 }

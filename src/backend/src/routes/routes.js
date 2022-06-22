@@ -1,11 +1,9 @@
-const checkout = require('routes/checkout')
-const account = require('routes/account')
+import checkout from './../routes/checkout.js'
+import account from './../routes/account.js'
 
-function assignRoutes(app){
-    checkout.assignRoutes(app)
-    account.assignRoutes(app)
-}
-
-module.exports = {
-    assignRoutes
+export default {
+    assignRoutes(app) {
+        checkout.assignRoutes(app)
+        account.assignRoutes(app)
+    }
 }

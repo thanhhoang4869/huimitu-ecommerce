@@ -1,16 +1,9 @@
-const config = require('../config/config')
+import config from './../config/config.js'
+import knex from 'knex'
 
-const Pool = require('pg').Pool
-const pool = new Pool(config.database)
+const pg = knex({
+    client: 'pg',
+    connection: config.database,
+});
 
-pool.connect((err) => {
-    if (err) {
-        console.error("Connect to DB failed:", err.stack);
-    } else {
-        console.log("Connect to DB successfully")
-    }
-})
-
-module.exports = {
-    pool
-}
+export default pg 
