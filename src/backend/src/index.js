@@ -11,7 +11,7 @@ const app = express()
 //#region middleware
 app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(logger)
 app.use(auth)
 //#endregion middleware

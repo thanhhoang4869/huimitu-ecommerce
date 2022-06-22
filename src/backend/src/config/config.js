@@ -1,3 +1,6 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 const config = {
     server: {
         port: 8080,
@@ -6,13 +9,13 @@ const config = {
             '/login'
         ],
         expTime: 60 * 60 * 24,
-        secret: 'HUIMITU'
+        secret: process.env.JWT_SECRET
     },
 
     database: {
         host: 'localhost',
         user: 'postgres',
-        password: '161026',
+        password: process.env.DB_PASSWORD,
         database: 'huimitu',
         port: 5432,
     },
