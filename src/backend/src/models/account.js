@@ -1,34 +1,28 @@
-const db = require('utils/db').pool;
+import pg from '#src/utils/db'
 
-const Account = function(){}
+export default {
+    async getPassword(email) {
+        const result = await pg('account').select('password').where({
+            email: email
+        })
+        return result[0].password || null;
+    },
 
-Account.getPassword = (data, callback) => {
-    const email = data.email || "";
+    async signup(data) {
+        return pg('account').insert(data);
+    },
 
-    db.query(`
-        SELECT password
-        FROM account
-        WHERE email=$1
-    `, [
-        email
-    ], (err, res) => {
-        if (err) {
-            console.error(err.stack);
-            callback(err, null);
-        }
-        callback(null, res)
-    })
+    async getByEmail(email) {
+        const result = await pg('account').where({
+            email: email
+        })
+        return result[0] || null;
+    },
+    
+    async getByPhone(phone) {
+        const result = await pg('account').where({
+            phone: phone
+        })
+        return result[0] || null;
+    }
 }
-
-Account.signup = function(data, resultCallback) {
-    db.query(`INSERT INTO account VALUES(${data.map((val, i) => `$${i + 1}`).join(',')})`, data, function(err, res) {
-        if (err) {
-            resultCallback(err, null)
-            return
-        }
-
-        resultCallback(null, data)
-    })
-}
-
-module.exports = Account

@@ -1,4 +1,6 @@
-const auth = function (req, res, next) {
+import config from '#src/config/config'
+
+export default function auth(req, res, next) {
     if (config.server.noTokenUrl.indexOf(req.url) == -1) {
         //In token url
         const token = req.headers['x-access-token']
@@ -23,8 +25,4 @@ const auth = function (req, res, next) {
         //Non-token url
         next()
     }
-}
-
-module.exports = {
-    auth
 }
