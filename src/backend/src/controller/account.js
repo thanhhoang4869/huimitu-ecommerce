@@ -42,6 +42,19 @@ const signup = (req, res) => {
     const data = Object.values(req.body)
     Account.signup(data, (err, result) => {
         if (err) {
+            if(err.code === '23505') {
+                let resMap = {
+                    'email': {exitcode: 101, message: 'Email already exists'},
+                    'phone': {exitcode: 102, message: 'Phone already exists'},
+                }
+                res.send(resMap[
+                    err.detail.substring(
+                        err.detail.indexOf('(') + 1,
+                        err.detail.indexOf(')=')
+                    )
+                ])
+                return
+            }
             res.send({
                 exitcode: 1,
                 message: "Fail to signup"
