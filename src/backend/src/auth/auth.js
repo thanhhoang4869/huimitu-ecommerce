@@ -1,4 +1,5 @@
 import config from '#src/config/config'
+import jwt from 'jsonwebtoken'
 
 export default function auth(req, res, next) {
     if (config.server.noTokenUrl.indexOf(req.url) == -1) {

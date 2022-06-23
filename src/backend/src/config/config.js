@@ -21,6 +21,7 @@ const config = {
     },
 
     constant: {
+        BEST_SELLER_LIMIT: 8,
     }
 }
 
