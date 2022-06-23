@@ -11,7 +11,7 @@ const Banner = () => {
             100% Organic
           </h2>
           <p>Free Pickup and Delivery Available</p>
-          <a href="#" class="primary-btn">
+          <a href="#" class="primary-btn bg-key">
             SHOP NOW
           </a>
         </div>
