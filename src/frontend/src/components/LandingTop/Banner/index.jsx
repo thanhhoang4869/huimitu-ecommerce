@@ -5,13 +5,13 @@ const Banner = () => {
     <>
       <div class="hero__item set-bg" data-setbg="assets/img/hero/banner.jpg">
         <div class="hero__text">
-          <span>FRUIT FRESH</span>
+          <span>BAKING ACCESSORIES</span>
           <h2>
-            Vegetable <br />
-            100% Organic
+            The very <br />
+            BEST
           </h2>
-          <p>Free Pickup and Delivery Available</p>
-          <a href="#" class="primary-btn">
+          <p>From home baker to professional chef</p>
+          <a href="#" class="primary-btn bg-key">
             SHOP NOW
           </a>
         </div>
