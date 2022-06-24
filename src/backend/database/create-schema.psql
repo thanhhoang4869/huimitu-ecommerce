@@ -98,9 +98,9 @@ CREATE TABLE "order" (
   "created_time" timestamp,
   "payment_id" int,
   "shipping_address_id" int,
-  "total" bigint,
+  "total" real,
   "shipping_provider_id" int,
-  "shipping_price" int,
+  "shipping_price" real,
   "voucher_id" int
 );
 
@@ -108,7 +108,7 @@ CREATE TABLE "order_variant" (
   "order_id" int,
   "variant_id" int,
   "quantity" int,
-  "variant_price" bigint,
+  "variant_price" real,
   PRIMARY KEY ("order_id", "variant_id")
 );
 
