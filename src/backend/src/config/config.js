@@ -1,20 +1,27 @@
-exports.server = {
-    port: 8080,
-    noTokenUrl: [
-        '/signup',
-        '/login'
-    ],
-    expTime: 60 * 60 * 24,
-    secret: 'HUIMITU'
+import dotenv from 'dotenv'
+dotenv.config()
+
+const config = {
+    server: {
+        port: 8080,
+        noTokenUrl: [
+            '/signup',
+            '/login'
+        ],
+        expTime: 60 * 60 * 24,
+        secret: process.env.JWT_SECRET
+    },
+
+    database: {
+        host: 'localhost',
+        user: 'postgres',
+        password: process.env.DB_PASSWORD,
+        database: 'huimitu',
+        port: 5432,
+    },
+
+    constant: {
+    }
 }
 
-exports.database = {
-    host: 'localhost',
-    user: 'postgres',
-    password: '161026',
-    database: 'huimitu',
-    port: 5432,
-}
-
-exports.constant = {
-}
+export default config

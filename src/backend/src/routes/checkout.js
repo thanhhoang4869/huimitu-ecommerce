@@ -1,10 +1,8 @@
-const checkout = require('controller/checkout')
+import checkout from '#src/controller/checkout'
 
-function assignRoutes(app) {
-   app.post("/create-payment",checkout.create_payment);
-   app.post("/execute-payment",checkout.execute_payment);
-}
-
-module.exports = {
-    assignRoutes
-}
+export default {
+    assignRoutes(app) {
+        app.post("/create-payment", checkout.create_payment);
+        app.post("/execute-payment", checkout.execute_payment);
+    }
+} 

@@ -1,10 +1,8 @@
-const account = require('controller/account')
+import account from '#src/controller/account'
 
-function assignRoutes(app) {
-    app.post("/login", account.login);
-    app.post("/signup", account.signup);
-}
-
-module.exports = {
-    assignRoutes
-}
+export default {
+    assignRoutes(app) {
+        app.post("/login", account.login);
+        app.post("/signup", account.signup);
+    }
+} 

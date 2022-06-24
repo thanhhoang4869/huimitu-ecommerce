@@ -1,4 +1,6 @@
-const logger = function (req, res, next) {
+
+
+export default function logger(req, res, next) {
     const currentDateTime = new Date();
     const year = currentDateTime.getFullYear()
     const month = currentDateTime.getMonth() + 1
@@ -14,8 +16,4 @@ const logger = function (req, res, next) {
     console.log("Request body")
     console.log(req.body)
     next()
-}
-
-module.exports = {
-    logger
 }
