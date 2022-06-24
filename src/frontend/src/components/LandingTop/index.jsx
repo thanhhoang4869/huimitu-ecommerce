@@ -2,7 +2,7 @@ import React from "react";
 import CategoryBar from "./CategoryBar";
 import SearchBar from "./SearchBar";
 import Banner from "./Banner";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 const LandingTop = () => {
   return (
