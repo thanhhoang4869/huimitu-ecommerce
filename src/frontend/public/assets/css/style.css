@@ -117,6 +117,18 @@ ol {
 	background-color: #ff8303;
 }
 
+.centered{
+	text-align: center;
+}
+
+.left{
+	text-align: left;
+}
+
+.right{
+	text-align: end;
+}
+
 .section-title {
 	margin-bottom: 50px;
 	text-align: center;
@@ -455,7 +467,7 @@ ol {
 }
 
 .header__menu ul li .header__menu__dropdown li:hover>a {
-	color: #18AEAC;
+	color: #ff8303;
 }
 
 .header__menu ul li .header__menu__dropdown li a {
@@ -466,7 +478,7 @@ ol {
 }
 
 .header__menu ul li.active a {
-	color: #18AEAC;
+	color: #ff8303;
 }
 
 .header__menu ul li:hover .header__menu__dropdown {
@@ -476,7 +488,7 @@ ol {
 }
 
 .header__menu ul li:hover>a {
-	color: #18AEAC;
+	color: #ff8303;
 }
 
 .header__menu ul li:last-child {
@@ -485,7 +497,7 @@ ol {
 
 .header__menu ul li a {
 	font-size: 14px;
-	color: #252525;
+	color: #18AEAC;
 	text-transform: uppercase;
 	font-weight: 700;
 	letter-spacing: 2px;
@@ -531,6 +543,22 @@ ol {
 	height: 13px;
 	width: 13px;
 	background: #18AEAC;
+	font-size: 10px;
+	color: #ffffff;
+	line-height: 13px;
+	text-align: center;
+	font-weight: 700;
+	display: inline-block;
+	border-radius: 50%;
+	position: absolute;
+	top: 0;
+	right: -12px;
+}
+
+.header__cart ul li a:hover span {
+	height: 13px;
+	width: 13px;
+	background: #ff8303;
 	font-size: 10px;
 	color: #ffffff;
 	line-height: 13px;
@@ -2642,7 +2670,13 @@ ol {
 
 .footer__about__logo a {
 	display: inline-block;
+	color: #18AEAC;
 }
+
+.footer__about__logo:hover a {
+	color: #ff8303;
+}
+
 
 .footer__widget {
 	margin-bottom: 30px;
@@ -2688,6 +2722,10 @@ ol {
 	color: #1c1c1c;
 	height: 46px;
 	border: 1px solid #ededed;
+}
+
+.footer__widget ul li:hover a {
+	color: #18AEAC
 }
 
 .footer__widget form input::placeholder {

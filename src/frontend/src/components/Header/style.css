@@ -1,0 +1,11 @@
+.header__top__right__auth > a{
+    color: #18AEAC;
+}
+
+.header__top__right__auth > a:hover{
+    color: #ff8303;
+}
+
+.container{
+    align-items: center;
+}
