@@ -10,8 +10,8 @@ const SearchBar = () => {
               All Categories
               <span class="arrow_carrot-down"></span>
             </div>
-            <input type="text" placeholder="What do yo u need?" />
-            <button type="submit" class="site-btn">
+            <input type="text" placeholder="What do you need?" />
+            <button type="submit" class="site-btn bg-key">
               SEARCH
             </button>
           </form>
