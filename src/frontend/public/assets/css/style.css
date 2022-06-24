@@ -794,6 +794,7 @@ ol {
 .categories__item {
 	height: 270px;
 	position: relative;
+	width: 100%;
 }
 
 .categories__item h5 {
