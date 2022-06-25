@@ -17,23 +17,11 @@ export default async function auth(req, res, next) {
     if (requestToken) {
         const token = req.headers['access-token']
         try {
-            if (token.length < config.CUSTOM_TOKEN_MAX_LENGTH) {
-                // Google token
-                const decoded = await jwt.verify(token, config.JWT_SECRET)
-                req.payload = {
-                    email: decoded.email,
-                    loginType: "google"
-                }
-                next()
-            } else {
-                // Custom token
-                const decoded = await jwt.decode(token)
-                req.payload = {
-                    email: decoded.email,
-                    loginType: "normal"
-                }
-                next()
+            const decoded = await jwt.verify(token, config.JWT_SECRET)
+            req.payload = {
+                email: decoded.email
             }
+            next()
         } catch (err) {
             res.status(403).send({
                 exitcode: 2,

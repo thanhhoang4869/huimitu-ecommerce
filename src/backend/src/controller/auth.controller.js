@@ -1,6 +1,9 @@
 import account from '#src/models/account.model'
 import jwt from 'jsonwebtoken'
 import config from '#src/config/config'
+import { OAuth2Client } from 'google-auth-library'
+
+const client = new OAuth2Client("455931437831-1fecelj6u4fk96t0vrcnvr45pbgirch0.apps.googleusercontent.com")
 
 export default {
     async login(req, res) {
@@ -72,39 +75,38 @@ export default {
         }
     },
 
-    async google(req, res) {
-        const data = req.body;
-        const email = data.email;
+    async loginGoogle(req, res) {
+        const { tokenId } = req.body;
+        console.log(tokenId)
 
         try {
-            const emailAccount = await account.getByEmail(email);
-            if (emailAccount !== null) {
-                res.send({
-                    exitcode: 101,
-                    message: "Email already exists"
-                })
-                return;
+            const result = await client.verifyIdToken({
+                idToken: tokenId,
+                audience: "455931437831-1fecelj6u4fk96t0vrcnvr45pbgirch0.apps.googleusercontent.com"
+            })
+            const { email } = result.payload;
+            const currentAccount = await account.getByEmail(email);
+            if (currentAccount === null) {
+                const newAccount = {
+                    email: email
+                }
+                await account.signup(newAccount);
             }
-
-            const phoneAccount = await account.getByPhone(phone);
-            if (phoneAccount !== null) {
-                res.send({
-                    exitcode: 102,
-                    message: "Phone already exists"
-                })
-                return;
+            const payload = {
+                email: email
             }
-
-            const result = await account.signup(data)
             res.send({
                 exitcode: 0,
-                message: "Create account successfully"
-            })
+                message: "Login successfully",
+                token: jwt.sign(payload, config.JWT_SECRET, {
+                    expiresIn: config.JWT_EXP_TIME
+                }),
+            });
         } catch (err) {
-            console.error(err);
-            res.send({
+            console.error(err)
+            res.status(400).send({
                 exitcode: 1,
-                message: "Fail to signup"
+                message: "Login failed"
             })
         }
     }
