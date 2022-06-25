@@ -14,7 +14,6 @@ const config = {
         '/auth'
     ],
 
-    CUSTOM_TOKEN_MAX_LENGTH: 500,
     PORT: 8080,
     JWT_EXP_TIME: 60 * 60 * 24,
     JWT_SECRET: process.env.JWT_SECRET,
