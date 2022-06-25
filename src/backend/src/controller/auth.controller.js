@@ -82,7 +82,7 @@ export default {
         try {
             const result = await client.verifyIdToken({
                 idToken: tokenId,
-                audience: "455931437831-1fecelj6u4fk96t0vrcnvr45pbgirch0.apps.googleusercontent.com"
+                audience: config.GOOGLE_CLIENT_ID
             })
             const { email } = result.payload;
             const currentAccount = await account.getByEmail(email);

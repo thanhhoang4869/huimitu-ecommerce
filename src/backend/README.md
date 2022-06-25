@@ -18,6 +18,7 @@ Subsequently, for security purpose, some environment variables need to be specif
 ```bash
 DB_PASSWORD = <YOUR_DATABASE_PASSWORD>
 JWT_SECRET = <YOUR_JWT_SECRET_KEY>
+GOOGLE_CLIENT_ID = <YOUR_GOOGLE_CLIENT_ID>
 ```
 
 Finally, to start the server, run:

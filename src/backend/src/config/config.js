@@ -18,6 +18,7 @@ const config = {
     PORT: 8080,
     JWT_EXP_TIME: 60 * 60 * 24,
     JWT_SECRET: process.env.JWT_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     BEST_SELLER_LIMIT: 8,
 }
 
