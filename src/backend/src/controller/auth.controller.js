@@ -1,4 +1,4 @@
-import account from '#src/models/account'
+import account from '#src/models/account.model'
 import jwt from 'jsonwebtoken'
 import config from '#src/config/config'
 
@@ -21,8 +21,8 @@ export default {
             res.send({
                 exitcode: 0,
                 message: "Login successfully",
-                token: jwt.sign(payload, config.server.secret, {
-                    expiresIn: config.server.expTime
+                token: jwt.sign(payload, config.JWT_SECRET, {
+                    expiresIn: config.JWT_EXP_TIME
                 }),
             });
         } catch (err) {
@@ -36,8 +36,45 @@ export default {
 
     async signup(req, res) {
         const data = req.body;
-        const email = req.body.email;
-        const phone = req.body.phone;
+        const email = data.email;
+        const phone = data.phone;
+
+        try {
+            const emailAccount = await account.getByEmail(email);
+            if (emailAccount !== null) {
+                res.send({
+                    exitcode: 101,
+                    message: "Email already exists"
+                })
+                return;
+            }
+
+            const phoneAccount = await account.getByPhone(phone);
+            if (phoneAccount !== null) {
+                res.send({
+                    exitcode: 102,
+                    message: "Phone already exists"
+                })
+                return;
+            }
+
+            const result = await account.signup(data)
+            res.send({
+                exitcode: 0,
+                message: "Create account successfully"
+            })
+        } catch (err) {
+            console.error(err);
+            res.send({
+                exitcode: 1,
+                message: "Fail to signup"
+            })
+        }
+    },
+
+    async google(req, res) {
+        const data = req.body;
+        const email = data.email;
 
         try {
             const emailAccount = await account.getByEmail(email);

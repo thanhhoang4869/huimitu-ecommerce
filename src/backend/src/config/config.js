@@ -2,17 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const config = {
-    server: {
-        port: 8080,
-        noTokenUrl: [
-            '/signup',
-            '/login'
-        ],
-        expTime: 60 * 60 * 24,
-        secret: process.env.JWT_SECRET
-    },
-
-    database: {
+    DATABASE: {
         host: 'localhost',
         user: 'postgres',
         password: process.env.DB_PASSWORD,
@@ -20,9 +10,15 @@ const config = {
         port: 5432,
     },
 
-    constant: {
-        BEST_SELLER_LIMIT: 8,
-    }
+    NO_TOKEN_URL: [
+        '/auth'
+    ],
+
+    CUSTOM_TOKEN_MAX_LENGTH: 500,
+    PORT: 8080,
+    JWT_EXP_TIME: 60 * 60 * 24,
+    JWT_SECRET: process.env.JWT_SECRET,
+    BEST_SELLER_LIMIT: 8,
 }
 
 export default config

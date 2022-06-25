@@ -1,4 +1,4 @@
-import category from '#src/models/category'
+import category from '#src/models/category.model'
 
 export default {
     async get(req, res) {
@@ -26,14 +26,14 @@ export default {
                     result.push(data[i])
                 }
             }
-            res.send({
+            res.status(200).send({
                 exitcode: 0,
                 message: "Get categories successfully",
                 categories: result
             })
         } catch (err) {
             console.error(err)
-            res.send({
+            res.status(500).send({
                 exitcode: 1,
                 message: "Fail to get categories"
             })

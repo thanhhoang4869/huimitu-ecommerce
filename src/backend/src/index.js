@@ -1,9 +1,9 @@
 import express from 'express'
 import cors from 'cors'
-import route from '#src/routes/routes'
+import routes from '#src/routes/index.routes'
+import log from '#src/middlewares/log.mdw'
+import auth from '#src/middlewares/auth.mdw'
 import config from '#src/config/config'
-import logger from '#src/logger/logger'
-import auth from '#src/auth/auth'
 
 const app = express()
 //==================== Library =======================
@@ -12,14 +12,14 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.use(logger)
+app.use(log)
 app.use(auth)
 //#endregion middleware
 
 //Bind route
-route.assignRoutes(app)
+app.use(routes)
 
 //Start listen
-app.listen(config.server.port, () => {
-    console.log("Begin listen on port %s...", config.server.port);
+app.listen(config.PORT, () => {
+    console.log("Begin listen on port %s...", config.PORT);
 })
