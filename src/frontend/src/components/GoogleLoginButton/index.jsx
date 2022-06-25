@@ -1,37 +1,20 @@
 import React from "react";
-import { useEffect } from "react";
+import { GoogleLogin } from "@react-oauth/google";
+import account from "../../services/account";
 
 const GoogleLoginButton = () => {
-  const handleCallbackResponse = (response) => {
+  const onSuccess = async (response) => {
     const { credential } = response;
-    window.localStorage.setItem("access-token", credential);
+    const token = await account.googleLogin(credential);
+    window.localStorage.setItem("token", token);
+    console.log(token)
   };
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.google) {
-      return;
-    }
+  const onError = () => {
+    console.log("Login by Google fail");
+  };
 
-    window.google.accounts.id.initialize({
-      client_id:
-        "455931437831-ks5eehsjpcf4vkijm42ku12kcusa9ouj.apps.googleusercontent.com",
-      callback: handleCallbackResponse,
-    });
-
-    window.google.accounts.id.renderButton(
-      document.getElementById("signInDiv"),
-      {
-        theme: "outline",
-        size: "large",
-      }
-    );
-  }, []);
-
-  return (
-    <>
-      <div id="signInDiv"></div>
-    </>
-  );
+  return <GoogleLogin onSuccess={onSuccess} onError={onError} />;
 };
 
 export default GoogleLoginButton;
