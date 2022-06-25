@@ -15,7 +15,7 @@ export default async function auth(req, res, next) {
     }
 
     if (requestToken) {
-        const token = req.headers['access-token']
+        const token = req.headers['x-access-token']
         try {
             const decoded = await jwt.verify(token, config.JWT_SECRET)
             req.payload = {
