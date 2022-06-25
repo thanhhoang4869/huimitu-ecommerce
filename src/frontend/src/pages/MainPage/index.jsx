@@ -10,7 +10,6 @@ const MainPage = () => {
   return (
     <div className="MainDiv">
       <Header />
-
       <BrowserRouter>
         <Routes>
           <Route exact path="/category/*" element={<CommercePage />} />
@@ -18,7 +17,6 @@ const MainPage = () => {
           <Route exact path="/*" element={<LandingPage />} />
         </Routes>
       </BrowserRouter>
-
       <Footer />
     </div>
   );

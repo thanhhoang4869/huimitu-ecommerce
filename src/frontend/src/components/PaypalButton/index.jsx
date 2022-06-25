@@ -1,6 +1,5 @@
 import React from "react";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import config from "../../config/config";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 
 const PaypalButton = () => {
   const createOrder = (data, actions) => {
@@ -24,13 +23,11 @@ const PaypalButton = () => {
 
   return (
     <div>
-      <PayPalScriptProvider options={config.paypal}>
-        <PayPalButtons
-          createOrder={createOrder}
-          onApprove={onApprove}
-          style={{ layout: "horizontal" }}
-        />
-      </PayPalScriptProvider>
+      <PayPalButtons
+        createOrder={createOrder}
+        onApprove={onApprove}
+        style={{ layout: "horizontal" }}
+      />
     </div>
   );
 };

@@ -1,14 +1,18 @@
 import React from "react";
 import MainPage from "./pages/MainPage";
+import config from './config/config'
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 
 class App extends React.Component {
   render() {
     return (
       <>
-        <GoogleOAuthProvider clientId="455931437831-1fecelj6u4fk96t0vrcnvr45pbgirch0.apps.googleusercontent.com">
-          <MainPage />
-        </GoogleOAuthProvider>;
+        <PayPalScriptProvider options={config.PAYPAL_CLIENT_ID}>
+          <GoogleOAuthProvider clientId={config.GOOGLE_CLIENT_ID}>
+            <MainPage />
+          </GoogleOAuthProvider>;
+        </PayPalScriptProvider>
       </>
     );
   }
