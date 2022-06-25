@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 import config from '#src/config/config'
 import { OAuth2Client } from 'google-auth-library'
 
-const client = new OAuth2Client("455931437831-1fecelj6u4fk96t0vrcnvr45pbgirch0.apps.googleusercontent.com")
+const client = new OAuth2Client(config.GOOGLE_CLIENT_ID)
 
 export default {
     async login(req, res) {
