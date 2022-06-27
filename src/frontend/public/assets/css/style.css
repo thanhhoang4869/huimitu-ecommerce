@@ -130,6 +130,10 @@ ol {
 	text-align: end;
 }
 
+.pointer {
+	cursor: pointer;
+}
+
 .section-title {
 	margin-bottom: 50px;
 	text-align: center;
