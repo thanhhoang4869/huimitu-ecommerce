@@ -14,7 +14,14 @@ If you did not have the database, use the `db-script` folder to create it:
 Before starting the server, you need to change the configuration as your system:
 - Change the password of postgres database in `config.js`
 
-Subsequently, to start the server, run:
+Subsequently, for security purpose, some environment variables need to be specified. Create `.env` in the current directory:
+```bash
+DB_PASSWORD = <YOUR_DATABASE_PASSWORD>
+JWT_SECRET = <YOUR_JWT_SECRET_KEY>
+GOOGLE_CLIENT_ID = <YOUR_GOOGLE_CLIENT_ID>
+```
+
+Finally, to start the server, run:
 ```bash
 $ npm start
 ```
@@ -22,8 +29,8 @@ $ npm start
 ## Exploring source code
 
 In the server, we use the middleware architecture as following:
-- The request first logged in the `logger.js` middleware
-- Then it check for the authorization layer `auth.js` to check for token/session
+- The request first logged in by using the `log.mdw.js` middleware
+- Then it check for the authorization layer `auth.js` to check for token/session (if required)
 - After that, the request will be routed by `routes.js`
 - The logical business flows are implemented in the `controller.js` layer
 - And the deepest layer is `models.js` which use `utils/db.js` to query the database

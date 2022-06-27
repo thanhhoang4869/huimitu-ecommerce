@@ -1,5 +1,3 @@
-
-
 export default function logger(req, res, next) {
     const currentDateTime = new Date();
     const year = currentDateTime.getFullYear()
