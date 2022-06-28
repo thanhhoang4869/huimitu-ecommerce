@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import LandingPage from "../LandingPage";
 import CommercePage from "../CommercePage";
 import Footer from "../../components/Footer";
+import LogInPage from "../LogInPage";
 
 const MainPage = () => {
   return (
@@ -15,6 +16,7 @@ const MainPage = () => {
           <Route exact path="/category/*" element={<CommercePage />} />
           <Route exact path="/search/*" element={<CommercePage />} />
           <Route exact path="/*" element={<LandingPage />} />
+          <Route exact path="/login" element={<LogInPage/>} />
         </Routes>
       </BrowserRouter>
       <Footer />

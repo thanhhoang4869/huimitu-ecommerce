@@ -15,6 +15,7 @@
 8.  Latest Product Section
 9.  Contact
 10.  Footer Style
+11. Login Form
 -------------------------------------------------------------------*/
 
 /*----------------------------------------*/
@@ -127,6 +128,10 @@ ol {
 
 .right{
 	text-align: end;
+}
+
+.pointer {
+	cursor: pointer;
 }
 
 .section-title {
@@ -794,6 +799,7 @@ ol {
 .categories__item {
 	height: 270px;
 	position: relative;
+	width: 100%;
 }
 
 .categories__item h5 {
@@ -3514,4 +3520,39 @@ ol {
 	color: #000;
     font-size: 32px;
     font-weight: 500;
+}
+
+/*----------------------------------------*/
+/* Login Form
+/*----------------------------------------*/
+
+.login-input {
+	border: 1px solid #ABABAB;
+	border-radius: 1rem;
+	color: #ABABAB;
+	
+}
+
+.login-input input {
+	border: none;
+	padding-left: 1rem;
+	width: 80%;
+	flex-grow: 1;
+}
+
+.login-btn {
+	border: none;
+	border-radius: 1.5rem;
+	height: 3rem;
+}
+
+.login-input i {
+	width: 1.5rem;
+	text-align: center;
+	font-size: 1.5rem;
+}
+
+.login-forget-link {
+	color: #18AEAC !important;
+
 }
