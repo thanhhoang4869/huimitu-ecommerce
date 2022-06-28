@@ -12,7 +12,7 @@ export default {
         try {
             const correctPassword = await account.getPassword(email);
             if (correctPassword === null || password !== correctPassword) {
-                res.send({
+                res.status(200).send({
                     exitcode: 3,
                     message: "Email or password is not correct"
                 });
@@ -21,7 +21,7 @@ export default {
             const payload = {
                 email: email
             }
-            res.send({
+            res.status(200).send({
                 exitcode: 0,
                 message: "Login successfully",
                 token: jwt.sign(payload, config.JWT_SECRET, {
@@ -30,7 +30,7 @@ export default {
             });
         } catch (err) {
             console.error(err)
-            res.send({
+            res.status(500).send({
                 exitcode: 1,
                 message: "Fail to login"
             })
@@ -45,7 +45,7 @@ export default {
         try {
             const emailAccount = await account.getByEmail(email);
             if (emailAccount !== null) {
-                res.send({
+                res.status(200).send({
                     exitcode: 101,
                     message: "Email already exists"
                 })
@@ -54,7 +54,7 @@ export default {
 
             const phoneAccount = await account.getByPhone(phone);
             if (phoneAccount !== null) {
-                res.send({
+                res.status(200).send({
                     exitcode: 102,
                     message: "Phone already exists"
                 })
@@ -62,13 +62,13 @@ export default {
             }
 
             const result = await account.signup(data)
-            res.send({
+            res.status(200).send({
                 exitcode: 0,
                 message: "Create account successfully"
             })
         } catch (err) {
             console.error(err);
-            res.send({
+            res.status(500).send({
                 exitcode: 1,
                 message: "Fail to signup"
             })

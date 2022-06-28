@@ -13,13 +13,14 @@ const LogInPage = () => {
 
     const hashedPassword = sha256(password).toString();
     const json = { email, password: hashedPassword };
-    console.log(sha256(password).toString());
 
-    try {
-      const response = await huimitu.post("/auth/login", json);
-      window.localStorage.setItem("token", response);
-    } catch (error) {
-      alert(error);
+    const response = await huimitu.post("/auth/login", json);
+    const { exitcode, message, token } = response.data;
+    if (exitcode === 0) {
+      window.localStorage.setItem("token", token);
+      alert("Login successfully");
+    } else {
+      alert(message);
     }
   };
 

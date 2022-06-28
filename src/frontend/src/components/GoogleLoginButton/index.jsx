@@ -5,9 +5,15 @@ import account from "../../services/account";
 const GoogleLoginButton = () => {
   const onSuccess = async (response) => {
     const { credential } = response;
-    const token = await account.googleLogin(credential);
-    window.localStorage.setItem("token", token);
-    console.log(token)
+
+    const result = await account.googleLogin(credential);
+    const { exitcode, message, token } = result.data;
+    if (exitcode === 0) {
+      window.localStorage.setItem("token", token);
+      alert("Login successfully");
+    } else {
+      alert(message)
+    }
   };
 
   const onError = () => {

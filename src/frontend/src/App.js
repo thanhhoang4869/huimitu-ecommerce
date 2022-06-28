@@ -3,7 +3,6 @@ import MainPage from "./pages/MainPage";
 import config from './config/config'
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
-console.log(config)
 
 class App extends React.Component {
   render() {

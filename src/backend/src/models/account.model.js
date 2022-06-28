@@ -20,21 +20,13 @@ export default {
         const result = await db('account').where({
             email: email
         })
-        try {
-            return result[0]
-        } catch (err) {
-            return null
-        }
+        return result[0]
     },
 
     async getByPhone(phone) {
         const result = await db('account').where({
             phone: phone
         })
-        try {
-            return result[0]
-        } catch (err) {
-            return null;
-        }
+        return result[0];
     }
 }

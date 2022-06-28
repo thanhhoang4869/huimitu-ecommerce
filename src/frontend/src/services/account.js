@@ -6,7 +6,7 @@ const account = {
             tokenId: token,
         };
         const response = await api.post("/auth/loginGoogle", data);
-        return response.data.token
+        return response
     }
 }
 
