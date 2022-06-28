@@ -42,7 +42,7 @@ const CategorySlider = () => {
       img: "assets/img/categories/cat-7.jpg"
     },
     {
-      id: 6,
+      id: 7,
       name: "Speciality cookware",
       img: "assets/img/categories/cat-8.jpg"
     }
@@ -50,7 +50,7 @@ const CategorySlider = () => {
   ]
 
   return (
-    <div class="categories__slider owl-carousel">
+    <div className="categories__slider owl-carousel">
       {
         products.map((product) => {
           return <CategoryItem key={product.id} product={product}/>

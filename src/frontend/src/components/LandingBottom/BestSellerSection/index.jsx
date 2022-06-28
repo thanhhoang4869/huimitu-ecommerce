@@ -4,10 +4,10 @@ import BestSellerList from "./BestSellerList";
 const BestSellerSection = () => {
   return (
     <>
-      <section class="featured spad">
-        <div class="container">
-          <div class="row">
-            <div class="section-title">
+      <section className="featured spad">
+        <div className="container">
+          <div className="row">
+            <div className="section-title">
               <h2>Best sellers</h2>
             </div>
           </div>

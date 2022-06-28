@@ -3,10 +3,10 @@ import React from "react";
 const CategoryBar = () => {
   return (
     <>
-      <div class="col-lg-3">
-        <div class="hero__categories">
-          <div class="hero__categories__all">
-            <i class="fa fa-bars"></i>
+      <div className="col-lg-3">
+        <div className="hero__categories">
+          <div className="hero__categories__all">
+            <i className="fa fa-bars"></i>
             <span>All departments</span>
           </div>
           <ul>

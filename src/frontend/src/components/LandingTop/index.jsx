@@ -6,11 +6,11 @@ import { Route, Routes } from "react-router-dom";
 
 const LandingTop = () => {
   return (
-    <section class="hero">
-      <div class="container">
-        <div class="row">
+    <section className="hero">
+      <div className="container">
+        <div className="row">
           <CategoryBar />
-          <div class="col-lg-9">
+          <div className="col-lg-9">
             <SearchBar />
             <Routes>
               <Route exact path="/" element={<Banner />} />
