@@ -5,7 +5,11 @@ export default {
         const result = await db('account').select('password').where({
             email: email
         })
-        return result[0].password || null;
+        try {
+            return result[0].password;
+        } catch (err) {
+            return null;
+        }
     },
 
     async signup(data) {
@@ -16,13 +20,21 @@ export default {
         const result = await db('account').where({
             email: email
         })
-        return result[0] || null;
+        try {
+            return result[0]
+        } catch (err) {
+            return null
+        }
     },
-    
+
     async getByPhone(phone) {
         const result = await db('account').where({
             phone: phone
         })
-        return result[0] || null;
+        try {
+            return result[0]
+        } catch (err) {
+            return null;
+        }
     }
 }
