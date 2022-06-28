@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import huimitu from "../../api/huimitu";
 import sha256 from "crypto-js/sha256";
-import Base64 from "crypto-js/enc-base64";
 import { Link } from "react-router-dom";
-
+import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 const LogInPage = () => {
   const [email, setEmail] = useState("");
@@ -16,14 +15,12 @@ const LogInPage = () => {
     const json = { email, password: hashedPassword };
     console.log(sha256(password).toString());
 
-    const response = await huimitu.post("/login", json)
-    .catch(error => {
+    try {
+      const response = await huimitu.post("/auth/login", json);
+      window.localStorage.setItem("token", response);
+    } catch (error) {
       alert(error);
-    });
-
-
-    alert(response.data.message);
-    console.log(response.data);
+    }
   };
 
   return (
@@ -54,7 +51,7 @@ const LogInPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <a className="login-forget-link mb-3 align-self-end">
+        <a href="/#" className="login-forget-link mb-3 align-self-end">
           Forgotten password?
         </a>
         <button className="primary-btn bg-key login-btn col-6" type="submit">
@@ -63,15 +60,10 @@ const LogInPage = () => {
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
         <p>or continue with</p>
-        <Link to="/#">
-          <img
-            className="pointer"
-            src="./assets/img/google.jpg"
-          />
-        </Link>
+        <GoogleLoginButton />
 
         <p className="mt-5">
-          Do not have an account? 
+          Do not have an account?
           <Link to="/signup" className="text-key pointer pl-1">
             REGISTER
           </Link>
