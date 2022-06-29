@@ -2,6 +2,7 @@ import account from '#src/models/account.model'
 import jwt from 'jsonwebtoken'
 import config from '#src/config/config'
 import { OAuth2Client } from 'google-auth-library'
+import sha256 from 'crypto-js/sha256.js'
 
 const client = new OAuth2Client(config.GOOGLE_CLIENT_ID)
 
@@ -11,7 +12,8 @@ export default {
         const password = req.body.password
         try {
             const correctPassword = await account.getPassword(email);
-            if (correctPassword === null || password !== correctPassword) {
+            const hashPassword = sha256(password).toString();
+            if (correctPassword === null || hashPassword !== correctPassword) {
                 res.status(200).send({
                     exitcode: 3,
                     message: "Email or password is not correct"
@@ -38,9 +40,7 @@ export default {
     },
 
     async signup(req, res) {
-        const data = req.body;
-        const email = data.email;
-        const phone = data.phone;
+        const { email, phone, password, fullname, address } = req.body;
 
         try {
             const emailAccount = await account.getByEmail(email);
@@ -61,7 +61,11 @@ export default {
                 return;
             }
 
-            const result = await account.signup(data)
+            const hashedPassword = sha256(password).toString();
+            const entity = {
+                email, phone, fullname, address, password: hashedPassword
+            }
+            const result = await account.signup(entity)
             res.status(200).send({
                 exitcode: 0,
                 message: "Create account successfully"
