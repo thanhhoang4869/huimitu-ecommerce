@@ -11,8 +11,7 @@ const LogInPage = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    const hashedPassword = sha256(password).toString();
-    const json = { email, password: hashedPassword };
+    const json = { email, password: password };
 
     const response = await huimitu.post("/auth/login", json);
     const { exitcode, message, token } = response.data;
