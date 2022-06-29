@@ -3,7 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
 import account from "../../services/account";
 
-const LogInPage = ({token, setToken}) => {
+const LogInPage = ({ token, handleLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState();
@@ -15,10 +15,9 @@ const LogInPage = ({token, setToken}) => {
       const { exitcode, message, token } = response.data;
 
       if (exitcode === 0) {
-        setToken(token);
-        window.localStorage.setItem("token", token);
+        handleLogin(token);
       } else {
-        setError(response.data)
+        setError(response.data);
       }
     } catch (error) {
       setError(error);

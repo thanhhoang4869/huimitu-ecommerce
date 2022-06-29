@@ -4,14 +4,7 @@ import "./style.css";
 import logo from "../../images/logo.png";
 import account from "../../services/account";
 
-const Header = ({ token, setToken }) => {
-  // const [token, setToken] = useState();
-
-  useEffect(() => {
-    // setToken(account.getLocalToken());
-    console.log("Rerender header: token: " + token);
-  }, [token]);
-
+const Header = ({ handleLogout }) => {
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
@@ -44,19 +37,18 @@ const Header = ({ token, setToken }) => {
                     </a>
                   </div>
                   <div className="header__top__right__auth">
-                    {token && (
+                    {localStorage.getItem("token") && (
                       <Link
                         to="/login"
                         onClick={() => {
-                          account.logout();
-                          setToken(null)
+                          handleLogout();
                         }}
                       >
                         <i className="fa fa-user"></i>
                         Logout
                       </Link>
                     )}
-                    {!token && (
+                    {!localStorage.getItem("token") && (
                       <Link to="/login">
                         <i className="fa fa-user"></i>
                         Login
