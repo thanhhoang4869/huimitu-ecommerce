@@ -1,8 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "../../images/logo.png";
+import account from "../../services/account";
 
-const Header = () => {
+const Header = ({ token, setToken }) => {
+  // const [token, setToken] = useState();
+
+  useEffect(() => {
+    // setToken(account.getLocalToken());
+    console.log("Rerender header: token: " + token);
+  }, [token]);
+
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
@@ -35,9 +44,24 @@ const Header = () => {
                     </a>
                   </div>
                   <div className="header__top__right__auth">
-                    <a href="/login">
-                      <i className="fa fa-user"></i> Login
-                    </a>
+                    {token && (
+                      <Link
+                        to="/login"
+                        onClick={() => {
+                          account.logout();
+                          setToken(null)
+                        }}
+                      >
+                        <i className="fa fa-user"></i>
+                        Logout
+                      </Link>
+                    )}
+                    {!token && (
+                      <Link to="/login">
+                        <i className="fa fa-user"></i>
+                        Login
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
