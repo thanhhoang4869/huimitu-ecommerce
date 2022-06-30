@@ -1,22 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Header from "../../components/Header";
-import LandingPage from "../LandingPage";
-import CommercePage from "../CommercePage";
-import Footer from "../../components/Footer";
-import LogInPage from "../LogInPage";
+import Header from "components/Header";
+import LandingPage from "pages/LandingPage";
+import CommercePage from "pages/CommercePage";
+import Footer from "components/Footer";
+import LogInPage from "pages/LogInPage";
+import config from "config/config";
 
 const MainPage = () => {
+  const [token, setToken] = useState(
+    localStorage.getItem(config.storageKeys.ACCESS_KEY)
+  );
+
+  const login = (token) => {
+    localStorage.setItem(config.storageKeys.ACCESS_KEY, token);
+    setToken(token);
+  };
+
+  const logout = () => {
+    localStorage.removeItem(config.storageKeys.ACCESS_KEY);
+    setToken(null);
+  };
+
   return (
     <div className="MainDiv">
-      <Header />
       <BrowserRouter>
+        <Header handleLogout={logout} />
         <Routes>
           <Route exact path="/category/*" element={<CommercePage />} />
           <Route exact path="/search/*" element={<CommercePage />} />
           <Route exact path="/*" element={<LandingPage />} />
-          <Route exact path="/login" element={<LogInPage/>} />
+          <Route
+            exact
+            path="/login"
+            element={<LogInPage handleLogin={login} />}
+          />
         </Routes>
       </BrowserRouter>
       <Footer />

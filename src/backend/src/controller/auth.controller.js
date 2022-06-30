@@ -81,7 +81,6 @@ export default {
 
     async loginGoogle(req, res) {
         const { tokenId } = req.body;
-        console.log(tokenId)
 
         try {
             const result = await client.verifyIdToken({

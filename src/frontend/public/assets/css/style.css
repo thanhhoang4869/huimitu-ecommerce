@@ -102,7 +102,7 @@ ol {
   Helper CSS
 -----------------------*/
 
-.text-key{
+.text-key, .color-key{
 	color: #18AEAC;
 }
 
@@ -3550,9 +3550,4 @@ ol {
 	width: 1.5rem;
 	text-align: center;
 	font-size: 1.5rem;
-}
-
-.login-forget-link {
-	color: #18AEAC !important;
-
 }
