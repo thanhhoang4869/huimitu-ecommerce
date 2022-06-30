@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import account from "../../services/account";
 
 import Header from "../../components/Header";
 import LandingPage from "../LandingPage";
@@ -32,7 +31,7 @@ const MainPage = () => {
           <Route
             exact
             path="/login"
-            element={<LogInPage token={token} handleLogin={login} />}
+            element={<LogInPage handleLogin={login} />}
           />
         </Routes>
       </BrowserRouter>

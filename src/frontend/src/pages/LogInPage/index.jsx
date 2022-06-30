@@ -3,7 +3,7 @@ import { Link, Navigate } from "react-router-dom";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
 import account from "../../services/account";
 
-const LogInPage = ({ token, handleLogin }) => {
+const LogInPage = ({ handleLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState();
@@ -27,7 +27,7 @@ const LogInPage = ({ token, handleLogin }) => {
   return (
     <div className="d-flex container flex-column justify-content-center my-5">
       {error && <p>{error.message}</p>}
-      {token && <Navigate to="/" replace={true} />}
+      {localStorage.getItem("token") && <Navigate to="/" replace={true} />}
       <form
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"
         onSubmit={onSubmit}

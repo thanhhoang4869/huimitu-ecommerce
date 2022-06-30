@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "../../images/logo.png";
-import account from "../../services/account";
 
 const Header = ({ handleLogout }) => {
+  
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
@@ -40,9 +40,7 @@ const Header = ({ handleLogout }) => {
                     {localStorage.getItem("token") && (
                       <Link
                         to="/login"
-                        onClick={() => {
-                          handleLogout();
-                        }}
+                        onClick={handleLogout}
                       >
                         <i className="fa fa-user"></i>
                         Logout
