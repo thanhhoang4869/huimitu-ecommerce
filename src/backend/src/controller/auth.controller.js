@@ -107,7 +107,7 @@ export default {
             });
         } catch (err) {
             console.error(err)
-            res.status(400).send({
+            res.status(500).send({
                 exitcode: 1,
                 message: "Login failed"
             })
