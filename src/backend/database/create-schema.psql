@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS "product_image" CASCADE;
 DROP TABLE IF EXISTS "option" CASCADE;
 DROP TABLE IF EXISTS "option_choice" CASCADE;
 DROP TABLE IF EXISTS "variant" CASCADE;
-DROP TABLE IF EXISTS "variant_option" CASCADE;
+DROP TABLE IF EXISTS "variant_option_choice" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
 DROP TABLE IF EXISTS "order_state" CASCADE;
 DROP TABLE IF EXISTS "order_variant" CASCADE;
@@ -16,6 +16,8 @@ DROP TABLE IF EXISTS "cart_variant" CASCADE;
 DROP TABLE IF EXISTS "review" CASCADE;
 DROP TABLE IF EXISTS "shipping_provider" CASCADE;
 DROP TABLE IF EXISTS "voucher" CASCADE;
+
+----------------------- CREATE TABLE -------------------------
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -26,7 +28,9 @@ CREATE TABLE "account" (
   "birthday" date,
   "gender" varchar,
   "avatar" varchar,
-  "account_type" varchar
+  "account_type" varchar,
+  "verified" bool DEFAULT false,
+  "otp" varchar
 );
 
 CREATE TABLE "shipping_address" (
@@ -85,11 +89,10 @@ CREATE TABLE "variant" (
   "stock" int
 );
 
-CREATE TABLE "variant_option" (
+CREATE TABLE "variant_option_choice" (
   "variant_id" int,
-  "option_id" int,
-  "choice_id" int,
-  PRIMARY KEY ("option_id", "variant_id")
+  "option_choice_id" int,
+  PRIMARY KEY ( "variant_id", "option_choice_id")
 );
 
 CREATE TABLE "order" (
@@ -154,6 +157,8 @@ CREATE TABLE "voucher" (
   "end_date" timestamp
 );
 
+----------------------- CONSTRAINT -------------------------
+
 ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 
 ALTER TABLE "order" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
@@ -166,9 +171,8 @@ ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id
 ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
 ALTER TABLE "variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-ALTER TABLE "variant_option" ADD FOREIGN KEY ("option_id") REFERENCES "option" ("id");
-ALTER TABLE "variant_option" ADD FOREIGN KEY ("choice_id") REFERENCES "option_choice" ("id");
-ALTER TABLE "variant_option" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
+ALTER TABLE "variant_option_choice" ADD FOREIGN KEY ("option_choice_id") REFERENCES "option_choice" ("id");
+ALTER TABLE "variant_option_choice" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
 
 ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
@@ -187,3 +191,118 @@ ALTER TABLE "order_variant" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id
 ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
+
+------------------------- TRIGGER ---------------------------
+
+
+----------------------- INSERT DATA -------------------------
+
+-- Admin password: admin
+-- User password: user
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('phuc16102001@gmail.com','c922a25f9b38b3a5a30c354246275af1dd5588d916ad8de33ba669f1b4ae32e4','0707953475','Đỗ Vương Phúc','1E/1 Bình Đông', '2001-10-16','male',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('thanhhoang4869@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0933442607','Hoàng Như Thanh','125/72 Nguyễn Văn Thương','2001-07-26','female',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('nnhatdu@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654321','Ngô Nhật Du',NULL,NULL,'female',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('longmydu@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654322','Long Mỹ Du',NULL,NULL,'female',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('nhkduy201@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654323','Nguyễn Hoàng Khánh Duy',NULL,NULL,'male',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user1@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654324','User 1',NULL,NULL,'female',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user2@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654325','User 2',NULL,NULL,'male',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user3@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654326','User 3',NULL,NULL,'female',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user4@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654327','User 4',NULL,NULL,'male',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user5@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654328','User 5',NULL,NULL,'female',NULL,'user');
+
+INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user1@gmail.com','225 Nguyễn Tri Phương','0987654324','Người dùng 1.1');
+INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user1@gmail.com','123 Nguyễn Văn Của','0987654324','Người dùng 1.2');
+INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user2@gmail.com','123 Nguyễn Văn Của','0987654324','Người dùng 1.2');
+INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user3@gmail.com','221 Lũy Bán Bích','0987654325','Người dùng 3.1');
+  
+INSERT INTO "payment"("provider") VALUES('paypal');
+INSERT INTO "payment"("provider") VALUES('momo');
+INSERT INTO "payment"("provider") VALUES('pickup');
+INSERT INTO "payment"("provider") VALUES('nowpayment');
+
+INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Decorating tools',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Bakeware & Cookware',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Kitchen tools',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Bags & Tips',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Baking cups',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Cake decoration tools',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Cookie cutter',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Cookie decoration tools',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Basic baking pans',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Cookie sheets',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Cupcake & muffin pans',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Speciality & shaped pans',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Ovenware',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Speciality cookware',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('3','Cutlery & knives',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('3','Cutting board',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('3','Measuring gadgets',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('3','Scale',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('3','Thermometers',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('3','Timers',NULL);
+
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Disposable Decorating Bags by Celebrate It','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('1M Open Star Decorating Tip by Celebrate It','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Reusable Decorating Bag by Celebrate It','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Drop Flower Decorating Tip No. 2D by Celebrate It','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Wilton Tip Set','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Grease-Resistant Baking Cups by Celebrate It','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Polka Dot Grease-Resistant Baking Cups by Celebrate It','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Communion Baking Cups, 300ct.','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Icing Smoother by Celebrate It','6',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('10" Cake Leveler by Celebrate It','6',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Bamboo Dowel Rods by Celebrate It','6',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('9" Angled Spatula by Celebrate It','6',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Baker''s Blade by Celebrate It','6',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Round Cake Pan','9',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Fat Daddio''s Pro Series Bakeware Anodized Aluminum Round Cake Pan','9',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Heart Shaped Non-Stick Cake Pan by Celebrate It','12',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Kensington Jelly Roll Pan by Celebrate It','10',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('MegaChef 8-in-1 Multi-Use Slicer','15',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Oster Edgefield Stainless Steel Santoku Knife Set','15',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Nutrichef Magnetic Measuring Spoon Set, 6 Pieces','17',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Ozeri ZK24 Garden & Kitchen Scale with Precision Weighing Technology','18',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor High-Capacity Digital Kitchen Scale','18',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Candy & Jelly Deep Fry Thermometer','19',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Waterproof Digital Instant Read Thermometer','19',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Instant-Read 1" Dial Thermometer','19',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Ozeri Kitchen & Event Timer','20',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Digital Cooking Thermometer & Timer','20',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Kitchen Details Medium Curved Bamboo Cutting Board','16',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Ginsu Disposable Cutting Board','16',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Kitchen Details Large Bamboo Cutting Board','16',NULL,'0','0');
+
+INSERT INTO "option"("id","name") VALUES('1','color');
+INSERT INTO "option"("id","name") VALUES('2','amount');
+INSERT INTO "option"("id","name") VALUES('3','size');
+
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('1','1','5','red');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('2','1','6','green');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('3','1','7','blue');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('4','1','8','yellow');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('5','1','9','orange');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('6','1','10','black');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('7','1','11','white');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('8','2','12','12');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('9','2','13','24');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('10','2','14','36');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('11','3','15','9" x 2"');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('12','3','16','10" x 3"');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('13','3','17','5" x 2"');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('14','3','18','6" x 3"');
+INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('15','3','19','8" x 2"');
+
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('1','1','5.49',NULL,'3');
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('2','1','8.99',NULL,'5');
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('3','1','21.99',NULL,'2');
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('4','2','1.49',NULL,'10');
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('5','14','7.99','4.99','10');
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('6','14','15.99','7','5');
+INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('7','14','11.99','5','4');
+
+INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('1','8');
+INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('2','9');
+INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('3','10');
+INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('5','11');
+INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('6','12');
+INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('7','13');
