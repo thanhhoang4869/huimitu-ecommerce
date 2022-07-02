@@ -12,7 +12,7 @@ const SignupPage = (props) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
 
   const validateFields = (password, passwordConfirm, email, phone) => {
     if (password !== passwordConfirm) {
@@ -57,19 +57,29 @@ const SignupPage = (props) => {
     }
   };
 
-  const handleSignup = async () => {};
-
   const onSubmit = async (e) => {
     if (email && password && passwordConfirm && fullname && phone) {
       validateFields(password, passwordConfirm, email, phone);
       try {
-        const response = await account.login(email, password);
-        const { exitcode, token } = response.data;
+        const entity = {
+          email,
+          password,
+          fullname,
+          phone,
+        };
+        const response = await account.signup(entity);
+        const { exitcode, message } = response.data;
 
         if (exitcode === 0) {
-          handleSignup();
+          swal.fire({
+            title: "Success",
+            text: "Please check your email to verify your account!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+          Navigate("/login");
         } else {
-          setError(response.data);
+          setError(message);
         }
       } catch (error) {
         setError(error);
