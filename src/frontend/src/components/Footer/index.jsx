@@ -1,19 +1,19 @@
 import React from "react";
-import logo from "images/logo.png";
+import logo from "../../images/logo.png";
 
 const Footer = () => {
   return (
     <>
-      <div className="banner pb-5">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-6 col-md-6 col-sm-6">
-              <div className="banner__pic">
+      <div class="banner pb-5">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="banner__pic">
                 <img src="/assets/img/banner/banner-1.jpg" alt="" />
               </div>
             </div>
-            <div className="col-lg-6 col-md-6 col-sm-6">
-              <div className="banner__pic">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="banner__pic">
                 <img src="/assets/img/banner/banner-2.jpg" alt="" />
               </div>
             </div>
@@ -21,12 +21,12 @@ const Footer = () => {
         </div>
       </div>
 
-      <footer className="footer spad border">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-3 col-md-6 col-sm-6">
-              <div className="footer__about">
-                <div className="footer__about__logo">
+      <footer class="footer spad border">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+              <div class="footer__about">
+                <div class="footer__about__logo">
                   <a href="/" style={{ width: "50%" }}>
                     <img src={logo} alt="logo" />
                   </a>
@@ -38,8 +38,8 @@ const Footer = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
-              <div className="footer__widget">
+            <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+              <div class="footer__widget">
                 <h6>Resources</h6>
                 <ul>
                   <li>
@@ -62,33 +62,33 @@ const Footer = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-lg-4 col-md-12">
-              <div className="footer__widget">
+            <div class="col-lg-4 col-md-12">
+              <div class="footer__widget">
                 <h6>Reach us</h6>
-                <div className="footer__widget__social">
+                <div class="footer__widget__social">
                   <a href="/">
-                    <i className="fa fa-facebook"></i>
+                    <i class="fa fa-facebook"></i>
                   </a>
                   <a href="/">
-                    <i className="fa fa-instagram"></i>
+                    <i class="fa fa-instagram"></i>
                   </a>
                   <a href="/">
-                    <i className="fa fa-twitter"></i>
+                    <i class="fa fa-twitter"></i>
                   </a>
                   <a href="/">
-                    <i className="fa fa-pinterest"></i>
+                    <i class="fa fa-pinterest"></i>
                   </a>
                 </div>
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-lg-12">
-              <div className="footer__copyright">
-                <div className="footer__copyright__text">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="footer__copyright">
+                <div class="footer__copyright__text">
                   <p>Copyright &copy;2022 All rights reserved</p>
                 </div>
-                <div className="footer__copyright__payment">
+                <div class="footer__copyright__payment">
                   <img src="assets/img/payment-item.png" alt="" />
                 </div>
               </div>

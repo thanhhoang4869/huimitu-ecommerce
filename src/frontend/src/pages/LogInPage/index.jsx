@@ -14,7 +14,7 @@ const LogInPage = (props) => {
     e.preventDefault();
     try {
       const response = await account.login(email, password);
-      const { exitcode, message, token } = response.data;
+      const { exitcode, token } = response.data;
 
       if (exitcode === 0) {
         handleLogin(token);
@@ -30,7 +30,7 @@ const LogInPage = (props) => {
     const { credential } = response;
 
     const result = await account.googleLogin(credential);
-    const { exitcode, message, token } = result.data;
+    const { exitcode, token } = result.data;
 
     if (exitcode === 0) {
       handleLogin(token);
@@ -45,7 +45,7 @@ const LogInPage = (props) => {
 
   return (
     <div className="d-flex container flex-column justify-content-center my-5">
-      {error && <p>{error.message}</p>}
+      {error && <p className="text-danger">{error.message}</p>}
       {localStorage.getItem("token") && <Navigate to="/" replace={true} />}
       <form
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"
@@ -90,7 +90,7 @@ const LogInPage = (props) => {
         <p className="mt-5">
           Do not have an account?
           <Link to="/signup" className="text-key pointer pl-1">
-            REGISTER
+            SIGN UP
           </Link>
         </p>
       </div>
