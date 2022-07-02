@@ -24,6 +24,15 @@ export default {
         return db('account').insert(entity);
     },
 
+    async verifyAccount(token) {
+        const result = await db('account').update({
+            verified: true,
+        }).where({
+            token: token
+        })
+        return result;
+    },
+
     async getByEmail(email) {
         const result = await db('account').where({
             email: email

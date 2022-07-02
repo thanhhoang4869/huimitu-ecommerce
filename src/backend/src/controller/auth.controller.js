@@ -1,4 +1,4 @@
-import account from '#src/models/account.model'
+import accountModel from '#src/models/account.model'
 import jwt from 'jsonwebtoken'
 import config from '#src/config/config'
 import CryptoJS from 'crypto-js'
@@ -12,7 +12,7 @@ export default {
             const password = req.body.password
 
             // Get the database password
-            const encryptedPassword = await account.getPassword(email);
+            const encryptedPassword = await accountModel.getPassword(email);
             if (encryptedPassword === null) {
                 res.status(200).send({
                     exitcode: 3,
@@ -63,7 +63,7 @@ export default {
             const { email, phone, password, fullname } = req.body;
 
             // Check for email duplicated
-            const emailAccount = await account.getByEmail(email);
+            const emailAccount = await accountModel.getByEmail(email);
             if (emailAccount !== null) {
                 res.status(200).send({
                     exitcode: 101,
@@ -73,7 +73,7 @@ export default {
             }
 
             // Check for phone duplicated
-            const phoneAccount = await account.getByPhone(phone);
+            const phoneAccount = await accountModel.getByPhone(phone);
             if (phoneAccount !== null) {
                 res.status(200).send({
                     exitcode: 102,
@@ -112,7 +112,7 @@ export default {
                     <h1>Huimitu Shop</h1>
                     <h3>Thank you for registering</h3>
                     <div>
-                        <a href="http://${req.headers.host}/account/verify/${token}">
+                        <a href="${req.headers.origin}/account/verify/${token}">
                             <button style="
                                 font-weight: bold; 
                                 padding: 2em; 
@@ -128,7 +128,7 @@ export default {
                     <div>Sent at ${(new Date()).toUTCString()}</div>
                 </div>`
             }
-            // await mailer.sendMail(mailOption);
+            await mailer.sendMail(mailOption);
 
             // Create entity to insert to DB
             const entity = {
@@ -139,7 +139,7 @@ export default {
                 verified: false,
                 token: token
             }
-            const result = await account.signup(entity)
+            const result = await accountModel.signup(entity)
 
             res.status(200).send({
                 exitcode: 0,
@@ -150,6 +150,24 @@ export default {
             res.status(500).send({
                 exitcode: 1,
                 message: "Fail to signup"
+            })
+        }
+    },
+
+    async verify(req, res) {
+        try {
+            const { token } = req.body;
+
+            const result = accountModel.verifyAccount(token);
+            res.status(200).send({
+                exitcode: 0,
+                message: "Verification successfully"
+            })
+        } catch (err) {
+            console.log(err)
+            res.status(500).send({
+                exitcode: 1,
+                message: "Verification failed"
             })
         }
     },
@@ -165,12 +183,12 @@ export default {
 
             // Create new account if email not registered
             const { email } = result.payload;
-            const currentAccount = await account.getByEmail(email);
+            const currentAccount = await accountModel.getByEmail(email);
             if (currentAccount === null) {
                 const newAccount = {
                     email: email
                 }
-                await account.signup(newAccount);
+                await accountModel.signup(newAccount);
             }
 
             // Sign a new token by server
