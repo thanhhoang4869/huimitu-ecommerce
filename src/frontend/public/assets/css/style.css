@@ -3787,7 +3787,12 @@ ol {
   padding-bottom: 100px;
 }
 
-.section-2 {
+.section-25 {
+  padding-top: 25px;
+  padding-bottom: 50px;
+}
+
+.section-50 {
   padding-top: 50px;
   padding-bottom: 50px;
 }

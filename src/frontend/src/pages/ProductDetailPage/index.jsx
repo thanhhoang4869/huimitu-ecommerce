@@ -21,7 +21,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
       </div>
-      <div className="product-details-area section">
+      <div className="product-details-area section-25">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-sm-12 col-xs-12 mb-lm-30px mb-md-30px mb-sm-30px">
@@ -30,7 +30,7 @@ const ProductDetailPage = () => {
                   <div className="swiper-slide">
                     <img
                       className="img-responsive m-auto"
-                      src="https://res.cloudinary.com/gearant/image/upload/v1650660411/gearant/16_djxiag.jpg"
+                      src="https://res.cloudinary.com/horizon-web-online-auction/image/upload/v1641874501/horizon/products/38/1_txzq5e.jpg?auto=compress&w=480&q=90&dpr=2&updated_at=1635280285&h=320&fm=webp"
                       alt=""
                     />
                   </div>
@@ -126,7 +126,7 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
-        <div className="container section-2">
+        <div className="container section-50">
           <div className="product-description">
             <div className="product-description-title">
               <p>Description</p>

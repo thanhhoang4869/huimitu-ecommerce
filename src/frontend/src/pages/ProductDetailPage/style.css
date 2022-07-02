@@ -2,7 +2,7 @@ a {
   text-decoration: none;
 }
 
-p {
+li > p {
   margin: 0;
   font-size: medium !important;
   font-weight: 600 !important;
@@ -39,21 +39,6 @@ ul {
   max-width: 100%;
   display: block;
   width: 100%;
-}
-
-input {
-  display: inline-block;
-  line-height: 50px;
-  height: 50px;
-  font-size: 15px;
-  width: 100%;
-  background: transparent;
-  border-radius: 0;
-  -webkit-border-radius: 0;
-  text-align: left;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  outline: 0;
 }
 
 .breadcrumb-area .breadcrumb-item {
@@ -282,4 +267,3 @@ input {
 .buy-cart:hover {
   background-color: #de6f00;
 }
-/*# sourceMappingURL=main.css.map */

@@ -7,42 +7,42 @@ const CategorySlider = () => {
     {
       id: 0,
       name: "Decorating tools",
-      img: "assets/img/categories/cat-1.jpg",
+      img: "./assets/img/categories/cat-1.jpg",
     },
     {
       id: 1,
       name: "Bakeware & Cookware",
-      img: "assets/img/categories/cat-2.jpg",
+      img: "./assets/img/categories/cat-2.jpg",
     },
     {
       id: 2,
       name: "Kitchen tools",
-      img: "assets/img/categories/cat-3.jpg",
+      img: "./assets/img/categories/cat-3.jpg",
     },
     {
       id: 3,
       name: "Bags & Tips",
-      img: "assets/img/categories/cat-4.jpg",
+      img: "./assets/img/categories/cat-4.jpg",
     },
     {
       id: 4,
       name: "Cookie cutter",
-      img: "assets/img/categories/cat-5.jpg",
+      img: "./assets/img/categories/cat-5.jpg",
     },
     {
       id: 5,
       name: "Cupcake & Muffin pan",
-      img: "assets/img/categories/cat-6.jpg",
+      img: "./assets/img/categories/cat-6.jpg",
     },
     {
       id: 6,
       name: "Cookie sheets",
-      img: "assets/img/categories/cat-7.jpg",
+      img: "./assets/img/categories/cat-7.jpg",
     },
     {
       id: 7,
       name: "Speciality cookware",
-      img: "assets/img/categories/cat-8.jpg",
+      img: "./assets/img/categories/cat-8.jpg",
     },
   ];
 
