@@ -663,8 +663,7 @@ ol {
   position: absolute;
   right: 18px;
   top: 9px;
-  content: "3";
-  font-family: "ElegantIcons";
+  font-family: "Cairo", sans-serif;
   font-size: 18px;
   color: #ffffff;
 }
@@ -852,7 +851,6 @@ ol {
   position: absolute;
   left: -35px;
   top: 50%;
-  /* -webkit-transform: translateY(-35px); */
   background: #ffffff;
 }
 
@@ -866,7 +864,7 @@ ol {
 -----------------------*/
 
 .featured {
-  padding-top: 80px;
+  padding-top: 40px;
   padding-bottom: 40px;
 }
 

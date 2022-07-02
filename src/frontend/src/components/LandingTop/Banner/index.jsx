@@ -5,7 +5,7 @@ const Banner = () => {
     <>
       <div
         className="hero__item set-bg"
-        data-setbg="assets/img/hero/banner.jpg"
+        style={{ backgroundImage: "url(assets/img/hero/banner.jpg)" }}
       >
         <div className="hero__text">
           <span>BAKING ACCESSORIES</span>

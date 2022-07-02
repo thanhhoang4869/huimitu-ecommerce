@@ -131,6 +131,7 @@ const SignupPage = (props) => {
           <input
             name="password"
             type="password"
+            autoComplete="on"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -141,6 +142,7 @@ const SignupPage = (props) => {
           <input
             name="passwordConfirm"
             type="password"
+            autoComplete="on"
             placeholder="Re-enter password"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}

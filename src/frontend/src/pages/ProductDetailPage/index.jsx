@@ -1,3 +1,4 @@
+import ItemHorizonList from "components/ItemHorizonList";
 import React from "react";
 import "./style.css";
 
@@ -30,7 +31,7 @@ const ProductDetailPage = () => {
                   <div className="swiper-slide">
                     <img
                       className="img-responsive m-auto"
-                      src="https://res.cloudinary.com/horizon-web-online-auction/image/upload/v1641874501/horizon/products/38/1_txzq5e.jpg?auto=compress&w=480&q=90&dpr=2&updated_at=1635280285&h=320&fm=webp"
+                      src="https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg"
                       alt=""
                     />
                   </div>
@@ -68,15 +69,15 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="pro-details-quality">
                   <div className="cart-plus-minus">
-                    <div class="dec qtybutton">-</div>
+                    <div className="dec qtybutton">-</div>
                     <input
                       id="quantity"
                       className="cart-plus-minus-box"
                       min="1"
-                      value="1"
+                      defaultValue="1"
                       name="quantity"
                     />
-                    <div class="inc qtybutton">+</div>
+                    <div className="inc qtybutton">+</div>
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">
@@ -85,16 +86,6 @@ const ProductDetailPage = () => {
                         method="post"
                         action="/account/cart-add"
                       >
-                        <input
-                          type="hidden"
-                          name="Username"
-                          value="{{authUser.Username}}"
-                        />
-                        <input
-                          type="hidden"
-                          name="ProID"
-                          value="{{product.ProID}}"
-                        />
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="add-cart" type="submit">
                           <span>Add To Cart</span>{" "}
@@ -108,11 +99,6 @@ const ProductDetailPage = () => {
                         id="formBuyNow"
                         action="/product/buynow?ProID={{product.ProID}}&Stock=1"
                       >
-                        <input
-                          type="hidden"
-                          name="ProID"
-                          value="{{product.ProID}}"
-                        />
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="buy-cart" type="submit">
                           <span>Buy now</span>
@@ -126,8 +112,8 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
-        <div className="container section-50">
-          <div className="product-description">
+        <div className="container section-50 mt-5 mb-5">
+          <div className="product-description mb-3">
             <div className="product-description-title">
               <p>Description</p>
             </div>
@@ -139,50 +125,13 @@ const ProductDetailPage = () => {
 
         {/* {{!-- Related Product --}} */}
         <div className="container">
-          <div className="product-description">
+          <div className="product-description mb-3">
             <div className="product-description-title">
               <p>Related Product</p>
             </div>
           </div>
 
-          <div className="owl-carousel owl-theme pt-3 product-carousel">
-            <div className="item card-item">
-              <div className="card">
-                <img src="{{LinkURL}}" className="card-img-top" alt="" />
-                <div className="card-body">
-                  <h5 className="card-title">Name</h5>
-                  <div className="card-price">
-                    <p className="card-price-num">Price</p>
-                  </div>
-                  <p className="card-sold">Sold: 33</p>
-                </div>
-                <div className="card__overlay">
-                  <a
-                    href="/product/detail/{{this.ProID}}"
-                    className="card__overlay-detail"
-                  >
-                    <i className="fa fa-arrow-circle-right"></i>Detail
-                  </a>
-                  <form
-                    className="addCartForm"
-                    method="post"
-                    action="/account/cart-add"
-                  >
-                    <input type="hidden" name="ProID" value="{{this.ProID}}" />
-                    <input
-                      type="hidden"
-                      className="Stock"
-                      name="Stock"
-                      value="1"
-                    />
-                    <button type="submit" className="card__overlay-cart">
-                      <i className="fa fa-shopping-cart"></i>Add to cart
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ItemHorizonList />
         </div>
       </div>
     </div>
