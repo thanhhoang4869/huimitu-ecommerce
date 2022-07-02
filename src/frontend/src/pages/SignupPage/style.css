@@ -1,0 +1,28 @@
+/*----------------------------------------*/
+/* Signup Form
+/*----------------------------------------*/
+
+.signup-input {
+  border: 1px solid #ababab;
+  border-radius: 1rem;
+  color: #ababab;
+}
+
+.signup-input input {
+  border: none;
+  padding-left: 1rem;
+  width: 80%;
+  flex-grow: 1;
+}
+
+.signup-btn {
+  border: none;
+  border-radius: 1.5rem;
+  height: 3rem;
+}
+
+.signup-input i {
+  width: 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+}

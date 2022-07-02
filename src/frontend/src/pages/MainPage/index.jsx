@@ -6,6 +6,7 @@ import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
 import LogInPage from "pages/LogInPage";
+import SignupPage from "pages/SignupPage";
 import config from "config/config";
 
 const MainPage = () => {
@@ -35,6 +36,11 @@ const MainPage = () => {
             exact
             path="/login"
             element={<LogInPage handleLogin={login} />}
+          />
+          <Route
+            exact
+            path="/signup"
+            element={<SignupPage handleLogin={login} />}
           />
         </Routes>
       </BrowserRouter>
