@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import GoogleLoginButton from "../../components/GoogleLoginButton";
-import account from "../../services/account";
+import GoogleLoginButton from "components/GoogleLoginButton";
+import account from "services/account";
 
-const LogInPage = ({ handleLogin }) => {
+const LogInPage = (props) => {
+  const handleLogin = props.handleLogin;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState();
@@ -22,6 +24,23 @@ const LogInPage = ({ handleLogin }) => {
     } catch (error) {
       setError(error);
     }
+  };
+
+  const handleGoogleSucces = async (response) => {
+    const { credential } = response;
+
+    const result = await account.googleLogin(credential);
+    const { exitcode, message, token } = result.data;
+
+    if (exitcode === 0) {
+      handleLogin(token);
+    } else {
+      setError(result.data);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Login with Google failed");
   };
 
   return (
@@ -63,7 +82,10 @@ const LogInPage = ({ handleLogin }) => {
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
         <p>or continue with</p>
-        <GoogleLoginButton />
+        <GoogleLoginButton
+          handleGoogleError={handleGoogleError}
+          handleGoogleSucces={handleGoogleSucces}
+        />
 
         <p className="mt-5">
           Do not have an account?

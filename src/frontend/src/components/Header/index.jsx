@@ -1,10 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
-import logo from "../../images/logo.png";
+import logo from "images/logo.png";
 
 const Header = ({ handleLogout }) => {
-  
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
@@ -38,10 +37,7 @@ const Header = ({ handleLogout }) => {
                   </div>
                   <div className="header__top__right__auth">
                     {localStorage.getItem("token") && (
-                      <Link
-                        to="/login"
-                        onClick={handleLogout}
-                      >
+                      <Link to="/login" onClick={handleLogout}>
                         <i className="fa fa-user"></i>
                         Logout
                       </Link>

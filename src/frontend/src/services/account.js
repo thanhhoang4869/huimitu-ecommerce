@@ -1,6 +1,5 @@
-import api from '../utils/api'
-import huimitu from "../api/huimitu";
-import sha256 from "crypto-js/sha256";
+import api from 'utils/api';
+import huimitu from "api/huimitu";
 
 const account = {
     async googleLogin(token) {
@@ -12,8 +11,7 @@ const account = {
     },
 
     async login(email, password) {
-        const hashedPassword = sha256(password).toString();
-        const data = { email, password: hashedPassword };
+        const data = { email, password };
 
         const response = await huimitu.post("/auth/login", data);
         return response

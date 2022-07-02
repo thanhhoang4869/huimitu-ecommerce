@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Header from "../../components/Header";
-import LandingPage from "../LandingPage";
-import CommercePage from "../CommercePage";
-import Footer from "../../components/Footer";
-import LogInPage from "../LogInPage";
+import Header from "components/Header";
+import LandingPage from "pages/LandingPage";
+import CommercePage from "pages/CommercePage";
+import Footer from "components/Footer";
+import LogInPage from "pages/LogInPage";
+import config from "config/config";
 
 const MainPage = () => {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(
+    localStorage.getItem(config.storageKeys.ACCESS_KEY)
+  );
 
   const login = (token) => {
-    localStorage.setItem("token", token);
+    localStorage.setItem(config.storageKeys.ACCESS_KEY, token);
     setToken(token);
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem(config.storageKeys.ACCESS_KEY);
     setToken(null);
   };
 
