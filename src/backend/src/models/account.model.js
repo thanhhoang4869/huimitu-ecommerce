@@ -13,20 +13,28 @@ export default {
     },
 
     async signup(data) {
-        return db('account').insert(data);
+        const entity = {
+            fullname: data.fullname,
+            email: data.email,
+            password: data.password,
+            phone: data.phone,
+            verified: data.verified,
+            token: data.token
+        }
+        return db('account').insert(entity);
     },
 
     async getByEmail(email) {
         const result = await db('account').where({
             email: email
         })
-        return result[0]
+        return result[0] || null;
     },
 
     async getByPhone(phone) {
         const result = await db('account').where({
             phone: phone
         })
-        return result[0];
+        return result[0] || null;
     }
 }
