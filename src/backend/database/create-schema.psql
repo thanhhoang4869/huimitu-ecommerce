@@ -1,4 +1,7 @@
 DROP TABLE IF EXISTS "account" CASCADE;
+DROP TABLE IF EXISTS "province" CASCADE;
+DROP TABLE IF EXISTS "district" CASCADE;
+DROP TABLE IF EXISTS "ward" CASCADE;
 DROP TABLE IF EXISTS "shipping_address" CASCADE;
 DROP TABLE IF EXISTS "category" CASCADE;
 DROP TABLE IF EXISTS "payment" CASCADE;
@@ -24,7 +27,6 @@ CREATE TABLE "account" (
   "password" char(64),
   "phone" varchar UNIQUE,
   "fullname" varchar,
-  "address" varchar,
   "birthday" date,
   "gender" varchar,
   "avatar" varchar,
@@ -33,10 +35,30 @@ CREATE TABLE "account" (
   "otp" varchar
 );
 
+CREATE TABLE "province" (
+  "id" int PRIMARY KEY,
+  "province_name" varchar 
+);
+
+CREATE TABLE "district" (
+  "id" int PRIMARY KEY,
+  "district_name" varchar,
+  "province_id" int
+);
+
+CREATE TABLE "ward" (
+  "id" int PRIMARY KEY,
+  "ward_name" varchar,
+  "district_id" int
+);
+
 CREATE TABLE "shipping_address" (
   "id" SERIAL PRIMARY KEY,
   "email" varchar,
-  "shipping_address" varchar,
+  "province_id" int,
+  "district_id" int,
+  "ward_id" int,
+  "address" varchar,
   "receiver_phone" varchar,
   "receiver_name" varchar
 );
@@ -55,38 +77,38 @@ CREATE TABLE "payment" (
 
 CREATE TABLE "product" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar,
+  "name" varchar NOT NULL,
   "category_id" int,
   "description" varchar,
-  "avg_rating" float,
-  "count_rating" int
+  "avg_rating" real CHECK(avg_rating>=0) CHECK(avg_rating<=5),
+  "count_rating" int NOT NULL DEFAULT 0 CHECK(count_rating>=0)
 );
 
 CREATE TABLE "product_image" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
-  "path" varchar,
-  "is_primary" boolean
+  "path" varchar NOT NULL,
+  "is_primary" boolean 
 );
 
 CREATE TABLE "option" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar
+  "name" varchar NOT NULL
 );
 
 CREATE TABLE "option_choice" (
   "id" SERIAL PRIMARY KEY,
   "option_id" int,
   "product_id" int,
-  "choice_name" varchar
+  "choice_name" varchar NOT NULL
 );
 
 CREATE TABLE "variant" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
-  "price" real,
+  "price" real NOT NULL,
   "discount_price" real,
-  "stock" int
+  "stock" int NOT NULL
 );
 
 CREATE TABLE "variant_option_choice" (
@@ -99,19 +121,19 @@ CREATE TABLE "order" (
   "id" SERIAL PRIMARY KEY,
   "email" varchar,
   "created_time" timestamp,
-  "payment_id" int,
-  "shipping_address_id" int,
-  "total" real,
-  "shipping_provider_id" int,
-  "shipping_price" real,
+  "payment_id" int NOT NULL,
+  "shipping_address_id" int NOT NULL,
+  "total" real NOT NULL,
+  "shipping_provider_id" int NOT NULL,
+  "shipping_price" real NOT NULL,
   "voucher_id" int
 );
 
 CREATE TABLE "order_variant" (
   "order_id" int,
   "variant_id" int,
-  "quantity" int,
-  "variant_price" real,
+  "quantity" int NOT NULL,
+  "variant_price" real NOT NULL,
   PRIMARY KEY ("order_id", "variant_id")
 );
 
@@ -137,28 +159,33 @@ CREATE TABLE "review" (
 
 CREATE TABLE "shipping_provider" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar,
-  "email" varchar,
-  "phone" varchar UNIQUE
+  "name" varchar
 );
 
 CREATE TABLE "order_state" (
   "order_id" int,
-  "state" varchar,
-  "created_time" timestamp,
+  "state" varchar NOT NULL,
+  "created_time" timestamp NOT NULL,
   PRIMARY KEY ("order_id", "state")
 );
 
 CREATE TABLE "voucher" (
   "id" SERIAL PRIMARY KEY,
-  "discount" bigint,
-  "minimum_price" bigint,
-  "start_date" timestamp,
+  "voucher_code" varchar UNIQUE NOT NULL,
+  "discount" real NOT NULL,
+  "minimum_price" real,
+  "start_date" timestamp NOT NULL,
   "end_date" timestamp
 );
 
 ----------------------- CONSTRAINT -------------------------
 
+ALTER TABLE "district" ADD FOREIGN KEY ("province_id") REFERENCES "province"("id");
+ALTER TABLE "ward" ADD FOREIGN KEY ("district_id") REFERENCES "district"("id");
+
+ALTER TABLE "shipping_address" ADD FOREIGN KEY("province_id") REFERENCES "province"("id");
+ALTER TABLE "shipping_address" ADD FOREIGN KEY("district_id") REFERENCES "district"("id");
+ALTER TABLE "shipping_address" ADD FOREIGN KEY("ward_id") REFERENCES "ward"("id");
 ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 
 ALTER TABLE "order" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
@@ -199,22 +226,17 @@ ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
 -- Admin password: admin
 -- User password: user
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('phuc16102001@gmail.com','c922a25f9b38b3a5a30c354246275af1dd5588d916ad8de33ba669f1b4ae32e4','0707953475','Đỗ Vương Phúc','1E/1 Bình Đông', '2001-10-16','male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('thanhhoang4869@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0933442607','Hoàng Như Thanh','125/72 Nguyễn Văn Thương','2001-07-26','female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('nnhatdu@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654321','Ngô Nhật Du',NULL,NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('longmydu@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654322','Long Mỹ Du',NULL,NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('nhkduy201@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654323','Nguyễn Hoàng Khánh Duy',NULL,NULL,'male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user1@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654324','User 1',NULL,NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user2@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654325','User 2',NULL,NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user3@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654326','User 3',NULL,NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user4@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654327','User 4',NULL,NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","address","birthday","gender","avatar","account_type") VALUES('user5@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654328','User 5',NULL,NULL,'female',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('phuc16102001@gmail.com','c922a25f9b38b3a5a30c354246275af1dd5588d916ad8de33ba669f1b4ae32e4','0707953475','Đỗ Vương Phúc','2001-10-16','male',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('thanhhoang4869@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0933442607','Hoàng Như Thanh','2001-07-26','female',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('nnhatdu@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654321','Ngô Nhật Du',NULL,'female',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('longmydu@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654322','Long Mỹ Du',NULL,'female',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('nhkduy201@gmail.com','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','0987654323','Nguyễn Hoàng Khánh Duy',NULL,'male',NULL,'admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('user1@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654324','User 1',NULL,'female',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('user2@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654325','User 2',NULL,'male',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('user3@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654326','User 3',NULL,'female',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('user4@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654327','User 4',NULL,'male',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","account_type") VALUES('user5@gmail.com','04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb','0987654328','User 5',NULL,'female',NULL,'user');
 
-INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user1@gmail.com','225 Nguyễn Tri Phương','0987654324','Người dùng 1.1');
-INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user1@gmail.com','123 Nguyễn Văn Của','0987654324','Người dùng 1.2');
-INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user2@gmail.com','123 Nguyễn Văn Của','0987654324','Người dùng 1.2');
-INSERT INTO "shipping_address"("email","shipping_address","receiver_phone","receiver_name") VALUES('user3@gmail.com','221 Lũy Bán Bích','0987654325','Người dùng 3.1');
-  
 INSERT INTO "payment"("provider") VALUES('paypal');
 INSERT INTO "payment"("provider") VALUES('momo');
 INSERT INTO "payment"("provider") VALUES('pickup');
