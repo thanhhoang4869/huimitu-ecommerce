@@ -4,7 +4,7 @@
 
 .signup-input {
   border: 1px solid #ababab;
-  border-radius: 1rem;
+  border-radius: 5px;
   color: #ababab;
 }
 
@@ -17,7 +17,7 @@
 
 .signup-btn {
   border: none;
-  border-radius: 1.5rem;
+  border-radius: 5px;
   height: 3rem;
 }
 

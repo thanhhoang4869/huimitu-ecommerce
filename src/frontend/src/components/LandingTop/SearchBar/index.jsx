@@ -4,14 +4,21 @@ const SearchBar = () => {
   return (
     <>
       <div className="hero__search">
-        <div className="hero__search__form">
+        <div className="hero__search__form" style={{ borderRadius: "5px" }}>
           <form action="#">
             <div className="hero__search__categories">
               All Categories
               <span className="arrow_carrot-down"></span>
             </div>
             <input type="text" placeholder="What do you need?" />
-            <button type="submit" className="site-btn bg-key">
+            <button
+              type="submit"
+              className="site-btn bg-key"
+              style={{
+                borderTopRightRadius: "5px",
+                borderBottomRightRadius: "5px",
+              }}
+            >
               SEARCH
             </button>
           </form>

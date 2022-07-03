@@ -8,7 +8,11 @@ import Footer from "components/Footer";
 import LogInPage from "pages/LogInPage";
 import SignupPage from "pages/SignupPage";
 import config from "config/config";
+<<<<<<< HEAD
 import VerificationPage from "pages/VerificationPage";
+=======
+import ProductDetailPage from "pages/ProductDetailPage";
+>>>>>>> dev
 
 const MainPage = () => {
   const [token, setToken] = useState(
@@ -44,6 +48,7 @@ const MainPage = () => {
             path="/signup"
             element={<SignupPage handleLogin={login} />}
           />
+          <Route exact path="/product/detail" element={<ProductDetailPage />} />
         </Routes>
       </BrowserRouter>
       <Footer />

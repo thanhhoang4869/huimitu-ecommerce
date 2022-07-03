@@ -22,18 +22,18 @@ const Header = ({ handleLogout }) => {
               <div className="col-lg-6 col-md-6">
                 <div className="header__top__right">
                   <div className="header__top__right__social">
-                    <a href="/">
+                    <Link to="/">
                       <i className="fa fa-facebook"></i>
-                    </a>
-                    <a href="/">
+                    </Link>
+                    <Link to="/">
                       <i className="fa fa-twitter"></i>
-                    </a>
-                    <a href="/">
+                    </Link>
+                    <Link to="/">
                       <i className="fa fa-linkedin"></i>
-                    </a>
-                    <a href="/">
+                    </Link>
+                    <Link to="/">
                       <i className="fa fa-pinterest-p"></i>
-                    </a>
+                    </Link>
                   </div>
                   <div className="header__top__right__auth">
                     {localStorage.getItem("token") && (
@@ -59,39 +59,39 @@ const Header = ({ handleLogout }) => {
           <div className="row container" style={{ paddingRight: "0px" }}>
             <div className="col-lg-3" style={{ paddingLeft: "0px" }}>
               <div className="header__logo logo">
-                <a href="/">
+                <Link to="/">
                   <img src={logo} style={{ width: "50%" }} alt="humitu" />
-                </a>
+                </Link>
               </div>
             </div>
             <div className="col-lg-6">
               <nav className="header__menu">
                 <ul>
                   <li className="active">
-                    <a href="#">Home</a>
+                    <Link to="#">Home</Link>
                   </li>
                   <li>
-                    <a href="#">Products</a>
+                    <Link to="#">Products</Link>
                   </li>
                   <li>
-                    <a href="#">Policy</a>
+                    <Link to="#">Policy</Link>
                     <ul className="header__menu__dropdown">
                       <li>
-                        <a href="#">Shipping</a>
+                        <Link to="#">Shipping</Link>
                       </li>
                       <li>
-                        <a href="#">Refund</a>
+                        <Link to="#">Refund</Link>
                       </li>
                       <li>
-                        <a href="#">Coupons</a>
+                        <Link to="#">Coupons</Link>
                       </li>
                     </ul>
                   </li>
                   <li>
-                    <a href="#">Profile</a>
+                    <Link to="#">Profile</Link>
                   </li>
                   <li>
-                    <a href="#">Admin</a>
+                    <Link to="#">Admin</Link>
                   </li>
                 </ul>
               </nav>
@@ -103,9 +103,9 @@ const Header = ({ handleLogout }) => {
               <div className="header__cart">
                 <ul>
                   <li>
-                    <a href="#">
+                    <Link to="#">
                       <i className="fa fa-shopping-bag"></i> <span>3</span>
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
