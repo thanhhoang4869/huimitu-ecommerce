@@ -17,9 +17,30 @@ export default {
                 'product.category_id',
                 'product.description',
                 'product.avg_rating',
-                'product.count_rating'
+                'product.count_rating',
+                'product.min_price',
+                'product.max_price',
+                'product.stock',
+                'product.created_time'
             )
             .limit(config.BEST_SELLER_LIMIT)
+        return result || null;
+    },
+
+
+    async getNewestArrival() {
+        const result = await db('product').select(
+            'product.id',
+            'product.name',
+            'product.category_id',
+            'product.description',
+            'product.avg_rating',
+            'product.count_rating',
+            'product.min_price',
+            'product.max_price',
+            'product.stock',
+            'product.created_time'
+        ).orderBy('created_time', 'desc').limit(config.BEST_SELLER_LIMIT)
         return result || null;
     }
 }
