@@ -5,22 +5,22 @@ const ItemHorizonList = () => {
   const products = [
     {
       id: 0,
-      name: "Decorating tools",
+      name: "Giấy nến làm bánh",
       img: "https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg",
     },
     {
       id: 1,
-      name: "Bakeware & Cookware",
+      name: "Giấy nến làm bánh",
       img: "https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg",
     },
     {
       id: 2,
-      name: "Kitchen tools",
+      name: "Giấy nến làm bánh",
       img: "https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg",
     },
     {
       id: 3,
-      name: "Bags & Tips",
+      name: "Giấy nến làm bánh",
       img: "https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg",
     },
   ];

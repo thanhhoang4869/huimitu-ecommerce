@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+import StarRatings from "react-star-ratings";
+
 const ProductItem = ({ product }) => {
   return (
     <div className="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
@@ -16,17 +18,27 @@ const ProductItem = ({ product }) => {
               </Link>
             </li>
             <li>
-              <a href="#">
+              <Link to="javascript:;">
                 <i className="fa fa-shopping-cart"></i>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
         <div className="featured__item__text">
-          <h6>
-            <a href="#">{product.name}</a>
-          </h6>
-          <h5>100VND</h5>
+          <h5>
+            <Link to="/product/detail">{product.name}</Link>
+          </h5>
+          <StarRatings
+            rating={4.5}
+            starRatedColor="orange"
+            starDimension="30px"
+            // changeRating={this.changeRating}
+            numberOfStars={5}
+            name="rating"
+          />
+          <div className="mt-2">
+            <span>100.000</span> <span>-</span> <span>120.000</span>
+          </div>
         </div>
       </div>
     </div>

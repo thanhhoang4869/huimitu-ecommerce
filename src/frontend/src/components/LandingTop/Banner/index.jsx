@@ -8,18 +8,18 @@ const Banner = () => {
         style={{ backgroundImage: "url(assets/img/hero/banner.jpg)" }}
       >
         <div className="hero__text">
-          <span>BAKING ACCESSORIES</span>
+          <span>Làm bánh và Trang trí</span>
           <h2>
-            The very <br />
-            BEST
+            Đa dạng <br />
+            Giá tốt
           </h2>
-          <p>From home baker to professional chef</p>
+          <p>Đồng hành cùng bạn trong bếp bánh!</p>
           <a
             href="#"
             className="primary-btn bg-key"
             style={{ borderRadius: "5px" }}
           >
-            SHOP NOW
+            MUA NGAY
           </a>
         </div>
       </div>

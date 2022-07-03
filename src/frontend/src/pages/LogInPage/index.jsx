@@ -51,7 +51,7 @@ const LogInPage = (props) => {
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"
         onSubmit={onSubmit}
       >
-        <h2 className="mb-4 color-key">LOG IN</h2>
+        <h2 className="mb-4 color-key">Đăng nhập</h2>
 
         <div className="login-input d-flex align-items-center input-group mb-3 p-2">
           <i className="fa fa-envelope"></i>
@@ -68,29 +68,29 @@ const LogInPage = (props) => {
           <input
             name="password"
             type="password"
-            placeholder="Password"
+            placeholder="Mật khẩu"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <a href="/#" className="text-key mb-3 align-self-end">
-          Forgotten password?
+          Quên mật khẩu?
         </a>
         <button className="primary-btn bg-key login-btn col-6" type="submit">
-          Log in
+          Đăng nhập
         </button>
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
-        <p>or continue with</p>
+        <p>hoặc</p>
         <GoogleLoginButton
           handleGoogleError={handleGoogleError}
           handleGoogleSucces={handleGoogleSucces}
         />
 
         <p className="mt-5">
-          Do not have an account?
+          Chưa có tài khoản?
           <Link to="/signup" className="text-key pointer pl-1">
-            SIGN UP
+            Đăng ký
           </Link>
         </p>
       </div>

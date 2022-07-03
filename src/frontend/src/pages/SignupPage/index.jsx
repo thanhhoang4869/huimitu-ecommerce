@@ -18,7 +18,7 @@ const SignupPage = (props) => {
     if (password !== passwordConfirm) {
       swal.fire({
         title: "Error",
-        text: "Password and confirm password must be same",
+        text: "Mật khẩu và mật khẩu xác nhận không trùng khớp",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -31,7 +31,7 @@ const SignupPage = (props) => {
     ) {
       swal.fire({
         title: "Error",
-        text: "Email is not valid",
+        text: "Vui lòng nhập email hợp lệ",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -40,7 +40,7 @@ const SignupPage = (props) => {
     if (password.length < 6) {
       swal.fire({
         title: "Error",
-        text: "Password must be at least 6 characters",
+        text: "Mật khẩu phải có ít nhất 6 ký tự",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -49,7 +49,7 @@ const SignupPage = (props) => {
     if (phone.length !== 10) {
       swal.fire({
         title: "Error",
-        text: "Phone number must be 10 digits",
+        text: "Vui lòng nhập số điện thoại hợp lệ",
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -73,7 +73,7 @@ const SignupPage = (props) => {
         if (exitcode === 0) {
           swal.fire({
             title: "Success",
-            text: "Please check your email to verify your account!",
+            text: "Vui lòng kiểm tra email để xác nhận tài khoản!",
             icon: "success",
             confirmButtonText: "OK",
           });
@@ -86,7 +86,7 @@ const SignupPage = (props) => {
       }
     } else {
       swal.fire({
-        text: "Please fill all fields",
+        text: "Vui lòng nhập tất cả thông tin",
         icon: "info",
         confirmButtonText: "OK",
       });
@@ -107,14 +107,14 @@ const SignupPage = (props) => {
   };
 
   const handleGoogleError = () => {
-    setError("Login with Google failed");
+    setError("Đăng nhập thất bại");
   };
 
   return (
     <div className="d-flex container flex-column justify-content-center my-4">
       {error && <p className="text-danger">{error.message}</p>}
       <form className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row">
-        <h2 className="mb-4 color-key">SIGN UP</h2>
+        <h2 className="mb-4 color-key">Đăng ký</h2>
 
         <div className="signup-input d-flex align-items-center input-group mb-3 p-2">
           <i className="ml-2 fa fa-envelope"></i>
@@ -132,7 +132,7 @@ const SignupPage = (props) => {
             name="password"
             type="password"
             autoComplete="on"
-            placeholder="Password"
+            placeholder="Mật khẩu"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -143,7 +143,7 @@ const SignupPage = (props) => {
             name="passwordConfirm"
             type="password"
             autoComplete="on"
-            placeholder="Re-enter password"
+            placeholder="Nhập lại mật khẩu"
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
           />
@@ -152,7 +152,7 @@ const SignupPage = (props) => {
           <i className="ml-2 fa fa-user"></i>
           <input
             name="fullname"
-            placeholder="Full name"
+            placeholder="Họ tên"
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
           />
@@ -162,7 +162,7 @@ const SignupPage = (props) => {
           <input
             name="phone"
             type="number"
-            placeholder="Phone"
+            placeholder="SĐT"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
@@ -172,20 +172,20 @@ const SignupPage = (props) => {
           type="button"
           onClick={onSubmit}
         >
-          Sign up
+          Đăng ký
         </button>
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
-        <p>or continue with</p>
+        <p>hoặc</p>
         <GoogleLoginButton
           handleGoogleError={handleGoogleError}
           handleGoogleSucces={handleGoogleSucces}
         />
 
         <p className="mt-3">
-          Already have an account?
+          Đã có tài khoản?
           <Link to="/login" className="text-key pointer pl-1">
-            LOG IN
+            Đăng nhập
           </Link>
         </p>
       </div>
