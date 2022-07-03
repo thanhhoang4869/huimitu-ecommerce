@@ -17,6 +17,12 @@ const account = {
     return response;
   },
 
+  async verify(token) {
+    const data = { token }
+    const response = await huimitu.post("/auth/verify", data)
+    return response
+  },
+
   getLocalToken() {
     return localStorage.getItem("token");
   },
