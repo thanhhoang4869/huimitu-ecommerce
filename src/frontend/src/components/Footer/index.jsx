@@ -89,11 +89,7 @@ const Footer = () => {
                   <p>Copyright &copy;2022 All rights reserved</p>
                 </div>
                 <div className="footer__copyright__payment">
-<<<<<<< HEAD
-                  <img src="assets/img/payment-item.png" alt="" />
-=======
                   <img src="/assets/img/payment-item.png" alt="" />
->>>>>>> dev
                 </div>
               </div>
             </div>
