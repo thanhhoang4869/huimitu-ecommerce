@@ -11,7 +11,10 @@ const config = {
     },
 
     NO_TOKEN_URL: [
-        '/auth'
+        '/auth',
+        '/location',
+        '/category',
+        '/product'
     ],
 
     PORT: 8080,
