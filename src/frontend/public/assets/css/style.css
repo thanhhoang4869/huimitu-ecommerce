@@ -25,7 +25,7 @@
 html,
 body {
   height: 100%;
-  font-family: "Cairo", sans-serif;
+  /* font-family: "Cairo", sans-serif; */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -52,7 +52,7 @@ h6 {
   margin: 0;
   color: #111111;
   font-weight: 400;
-  font-family: "Cairo", sans-serif;
+  /* font-family: "Cairo", sans-serif; */
 }
 
 h1 {
@@ -81,7 +81,7 @@ h6 {
 
 p {
   font-size: 16px;
-  font-family: "Cairo", sans-serif;
+  /* font-family: "Cairo", sans-serif; */
   color: #6f6f6f;
   font-weight: 400;
   line-height: 26px;
@@ -663,7 +663,7 @@ ol {
   position: absolute;
   right: 18px;
   top: 9px;
-  font-family: "Cairo", sans-serif;
+  /* font-family: "Cairo", sans-serif; */
   font-size: 18px;
   color: #ffffff;
 }
@@ -688,7 +688,7 @@ ol {
 
 .hero__search {
   overflow: hidden;
-  margin-bottom: 30px;
+  margin-bottom: 22px;
 }
 
 .hero__search__form {
@@ -979,21 +979,29 @@ ol {
 }
 
 .featured__item__text {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding-top: 15px;
 }
 
-.featured__item__text h6 {
+.featured__item__text h5 {
   margin-bottom: 10px;
 }
 
-.featured__item__text h6 a {
+.featured__item__text h5 a {
   color: #252525;
 }
 
 .featured__item__text h5 {
   color: #252525;
-  font-weight: 700;
+  font-weight: 600;
+}
+
+.featured__item__text > div > span {
+  color: #18aeac;
+  font-weight: 600;
+  font-size: small;
 }
 
 /*---------------------

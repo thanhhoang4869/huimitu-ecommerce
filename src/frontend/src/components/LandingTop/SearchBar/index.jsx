@@ -7,10 +7,10 @@ const SearchBar = () => {
         <div className="hero__search__form" style={{ borderRadius: "5px" }}>
           <form action="#">
             <div className="hero__search__categories">
-              All Categories
+              Tất cả
               <span className="arrow_carrot-down"></span>
             </div>
-            <input type="text" placeholder="What do you need?" />
+            <input type="text" placeholder="Bạn cần tìm gì?" />
             <button
               type="submit"
               className="site-btn bg-key"
@@ -19,7 +19,7 @@ const SearchBar = () => {
                 borderBottomRightRadius: "5px",
               }}
             >
-              SEARCH
+              Tìm kiếm
             </button>
           </form>
         </div>
@@ -29,8 +29,8 @@ const SearchBar = () => {
             <i className="fa fa-phone"></i>
           </div>
           <div className="hero__search__phone__text">
-            <h5>1234567890</h5>
-            <span>support 24/7 time</span>
+            <h6>0933443839</h6>
+            <span>Phục vụ 24/7</span>
           </div>
         </div>
       </div>

@@ -1,14 +1,23 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import ItemHorizonList from "components/ItemHorizonList";
+import product from "services/product";
 
 const LandingBottom = () => {
+  const [bestSeller, setBestSeller] = useState([]);
+
+  useEffect(() => {
+    setBestSeller(product.getBestSellers());
+    console.log("bestSeller", bestSeller);
+  }, []);
+
   return (
     <>
       <section className="mb-3">
         <div className="container">
           <div className="row">
             <div className="section-title">
-              <h2>New Arrivals</h2>
+              <h2>Giảm giá</h2>
             </div>
           </div>
           <ItemHorizonList />
@@ -19,10 +28,10 @@ const LandingBottom = () => {
         <div className="container">
           <div className="row">
             <div className="section-title">
-              <h2>Best sellers</h2>
+              <h2>Bán chạy</h2>
             </div>
           </div>
-          <ItemHorizonList />
+          <ItemHorizonList product={bestSeller} />
         </div>
       </section>
     </>

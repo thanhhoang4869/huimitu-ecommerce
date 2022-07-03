@@ -32,39 +32,39 @@ const Footer = () => {
                   </a>
                 </div>
                 <ul>
-                  <li>Address: 227 Nguyen Van Cu, HCMC</li>
-                  <li>Phone: (028) 3 5120 730</li>
+                  <li>Địa chỉ: 227 Nguyen Van Cu, HCMC</li>
+                  <li>SĐT: (028) 3 5120 730</li>
                   <li>Email: huitimu@gmail.com</li>
                 </ul>
               </div>
             </div>
             <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
               <div className="footer__widget">
-                <h6>Resources</h6>
+                <h6>Tham khảo</h6>
                 <ul>
                   <li>
-                    <a href="#">Warranty policy</a>
+                    <a href="#">Chính sách đổi trả</a>
                   </li>
                   <li>
-                    <a href="#">Shipping policy</a>
+                    <a href="#">Chính sách giao hàng</a>
                   </li>
                   <li>
-                    <a href="#">Coupon policy</a>
+                    <a href="#">Coupons</a>
                   </li>
                 </ul>
                 <ul>
                   <li>
-                    <a href="#">Track my order</a>
+                    <a href="#">Theo dõi đơn hàng</a>
                   </li>
                   <li>
-                    <a href="#">Our site map</a>
+                    <a href="#">Bản đồ</a>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="col-lg-4 col-md-12">
               <div className="footer__widget">
-                <h6>Reach us</h6>
+                <h6>Liên hệ</h6>
                 <div className="footer__widget__social">
                   <a href="/">
                     <i className="fa fa-facebook"></i>

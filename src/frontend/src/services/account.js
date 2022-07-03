@@ -1,5 +1,4 @@
 import api from "utils/api";
-import huimitu from "api/huimitu";
 
 const account = {
   async googleLogin(token) {
@@ -13,14 +12,14 @@ const account = {
   async login(email, password) {
     const data = { email, password };
 
-    const response = await huimitu.post("/auth/login", data);
+    const response = await api.post("/auth/login", data);
     return response;
   },
 
   async verify(token) {
-    const data = { token }
-    const response = await huimitu.post("/auth/verify", data)
-    return response
+    const data = { token };
+    const response = await api.post("/auth/verify", data);
+    return response;
   },
 
   getLocalToken() {
@@ -32,7 +31,7 @@ const account = {
   },
 
   async signup(entity) {
-    const response = await huimitu.post("/auth/signup", entity);
+    const response = await api.post("/auth/signup", entity);
     return response;
   },
 };

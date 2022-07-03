@@ -23,29 +23,21 @@ const Header = ({ handleLogout }) => {
                 <div className="header__top__right">
                   <div className="header__top__right__social">
                     <Link to="/">
-                      <i className="fa fa-facebook"></i>
-                    </Link>
-                    <Link to="/">
-                      <i className="fa fa-twitter"></i>
-                    </Link>
-                    <Link to="/">
-                      <i className="fa fa-linkedin"></i>
-                    </Link>
-                    <Link to="/">
-                      <i className="fa fa-pinterest-p"></i>
+                      <i className="fa fa-user text-orange"></i>
+                      <span className="ml-2 text-orange">Cá nhân</span>
                     </Link>
                   </div>
                   <div className="header__top__right__auth">
                     {localStorage.getItem("token") && (
                       <Link to="/login" onClick={handleLogout}>
-                        <i className="fa fa-user"></i>
-                        Logout
+                        <i className="fa fa-sign-out mr-2"></i>
+                        Đăng xuất
                       </Link>
                     )}
                     {!localStorage.getItem("token") && (
                       <Link to="/login">
-                        <i className="fa fa-user"></i>
-                        Login
+                        <i className="fa fa-sign-in mr-2"></i>
+                        Đăng nhập
                       </Link>
                     )}
                   </div>
@@ -68,19 +60,19 @@ const Header = ({ handleLogout }) => {
               <nav className="header__menu">
                 <ul>
                   <li className="active">
-                    <Link to="#">Home</Link>
+                    <Link to="#">Trang chủ</Link>
                   </li>
                   <li>
-                    <Link to="#">Products</Link>
+                    <Link to="#">Sản phẩm</Link>
                   </li>
                   <li>
-                    <Link to="#">Policy</Link>
+                    <Link to="#">Chính sách</Link>
                     <ul className="header__menu__dropdown">
                       <li>
-                        <Link to="#">Shipping</Link>
+                        <Link to="#">Giao hàng</Link>
                       </li>
                       <li>
-                        <Link to="#">Refund</Link>
+                        <Link to="#">Đổi trả</Link>
                       </li>
                       <li>
                         <Link to="#">Coupons</Link>
@@ -88,10 +80,7 @@ const Header = ({ handleLogout }) => {
                     </ul>
                   </li>
                   <li>
-                    <Link to="#">Profile</Link>
-                  </li>
-                  <li>
-                    <Link to="#">Admin</Link>
+                    <Link to="#">QTV</Link>
                   </li>
                 </ul>
               </nav>

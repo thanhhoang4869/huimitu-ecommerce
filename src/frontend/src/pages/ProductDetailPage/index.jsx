@@ -1,5 +1,6 @@
 import ItemHorizonList from "components/ItemHorizonList";
 import React from "react";
+import { Link } from "react-router-dom";
 import "./style.css";
 
 const ProductDetailPage = () => {
@@ -15,9 +16,9 @@ const ProductDetailPage = () => {
                 </a>
               </li>
               <li className="breadcrumb-item">
-                <a href="/">Big Cat</a>
+                <Link to="/">Dụng cụ làm bánh</Link>
               </li>
-              <li className="breadcrumb-item">Category</li>
+              <li className="breadcrumb-item">Túi và đầu chiết</li>
             </ul>
           </div>
         </div>
@@ -44,26 +45,21 @@ const ProductDetailPage = () => {
               data-aos-delay="200"
             >
               <div className="product-details-content quickview-content p-3">
-                <h2>Name</h2>
+                <h2>Tên sản phẩm</h2>
 
                 <div className="product-infor">
                   <ul>
                     <li>
-                      Brand: <p>Brand</p>
+                      Đã bán: <p>33</p>
                     </li>
-                    <li>
-                      Sold: <p>33</p>
-                    </li>
-                    <li>
-                      Remaining: <p>20</p>
-                    </li>
+                    <li>Tùy chọn</li>
                   </ul>
                 </div>
 
                 <div className="pricing-meta mt-4">
                   <ul>
                     <li>
-                      <strong>100VND</strong>
+                      <strong>100.000</strong>
                     </li>
                   </ul>
                 </div>
@@ -88,7 +84,7 @@ const ProductDetailPage = () => {
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="add-cart" type="submit">
-                          <span>Add To Cart</span>{" "}
+                          <span>Thêm vào giỏ hàng</span>{" "}
                         </button>
                       </form>
                     </span>
@@ -101,7 +97,7 @@ const ProductDetailPage = () => {
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="buy-cart" type="submit">
-                          <span>Buy now</span>
+                          <span>Mua ngay</span>
                         </button>
                       </form>
                     </span>
@@ -115,11 +111,11 @@ const ProductDetailPage = () => {
         <div className="container section-50 mt-5 mb-5">
           <div className="product-description mb-3">
             <div className="product-description-title">
-              <p>Description</p>
+              <p>Mô tả</p>
             </div>
           </div>
           <div className="product-description-text">
-            <div>Description</div>
+            <div>Mô tả sản phẩm</div>
           </div>
         </div>
 
@@ -127,7 +123,7 @@ const ProductDetailPage = () => {
         <div className="container">
           <div className="product-description mb-3">
             <div className="product-description-title">
-              <p>Related Product</p>
+              <p>Sản phẩm liên quan</p>
             </div>
           </div>
 

@@ -14,7 +14,6 @@ const LandingTop = () => {
             <SearchBar />
             <Routes>
               <Route exact path="/" element={<Banner />} />
-              <Route exact path="/*" element={<div>Test</div>} />
             </Routes>
           </div>
         </div>
