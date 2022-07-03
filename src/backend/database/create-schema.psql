@@ -7,10 +7,7 @@ DROP TABLE IF EXISTS "category" CASCADE;
 DROP TABLE IF EXISTS "payment" CASCADE;
 DROP TABLE IF EXISTS "product" CASCADE;
 DROP TABLE IF EXISTS "product_image" CASCADE;
-DROP TABLE IF EXISTS "option" CASCADE;
-DROP TABLE IF EXISTS "option_choice" CASCADE;
-DROP TABLE IF EXISTS "variant" CASCADE;
-DROP TABLE IF EXISTS "variant_option_choice" CASCADE;
+DROP TABLE IF EXISTS "product_variant" CASCADE;
 DROP TABLE IF EXISTS "order" CASCADE;
 DROP TABLE IF EXISTS "order_state" CASCADE;
 DROP TABLE IF EXISTS "order_variant" CASCADE;
@@ -81,7 +78,11 @@ CREATE TABLE "product" (
   "category_id" int,
   "description" varchar,
   "avg_rating" real CHECK(avg_rating>=0) CHECK(avg_rating<=5),
-  "count_rating" int NOT NULL DEFAULT 0 CHECK(count_rating>=0)
+  "count_rating" int NOT NULL DEFAULT 0 CHECK(count_rating>=0),
+  "min_price" int DEFAULT 0,
+  "max_price" int DEFAULT 0,
+  "stock" int DEFAULT 0,
+  "created_time" timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE "product_image" (
@@ -91,30 +92,13 @@ CREATE TABLE "product_image" (
   "is_primary" boolean 
 );
 
-CREATE TABLE "option" (
-  "id" SERIAL PRIMARY KEY,
-  "name" varchar NOT NULL
-);
-
-CREATE TABLE "option_choice" (
-  "id" SERIAL PRIMARY KEY,
-  "option_id" int,
-  "product_id" int,
-  "choice_name" varchar NOT NULL
-);
-
-CREATE TABLE "variant" (
+CREATE TABLE "product_variant" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
+  "variant_name" varchar,
   "price" real NOT NULL,
   "discount_price" real,
   "stock" int NOT NULL
-);
-
-CREATE TABLE "variant_option_choice" (
-  "variant_id" int,
-  "option_choice_id" int,
-  PRIMARY KEY ( "variant_id", "option_choice_id")
 );
 
 CREATE TABLE "order" (
@@ -196,18 +180,13 @@ ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id"
 
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
 ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-
-ALTER TABLE "variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-ALTER TABLE "variant_option_choice" ADD FOREIGN KEY ("option_choice_id") REFERENCES "option_choice" ("id");
-ALTER TABLE "variant_option_choice" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
+ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
 ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
-ALTER TABLE "option_choice" ADD FOREIGN KEY ("option_id") REFERENCES "option" ("id");
-
-ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
-ALTER TABLE "cart_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "variant" ("id");
+ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "product_variant" ("id");
+ALTER TABLE "cart_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "product_variant" ("id");
 
 ALTER TABLE "order" ADD FOREIGN KEY ("payment_id") REFERENCES "payment" ("id");
 ALTER TABLE "order" ADD FOREIGN KEY ("shipping_address_id") REFERENCES "shipping_address" ("id");
@@ -219,8 +198,42 @@ ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id")
 
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
-------------------------- TRIGGER ---------------------------
+------------------------- FUNCTION ---------------------------
 
+CREATE OR REPLACE FUNCTION update_min_max_price_stock_product() RETURNS trigger AS
+$$
+BEGIN
+
+  -- Update prices
+  UPDATE "product" AS p
+  SET ("min_price", "max_price") = (
+    SELECT min(least("price", "discount_price")), max(greatest("price", "discount_price"))
+    FROM "product_variant" AS v
+    WHERE v.product_id = NEW.product_id
+  )
+  WHERE p.id = NEW.product_id;
+
+  -- Update stock
+  UPDATE "product" as p
+  SET ("stock") = (
+    SELECT sum("stock")
+    FROM "product_variant" AS v
+    WHERE v.product_id = NEW.product_id
+  )
+  WHERE p.id = NEW.product_id;
+
+  RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+-------------------------- TRIGGER ------------------------------
+
+CREATE TRIGGER insert_variant
+AFTER INSERT OR UPDATE
+ON "product_variant"
+FOR EACH ROW
+EXECUTE PROCEDURE update_min_max_price_stock_product();
 
 ----------------------- INSERT DATA -------------------------
 
@@ -242,89 +255,56 @@ INSERT INTO "payment"("provider") VALUES('momo');
 INSERT INTO "payment"("provider") VALUES('pickup');
 INSERT INTO "payment"("provider") VALUES('nowpayment');
 
-INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Decorating tools',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Bakeware & Cookware',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Kitchen tools',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Bags & Tips',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Baking cups',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Cake decoration tools',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Cookie cutter',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Cookie decoration tools',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Basic baking pans',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Cookie sheets',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Cupcake & muffin pans',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Speciality & shaped pans',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Ovenware',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Speciality cookware',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('3','Cutlery & knives',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('3','Cutting board',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('3','Measuring gadgets',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('3','Scale',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('3','Thermometers',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('3','Timers',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Dụng cụ trang trí',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Dụng cụ làm bánh',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Túi và đầu chiết',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Giấy nến',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Dụng cụ trang trí bánh kem',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Khuôn bánh',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('1','Dụng cụ trang trí bánh quy',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Khay nướng',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Khuôn bánh muffin',NULL);
+INSERT INTO "category"("parent_id","name","description") VALUES('2','Khuôn tạo hình',NULL);
 
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Disposable Decorating Bags by Celebrate It','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('1M Open Star Decorating Tip by Celebrate It','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Reusable Decorating Bag by Celebrate It','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Drop Flower Decorating Tip No. 2D by Celebrate It','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Wilton Tip Set','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Grease-Resistant Baking Cups by Celebrate It','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Polka Dot Grease-Resistant Baking Cups by Celebrate It','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Communion Baking Cups, 300ct.','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Icing Smoother by Celebrate It','6',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('10" Cake Leveler by Celebrate It','6',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Bamboo Dowel Rods by Celebrate It','6',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('9" Angled Spatula by Celebrate It','6',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Baker''s Blade by Celebrate It','6',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Round Cake Pan','9',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Fat Daddio''s Pro Series Bakeware Anodized Aluminum Round Cake Pan','9',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Heart Shaped Non-Stick Cake Pan by Celebrate It','12',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Kensington Jelly Roll Pan by Celebrate It','10',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('MegaChef 8-in-1 Multi-Use Slicer','15',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Oster Edgefield Stainless Steel Santoku Knife Set','15',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Nutrichef Magnetic Measuring Spoon Set, 6 Pieces','17',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Ozeri ZK24 Garden & Kitchen Scale with Precision Weighing Technology','18',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor High-Capacity Digital Kitchen Scale','18',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Candy & Jelly Deep Fry Thermometer','19',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Waterproof Digital Instant Read Thermometer','19',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Instant-Read 1" Dial Thermometer','19',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Ozeri Kitchen & Event Timer','20',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Taylor Digital Cooking Thermometer & Timer','20',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Kitchen Details Medium Curved Bamboo Cutting Board','16',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Ginsu Disposable Cutting Board','16',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Kitchen Details Large Bamboo Cutting Board','16',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) có thể tái sử dụng (10 cái)','3',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống đầu (10 miếng)','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống dầu chấm bi (10 miếng)','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến bánh lễ (10 miếng)','4',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dao chà láng kem','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dụng cụ xẻ bánh kem','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Thanh tre','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dao lật bánh','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dao cắt bánh','5',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh tròn','8',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh chống dính hình trái tim','10',NULL,'0','0');
+INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Khay cuộn bánh không dính','9',NULL,'0','0');
 
-INSERT INTO "option"("id","name") VALUES('1','color');
-INSERT INTO "option"("id","name") VALUES('2','amount');
-INSERT INTO "option"("id","name") VALUES('3','size');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) đen','20000',NULL,'3');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) trắng','25000',NULL,'5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) xanh','23000',NULL,'2');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('2','Đầu chiết Open Star','35000',NULL,'10');
 
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('1','1','5','red');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('2','1','6','green');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('3','1','7','blue');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('4','1','8','yellow');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('5','1','9','orange');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('6','1','10','black');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('7','1','11','white');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('8','2','12','12');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('9','2','13','24');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('10','2','14','36');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('11','3','15','9" x 2"');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('12','3','16','10" x 3"');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('13','3','17','5" x 2"');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('14','3','18','6" x 3"');
-INSERT INTO "option_choice"("id","option_id","product_id","choice_name") VALUES('15','3','19','8" x 2"');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('3','Túi trang trí có thể tái sử dụng (10 cái)','32000',NULL,'20');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('4','Đầu chiết hình bông hoa','15000',NULL,'15');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('5','Bộ đầu chiết Wilson','15000',NULL,'30');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('6','Giấy nến chống đầu (10 miếng)','20000',NULL,'5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('7','Giấy nến chống dầu chấm bi (10 miếng)','21000',NULL,'8');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('8','Giấy nến bánh lễ (10 miếng)','20000',NULL,'50');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('9','Dao chà láng kem','30000',NULL,'20');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('10','Dụng cụ xẻ bánh kem','32000',NULL,'15');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('11','Thanh tre','20000',NULL,'3');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('12','Dao lật bánh','20000',NULL,'5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('13','Dao cắt bánh','20000',NULL,'19');
 
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('1','1','5.49',NULL,'3');
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('2','1','8.99',NULL,'5');
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('3','1','21.99',NULL,'2');
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('4','2','1.49',NULL,'10');
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('5','14','7.99','4.99','10');
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('6','14','15.99','7','5');
-INSERT INTO "variant"("id","product_id","price","discount_price","stock") VALUES('7','14','11.99','5','4');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('14','Khuôn bánh tròn 6" x 2"','180000','110000','10');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('14','Khuôn bánh tròn 12" x 2"','350000','160000','5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('14','Khuôn bánh tròn 16" x 2"','270000','100000','4');
 
-INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('1','8');
-INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('2','9');
-INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('3','10');
-INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('5','11');
-INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('6','12');
-INSERT INTO "variant_option_choice"("variant_id","option_choice_id") VALUES('7','13');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khay cuộn bánh không dính','120000',NULL,'29');
+
+------------- Update integrity contraints -------------
