@@ -146,7 +146,7 @@ CREATE TABLE "review" (
 
 CREATE TABLE "shipping_provider" (
   "id" SERIAL PRIMARY KEY,
-  "product_name" varchar
+  "shipping_provider_name" varchar
 );
 
 CREATE TABLE "order_state" (

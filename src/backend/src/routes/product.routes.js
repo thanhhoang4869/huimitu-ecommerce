@@ -1,14 +1,16 @@
 import product from '#src/controller/product.controller'
+import verifyLogin from '#src/middlewares/verifyLogin.mdw'
+import verifyAdmin from '#src/middlewares/verifyAdmin.mdw'
 import express from 'express'
 
 const router = express.Router();
 router.get('/bestSeller', product.getBestSeller)
 router.get('/newestArrival', product.getNewestArrival)
 
-router.post('/', product.createProduct)
+router.post('/', verifyLogin, verifyAdmin, product.createProduct)
 router.route('/:productId')
     .get(product.getSingleProduct)
-    .patch(product.updateProduct)
-    .delete(product.deleteProduct)
+    .patch(verifyLogin, verifyAdmin, product.updateProduct)
+    .delete(verifyLogin, verifyAdmin, product.deleteProduct)
 
 export default router;
