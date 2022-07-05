@@ -1,5 +1,4 @@
 import db from '#src/utils/db'
-import config from '#src/config/config'
 
 export default {
     async getByProductId(productId) {
@@ -16,4 +15,22 @@ export default {
             )
         return result || null;
     },
+
+    async createVariant(entity) {
+        const {
+            productId,
+            variantName,
+            price,
+            discountPrice,
+            stock
+        } = entity
+        const result = await db('product_variant').insert({
+            product_id: productId,
+            variant_name: variantName,
+            price: price,
+            discount_price: discountPrice,
+            stock: stock
+        })
+        return result;
+    }
 }

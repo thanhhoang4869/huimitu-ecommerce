@@ -1,4 +1,5 @@
 import variantModel from '#src/models/variant.model'
+import productModel from '#src/models/product.model'
 
 export default {
     async getByProductId(req, res, next) {
@@ -20,4 +21,49 @@ export default {
             next(err)
         }
     },
+
+    async createVariant(req, res, next) {
+        try {
+            const { productId, variantName, price, discountPrice, stock } = req.body
+
+            const product = await productModel.getProductById(productId);
+            if (product === null) {
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Product not found"
+                })
+            }
+
+            const entity = {
+                productId,
+                variantName,
+                price,
+                discountPrice,
+                stock
+            }
+            const result = await variantModel.createVariant(entity);
+            res.status(200).send({
+                exitcode: 0,
+                message: "Create variant successfully"
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async updateVariant(req, res, next) {
+        try {
+            
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async deleteVariant(req, res, next) {
+        try {
+
+        } catch (err) {
+            next(err)
+        }
+    }
 } 
