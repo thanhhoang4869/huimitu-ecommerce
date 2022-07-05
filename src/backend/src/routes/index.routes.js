@@ -4,6 +4,7 @@ import account from '#src/routes/account.routes'
 import product from '#src/routes/product.routes'
 import category from '#src/routes/category.routes'
 import location from '#src/routes/location.routes'
+import variant from '#src/routes/variant.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import express from 'express'
@@ -15,5 +16,6 @@ router.use('/checkout', verifyLogin, checkout)
 router.use('/product', product)
 router.use('/category', category)
 router.use('/location', location)
+router.use('/variant', variant)
 
 export default router;
