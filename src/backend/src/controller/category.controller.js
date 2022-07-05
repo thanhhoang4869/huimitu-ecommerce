@@ -1,33 +1,31 @@
-import category from '#src/models/category.model'
+import categoryModel from '#src/models/category.model'
 
-const getChildren = (parent) => {
-    let children = []
-    for (let i = 0; i < data.length; i++) {
-        if (data[i].parent_id === parent.id) {
-            children.push(data[i])
+const buildRoot = (parentId, category) => {
+    const root = category.filter(item => item.parent_id === parentId)
+    if (root.length === 0) {
+        return undefined
+    } else {
+        for (let i = 0; i < root.length; i++) {
+            const children = buildRoot(root[i].id, category)
+            if (children) {
+                root[i].children = children;
+            }
         }
     }
-    if (children.length === 0) {
-        return null
-    }
-    for (let i = 0; i < children.length; i++) {
-        children[i].children = getChildren(children[i])
-    }
-    return children
+    const result = root.map(item => ({
+        id: item.id,
+        categoryName: item.category_name,
+        description: item.description,
+        children: item.children
+    }))
+    return result
 }
 
 export default {
     async get(req, res, next) {
         try {
-            const data = await category.get()
-
-            let result = []
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].parent_id === null) {
-                    data[i].children = getChildren(data[i])
-                    result.push(data[i])
-                }
-            }
+            const category = await categoryModel.get()
+            const result = buildRoot(null, category)
             res.status(200).send({
                 exitcode: 0,
                 message: "Get categories successfully",
