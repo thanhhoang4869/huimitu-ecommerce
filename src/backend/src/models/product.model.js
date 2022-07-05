@@ -47,7 +47,7 @@ export default {
         return result || null;
     },
 
-    async getById(productId) {
+    async getProductById(productId) {
         const result = await db('product')
             .join('category', 'product.category_id', 'category.id')
             .where({
@@ -86,7 +86,6 @@ export default {
         const result = await db('product').where({
             id: productId
         }).delete()
-        console.log(result)
         return result
     },
 
@@ -100,5 +99,25 @@ export default {
             }).select('id')
         })
         return result
+    },
+
+    async getProductByCategoryList(listName, limit, offset) {
+        const result = await db('product')
+            .join('category', 'product.category_id', 'category.id')
+            .whereIn('category.category_name', listName)
+            .select(
+                'product.id',
+                'product.product_name',
+                'category.category_name',
+                'product.description',
+                'product.avg_rating',
+                'product.count_rating',
+                'product.min_price',
+                'product.max_price',
+                'product.stock',
+                'product.created_time'
+            )
+            .offset(offset).limit(limit)
+        return result || null;
     }
 }
