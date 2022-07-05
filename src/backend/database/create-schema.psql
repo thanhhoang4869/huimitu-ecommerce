@@ -80,7 +80,7 @@ CREATE TABLE "product" (
   "product_name" varchar NOT NULL,
   "category_id" int,
   "description" varchar,
-  "avg_rating" real CHECK(avg_rating>=0) CHECK(avg_rating<=5),
+  "avg_rating" real DEFAULT 0 CHECK(avg_rating>=0) CHECK(avg_rating<=5),
   "count_rating" int NOT NULL DEFAULT 0 CHECK(count_rating>=0),
   "min_price" int DEFAULT 0,
   "max_price" int DEFAULT 0,
@@ -182,8 +182,8 @@ ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
 
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
-ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
-ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
+ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id") ON DELETE CASCADE;
+ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
@@ -231,18 +231,6 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
---- Delete variant related to a product 
-CREATE OR REPLACE FUNCTION delete_related_variant() RETURNS trigger AS
-$$
-BEGIN
-  DELETE FROM "product_variant" AS v
-  WHERE v.product_id = OLD.id;
-
-  RETURN OLD;
-END
-$$
-LANGUAGE 'plpgsql';
-
 -------------------------- TRIGGER ------------------------------
 
 CREATE TRIGGER insert_variant
@@ -250,11 +238,6 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "product_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_min_max_price_stock_product();
-
-CREATE TRIGGER delete_product
-BEFORE DELETE ON "product"
-FOR EACH ROW
-EXECUTE PROCEDURE delete_related_variant();
 
 ----------------------- INSERT DATA -------------------------
 

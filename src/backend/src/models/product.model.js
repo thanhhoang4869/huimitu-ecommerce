@@ -70,16 +70,35 @@ export default {
 
     async updateProduct(productId, entity) {
         const { productName, categoryName, description } = entity
-        const categoryId = await db('category').select('id').where({
-            category_name: categoryName
-        })
         const result = await db('product').update({
             product_name: productName,
             description: description,
-            category_id: categoryId.id
+            category_id: db('category').where({
+                category_name: categoryName
+            }).select('id')
         }).where({
             id: productId
         })
         return result;
+    },
+
+    async deleteProduct(productId) {
+        const result = await db('product').where({
+            id: productId
+        }).delete()
+        console.log(result)
+        return result
+    },
+
+    async createProduct(entity) {
+        const { productName, description, categoryName } = entity
+        const result = await db('product').insert({
+            product_name: productName,
+            description: description,
+            category_id: db('category').where({
+                category_name: categoryName
+            }).select('id')
+        })
+        return result
     }
 }

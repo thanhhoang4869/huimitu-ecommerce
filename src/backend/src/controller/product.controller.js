@@ -60,6 +60,13 @@ export default {
         try {
             const productId = req.params.productId;
             const result = await productModel.getById(productId)
+            if (result === null) {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Product not found"
+                })
+            }
+
             const {
                 id,
                 product_name,
@@ -103,10 +110,17 @@ export default {
                 description
             }
             const result = await productModel.updateProduct(productId, entity);
-            res.status(200).send({
-                exitcode: 0,
-                message: "Update product successfully",
-            })
+            if (result > 0) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Update product successfully",
+                })
+            } else {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Product not found"
+                })
+            }
         } catch (err) {
             next(err)
         }
@@ -115,6 +129,18 @@ export default {
     async deleteProduct(req, res, next) {
         try {
             const productId = req.params.productId;
+            const result = await productModel.deleteProduct(productId);
+            if (result > 0) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Delete product successfully"
+                })
+            } else {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Product not found"
+                })
+            }
         } catch (err) {
             next(err)
         }
@@ -123,9 +149,23 @@ export default {
 
     async createProduct(req, res, next) {
         try {
-
+            const {
+                productName,
+                description,
+                categoryName
+            } = req.body;
+            const entity = {
+                productName: productName,
+                description: description,
+                categoryName: categoryName,
+            }
+            const result = await productModel.createProduct(entity);
+            res.status(200).send({
+                exitcode: 0,
+                message: "Create product successfully"
+            })
         } catch (err) {
             next(err)
         }
-    },
-} 
+    }
+}
