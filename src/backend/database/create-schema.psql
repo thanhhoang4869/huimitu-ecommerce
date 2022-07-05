@@ -66,7 +66,7 @@ CREATE TABLE "shipping_address" (
 CREATE TABLE "category" (
   "id" SERIAL PRIMARY KEY,
   "parent_id" int,
-  "name" varchar,
+  "category_name" varchar,
   "description" varchar
 );
 
@@ -77,7 +77,7 @@ CREATE TABLE "payment" (
 
 CREATE TABLE "product" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar NOT NULL,
+  "product_name" varchar NOT NULL,
   "category_id" int,
   "description" varchar,
   "avg_rating" real CHECK(avg_rating>=0) CHECK(avg_rating<=5),
@@ -146,7 +146,7 @@ CREATE TABLE "review" (
 
 CREATE TABLE "shipping_provider" (
   "id" SERIAL PRIMARY KEY,
-  "name" varchar
+  "product_name" varchar
 );
 
 CREATE TABLE "order_state" (
@@ -276,33 +276,33 @@ INSERT INTO "payment"("provider") VALUES('momo');
 INSERT INTO "payment"("provider") VALUES('pickup');
 INSERT INTO "payment"("provider") VALUES('nowpayment');
 
-INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Dụng cụ trang trí',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES(NULL,'Dụng cụ làm bánh',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Túi và đầu chiết',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Giấy nến',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Dụng cụ trang trí bánh kem',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Khuôn bánh',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('1','Dụng cụ trang trí bánh quy',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Khay nướng',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Khuôn bánh muffin',NULL);
-INSERT INTO "category"("parent_id","name","description") VALUES('2','Khuôn tạo hình',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ trang trí',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ làm bánh',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Túi và đầu chiết',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Giấy nến',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Dụng cụ trang trí bánh kem',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Khuôn bánh',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Dụng cụ trang trí bánh quy',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khay nướng',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khuôn bánh muffin',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khuôn tạo hình',NULL);
 
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) có thể tái sử dụng (10 cái)','3',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống đầu (10 miếng)','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống dầu chấm bi (10 miếng)','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến bánh lễ (10 miếng)','4',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dao chà láng kem','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dụng cụ xẻ bánh kem','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Thanh tre','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dao lật bánh','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Dao cắt bánh','5',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh tròn','8',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh chống dính hình trái tim','10',NULL,'0','0');
-INSERT INTO "product"("name","category_id","description","avg_rating","count_rating") VALUES('Khay cuộn bánh không dính','9',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) có thể tái sử dụng (10 cái)','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống đầu (10 miếng)','4',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống dầu chấm bi (10 miếng)','4',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến bánh lễ (10 miếng)','4',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dao chà láng kem','5',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dụng cụ xẻ bánh kem','5',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Thanh tre','5',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dao lật bánh','5',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dao cắt bánh','5',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh tròn','8',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh chống dính hình trái tim','10',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Khay cuộn bánh không dính','9',NULL,'0','0');
 
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) đen','20000',NULL,'3');
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) trắng','25000',NULL,'5');

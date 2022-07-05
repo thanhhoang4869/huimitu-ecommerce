@@ -13,7 +13,7 @@ const handleError = (err, req, res, next) => {
 
     res.status(statusCode || 500).send({
         exitcode: 1,
-        message: statusCode === 500 ? "An error occurred" : message,
+        message: statusCode ? message : "An error occurred",
     });
 };
 

@@ -7,8 +7,8 @@ export default {
             const products = result.map(
                 item => ({
                     id: item.id,
-                    name: item.name,
-                    categoryId: item.category_id,
+                    productName: item.product_name,
+                    categoryName: item.category_name,
                     description: item.description,
                     avgRating: item.avg_rating,
                     countRating: item.count_rating,
@@ -35,8 +35,8 @@ export default {
             const products = result.map(
                 item => ({
                     id: item.id,
-                    name: item.name,
-                    categoryId: item.category_id,
+                    productName: item.product_name,
+                    categoryName: item.category_name,
                     description: item.description,
                     avgRating: item.avg_rating,
                     countRating: item.count_rating,
@@ -54,5 +54,67 @@ export default {
         } catch (err) {
             next(err)
         }
-    }
+    },
+
+    async getSingleProduct(req, res, next) {
+        try {
+            const productId = req.params.productId;
+            const result = await product.getById(productId)
+            const {
+                id,
+                product_name,
+                category_name,
+                description,
+                avg_rating,
+                count_rating,
+                min_price,
+                max_price,
+                stock,
+                created_time
+            } = result
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get product successfully",
+                product: {
+                    id: id,
+                    productName: product_name,
+                    categoryName: category_name,
+                    description: description,
+                    avgRating: avg_rating,
+                    countRating: count_rating,
+                    minPrice: min_price,
+                    maxPrice: max_price,
+                    stock: stock,
+                    createdTime: created_time
+                }
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async updateProduct(req, res, next) {
+        try {
+            const productId = req.params.productId;
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async deleteProduct(req, res, next) {
+        try {
+            const productId = req.params.productId;
+        } catch (err) {
+            next(err)
+        }
+    },
+
+
+    async createProduct(req, res, next) {
+        try {
+
+        } catch (err) {
+            next(err)
+        }
+    },
 } 
