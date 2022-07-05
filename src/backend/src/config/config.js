@@ -10,8 +10,6 @@ const config = {
     port: 5432,
   },
 
-  NO_TOKEN_URL: ["/auth", "/location", "/category", "/product"],
-
   PORT: 8080,
   JWT_EXP_TIME: 60 * 60 * 24,
   JWT_SECRET: process.env.JWT_SECRET,

@@ -17,10 +17,10 @@ const getChildren = (parent) => {
 }
 
 export default {
-    async get(req, res) {
+    async get(req, res, next) {
         try {
             const data = await category.get()
-            
+
             let result = []
             for (let i = 0; i < data.length; i++) {
                 if (data[i].parent_id === null) {
@@ -34,11 +34,7 @@ export default {
                 categories: result
             })
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Fail to get categories"
-            })
+            next(err)
         }
     }
 } 
