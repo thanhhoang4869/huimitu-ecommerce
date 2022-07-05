@@ -133,7 +133,8 @@ export default {
                 fullname,
                 password: finalPassword,
                 verified: false,
-                token: token
+                token: token,
+                role: config.role.USER
             }
             const result = await accountModel.signup(entity)
 
@@ -150,11 +151,19 @@ export default {
         try {
             const { token } = req.body;
 
-            const result = accountModel.verifyAccount(token);
-            res.status(200).send({
-                exitcode: 0,
-                message: "Verification successfully"
-            })
+            const result = await accountModel.verifyAccount(token);
+            if (result > 0) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Verification successfully"
+                })
+            }
+            else {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Verification code not found"
+                })
+            }
         } catch (err) {
             console.log(err)
             res.status(500).send({

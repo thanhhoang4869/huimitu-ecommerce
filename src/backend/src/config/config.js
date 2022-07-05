@@ -10,6 +10,11 @@ const config = {
     port: 5432,
   },
 
+  role: {
+    USER: 'user',
+    ADMIN: 'admin'
+  },
+
   PORT: 8080,
   JWT_EXP_TIME: 60 * 60 * 24,
   JWT_SECRET: process.env.JWT_SECRET,
