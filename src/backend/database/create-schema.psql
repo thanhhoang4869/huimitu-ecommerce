@@ -203,6 +203,7 @@ ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
 ------------------------- FUNCTION ---------------------------
 
+--- Update price and stock of a product after add variant
 CREATE OR REPLACE FUNCTION update_min_max_price_stock_product() RETURNS trigger AS
 $$
 BEGIN
@@ -212,31 +213,48 @@ BEGIN
   SET ("min_price", "max_price") = (
     SELECT min(least("price", "discount_price")), max(greatest("price", "discount_price"))
     FROM "product_variant" AS v
-    WHERE v.product_id = NEW.product_id
+    WHERE v.product_id = COALESCE(NEW.product_id, OLD.product_id)
   )
-  WHERE p.id = NEW.product_id;
+  WHERE p.id = COALESCE(NEW.product_id, OLD.product_id);
 
   -- Update stock
-  UPDATE "product" as p
+  UPDATE "product" AS p
   SET ("stock") = (
     SELECT sum("stock")
     FROM "product_variant" AS v
-    WHERE v.product_id = NEW.product_id
+    WHERE v.product_id = COALESCE(NEW.product_id, OLD.product_id)
   )
-  WHERE p.id = NEW.product_id;
+  WHERE p.id = COALESCE(NEW.product_id, OLD.product_id);
 
-  RETURN NEW;
+  RETURN NULL;
 END;
+$$
+LANGUAGE 'plpgsql';
+
+--- Delete variant related to a product 
+CREATE OR REPLACE FUNCTION delete_related_variant() RETURNS trigger AS
+$$
+BEGIN
+  DELETE FROM "product_variant" AS v
+  WHERE v.product_id = OLD.id;
+
+  RETURN OLD;
+END
 $$
 LANGUAGE 'plpgsql';
 
 -------------------------- TRIGGER ------------------------------
 
 CREATE TRIGGER insert_variant
-AFTER INSERT OR UPDATE
+AFTER INSERT OR UPDATE OR DELETE
 ON "product_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_min_max_price_stock_product();
+
+CREATE TRIGGER delete_product
+BEFORE DELETE ON "product"
+FOR EACH ROW
+EXECUTE PROCEDURE delete_related_variant();
 
 ----------------------- INSERT DATA -------------------------
 
@@ -309,5 +327,3 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khay cuộn bánh không dính','120000',NULL,'29');
-
-------------- Update integrity contraints -------------
