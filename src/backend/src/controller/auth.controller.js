@@ -6,7 +6,7 @@ import oauth2Client from '#src/utils/oauth2'
 import mailer from '#src/utils/nodemailer'
 
 export default {
-    async login(req, res) {
+    async login(req, res, next) {
         try {
             const email = req.body.email
             const password = req.body.password
@@ -50,15 +50,11 @@ export default {
                 }),
             });
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Fail to login"
-            })
+            next(err)
         }
     },
 
-    async signup(req, res) {
+    async signup(req, res, next) {
         try {
             const { email, phone, password, fullname } = req.body;
 
@@ -146,15 +142,11 @@ export default {
                 message: "Create account successfully"
             })
         } catch (err) {
-            console.error(err);
-            res.status(500).send({
-                exitcode: 1,
-                message: "Fail to signup"
-            })
+            next(err)
         }
     },
 
-    async verify(req, res) {
+    async verify(req, res, next) {
         try {
             const { token } = req.body;
 
@@ -172,7 +164,7 @@ export default {
         }
     },
 
-    async loginGoogle(req, res) {
+    async loginGoogle(req, res, next) {
         try {
             // Extract and verify token from Google
             const { tokenId } = req.body;
@@ -203,11 +195,7 @@ export default {
                 }),
             });
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Login failed"
-            })
+            next(err)
         }
     }
 }

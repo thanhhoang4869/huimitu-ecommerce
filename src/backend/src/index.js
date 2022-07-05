@@ -1,23 +1,23 @@
 import express from 'express'
 import cors from 'cors'
 import routes from '#src/routes/index.routes'
-import log from '#src/middlewares/log.mdw'
-import auth from '#src/middlewares/auth.mdw'
 import config from '#src/config/config'
+import { handleError } from '#src/middlewares/errorHandler.mdw'
+import unknownEndpoint from '#src/middlewares/unknownEndpoint.mdw'
+import morganBody from 'morgan-body'
 
-const app = express()
 //==================== Library =======================
+const app = express()
 
 //#region middleware
 app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.use(log)
-app.use(auth)
-//#endregion middleware
-
-//Bind route
+morganBody(app)
 app.use(routes)
+app.use(unknownEndpoint)
+app.use(handleError)
+//#endregion middleware
 
 //Start listen
 app.listen(config.PORT, () => {

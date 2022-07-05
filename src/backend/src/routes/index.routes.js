@@ -4,12 +4,14 @@ import account from '#src/routes/account.routes'
 import product from '#src/routes/product.routes'
 import category from '#src/routes/category.routes'
 import location from '#src/routes/location.routes'
+
+import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import express from 'express'
 
 const router = express.Router();
 router.use('/auth', auth)
-router.use('/account', account)
-router.use('/checkout', checkout)
+router.use('/account', verifyLogin, account)
+router.use('/checkout', verifyLogin, checkout)
 router.use('/product', product)
 router.use('/category', category)
 router.use('/location', location)
