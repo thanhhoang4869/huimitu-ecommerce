@@ -66,5 +66,20 @@ export default {
                 'product.created_time'
             )
         return result[0] || null;
+    },
+
+    async updateProduct(productId, entity) {
+        const { productName, categoryName, description } = entity
+        const categoryId = await db('category').select('id').where({
+            category_name: categoryName
+        })
+        const result = await db('product').update({
+            product_name: productName,
+            description: description,
+            category_id: categoryId.id
+        }).where({
+            id: productId
+        })
+        return result;
     }
 }

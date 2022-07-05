@@ -1,9 +1,9 @@
-import product from '#src/models/product.model'
+import productModel from '#src/models/product.model'
 
 export default {
     async getBestSeller(req, res, next) {
         try {
-            const result = await product.getBestSeller()
+            const result = await productModel.getBestSeller()
             const products = result.map(
                 item => ({
                     id: item.id,
@@ -31,7 +31,7 @@ export default {
 
     async getNewestArrival(req, res, next) {
         try {
-            const result = await product.getNewestArrival()
+            const result = await productModel.getNewestArrival()
             const products = result.map(
                 item => ({
                     id: item.id,
@@ -59,7 +59,7 @@ export default {
     async getSingleProduct(req, res, next) {
         try {
             const productId = req.params.productId;
-            const result = await product.getById(productId)
+            const result = await productModel.getById(productId)
             const {
                 id,
                 product_name,
@@ -96,6 +96,17 @@ export default {
     async updateProduct(req, res, next) {
         try {
             const productId = req.params.productId;
+            const { productName, categoryName, description } = req.body;
+            const entity = {
+                productName,
+                categoryName,
+                description
+            }
+            const result = await productModel.updateProduct(productId, entity);
+            res.status(200).send({
+                exitcode: 0,
+                message: "Update product successfully",
+            })
         } catch (err) {
             next(err)
         }
