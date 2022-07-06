@@ -17,6 +17,19 @@ export default {
         return result || null;
     },
 
+    async getByVariantId(variantId) {
+        const result = await db('product_variant').where({
+            id: variantId,
+        }).select(
+            "product_variant.id",
+            "product_variant.variant_name",
+            "product_variant.price",
+            "product_variant.discount_price",
+            "product_variant.stock"
+        )
+        return result[0] || null;
+    },
+
     async createVariant(entity) {
         const {
             productId,
