@@ -134,7 +134,7 @@ CREATE TABLE "cart" (
 CREATE TABLE "cart_variant" (
   "cart_id" int,
   "variant_id" int,
-  "quantity" int,
+  "quantity" int NOT NULL DEFAULT 1 CHECK("quantity">=1),
   PRIMARY KEY ("cart_id", "variant_id")
 );
 

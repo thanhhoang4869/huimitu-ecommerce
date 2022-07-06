@@ -21,5 +21,17 @@ export default {
             quantity: quantity
         })
         return result;
+    },
+    
+    async updateVariantOfCart(email, variantId, quantity) {
+        const result = await db('cart_variant').where({
+            cart_id: db('cart').where({
+                email: email
+            }).select('id'),
+            variant_id: variantId,
+        }).update({
+            quantity: quantity
+        })
+        return result;
     }
 }

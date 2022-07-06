@@ -70,6 +70,36 @@ export default {
         }
     },
 
+    async updateVariantOfCart(req, res, next) {
+        try {
+            const { variantId } = req.params;
+            const { email } = req.payload;
+            const { quantity } = req.body;
+
+            if (quantity < 1) {
+                res.status(200).send({
+                    exitcode: 103,
+                    message: "Quantity must be equal or greater than 1"
+                })
+            }
+
+            const result = await cartModel.updateVariantOfCart(email, variantId, quantity);
+            if (result > 0) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Update item of cart successfully"
+                })
+            } else {
+                res.send({
+                    exitcode: 101,
+                    message: "Item not found"
+                })
+            }
+        } catch (err) {
+            next(err)
+        }
+    },
+
     async deleteVariantFromCart(req, res, next) {
         try {
         } catch (err) {
