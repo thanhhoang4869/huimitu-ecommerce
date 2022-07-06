@@ -6,6 +6,7 @@ import express from 'express'
 const router = express.Router();
 router.get('/bestSeller', product.getBestSeller)
 router.get('/newestArrival', product.getNewestArrival)
+router.post('/getByCategory', product.getProductByCategory)
 
 router.post('/', verifyLogin, verifyAdmin, product.createProduct)
 router.route('/:productId')

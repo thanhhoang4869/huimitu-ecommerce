@@ -1,5 +1,4 @@
 import db from '#src/utils/db'
-import config from '#src/config/config'
 
 export default {
     async getByProductId(productId) {
@@ -9,6 +8,7 @@ export default {
                 "product.id": productId,
             })
             .select(
+                "product_variant.id",
                 "product_variant.variant_name",
                 "product_variant.price",
                 "product_variant.discount_price",
@@ -16,4 +16,48 @@ export default {
             )
         return result || null;
     },
+
+    async createVariant(entity) {
+        const {
+            productId,
+            variantName,
+            price,
+            discountPrice,
+            stock
+        } = entity
+        const result = await db('product_variant').insert({
+            product_id: productId,
+            variant_name: variantName,
+            price: price,
+            discount_price: discountPrice,
+            stock: stock
+        })
+        return result;
+    },
+
+    async updateVariant(variantId, entity) {
+        const {
+            variantName,
+            price,
+            discountPrice,
+            stock
+        } = entity
+        const result = await db('product_variant').where({
+            id: variantId
+        }).update({
+            variant_name: variantName,
+            price: price,
+            discount_price: discountPrice,
+            stock: stock
+
+        })
+        return result;
+    },
+
+    async deleteVariant(variantId) {
+        const result = await db('product_variant').where({
+            id: variantId
+        }).delete()
+        return result;
+    }
 }

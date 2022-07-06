@@ -1,4 +1,6 @@
 import productModel from '#src/models/product.model'
+import categoryModel from '#src/models/category.model'
+import { buildCategoryRoot, searchCategoryTree, toListCategory } from '#src/utils/utils';
 
 export default {
     async getBestSeller(req, res, next) {
@@ -56,10 +58,31 @@ export default {
         }
     },
 
+    async getProductByCategory(req, res, next) {
+        try {
+            const { categoryName, limit, offset } = req.body;
+            const category = await categoryModel.get()
+
+            const categoryTree = buildCategoryRoot(null, category);
+            const selectedRoot = searchCategoryTree(categoryTree, categoryName);
+            const listSelectedCategory = toListCategory(selectedRoot)
+            const listSelectedName = listSelectedCategory.map(item => item.categoryName)
+
+            const result = await productModel.getProductByCategoryList(listSelectedName, limit, offset);
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get product successfully",
+                products: result
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
     async getSingleProduct(req, res, next) {
         try {
             const productId = req.params.productId;
-            const result = await productModel.getById(productId)
+            const result = await productModel.getProductById(productId)
             if (result === null) {
                 res.status(200).send({
                     exitcode: 101,
