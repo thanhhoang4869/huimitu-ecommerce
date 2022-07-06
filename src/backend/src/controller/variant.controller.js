@@ -7,6 +7,7 @@ export default {
             const productId = req.body.productId;
             const result = await variantModel.getByProductId(productId)
             const variants = result.map(item => ({
+                id: item.id,
                 variantName: item.variant_name,
                 price: item.price,
                 discountPrice: item.discount_price,
@@ -53,7 +54,26 @@ export default {
 
     async updateVariant(req, res, next) {
         try {
-            
+            const { variantId } = req.params;
+            const { variantName, price, discountPrice, stock } = req.body;
+            const entity = {
+                variantName,
+                price,
+                discountPrice,
+                stock
+            }
+            const result = await variantModel.updateVariant(variantId, entity)
+            if (result > 0) {
+                return res.status(200).send({
+                    exitcode: 0,
+                    message: "Update variant successfully"
+                })
+            } else {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Variant not found"
+                })
+            }
         } catch (err) {
             next(err)
         }
@@ -61,7 +81,19 @@ export default {
 
     async deleteVariant(req, res, next) {
         try {
-
+            const { variantId } = req.params;
+            const result = await variantModel.deleteVariant(variantId)
+            if (result > 0) {
+                return res.status(200).send({
+                    exitcode: 0,
+                    message: "Delete variant successfully"
+                })
+            } else {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Variant not found"
+                })
+            }
         } catch (err) {
             next(err)
         }
