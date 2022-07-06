@@ -30,6 +30,24 @@ export default {
         return result[0] || null;
     },
 
+
+    async getByCartId(cartId) {
+        const result = await db('cart')
+            .join('cart_variant', 'cart.id', 'cart_variant.cart_id')
+            .join('product_variant', 'cart_variant.variant_id', 'product_variant.id')
+            .where({
+                "cart.id": cartId,
+            })
+            .select(
+                "product_variant.id",
+                "product_variant.variant_name",
+                "product_variant.price",
+                "product_variant.discount_price",
+                "product_variant.stock"
+            )
+        return result || null;
+    },
+
     async createVariant(entity) {
         const {
             productId,
