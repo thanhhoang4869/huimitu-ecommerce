@@ -43,7 +43,8 @@ export default {
                 "product_variant.variant_name",
                 "product_variant.price",
                 "product_variant.discount_price",
-                "product_variant.stock"
+                "product_variant.stock",
+                "cart_variant.quantity"
             )
         return result || null;
     },
