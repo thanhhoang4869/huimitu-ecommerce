@@ -102,6 +102,21 @@ export default {
 
     async deleteVariantFromCart(req, res, next) {
         try {
+            const { variantId } = req.params;
+            const { email } = req.payload;
+
+            const result = await cartModel.deleteVariantFromCart(email, variantId);
+            if (result > 0) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Delete item of cart successfully"
+                })
+            } else {
+                res.send({
+                    exitcode: 101,
+                    message: "Item not found"
+                })
+            }
         } catch (err) {
             next(err)
         }
