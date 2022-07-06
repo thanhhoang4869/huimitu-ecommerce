@@ -167,5 +167,29 @@ export default {
         } catch (err) {
             next(err)
         }
+    },
+
+    async createProductReview(req, res, next) {
+        try {
+            const productId = req.params.productId;
+            const {
+                orderId,
+                rating,
+                comment
+            } = req.body;
+            const entity = {
+                productId: productId,
+                orderId: orderId,
+                rating: rating,
+                comment: comment,
+            }
+            const result = await productModel.createProductReview(entity);
+            res.status(200).send({
+                exitcode: 0,
+                message: "Create product review successfully"
+            })
+        } catch (err) {
+            next(err)
+        }
     }
 }
