@@ -231,6 +231,35 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+
+--- Update avg_rating and count_rating of a product after add review
+CREATE OR REPLACE FUNCTION update_avg_count_rating_product() RETURNS trigger AS
+$$
+BEGIN
+  -- Update count_rating
+  UPDATE "product" AS p
+  SET ("count_rating") = (
+    SELECT count(*)
+    FROM "review" AS r
+    WHERE r.product_id = COALESCE(NEW.product_id, OLD.product_id)
+  )
+  WHERE p.id = COALESCE(NEW.product_id, OLD.product_id);
+
+  -- Update avg_rating
+  UPDATE "product" AS p
+  SET ("avg_rating") = (
+    SELECT cast(sum("rating") as decimal) / count(*)
+    FROM "review" AS r
+    WHERE r.product_id = COALESCE(NEW.product_id, OLD.product_id)
+  )
+  WHERE p.id = COALESCE(NEW.product_id, OLD.product_id);
+
+
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
 -------------------------- TRIGGER ------------------------------
 
 CREATE TRIGGER insert_variant
@@ -238,6 +267,12 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "product_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_min_max_price_stock_product();
+
+CREATE TRIGGER insert_review
+AFTER INSERT OR UPDATE OR DELETE
+ON "review"
+FOR EACH ROW
+EXECUTE PROCEDURE update_avg_count_rating_product();
 
 ----------------------- INSERT DATA -------------------------
 
@@ -310,3 +345,19 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khay cuộn bánh không dính','120000',NULL,'29');
+
+-- Import province, district, ward data
+
+-- INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A');
+
+-- INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1,'Ahamove');
+
+-- INSERT INTO "voucher"("id","voucher_code","discount","minimum_price","start_date","end_date") VALUES(1,'123',10,100,'2023-01-01',NULL);
+
+-- INSERT INTO "order"("id","email","created_time","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_id") VALUES(1, 'nhkduy201@gmail.com', '2023-01-01', 1, 1, 100, 1, 10, 1);
+-- INSERT INTO "order"("id","email","created_time","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_id") VALUES(2, 'nhkduy201@gmail.com', '2023-02-02', 1, 1, 100, 1, 10, 1);
+-- INSERT INTO "order"("id","email","created_time","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_id") VALUES(3, 'nhkduy201@gmail.com', '2023-03-03', 1, 1, 100, 1, 10, 1);
+
+-- INSERT INTO "review"("product_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
+-- INSERT INTO "review"("product_id","order_id","rating","comment") VALUES(1,2,0,'This is the second comment!');
+-- INSERT INTO "review"("product_id","order_id","rating","comment") VALUES(1,3,3,'This is the third comment!');
