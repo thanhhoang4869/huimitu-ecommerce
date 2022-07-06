@@ -23,6 +23,39 @@ export default {
         }
     },
 
+    async getSingleVariant(req, res, next) {
+        try {
+            const { variantId } = req.params;
+            const result = await variantModel.getByVariantId(variantId)
+            if (result === null) {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Variant not found"
+                })
+            }
+            const {
+                id,
+                variant_name,
+                price,
+                discount_price,
+                stock
+            } = result
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get variant successfully",
+                variant: {
+                    id: id,
+                    variantName: variant_name,
+                    price: price,
+                    discountPrice: discount_price,
+                    stock: stock
+                }
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
     async createVariant(req, res, next) {
         try {
             const { productId, variantName, price, discountPrice, stock } = req.body

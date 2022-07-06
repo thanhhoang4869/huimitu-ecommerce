@@ -126,13 +126,15 @@ CREATE TABLE "order_variant" (
 
 CREATE TABLE "cart" (
   "id" SERIAL PRIMARY KEY,
-  "email" varchar
+  "email" varchar,
+  "total" int NOT NULL DEFAULT 0 CHECK("total">=0),
+  "count" int NOT NULL DEFAULT 0 CHECK("count">=0)
 );
 
 CREATE TABLE "cart_variant" (
   "cart_id" int,
   "variant_id" int,
-  "quantity" int,
+  "quantity" int NOT NULL DEFAULT 1 CHECK("quantity">=1),
   PRIMARY KEY ("cart_id", "variant_id")
 );
 
@@ -231,18 +233,61 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+--- Create cart related to the account
+CREATE OR REPLACE FUNCTION create_cart_for_account() RETURNS trigger AS
+$$
+BEGIN
+  INSERT INTO "cart"("email") VALUES (NEW.email);
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+--- Update total price of cart
+CREATE OR REPLACE FUNCTION update_total_count_cart() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE "cart" AS c
+  SET (total, count) = (
+    SELECT SUM(cv.quantity * LEAST(pv.price,pv.discount_price)), SUM(cv.quantity)
+    FROM "cart_variant" AS cv
+    JOIN "product_variant" AS pv
+    ON cv.variant_id = pv.id
+  ) 
+  WHERE c.id = COALESCE(OLD.cart_id,NEW.cart_id);
+
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
 -------------------------- TRIGGER ------------------------------
 
+--- Update min, max, stock of product after change variant
 CREATE TRIGGER insert_variant
 AFTER INSERT OR UPDATE OR DELETE
 ON "product_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_min_max_price_stock_product();
 
+--- Create cart after insert new account
+CREATE TRIGGER insert_account
+AFTER INSERT 
+ON "account"
+FOR EACH ROW
+EXECUTE PROCEDURE create_cart_for_account();
+
+--- Update total price after change cart variants
+CREATE TRIGGER update_cart
+AFTER INSERT OR UPDATE OR DELETE
+ON "cart_variant"
+FOR EACH ROW 
+EXECUTE PROCEDURE update_total_count_cart();
+
 ----------------------- INSERT DATA -------------------------
 
--- Admin password: admin
--- User password: user
+--- Admin password: admin
+--- User password: user
 INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('phuc16102001@gmail.com','ODYyNCYzZjA5M2ZjNTUyMTc3NDg1YWU4YzljZDNkMDZhOGNkNGE5YTcyMTE3ODVkYTNkNGQwNTViYmU3MWZkYmU3YjJh','0707953475','Đỗ Vương Phúc','2001-10-16','male',NULL,'admin');
 INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('thanhhoang4869@gmail.com','MGE5MiY4NTQ5OWY5M2ZlN2I3YzEyOGJmYzE3MzljMTg1N2RlOWQxNzhiYjFiNWM0YjUwNDhhZDE0NzFhYTBhMGViM2Nj','0933442607','Hoàng Như Thanh','2001-07-26','female',NULL,'admin');
 INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nnhatdu@gmail.com','MmJlZSZkZDhlYjY0MjQ3MGYwODIwMWJjNWQ5MWQyMDM0MDA0MjliYmQ2YWFkZTczMzQ5YmFiNjI0MTZiMTI3YzI3ODVi','0987654321','Ngô Nhật Du',NULL,'female',NULL,'admin');

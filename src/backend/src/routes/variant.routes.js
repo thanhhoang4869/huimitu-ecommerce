@@ -9,6 +9,7 @@ router.post('/getByProductId', variantController.getByProductId)
 router.post('/', verifyLogin, verifyAdmin, variantController.createVariant)
 
 router.route('/:variantId')
+    .get(variantController.getSingleVariant)
     .patch(verifyLogin, verifyAdmin, variantController.updateVariant)
     .delete(verifyLogin, verifyAdmin, variantController.deleteVariant)
 
