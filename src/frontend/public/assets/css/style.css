@@ -643,7 +643,7 @@ ol {
 .hero__categories__all {
   background: #18aeac;
   position: relative;
-  padding: 10px 25px 10px 40px;
+  padding: 10px 25px 10px 24px;
   cursor: pointer;
 }
 
@@ -3006,6 +3006,7 @@ ol {
   .hero__categories__all {
     padding: 10px 25px 10px 20px;
   }
+
   .hero__categories ul {
     padding-left: 20px;
   }
