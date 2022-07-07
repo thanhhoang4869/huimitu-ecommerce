@@ -209,6 +209,11 @@ ol {
   letter-spacing: 2px;
 }
 
+.primary-btn:hover {
+  color: #ffffff !important;
+  background: #ff8303;
+}
+
 .site-btn {
   font-size: 14px;
   color: #ffffff;

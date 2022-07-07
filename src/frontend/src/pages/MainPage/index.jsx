@@ -34,7 +34,11 @@ const MainPage = () => {
           <Route exact path="/category/*" element={<CommercePage />} />
           <Route exact path="/search/*" element={<CommercePage />} />
           <Route exact path="/*" element={<LandingPage />} />
-          <Route exact path="/account/verify/:token" element={<VerificationPage />} />
+          <Route
+            exact
+            path="/account/verify/:token"
+            element={<VerificationPage />}
+          />
           <Route
             exact
             path="/login"
