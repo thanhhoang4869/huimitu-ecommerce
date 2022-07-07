@@ -11,7 +11,7 @@ export default {
             .leftJoin('order_state', 'order_state.order_id', 'order.id')
             .where('order_state.state', 'completed')
             .groupBy('product.id', 'category.category_name')
-            .orderByRaw('sold_quantity desc')
+            .orderByRaw('count("order".id) desc')
             .select(
                 'product.id',
                 'product.product_name',
@@ -24,7 +24,6 @@ export default {
                 'product.stock',
                 'product.created_time'
             )
-            .sum('order_variant.quantity as sold_quantity')
             .limit(config.BEST_SELLER_LIMIT)
         return result || null;
     },
@@ -75,7 +74,7 @@ export default {
             .where({
                 'product.id': productId
             })
-            .select('product_image.id', 'path')
+            .select('product_image.id','path')
         return result || null;
     },
 
@@ -85,7 +84,7 @@ export default {
             .where({
                 'product.id': productId
             })
-            .select('product_image.id', 'path').limit(1)
+            .select('product_image.id','path').limit(1)
         try {
             return result[0].path;
         } catch (err) {
@@ -160,17 +159,5 @@ export default {
             )
             .offset(offset).limit(limit)
         return result || null;
-    },
-
-
-    async createProductReview(entity) {
-        const { productId, orderId, rating, comment } = entity
-        const result = await db('review').insert({
-            product_id: productId,
-            order_id: orderId,
-            rating: rating,
-            comment: comment
-        })
-        return result
     }
 }
