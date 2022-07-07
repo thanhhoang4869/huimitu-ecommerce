@@ -1,4 +1,5 @@
 DROP TYPE IF EXISTS "role" CASCADE;
+DROP TYPE IF EXISTS "gender" CASCADE;
 DROP TABLE IF EXISTS "account" CASCADE;
 DROP TABLE IF EXISTS "province" CASCADE;
 DROP TABLE IF EXISTS "district" CASCADE;
@@ -21,6 +22,7 @@ DROP TABLE IF EXISTS "voucher" CASCADE;
 ----------------------- CREATE TABLE -------------------------
 
 CREATE TYPE role AS ENUM('user','admin');
+CREATE TYPE gender AS ENUM('male','female');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -28,8 +30,9 @@ CREATE TABLE "account" (
   "phone" varchar UNIQUE,
   "fullname" varchar,
   "birthday" date,
-  "gender" varchar,
-  "avatar" varchar,
+  "gender" gender,
+  "avatar_path" varchar,
+  "avatar_filename" varchar,
   "role" role,
   "verified" bool DEFAULT false,
   "token" char(64)
@@ -92,7 +95,7 @@ CREATE TABLE "product_image" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
   "path" varchar NOT NULL,
-  "is_primary" boolean 
+  "filename" varchar
 );
 
 CREATE TABLE "product_variant" (
@@ -126,13 +129,15 @@ CREATE TABLE "order_variant" (
 
 CREATE TABLE "cart" (
   "id" SERIAL PRIMARY KEY,
-  "email" varchar
+  "email" varchar,
+  "total" int NOT NULL DEFAULT 0 CHECK("total">=0),
+  "count" int NOT NULL DEFAULT 0 CHECK("count">=0)
 );
 
 CREATE TABLE "cart_variant" (
   "cart_id" int,
   "variant_id" int,
-  "quantity" int,
+  "quantity" int NOT NULL DEFAULT 1 CHECK("quantity">=1),
   PRIMARY KEY ("cart_id", "variant_id")
 );
 
@@ -207,7 +212,6 @@ ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 CREATE OR REPLACE FUNCTION update_min_max_price_stock_product() RETURNS trigger AS
 $$
 BEGIN
-
   -- Update prices
   UPDATE "product" AS p
   SET ("min_price", "max_price") = (
@@ -231,7 +235,6 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
-
 --- Update avg_rating and count_rating of a product after add review
 CREATE OR REPLACE FUNCTION update_avg_count_rating_product() RETURNS trigger AS
 $$
@@ -246,7 +249,34 @@ BEGIN
   WHERE p.id = (
     SELECT pv.product_id FROM product_variant AS pv
     WHERE pv.id = COALESCE(NEW.product_variant_id, OLD.product_variant_id)
-    );
+  );
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+--- Create cart related to the account
+CREATE OR REPLACE FUNCTION create_cart_for_account() RETURNS trigger AS
+$$
+BEGIN
+  INSERT INTO "cart"("email") VALUES (NEW.email);
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+--- Update total price of cart
+CREATE OR REPLACE FUNCTION update_total_count_cart() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE "cart" AS c
+  SET (total, count) = (
+    SELECT SUM(cv.quantity * LEAST(pv.price,pv.discount_price)), SUM(cv.quantity)
+    FROM "cart_variant" AS cv
+    JOIN "product_variant" AS pv
+    ON cv.variant_id = pv.id
+  ) 
+  WHERE c.id = COALESCE(OLD.cart_id,NEW.cart_id);
   RETURN NULL;
 END;
 $$
@@ -254,32 +284,48 @@ LANGUAGE 'plpgsql';
 
 -------------------------- TRIGGER ------------------------------
 
+--- Update min, max, stock of product after change variant
 CREATE TRIGGER insert_variant
 AFTER INSERT OR UPDATE OR DELETE
 ON "product_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_min_max_price_stock_product();
 
+--- Update rating count and avg when review changes
 CREATE TRIGGER insert_review
 AFTER INSERT OR UPDATE OR DELETE
 ON "review"
 FOR EACH ROW
 EXECUTE PROCEDURE update_avg_count_rating_product();
 
+--- Create cart after insert new account
+CREATE TRIGGER insert_account
+AFTER INSERT 
+ON "account"
+FOR EACH ROW
+EXECUTE PROCEDURE create_cart_for_account();
+
+--- Update total price after change cart variants
+CREATE TRIGGER update_cart
+AFTER INSERT OR UPDATE OR DELETE
+ON "cart_variant"
+FOR EACH ROW 
+EXECUTE PROCEDURE update_total_count_cart();
+
 ----------------------- INSERT DATA -------------------------
 
--- Admin password: admin
--- User password: user
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('phuc16102001@gmail.com','ODYyNCYzZjA5M2ZjNTUyMTc3NDg1YWU4YzljZDNkMDZhOGNkNGE5YTcyMTE3ODVkYTNkNGQwNTViYmU3MWZkYmU3YjJh','0707953475','Đỗ Vương Phúc','2001-10-16','male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('thanhhoang4869@gmail.com','MGE5MiY4NTQ5OWY5M2ZlN2I3YzEyOGJmYzE3MzljMTg1N2RlOWQxNzhiYjFiNWM0YjUwNDhhZDE0NzFhYTBhMGViM2Nj','0933442607','Hoàng Như Thanh','2001-07-26','female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nnhatdu@gmail.com','MmJlZSZkZDhlYjY0MjQ3MGYwODIwMWJjNWQ5MWQyMDM0MDA0MjliYmQ2YWFkZTczMzQ5YmFiNjI0MTZiMTI3YzI3ODVi','0987654321','Ngô Nhật Du',NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('longmydu@gmail.com','ZGM5NyZmZDM1MzgyMTFkN2U3MzJhZGYwMWQzMWM5MjQ1NzY0ZDBiOTE5OTQ1Nzg3ZDNlMDBmMDY3YTdhNWQwYjNjNGJl','0987654322','Long Mỹ Du',NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nhkduy201@gmail.com','Y2JiYyZiMzBkODNmYmQ0OTcxNzFhZTcyMTZiNGE5ZWQ2NmVhN2NjODg3NTUyZmRjZmVjMTA1M2FlMDIwOWY3Nzg2MTJk','0987654323','Nguyễn Hoàng Khánh Duy',NULL,'male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user1@gmail.com','NGQyNiYyZjNhMjIxYjEwNzRkYWUzZGRkOGQ0NmIyN2I3ZmRiZDgwNWU1ZjhjZTMyMmE3NTExZGQ0NzFlMDk5MmVmMjdi','0987654324','User 1',NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user2@gmail.com','NTk2NCY1N2ZjYjY4OTVmNzYwZTQ3OWY0ZGVhNzJkM2Y4ZWZkMjY1NWU0Yjk3M2I2ZGZmZTY5YTNkMGMzMDhiNTM0ZDJm','0987654325','User 2',NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user3@gmail.com','NWRhNSYyZmM2MGZlNTQ1ZDk1Y2Q1YzY0MjI3ZTMwOGUzZjExNDQ0Y2NmOTUzMTZjMGZjMWNiZjI0NjhiMmQyNDg2NGEy','0987654326','User 3',NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user4@gmail.com','MDRlMSYyMGI4YzRiMmVhMThiMmNhNWY3YmUyMGE1MzhjYjMzZWU2MTk0OTNkZjkzMjk3MzFjMzg3MzA2MmY4NmEzNTI5','0987654327','User 4',NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user5@gmail.com','MjUzYSYwYTkwYTFhNDhhZjRiOGYxODEwZWQ2YWM3ZGVkNjc2NzZkOTg1ZTI4ZmI0ZjE5MTFjZWM1MTBlNmRmZmVjM2Ey','0987654328','User 5',NULL,'female',NULL,'user');
+--- Admin password: admin
+--- User password: user
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('phuc16102001@gmail.com','ODYyNCYzZjA5M2ZjNTUyMTc3NDg1YWU4YzljZDNkMDZhOGNkNGE5YTcyMTE3ODVkYTNkNGQwNTViYmU3MWZkYmU3YjJh','0707953475','Đỗ Vương Phúc','2001-10-16','male','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('thanhhoang4869@gmail.com','MGE5MiY4NTQ5OWY5M2ZlN2I3YzEyOGJmYzE3MzljMTg1N2RlOWQxNzhiYjFiNWM0YjUwNDhhZDE0NzFhYTBhMGViM2Nj','0933442607','Hoàng Như Thanh','2001-07-26','female','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('nnhatdu@gmail.com','MmJlZSZkZDhlYjY0MjQ3MGYwODIwMWJjNWQ5MWQyMDM0MDA0MjliYmQ2YWFkZTczMzQ5YmFiNjI0MTZiMTI3YzI3ODVi','0987654321','Ngô Nhật Du',NULL,'female','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('longmydu@gmail.com','ZGM5NyZmZDM1MzgyMTFkN2U3MzJhZGYwMWQzMWM5MjQ1NzY0ZDBiOTE5OTQ1Nzg3ZDNlMDBmMDY3YTdhNWQwYjNjNGJl','0987654322','Long Mỹ Du',NULL,'female','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('nhkduy201@gmail.com','Y2JiYyZiMzBkODNmYmQ0OTcxNzFhZTcyMTZiNGE5ZWQ2NmVhN2NjODg3NTUyZmRjZmVjMTA1M2FlMDIwOWY3Nzg2MTJk','0987654323','Nguyễn Hoàng Khánh Duy',NULL,'male','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user1@gmail.com','NGQyNiYyZjNhMjIxYjEwNzRkYWUzZGRkOGQ0NmIyN2I3ZmRiZDgwNWU1ZjhjZTMyMmE3NTExZGQ0NzFlMDk5MmVmMjdi','0987654324','User 1',NULL,'female','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user2@gmail.com','NTk2NCY1N2ZjYjY4OTVmNzYwZTQ3OWY0ZGVhNzJkM2Y4ZWZkMjY1NWU0Yjk3M2I2ZGZmZTY5YTNkMGMzMDhiNTM0ZDJm','0987654325','User 2',NULL,'male','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user3@gmail.com','NWRhNSYyZmM2MGZlNTQ1ZDk1Y2Q1YzY0MjI3ZTMwOGUzZjExNDQ0Y2NmOTUzMTZjMGZjMWNiZjI0NjhiMmQyNDg2NGEy','0987654326','User 3',NULL,'female','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user4@gmail.com','MDRlMSYyMGI4YzRiMmVhMThiMmNhNWY3YmUyMGE1MzhjYjMzZWU2MTk0OTNkZjkzMjk3MzFjMzg3MzA2MmY4NmEzNTI5','0987654327','User 4',NULL,'male','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user5@gmail.com','MjUzYSYwYTkwYTFhNDhhZjRiOGYxODEwZWQ2YWM3ZGVkNjc2NzZkOTg1ZTI4ZmI0ZjE5MTFjZWM1MTBlNmRmZmVjM2Ey','0987654328','User 5',NULL,'female','user');
 
 INSERT INTO "payment"("provider") VALUES('paypal');
 INSERT INTO "payment"("provider") VALUES('momo');

@@ -4,5 +4,5 @@ export default {
     async get() {
         const result = await db('category')
         return result || null;
-    }
+    },
 }

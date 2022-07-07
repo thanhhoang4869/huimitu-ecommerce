@@ -1,11 +1,14 @@
 import productModel from '#src/models/product.model'
+import categoryModel from '#src/models/category.model'
+import { buildCategoryRoot, searchCategoryTree, toListCategory } from '#src/utils/utils';
 
 export default {
     async getBestSeller(req, res, next) {
         try {
-            const result = await productModel.getBestSeller()
-            const products = result.map(
-                item => ({
+            const resultProduct = await productModel.getBestSeller()
+            const promises = resultProduct.map(async (item) => {
+                const imagePath = await productModel.getSingleImageById(item.id)
+                return {
                     id: item.id,
                     productName: item.product_name,
                     categoryName: item.category_name,
@@ -16,9 +19,11 @@ export default {
                     maxPrice: item.max_price,
                     stock: item.stock,
                     createdTime: item.created_time,
-                    soldQuantity: item.sold_quantity
-                })
-            );
+                    soldQuantity: item.sold_quantity,
+                    image: imagePath
+                }
+            });
+            const products = await Promise.all(promises)
             res.status(200).send({
                 exitcode: 0,
                 message: "Get best seller products successfully",
@@ -29,12 +34,12 @@ export default {
         }
     },
 
-
     async getNewestArrival(req, res, next) {
         try {
-            const result = await productModel.getNewestArrival()
-            const products = result.map(
-                item => ({
+            const resultProduct = await productModel.getNewestArrival()
+            const promises = resultProduct.map(async (item) => {
+                const imagePath = await productModel.getSingleImageById(item.id)
+                return {
                     id: item.id,
                     productName: item.product_name,
                     categoryName: item.category_name,
@@ -44,9 +49,11 @@ export default {
                     minPrice: item.min_price,
                     maxPrice: item.max_price,
                     stock: item.stock,
-                    createdTime: item.created_time
-                })
-            );
+                    createdTime: item.created_time,
+                    image: imagePath
+                }
+            });
+            const products = await Promise.all(promises)
             res.status(200).send({
                 exitcode: 0,
                 message: "Get newest products successfully",
@@ -57,11 +64,50 @@ export default {
         }
     },
 
+    async getProductByCategory(req, res, next) {
+        try {
+            const { categoryName, limit, offset } = req.body;
+            const category = await categoryModel.get()
+
+            const categoryTree = buildCategoryRoot(null, category);
+            const selectedRoot = searchCategoryTree(categoryTree, categoryName);
+            const listSelectedCategory = toListCategory(selectedRoot)
+            const listSelectedName = listSelectedCategory.map(item => item.categoryName)
+
+            const resultProduct = await productModel.getProductByCategoryList(listSelectedName, limit, offset);
+            const promises = resultProduct.map(async (item) => {
+                const imagePath = await productModel.getSingleImageById(item.id)
+                return {
+                    id: item.id,
+                    productName: item.product_name,
+                    categoryName: item.category_name,
+                    description: item.description,
+                    avgRating: item.avg_rating,
+                    countRating: item.count_rating,
+                    minPrice: item.min_price,
+                    maxPrice: item.max_price,
+                    stock: item.stock,
+                    createdTime: item.created_time,
+                    image: imagePath
+                }
+            });
+            const products = await Promise.all(promises)
+
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get product successfully",
+                products: products
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
     async getSingleProduct(req, res, next) {
         try {
             const productId = req.params.productId;
-            const result = await productModel.getById(productId)
-            if (result === null) {
+            const product = await productModel.getProductById(productId)
+            if (product === null) {
                 res.status(200).send({
                     exitcode: 101,
                     message: "Product not found"
@@ -79,7 +125,14 @@ export default {
                 max_price,
                 stock,
                 created_time
-            } = result
+            } = product
+
+            const listImage = await productModel.getImageById(id)
+            const images = listImage.map(item => ({
+                id: item.id,
+                path: item.path
+            }))
+
             res.status(200).send({
                 exitcode: 0,
                 message: "Get product successfully",
@@ -93,7 +146,8 @@ export default {
                     minPrice: min_price,
                     maxPrice: max_price,
                     stock: stock,
-                    createdTime: created_time
+                    createdTime: created_time,
+                    images: images
                 }
             })
         } catch (err) {
@@ -155,15 +209,27 @@ export default {
                 description,
                 categoryName
             } = req.body;
+
+            // Create entity to insert to database
             const entity = {
                 productName: productName,
                 description: description,
                 categoryName: categoryName,
             }
-            const result = await productModel.createProduct(entity);
+            const productId = await productModel.createProduct(entity);
+
+            // Insert images
+            const { files } = req;
+            const listPath = files.map(item => ({
+                path: item.path,
+                filename: item.filename
+            }))
+            const result = await productModel.insertImages(productId, listPath)
+
             res.status(200).send({
                 exitcode: 0,
-                message: "Create product successfully"
+                message: "Create product successfully",
+                productId: productId
             })
         } catch (err) {
             next(err)
