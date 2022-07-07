@@ -7,6 +7,7 @@ import location from '#src/routes/location.routes'
 import variant from '#src/routes/variant.routes'
 import cart from '#src/routes/cart.routes'
 import shippingAddress from '#src/routes/shippingAddress.routes'
+import payment from '#src/routes/payment.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import express from 'express'
@@ -21,5 +22,6 @@ router.use('/location', location)
 router.use('/variant', variant)
 router.use('/cart', verifyLogin, cart)
 router.use('/shippingAddress', verifyLogin, shippingAddress)
+router.use('/payment', payment)
 
 export default router;
