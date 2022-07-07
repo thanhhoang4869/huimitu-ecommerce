@@ -100,7 +100,8 @@ export default {
 
     async deleteVariantFromCart(req, res, next) {
         try {
-            const { variantId, email } = req.payload;
+            const { email } = req.payload;
+            const { variantId } = req.body;
 
             const result = await cartModel.deleteVariantFromCart(email, variantId);
             if (result > 0) {
