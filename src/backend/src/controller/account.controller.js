@@ -12,7 +12,7 @@ export default {
                     email: email,
                     phone: phone,
                     fullname: fullname,
-                    birthday: (new Date(birthday)).toLocaleDateString(),
+                    birthday: (birthday) ? (new Date(birthday)).toLocaleDateString() : null,
                     gender: gender,
                     accountType: account_type,
                     verified: verified
@@ -28,12 +28,6 @@ export default {
         try {
             const { phone, fullname, birthday, gender } = req.body;
             const { email } = req.payload;
-            const entity = {
-                phone,
-                fullname,
-                birthday,
-                gender
-            }
 
             if (phone) {
                 const accountPhone = await accountModel.getByPhone(phone)
@@ -45,7 +39,13 @@ export default {
                 }
             }
 
-            const result = await accountModel.updateInformation(email, entity)
+            const entity = {
+                phone,
+                fullname,
+                birthday,
+                gender
+            }
+            await accountModel.updateInformation(email, entity)
 
             res.status(200).send({
                 exitcode: 0,

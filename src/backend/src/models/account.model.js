@@ -1,5 +1,4 @@
 import db from '#src/utils/db'
-import { removeEmptyValue } from '#src/utils/utils'
 
 export default {
     async getPassword(email) {
@@ -14,15 +13,20 @@ export default {
     },
 
     async updateInformation(email, entity) {
-        const newEntity = removeEmptyValue(entity)
+        const { fullname, birthday, phone, gender } = entity
         const result = await db('account').where({
             email: email
-        }).update(newEntity)
+        }).update({
+            fullname: fullname,
+            birthday: birthday,
+            phone: phone,
+            gender: gender
+        })
         return result;
     },
 
     async signup(data) {
-        const entity = {
+        return db('account').insert({
             fullname: data.fullname,
             email: data.email,
             password: data.password,
@@ -30,8 +34,7 @@ export default {
             verified: data.verified,
             token: data.token,
             role: data.role
-        }
-        return db('account').insert(entity);
+        });
     },
 
     async verifyAccount(token) {
