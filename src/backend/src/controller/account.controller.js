@@ -35,10 +35,10 @@ export default {
                 filename: item.filename
             }))
             const avatar = listImg[0]
-
+            
+            // Remove old image
             const currentAvatar = await accountModel.getAvatar(email);
             const currentFilename = currentAvatar.avatar_filename;
-            console.log(currentFilename)
             if (currentFilename) {
                 const uploader = cloudinary.uploader;
                 try {
@@ -48,6 +48,7 @@ export default {
                 }
             }
 
+            // Upload image
             const result = await accountModel.uploadAvatar(email, avatar);
             res.status(200).send({
                 exitcode: 0,
