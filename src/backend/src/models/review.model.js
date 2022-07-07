@@ -12,8 +12,7 @@ export default {
         return result
     },
 
-    async getReview(entity) {
-        const { productId } = entity
+    async getReview(productId) {
         const result = await db('review')
         .join('product_variant','review.product_variant_id', 'product_variant.id')
         .where({

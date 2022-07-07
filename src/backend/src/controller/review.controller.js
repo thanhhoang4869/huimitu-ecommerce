@@ -28,16 +28,13 @@ export default {
     async getReview(req, res, next) {
         try {
             const { productId } = req.body;
-            const entity = { productId: productId }
-            const result = await reviewModel.getReview(entity);
-            const reviews = result.map(review => {
-                return {
-                    productVariantId: review.product_variant_id,
-                    orderId: review.order_id,
-                    rating: review.rating,
-                    comment: review.comment
-                }
-            })
+            const result = await reviewModel.getReview(productId);
+            const reviews = result.map(review => ({
+                productVariantId: review.product_variant_id,
+                orderId: review.order_id,
+                rating: review.rating,
+                comment: review.comment
+            }))
             res.status(200).send({
                 exitcode: 0,
                 message: "Get product review successfully",
