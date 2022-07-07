@@ -93,8 +93,7 @@ CREATE TABLE "product" (
 CREATE TABLE "product_image" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
-  "path" varchar NOT NULL,
-  "is_primary" boolean 
+  "path" varchar NOT NULL
 );
 
 CREATE TABLE "product_variant" (
