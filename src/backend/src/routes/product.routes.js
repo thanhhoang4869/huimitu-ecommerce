@@ -27,5 +27,5 @@ router.route('/:productId')
     .get(product.getSingleProduct)
     .patch(verifyLogin, verifyAdmin, product.updateProduct)
     .delete(verifyLogin, verifyAdmin, product.deleteProduct)
-
+    
 export default router;

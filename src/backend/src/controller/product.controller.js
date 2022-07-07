@@ -19,6 +19,7 @@ export default {
                     maxPrice: item.max_price,
                     stock: item.stock,
                     createdTime: item.created_time,
+                    soldQuantity: item.sold_quantity,
                     image: imagePath
                 }
             });
@@ -233,5 +234,5 @@ export default {
         } catch (err) {
             next(err)
         }
-    },
+    }
 }
