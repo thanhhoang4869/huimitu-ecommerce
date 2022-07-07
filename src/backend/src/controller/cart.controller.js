@@ -35,9 +35,8 @@ export default {
 
     async addVariantToCart(req, res, next) {
         try {
-            const { variantId } = req.params;
             const { email } = req.payload;
-            const { quantity } = req.body;
+            const { variantId, quantity } = req.body;
 
             const cartResult = await cartModel.getCartByEmail(email);
             const { id } = cartResult;
@@ -72,9 +71,8 @@ export default {
 
     async updateVariantOfCart(req, res, next) {
         try {
-            const { variantId } = req.params;
             const { email } = req.payload;
-            const { quantity } = req.body;
+            const { variantId, quantity } = req.body;
 
             if (quantity < 1) {
                 res.status(200).send({
@@ -102,8 +100,7 @@ export default {
 
     async deleteVariantFromCart(req, res, next) {
         try {
-            const { variantId } = req.params;
-            const { email } = req.payload;
+            const { variantId, email } = req.payload;
 
             const result = await cartModel.deleteVariantFromCart(email, variantId);
             if (result > 0) {
