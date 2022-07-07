@@ -6,7 +6,7 @@ export default {
     async getBestSeller(req, res, next) {
         try {
             const resultProduct = await productModel.getBestSeller()
-            const promises = result.map(async (item) => {
+            const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
                     id: item.id,
@@ -35,8 +35,8 @@ export default {
 
     async getNewestArrival(req, res, next) {
         try {
-            const result = await productModel.getNewestArrival()
-            const promises = result.map(async (item) => {
+            const resultProduct = await productModel.getNewestArrival()
+            const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
                     id: item.id,
