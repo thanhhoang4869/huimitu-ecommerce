@@ -45,7 +45,7 @@ const MainPage = () => {
             path="/signup"
             element={<SignupPage handleLogin={login} />}
           />
-          <Route exact path="/product/detail" element={<ProductDetailPage />} />
+          <Route exact path="/product/detail/:id" element={<ProductDetailPage />} />
         </Routes>
       </BrowserRouter>
       <Footer />
