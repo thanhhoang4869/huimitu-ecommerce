@@ -27,5 +27,7 @@ router.route('/:productId')
     .get(product.getSingleProduct)
     .patch(verifyLogin, verifyAdmin, product.updateProduct)
     .delete(verifyLogin, verifyAdmin, product.deleteProduct)
+router.route("/:productId/reviews")
+    .post(verifyLogin, product.createProductReview)
 
 export default router;
