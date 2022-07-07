@@ -23,10 +23,10 @@ const config = {
   CLOUDINARY_PRODUCT_PATH: "huimitu/product/",
   CLOUDINARY_AVATAR_PATH: "huimitu/avatar/",
 
-  PORT: 8080,
   JWT_EXP_TIME: 60 * 60 * 24,
   JWT_SECRET: process.env.JWT_SECRET,
-
+  PORT: process.env.PORT || 8080,
+  
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
