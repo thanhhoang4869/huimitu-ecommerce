@@ -10,8 +10,8 @@ export default {
             .join('order', 'order.id', 'order_variant.order_id')
             .join('order_state', 'order_state.order_id', 'order.id')
             .where('order_state.state', 'completed')
-            .groupBy('product.id')
-            .orderByRaw('count("order".id) desc')
+            .groupBy('product.id', 'category.category_name')
+            .orderByRaw('sold_quantity desc')
             .select(
                 'product.id',
                 'product.product_name',
@@ -24,6 +24,7 @@ export default {
                 'product.stock',
                 'product.created_time'
             )
+            .sum('order_variant.quantity as sold_quantity')
             .limit(config.BEST_SELLER_LIMIT)
         return result || null;
     },

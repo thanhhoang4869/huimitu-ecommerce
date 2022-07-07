@@ -15,7 +15,8 @@ export default {
                     minPrice: item.min_price,
                     maxPrice: item.max_price,
                     stock: item.stock,
-                    createdTime: item.created_time
+                    createdTime: item.created_time,
+                    soldQuantity: item.sold_quantity
                 })
             );
             res.status(200).send({
