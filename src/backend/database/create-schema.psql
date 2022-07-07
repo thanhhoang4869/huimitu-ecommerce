@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS "voucher" CASCADE;
 ----------------------- CREATE TABLE -------------------------
 
 CREATE TYPE role AS ENUM('user','admin');
+CREATE TYPE gender AS ENUM('male','female');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -28,7 +29,7 @@ CREATE TABLE "account" (
   "phone" varchar UNIQUE,
   "fullname" varchar,
   "birthday" date,
-  "gender" varchar,
+  "gender" gender,
   "avatar" varchar,
   "role" role,
   "verified" bool DEFAULT false,
