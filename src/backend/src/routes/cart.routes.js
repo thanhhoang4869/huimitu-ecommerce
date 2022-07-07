@@ -3,8 +3,8 @@ import express from 'express'
 
 const router = express.Router();
 
-router.get('/', cart.getCart)
-router.route('/:variantId')
+router.route('/')
+    .get(cart.getCart)
     .post(cart.addVariantToCart)
     .patch(cart.updateVariantOfCart)
     .delete(cart.deleteVariantFromCart)

@@ -271,7 +271,7 @@ $$
 BEGIN
   UPDATE "cart" AS c
   SET (total, count) = (
-    SELECT SUM(cv.quantity * LEAST(pv.price,pv.discount_price)), SUM(cv.quantity)
+    SELECT COALESCE(0,SUM(cv.quantity * LEAST(pv.price,pv.discount_price))), COALESCE(0,SUM(cv.quantity))
     FROM "cart_variant" AS cv
     JOIN "product_variant" AS pv
     ON cv.variant_id = pv.id
