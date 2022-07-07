@@ -1,4 +1,5 @@
 import db from '#src/utils/db'
+import { removeEmptyValue } from '#src/utils/utils'
 
 export default {
     async getPassword(email) {
@@ -10,6 +11,14 @@ export default {
         } catch (err) {
             return null;
         }
+    },
+
+    async updateInformation(email, entity) {
+        const newEntity = removeEmptyValue(entity)
+        const result = await db('account').where({
+            email: email
+        }).update(newEntity)
+        return result;
     },
 
     async signup(data) {

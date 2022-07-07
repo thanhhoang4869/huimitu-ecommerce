@@ -3,6 +3,8 @@ import express from 'express'
 
 const router = express.Router();
 
-router.get('/getInformation', account.getInformation);
+router.route('/')
+    .patch(account.updateInformation)
+    .get(account.getInformation);
 
 export default router;
