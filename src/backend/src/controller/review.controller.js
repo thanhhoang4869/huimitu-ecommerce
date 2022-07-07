@@ -1,7 +1,7 @@
 import reviewModel from '#src/models/review.model'
 
 export default {
-    async createProductReview(req, res, next) {
+    async createReview(req, res, next) {
         try {
             const {
                 productId,
@@ -15,7 +15,7 @@ export default {
                 rating: rating,
                 comment: comment,
             }
-            const result = await reviewModel.createProductReview(entity);
+            const result = await reviewModel.createReview(entity);
             res.status(200).send({
                 exitcode: 0,
                 message: "Create product review successfully"
@@ -25,9 +25,21 @@ export default {
         }
     },
 
-
-    async getProductReview(req, res, next) {
+    async getReview(req, res, next) {
         try {
+            const { productId } = req.body;
+            const result = await reviewModel.getReview(productId);
+            const reviews = result.map(review => ({
+                productVariantId: review.product_variant_id,
+                orderId: review.order_id,
+                rating: review.rating,
+                comment: review.comment
+            }))
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get product review successfully",
+                reviews: reviews
+            })
         } catch (err) {
             next(err)
         }
