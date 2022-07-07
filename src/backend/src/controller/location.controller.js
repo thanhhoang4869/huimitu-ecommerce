@@ -1,7 +1,7 @@
 import locationModel from '#src/models/location.model'
 
 export default {
-    async getProvinces(req, res) {
+    async getProvinces(req, res, next) {
         try {
             const result = await locationModel.getProvinces();
             const provinces = result.map(item => item.province_name)
@@ -11,15 +11,11 @@ export default {
                 provinces: provinces
             })
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Request failed"
-            })
+            next(err)
         }
     },
 
-    async getDistricts(req, res) {
+    async getDistricts(req, res, next) {
         try {
             const { provinceName } = req.body
             const result = await locationModel.getDistricts(provinceName);
@@ -30,15 +26,11 @@ export default {
                 districts: districts
             })
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Request failed"
-            })
+            next(err)
         }
     },
 
-    async getWards(req, res) {
+    async getWards(req, res, next) {
         try {
             const { provinceName, districtName } = req.body;
             const result = await locationModel.getWards(provinceName, districtName);
@@ -49,11 +41,7 @@ export default {
                 wards: wards
             })
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Request failed"
-            })
+            next(err)
         }
     }
 } 

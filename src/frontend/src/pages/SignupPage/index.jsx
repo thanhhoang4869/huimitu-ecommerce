@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
 import account from "services/account";
 import swal from "sweetalert2";
@@ -13,6 +13,7 @@ const SignupPage = (props) => {
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const navigator = useNavigate();
 
   const validateFields = (password, passwordConfirm, email, phone) => {
     if (password !== passwordConfirm) {
@@ -77,12 +78,12 @@ const SignupPage = (props) => {
             icon: "success",
             confirmButtonText: "OK",
           });
-          Navigate("/login");
+          navigator("/login");
         } else {
           setError(message);
         }
       } catch (error) {
-        setError(error);
+        setError(error.message);
       }
     } else {
       swal.fire({
@@ -112,7 +113,7 @@ const SignupPage = (props) => {
 
   return (
     <div className="d-flex container flex-column justify-content-center my-4">
-      {error && <p className="text-danger">{error.message}</p>}
+      {error && <p className="text-danger">{error}</p>}
       <form className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row">
         <h2 className="mb-4 color-key">Đăng ký</h2>
 

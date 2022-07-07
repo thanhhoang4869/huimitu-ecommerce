@@ -60,7 +60,7 @@ const Header = ({ handleLogout }) => {
               <nav className="header__menu">
                 <ul>
                   <li className="active">
-                    <Link to="#">Trang chủ</Link>
+                    <Link to="/">Trang chủ</Link>
                   </li>
                   <li>
                     <Link to="#">Sản phẩm</Link>

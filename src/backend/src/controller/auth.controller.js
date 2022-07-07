@@ -6,7 +6,7 @@ import oauth2Client from '#src/utils/oauth2'
 import mailer from '#src/utils/nodemailer'
 
 export default {
-    async login(req, res) {
+    async login(req, res, next) {
         try {
             const email = req.body.email
             const password = req.body.password
@@ -50,15 +50,11 @@ export default {
                 }),
             });
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Fail to login"
-            })
+            next(err)
         }
     },
 
-    async signup(req, res) {
+    async signup(req, res, next) {
         try {
             const { email, phone, password, fullname } = req.body;
 
@@ -137,7 +133,8 @@ export default {
                 fullname,
                 password: finalPassword,
                 verified: false,
-                token: token
+                token: token,
+                role: config.role.USER
             }
             const result = await accountModel.signup(entity)
 
@@ -146,23 +143,27 @@ export default {
                 message: "Create account successfully"
             })
         } catch (err) {
-            console.error(err);
-            res.status(500).send({
-                exitcode: 1,
-                message: "Fail to signup"
-            })
+            next(err)
         }
     },
 
-    async verify(req, res) {
+    async verify(req, res, next) {
         try {
             const { token } = req.body;
 
-            const result = accountModel.verifyAccount(token);
-            res.status(200).send({
-                exitcode: 0,
-                message: "Verification successfully"
-            })
+            const result = await accountModel.verifyAccount(token);
+            if (result > 0) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Verification successfully"
+                })
+            }
+            else {
+                res.status(200).send({
+                    exitcode: 101,
+                    message: "Verification code not found"
+                })
+            }
         } catch (err) {
             console.log(err)
             res.status(500).send({
@@ -172,7 +173,7 @@ export default {
         }
     },
 
-    async loginGoogle(req, res) {
+    async loginGoogle(req, res, next) {
         try {
             // Extract and verify token from Google
             const { tokenId } = req.body;
@@ -203,11 +204,7 @@ export default {
                 }),
             });
         } catch (err) {
-            console.error(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Login failed"
-            })
+            next(err)
         }
     }
 }

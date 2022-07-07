@@ -19,7 +19,8 @@ export default {
             password: data.password,
             phone: data.phone,
             verified: data.verified,
-            token: data.token
+            token: data.token,
+            role: data.role
         }
         return db('account').insert(entity);
     },

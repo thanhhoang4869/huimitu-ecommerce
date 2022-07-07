@@ -11,6 +11,10 @@ const config = {
   },
 
   NO_TOKEN_URL: ["/auth", "/location", "/category", "/product"],
+  role: {
+    USER: "user",
+    ADMIN: "admin",
+  },
 
   PORT: 8080,
   JWT_EXP_TIME: 60 * 60 * 24,
