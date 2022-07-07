@@ -12,6 +12,26 @@ export default {
         }
     },
 
+    async getAvatar(email) {
+        const result = await db('account').where({
+            email: email
+        }).select(
+            'avatar_path',
+            'avatar_filename'
+        )
+        return result[0] || {};
+    },
+
+    async uploadAvatar(email, avatar) {
+        const result = await db('account').where({
+            email: email
+        }).update({
+            avatar_path: avatar.path,
+            avatar_filename: avatar.filename
+        })
+        return result;
+    },
+
     async updateInformation(email, entity) {
         const { fullname, birthday, phone, gender } = entity
         const result = await db('account').where({

@@ -132,9 +132,10 @@ export default {
     },
 
     async insertImages(productId, listImage) {
-        const entities = listImage.map(path => ({
+        const entities = listImage.map(item => ({
             product_id: productId,
-            path: path
+            path: item.path,
+            filename: item.fileName
         }))
         const result = await db('product_image').insert(entities)
         return result;

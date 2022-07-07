@@ -21,6 +21,7 @@ const createUploader = (path, allowedFormats) => {
 }
 
 export {
-    createUploader
+    createUploader,
+    cloudinary
 }
 

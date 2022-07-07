@@ -15,9 +15,9 @@ const config = {
   },
 
   COULDINARY_CONFIG: {
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_API_SECRET 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
   },
 
   CLOUDINARY_PRODUCT_PATH: "huimitu/product/",
@@ -34,7 +34,8 @@ const config = {
   GMAIL_USERNAME: process.env.GMAIL_USERNAME,
 
   BEST_SELLER_LIMIT: 4,
-  IMAGE_NUMBER_LIMIT: 4
+  PRODUCT_IMAGE_NUMBER_LIMIT: 4,
+  AVATAR_IMAGE_NUMBER_LIMIT: 1
 };
 
 export default config;

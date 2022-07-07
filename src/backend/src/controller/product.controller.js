@@ -219,7 +219,10 @@ export default {
 
             // Insert images
             const { files } = req;
-            const listPath = files.map(item => item.path)
+            const listPath = files.map(item => ({
+                path: item.path,
+                filename: item.filename
+            }))
             const result = await productModel.insertImages(productId, listPath)
 
             res.status(200).send({

@@ -19,7 +19,7 @@ router.post(
     '/', 
     verifyLogin, 
     verifyAdmin, 
-    productImageUploader.array('productImg', config.IMAGE_NUMBER_LIMIT), 
+    productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT), 
     product.createProduct
 )
 

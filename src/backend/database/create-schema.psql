@@ -31,7 +31,8 @@ CREATE TABLE "account" (
   "fullname" varchar,
   "birthday" date,
   "gender" gender,
-  "avatar" varchar,
+  "avatar_path" varchar,
+  "avatar_filename" varchar,
   "role" role,
   "verified" bool DEFAULT false,
   "token" char(64)
@@ -93,7 +94,8 @@ CREATE TABLE "product" (
 CREATE TABLE "product_image" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
-  "path" varchar NOT NULL
+  "path" varchar NOT NULL,
+  "filename" varchar
 );
 
 CREATE TABLE "product_variant" (
@@ -289,16 +291,16 @@ EXECUTE PROCEDURE update_total_count_cart();
 
 --- Admin password: admin
 --- User password: user
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('phuc16102001@gmail.com','ODYyNCYzZjA5M2ZjNTUyMTc3NDg1YWU4YzljZDNkMDZhOGNkNGE5YTcyMTE3ODVkYTNkNGQwNTViYmU3MWZkYmU3YjJh','0707953475','Đỗ Vương Phúc','2001-10-16','male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('thanhhoang4869@gmail.com','MGE5MiY4NTQ5OWY5M2ZlN2I3YzEyOGJmYzE3MzljMTg1N2RlOWQxNzhiYjFiNWM0YjUwNDhhZDE0NzFhYTBhMGViM2Nj','0933442607','Hoàng Như Thanh','2001-07-26','female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nnhatdu@gmail.com','MmJlZSZkZDhlYjY0MjQ3MGYwODIwMWJjNWQ5MWQyMDM0MDA0MjliYmQ2YWFkZTczMzQ5YmFiNjI0MTZiMTI3YzI3ODVi','0987654321','Ngô Nhật Du',NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('longmydu@gmail.com','ZGM5NyZmZDM1MzgyMTFkN2U3MzJhZGYwMWQzMWM5MjQ1NzY0ZDBiOTE5OTQ1Nzg3ZDNlMDBmMDY3YTdhNWQwYjNjNGJl','0987654322','Long Mỹ Du',NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nhkduy201@gmail.com','Y2JiYyZiMzBkODNmYmQ0OTcxNzFhZTcyMTZiNGE5ZWQ2NmVhN2NjODg3NTUyZmRjZmVjMTA1M2FlMDIwOWY3Nzg2MTJk','0987654323','Nguyễn Hoàng Khánh Duy',NULL,'male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user1@gmail.com','NGQyNiYyZjNhMjIxYjEwNzRkYWUzZGRkOGQ0NmIyN2I3ZmRiZDgwNWU1ZjhjZTMyMmE3NTExZGQ0NzFlMDk5MmVmMjdi','0987654324','User 1',NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user2@gmail.com','NTk2NCY1N2ZjYjY4OTVmNzYwZTQ3OWY0ZGVhNzJkM2Y4ZWZkMjY1NWU0Yjk3M2I2ZGZmZTY5YTNkMGMzMDhiNTM0ZDJm','0987654325','User 2',NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user3@gmail.com','NWRhNSYyZmM2MGZlNTQ1ZDk1Y2Q1YzY0MjI3ZTMwOGUzZjExNDQ0Y2NmOTUzMTZjMGZjMWNiZjI0NjhiMmQyNDg2NGEy','0987654326','User 3',NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user4@gmail.com','MDRlMSYyMGI4YzRiMmVhMThiMmNhNWY3YmUyMGE1MzhjYjMzZWU2MTk0OTNkZjkzMjk3MzFjMzg3MzA2MmY4NmEzNTI5','0987654327','User 4',NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user5@gmail.com','MjUzYSYwYTkwYTFhNDhhZjRiOGYxODEwZWQ2YWM3ZGVkNjc2NzZkOTg1ZTI4ZmI0ZjE5MTFjZWM1MTBlNmRmZmVjM2Ey','0987654328','User 5',NULL,'female',NULL,'user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('phuc16102001@gmail.com','ODYyNCYzZjA5M2ZjNTUyMTc3NDg1YWU4YzljZDNkMDZhOGNkNGE5YTcyMTE3ODVkYTNkNGQwNTViYmU3MWZkYmU3YjJh','0707953475','Đỗ Vương Phúc','2001-10-16','male','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('thanhhoang4869@gmail.com','MGE5MiY4NTQ5OWY5M2ZlN2I3YzEyOGJmYzE3MzljMTg1N2RlOWQxNzhiYjFiNWM0YjUwNDhhZDE0NzFhYTBhMGViM2Nj','0933442607','Hoàng Như Thanh','2001-07-26','female','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('nnhatdu@gmail.com','MmJlZSZkZDhlYjY0MjQ3MGYwODIwMWJjNWQ5MWQyMDM0MDA0MjliYmQ2YWFkZTczMzQ5YmFiNjI0MTZiMTI3YzI3ODVi','0987654321','Ngô Nhật Du',NULL,'female','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('longmydu@gmail.com','ZGM5NyZmZDM1MzgyMTFkN2U3MzJhZGYwMWQzMWM5MjQ1NzY0ZDBiOTE5OTQ1Nzg3ZDNlMDBmMDY3YTdhNWQwYjNjNGJl','0987654322','Long Mỹ Du',NULL,'female','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('nhkduy201@gmail.com','Y2JiYyZiMzBkODNmYmQ0OTcxNzFhZTcyMTZiNGE5ZWQ2NmVhN2NjODg3NTUyZmRjZmVjMTA1M2FlMDIwOWY3Nzg2MTJk','0987654323','Nguyễn Hoàng Khánh Duy',NULL,'male','admin');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user1@gmail.com','NGQyNiYyZjNhMjIxYjEwNzRkYWUzZGRkOGQ0NmIyN2I3ZmRiZDgwNWU1ZjhjZTMyMmE3NTExZGQ0NzFlMDk5MmVmMjdi','0987654324','User 1',NULL,'female','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user2@gmail.com','NTk2NCY1N2ZjYjY4OTVmNzYwZTQ3OWY0ZGVhNzJkM2Y4ZWZkMjY1NWU0Yjk3M2I2ZGZmZTY5YTNkMGMzMDhiNTM0ZDJm','0987654325','User 2',NULL,'male','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user3@gmail.com','NWRhNSYyZmM2MGZlNTQ1ZDk1Y2Q1YzY0MjI3ZTMwOGUzZjExNDQ0Y2NmOTUzMTZjMGZjMWNiZjI0NjhiMmQyNDg2NGEy','0987654326','User 3',NULL,'female','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user4@gmail.com','MDRlMSYyMGI4YzRiMmVhMThiMmNhNWY3YmUyMGE1MzhjYjMzZWU2MTk0OTNkZjkzMjk3MzFjMzg3MzA2MmY4NmEzNTI5','0987654327','User 4',NULL,'male','user');
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role") VALUES('user5@gmail.com','MjUzYSYwYTkwYTFhNDhhZjRiOGYxODEwZWQ2YWM3ZGVkNjc2NzZkOTg1ZTI4ZmI0ZjE5MTFjZWM1MTBlNmRmZmVjM2Ey','0987654328','User 5',NULL,'female','user');
 
 INSERT INTO "payment"("provider") VALUES('paypal');
 INSERT INTO "payment"("provider") VALUES('momo');
