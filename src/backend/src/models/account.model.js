@@ -12,8 +12,41 @@ export default {
         }
     },
 
+    async getAvatar(email) {
+        const result = await db('account').where({
+            email: email
+        }).select(
+            'avatar_path',
+            'avatar_filename'
+        )
+        return result[0] || {};
+    },
+
+    async uploadAvatar(email, avatar) {
+        const result = await db('account').where({
+            email: email
+        }).update({
+            avatar_path: avatar.path,
+            avatar_filename: avatar.filename
+        })
+        return result;
+    },
+
+    async updateInformation(email, entity) {
+        const { fullname, birthday, phone, gender } = entity
+        const result = await db('account').where({
+            email: email
+        }).update({
+            fullname: fullname,
+            birthday: birthday,
+            phone: phone,
+            gender: gender
+        })
+        return result;
+    },
+
     async signup(data) {
-        const entity = {
+        return db('account').insert({
             fullname: data.fullname,
             email: data.email,
             password: data.password,
@@ -21,8 +54,7 @@ export default {
             verified: data.verified,
             token: data.token,
             role: data.role
-        }
-        return db('account').insert(entity);
+        });
     },
 
     async verifyAccount(token) {
