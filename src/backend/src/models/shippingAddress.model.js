@@ -1,7 +1,7 @@
 import db from '#src/utils/db'
 
 export default {
-    async getShippingAddress(email) {
+    async getShippingAddressByEmail(email) {
         const result = await db('shipping_address')
             .join('province', 'shipping_address.province_id', 'province.id')
             .join('district', 'shipping_address.district_id', 'district.id')
@@ -18,6 +18,25 @@ export default {
                 'shipping_address.receiver_name'
             )
         return result || null;
+    },
+
+    async getShippingAddressById(shippingAddressId) {
+        const result = await db('shipping_address')
+            .join('province', 'shipping_address.province_id', 'province.id')
+            .join('district', 'shipping_address.district_id', 'district.id')
+            .join('ward', 'shipping_address.ward_id', 'ward.id')
+            .where({
+                id: shippingAddressId
+            }).select(
+                'province.province_name',
+                'district.district_name',
+                'ward.ward_name',
+                'shipping_address.id',
+                'shipping_address.address',
+                'shipping_address.receiver_phone',
+                'shipping_address.receiver_name'
+            )
+        return result[0] || null;
     },
 
     async createShippingAddress(email, entity) {

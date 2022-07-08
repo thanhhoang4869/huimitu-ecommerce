@@ -1,9 +1,9 @@
 import accountModel from '#src/models/account.model'
 import jwt from 'jsonwebtoken'
 import config from '#src/config/config'
-import CryptoJS from 'crypto-js'
+import { verifyPassword, encryptPassword, generateToken } from '#src/utils/crypto'
 import oauth2Client from '#src/utils/oauth2'
-import mailer from '#src/utils/nodemailer'
+import { getMailOption, createTransport } from '#src/utils/nodemailer'
 import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 
 export default {
@@ -15,6 +15,8 @@ export default {
             // Get the database password
             const account = await accountModel.getByEmail(email);
             const encryptedPassword = account.password;
+
+            // Check for correct email
             if (encryptedPassword === null) {
                 return res.status(200).send({
                     exitcode: 3,
@@ -22,19 +24,12 @@ export default {
                 });
             }
 
-            // Get salt
-            const encryptedWordArray = CryptoJS.enc.Base64.parse(encryptedPassword)
-            const [salt, hashedCorrectPassword] = CryptoJS.enc.Utf8.stringify(encryptedWordArray).split("&")
-            console.log(salt, hashedCorrectPassword)
-
-            // Compare the password
-            const hashedPassword = CryptoJS.SHA256(salt + password).toString();
-            if (hashedPassword !== hashedCorrectPassword) {
-                res.status(200).send({
+            // Check the correctness of password
+            if (!verifyPassword(password, encryptedPassword)) {
+                return res.status(200).send({
                     exitcode: 3,
                     message: "Email or password is not correct"
                 });
-                return;
             }
 
             // Handle account not verified
@@ -87,63 +82,27 @@ export default {
 
             // 256 bits which provides about 1e+77 possible different number
             // This is enough for preventing brute force
-            const nByteToken = 256 / 8;
-            const token = CryptoJS.lib.WordArray.random(nByteToken).toString();
+            const verifyToken = generateToken(config.NUMBER_BYTE_VERIFY_TOKEN)
 
             // Encrypt password by salting and hashing
-            const nByteSalt = 16 / 8
-            const salt = CryptoJS.lib.WordArray.random(nByteSalt).toString();
-            const hashedPassword = CryptoJS.SHA256(salt + password).toString();
-            const finalWordArray = CryptoJS.enc.Utf8.parse([salt, hashedPassword].join("&"))
-            const finalPassword = CryptoJS.enc.Base64.stringify(finalWordArray)
+            const encryptedPassword = encryptPassword(password)
 
             // Send the time for each mail is different
             // This prevent the html being trimmed by Gmail
-            const mailOption = {
-                from: config.GMAIL_USERNAME,
-                to: email,
-                subject: "[Huimitu] Email verification",
-                html: `
-                <div style="
-                    text-align: center; 
-                    height: 256px;
-                    width: 512px;
-                    background-color: hsl(125, 29%, 75%); 
-                    padding: 2em; 
-                    justify-content: center;"
-                >
-                    <h1>Huimitu Shop</h1>
-                    <h3>Thank you for registering</h3>
-                    <div>
-                        <a href="${req.headers.origin}/account/verify/${token}">
-                            <button style="
-                                font-weight: bold; 
-                                padding: 2em; 
-                                background-color: #18aeac; 
-                                color: #fff; 
-                                width: 512px; 
-                                border: none;"
-                            >
-                                Click here to activate your account
-                            </button>
-                        </a>
-                    </div>
-                    <div>Sent at ${(new Date()).toUTCString()}</div>
-                </div>`
-            }
-            await mailer.sendMail(mailOption);
+            const mailOption = getMailOption(email, req.headers.origin, verifyToken);
+            await createTransport().sendMail(mailOption);
 
             // Create entity to insert to DB
             const entity = {
-                email,
-                phone,
-                fullname,
-                password: finalPassword,
+                email: email,
+                phone: phone,
+                fullname: fullname,
+                password: encryptedPassword,
                 verified: false,
-                token: token,
+                token: verifyToken,
                 role: config.role.USER
             }
-            const result = await accountModel.signup(entity)
+            await accountModel.signup(entity)
 
             res.status(200).send({
                 exitcode: 0,
@@ -172,11 +131,7 @@ export default {
                 })
             }
         } catch (err) {
-            console.log(err)
-            res.status(500).send({
-                exitcode: 1,
-                message: "Verification failed"
-            })
+            next(err)
         }
     },
 
