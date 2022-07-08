@@ -1,17 +1,17 @@
 /**
  * Build the category tree from the category list
  * 
- * @param {int} parentId The id of parent category node
- * @param {Category[]} category A list of category with parentId
+ * @param {Category[]} categoryList A list of category with parentId
+ * @param {int} parentId The id of parent category node (default `null`)
  * @returns {TreeCategory[]} An array of trie, each tree is a branch of category
  */
-const buildCategoryRoot = (parentId, category) => {
-    const root = category.filter(item => item.parent_id === parentId)
+const buildCategoryRoot = (categoryList, parentId = null) => {
+    const root = categoryList.filter(item => item.parent_id === parentId)
     if (root.length === 0) {
         return undefined
     } else {
         for (let i = 0; i < root.length; i++) {
-            const children = buildCategoryRoot(root[i].id, category)
+            const children = buildCategoryRoot(categoryList, root[i].id)
             if (children) {
                 root[i].children = children;
             }
@@ -33,16 +33,16 @@ const buildCategoryRoot = (parentId, category) => {
  * @param {string} categoryName The name of category need to find
  * @returns {TreeCategory} The searching node
  */
-const searchCategoryTree = (rootList, categoryName) => {
+const searchCategoryTree = (rootList, categoryId) => {
     if (rootList === null || rootList === undefined) {
         return null;
     }
     for (let i = 0; i < rootList.length; i++) {
-        if (rootList[i].categoryName === categoryName) {
+        if (+rootList[i].id === +categoryId) {
             return rootList[i]
         }
         if (rootList[i].children) {
-            const result = searchCategoryTree(rootList[i].children)
+            const result = searchCategoryTree(rootList[i].children, categoryId)
             if (result) {
                 return result
             }
@@ -58,6 +58,10 @@ const searchCategoryTree = (rootList, categoryName) => {
  * @returns {Category[]} The category list after reshape 
  */
 const toListCategory = (root) => {
+    if (!root) {
+        return null;
+    }
+
     const { children, ...rest } = root
     let result = [rest]
     if (children) {
@@ -69,8 +73,38 @@ const toListCategory = (root) => {
     return result;
 }
 
+/**
+ * 
+ * @param {*} rootList 
+ * @param {*} categoryId 
+ * @returns 
+ */
+const getParentBranch = (rootList, categoryId) => {
+    if (!rootList) {
+        return null;
+    }
+
+    for (let i = 0; i < rootList.length; i++) {
+        const { children, ...rest } = rootList[i]
+        if (+rootList[i].id === +categoryId) {
+            return rest;
+        }
+        if (children) {
+            const result = getParentBranch(children, categoryId);
+            if (result !== null) {
+                return ({
+                    ...rest,
+                    children: result
+                })
+            }
+        }
+    }
+    return null;
+}
+
 export {
     buildCategoryRoot,
     searchCategoryTree,
     toListCategory,
+    getParentBranch
 }

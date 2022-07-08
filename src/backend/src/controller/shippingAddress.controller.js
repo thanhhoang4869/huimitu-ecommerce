@@ -5,7 +5,7 @@ export default {
         try {
             const { email } = req.payload;
 
-            const result = await shippingAddressModel.getShippingAddress(email);
+            const result = await shippingAddressModel.getShippingAddressByEmail(email);
             const shippingAddresses = result.map(item => ({
                 id: item.id,
                 provinceName: item.province_name,

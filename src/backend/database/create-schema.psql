@@ -1,5 +1,7 @@
-DROP TYPE IF EXISTS "role" CASCADE;
-DROP TYPE IF EXISTS "gender" CASCADE;
+DROP TYPE IF EXISTS "role_type" CASCADE;
+DROP TYPE IF EXISTS "gender_type" CASCADE;
+DROP TYPE IF EXISTS "state_type" CASCADE;
+
 DROP TABLE IF EXISTS "account" CASCADE;
 DROP TABLE IF EXISTS "province" CASCADE;
 DROP TABLE IF EXISTS "district" CASCADE;
@@ -21,8 +23,9 @@ DROP TABLE IF EXISTS "voucher" CASCADE;
 
 ----------------------- CREATE TABLE -------------------------
 
-CREATE TYPE role AS ENUM('user','admin');
-CREATE TYPE gender AS ENUM('male','female');
+CREATE TYPE role_type AS ENUM('user','admin');
+CREATE TYPE gender_type AS ENUM('male','female');
+CREATE TYPE state_type AS ENUM('pending','shipping','cancel','success', 'reviewed');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -30,10 +33,10 @@ CREATE TABLE "account" (
   "phone" varchar UNIQUE,
   "fullname" varchar,
   "birthday" date,
-  "gender" gender,
+  "gender" gender_type,
   "avatar_path" varchar,
   "avatar_filename" varchar,
-  "role" role,
+  "role" role_type,
   "verified" bool DEFAULT false,
   "token" char(64)
 );
@@ -108,9 +111,9 @@ CREATE TABLE "product_variant" (
 );
 
 CREATE TABLE "order" (
-  "id" SERIAL PRIMARY KEY,
+  "id" varchar PRIMARY KEY,
   "email" varchar,
-  "created_time" timestamp,
+  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "payment_id" int NOT NULL,
   "shipping_address_id" int NOT NULL,
   "total" real NOT NULL,
@@ -120,7 +123,7 @@ CREATE TABLE "order" (
 );
 
 CREATE TABLE "order_variant" (
-  "order_id" int,
+  "order_id" varchar,
   "variant_id" int,
   "quantity" int NOT NULL,
   "variant_price" real NOT NULL,
@@ -143,7 +146,7 @@ CREATE TABLE "cart_variant" (
 
 CREATE TABLE "review" (
   "product_variant_id" int,
-  "order_id" int,
+  "order_id" varchar,
   "rating" int,
   "comment" varchar,
   PRIMARY KEY ("product_variant_id", "order_id")
@@ -155,9 +158,9 @@ CREATE TABLE "shipping_provider" (
 );
 
 CREATE TABLE "order_state" (
-  "order_id" int,
-  "state" varchar NOT NULL,
-  "created_time" timestamp NOT NULL,
+  "order_id" varchar,
+  "state" state_type NOT NULL,
+  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY ("order_id", "state")
 );
 
@@ -282,6 +285,32 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+--- Update total price of order
+CREATE OR REPLACE FUNCTION update_total_order() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE "order" AS o
+  SET (total) = (
+    SELECT COALESCE(0,SUM(ov.quantity * LEAST(pv.price,pv.discount_price)))
+    FROM "order_variant" AS ov
+    JOIN "product_variant" AS pv
+    ON ov.variant_id = pv.id
+  ) 
+  WHERE o.id = COALESCE(OLD.order_id,NEW.order_id);
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+--- Create pending state for order
+CREATE OR REPLACE FUNCTION create_order_pending_state() RETURNS trigger AS
+$$
+BEGIN
+  INSERT INTO "order_state"("order_id","state") VALUES(NEW.id, 'pending');
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
 -------------------------- TRIGGER ------------------------------
 
 --- Update min, max, stock of product after change variant
@@ -311,6 +340,20 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "cart_variant"
 FOR EACH ROW 
 EXECUTE PROCEDURE update_total_count_cart();
+
+--- Create status for order
+CREATE TRIGGER create_order
+AFTER INSERT
+ON "order"
+FOR EACH ROW
+EXECUTE PROCEDURE create_order_pending_state();
+
+--- Insert variant for order
+CREATE TRIGGER insert_order_variant
+AFTER INSERT OR UPDATE OR DELETE
+ON "order_variant"
+FOR EACH ROW
+EXECUTE PROCEDURE update_total_order();
 
 ----------------------- INSERT DATA -------------------------
 
@@ -384,11 +427,9 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khay cuộn bánh không dính','120000',NULL,'29');
 
--- Import province, district, ward data
+INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1, 'Ahamove');
 
 -- INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A');
-
--- INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1,'Ahamove');
 
 -- INSERT INTO "voucher"("id","voucher_code","discount","minimum_price","start_date","end_date") VALUES(1,'123',10,100,'2023-01-01',NULL);
 
