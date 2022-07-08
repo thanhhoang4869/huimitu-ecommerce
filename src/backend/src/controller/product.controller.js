@@ -66,11 +66,11 @@ export default {
 
     async getProductByCategory(req, res, next) {
         try {
-            const { categoryName, limit, offset } = req.body;
+            const { categoryId, limit, offset } = req.body;
             const category = await categoryModel.get()
 
             const categoryTree = buildCategoryRoot(null, category);
-            const selectedRoot = searchCategoryTree(categoryTree, categoryName);
+            const selectedRoot = searchCategoryTree(categoryTree, categoryId);
             const listSelectedCategory = toListCategory(selectedRoot)
             const listSelectedName = listSelectedCategory.map(item => item.categoryName)
 
