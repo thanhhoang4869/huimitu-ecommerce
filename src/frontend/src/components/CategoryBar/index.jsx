@@ -19,7 +19,7 @@ const CategoryBar = (props) => {
   //map category children to menu item
   const getMenuSubItem = (children) => {
     return children.map((child) => {
-      return getItem(child.categoryName, child.id, null, null, "sub");
+      return getItem(child.categoryName, child.id, null, null, `sub`);
     });
   };
 
@@ -40,7 +40,11 @@ const CategoryBar = (props) => {
 
   const onClick = (e) => {
     setCurrent(e.key);
-    navigate("/category/" + e.key);
+    navigate(`/category/${e.key}`, {
+      state: {
+        categoryId: e.key,
+      },
+    });
   };
 
   const [current, setCurrent] = useState("1");

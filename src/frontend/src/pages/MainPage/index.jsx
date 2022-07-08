@@ -32,6 +32,7 @@ const MainPage = () => {
   const getCategoryList = async () => {
     const response = await category.getCategoryList();
     const data = response.data.categories;
+    localStorage.setItem("categoryList", JSON.stringify(data));
     setCategoryList(data);
   };
 

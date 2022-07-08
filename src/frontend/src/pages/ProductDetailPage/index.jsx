@@ -1,6 +1,7 @@
+import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { default as ProductService } from "services/product";
 
 import "./style.css";
@@ -36,23 +37,7 @@ const ProductDetailPage = () => {
 
   return (
     <div>
-      <div className="breadcrumb-area">
-        <div className="container">
-          <div className="d-flex align-items-center">
-            <ul className="breadcrumb-list">
-              <li className="breadcrumb-item">
-                <a href="/">
-                  <i className="fa fa-home"></i>
-                </a>
-              </li>
-              <li className="breadcrumb-item">
-                <Link to="/">{product.categoryName}</Link>
-              </li>
-              <li className="breadcrumb-item">{product.productName}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Breadcrumb />
       <div className="product-details-area section-25">
         <div className="container">
           <div className="row">
