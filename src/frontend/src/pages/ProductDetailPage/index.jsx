@@ -1,23 +1,25 @@
 import ItemHorizonList from "components/ItemHorizonList";
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import {default as ProductService} from "services/product";
+import { default as ProductService } from "services/product";
 import swal from "sweetalert2";
 
 import "./style.css";
 
 const ProductDetailPage = () => {
-  const [product, setProduct] = useState({})
-  const [error, setError] = useState("")
+  const [product, setProduct] = useState({});
+  const [error, setError] = useState("");
   const { id } = useParams();
+
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await ProductService.getProductById(id)
+        const data = await ProductService.getProductById(id);
         if (data.data.product) {
-          setProduct(data.data.product)
-          console.log(data.data.product)
+          setProduct(data.data.product);
+          console.log(data.data.product);
         } else {
           swal.fire({
             text: "Rất tiếc, mặt hàng này không tồn tại",
@@ -26,17 +28,21 @@ const ProductDetailPage = () => {
           });
           //go to 404?
         }
+      } catch (error) {
+        setError(error.message);
       }
-      catch (error) {
-        
-        setError(error.message)
-      }
+    };
+    getData();
+  }, []);
+
+  const updateQuantity = (delta) => {
+    if (quantity + delta > 0) {
+      setQuantity(quantity + delta);
+      return;
+    } else if (delta >= 1) {
+      setQuantity(delta);
     }
-    getData()
-    
-  }, [])
-
-
+  };
 
   return (
     <div>
@@ -99,15 +105,40 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="pro-details-quality">
                   <div className="cart-plus-minus">
-                    <div className="dec qtybutton">-</div>
+                    <div
+                      className="dec qtybutton"
+                      onClick={() => {
+                        updateQuantity(-1);
+                      }}
+                    >
+                      -
+                    </div>
                     <input
                       id="quantity"
                       className="cart-plus-minus-box"
                       min="1"
-                      defaultValue="1"
+                      value={quantity}
                       name="quantity"
+                      number="true"
+                      onChange={(e) => {
+                        if (
+                          e.target.value < 1 ||
+                          Number.isNaN(e.target.value)
+                        ) {
+                          setQuantity(1);
+                        } else {
+                          setQuantity(e.target.value);
+                        }
+                      }}
                     />
-                    <div className="inc qtybutton">+</div>
+                    <div
+                      className="inc qtybutton"
+                      onClick={() => {
+                        updateQuantity(1);
+                      }}
+                    >
+                      +
+                    </div>
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">

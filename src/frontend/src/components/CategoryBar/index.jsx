@@ -1,12 +1,11 @@
-import {
-  AppstoreOutlined,
-  MailOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CategoryBar = (props) => {
+  let navigate = useNavigate();
+
   function getItem(label, key, icon, children, type) {
     return {
       key,
@@ -40,9 +39,8 @@ const CategoryBar = (props) => {
   const items = getMenuItem(props.categoryList);
 
   const onClick = (e) => {
-    console.log("click ", e);
-    console.log(props.categoryList);
     setCurrent(e.key);
+    navigate("/category/" + e.key);
   };
 
   const [current, setCurrent] = useState("1");
