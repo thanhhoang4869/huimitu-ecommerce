@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Breadcrumb = (props) => {
+  const { category, childCategory } = props;
   return (
     <div className="breadcrumb-area">
       <div className="container">
@@ -13,12 +14,14 @@ const Breadcrumb = (props) => {
               </Link>
             </li>
             <li className="breadcrumb-item">
-              {/* <Link to={`/category/${props.category.categoryId}`}> */}
-              <Link to="/">{props.product.categoryName}</Link>
+              <Link to={`/category/${category.id}`}>
+                {category.categoryName}
+              </Link>
             </li>
             <li className="breadcrumb-item">
-              {/* <Link to={`/category/${props.child.categoryId}`}> */}
-              <Link to="/">{props.child.categoryName}</Link>
+              <Link to={`/category/${childCategory.id}`}>
+                {childCategory.categoryName}
+              </Link>
             </li>
           </ul>
         </div>

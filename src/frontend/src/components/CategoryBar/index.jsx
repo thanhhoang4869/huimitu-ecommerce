@@ -40,11 +40,7 @@ const CategoryBar = (props) => {
 
   const onClick = (e) => {
     setCurrent(e.key);
-    navigate(`/category/${e.key}`, {
-      state: {
-        categoryId: e.key,
-      },
-    });
+    navigate(`/category/${e.key}`);
   };
 
   const [current, setCurrent] = useState("1");

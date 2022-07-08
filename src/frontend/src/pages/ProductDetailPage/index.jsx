@@ -8,6 +8,8 @@ import "./style.css";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
+  const [category, setCategory] = useState({});
+  const [childCategory, setChildCategory] = useState({});
   const { id } = useParams();
 
   const [quantity, setQuantity] = useState(1);
@@ -16,9 +18,11 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await ProductService.getProductById(id);
-      if (data.data.product) {
-        setProduct(data.data.product);
+      const response = await ProductService.getProductById(id);
+      if (response.data.product) {
+        setProduct(response.data.product);
+        setCategory(response.data.product.category);
+        setChildCategory(response.data.product.category.children);
       } else {
         navigate("/");
       }
@@ -37,7 +41,7 @@ const ProductDetailPage = () => {
 
   return (
     <div>
-      <Breadcrumb />
+      <Breadcrumb category={category} childCategory={childCategory} />
       <div className="product-details-area section-25">
         <div className="container">
           <div className="row">
