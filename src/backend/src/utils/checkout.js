@@ -84,6 +84,7 @@ const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extra
 }
 
 const createPaypalLink = async (orderId, orderInfo, amount, items, userInfo, extraData = "") => {
+    const currencyCode = 'USD';
     const intent = 'CAPTURE';
     const description = orderInfo;
     const payer = {
@@ -92,15 +93,36 @@ const createPaypalLink = async (orderId, orderInfo, amount, items, userInfo, ext
             name: userInfo.fullname
         },
         phone: {
-            phone_number: userInfo.phone 
+            phone_number: userInfo.phone
         }
     };
     const purchaseUnits = [{
         amount: {
-            "currency_code": "USD",
-            "value": "10.0"
+            currency_code: currencyCode,
+            value: "10.0"
+        },
+        items: items.map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            unit_amount: {
+                currency_code: currencyCode,
+                value: "1"
+            }
+        }))
+    }]
+    const requestBody = {
+
+    }
+    const headerConfig = {
+        headers: {
+            Authorization: `Bearer ${config.PAYPAL_ACCESS_KEY}`
         }
-    }] 
+    }
+    const response = axios.post(
+        'https://api-m.sandbox.paypal.com/v2/checkout/order',
+        requestBody,
+        headerConfig
+    )
 }
 
 export {

@@ -1,6 +1,6 @@
 import productModel from '#src/models/product.model'
 import categoryModel from '#src/models/category.model'
-import { buildCategoryRoot, searchCategoryTree, toListCategory } from '#src/utils/utils';
+import { buildCategoryRoot, searchCategoryTree, toListCategory, getParentBranch } from '#src/utils/utils';
 
 export default {
     async getBestSeller(req, res, next) {
@@ -69,7 +69,7 @@ export default {
             const { categoryId, limit, offset } = req.body;
             const category = await categoryModel.get()
 
-            const categoryTree = buildCategoryRoot(null, category);
+            const categoryTree = buildCategoryRoot(category);
             const selectedRoot = searchCategoryTree(categoryTree, categoryId);
             const listSelectedCategory = toListCategory(selectedRoot)
             const listSelectedName = listSelectedCategory.map(item => item.categoryName)
@@ -117,7 +117,7 @@ export default {
             const {
                 id,
                 product_name,
-                category_name,
+                category_id,
                 description,
                 avg_rating,
                 count_rating,
@@ -132,6 +132,9 @@ export default {
                 id: item.id,
                 path: item.path
             }))
+            const category = await categoryModel.get();
+            const categoryTree = buildCategoryRoot(category)
+            const selectedBranch = getParentBranch(categoryTree, category_id);
 
             res.status(200).send({
                 exitcode: 0,
@@ -139,7 +142,7 @@ export default {
                 product: {
                     id: id,
                     productName: product_name,
-                    categoryName: category_name,
+                    category: selectedBranch,
                     description: description,
                     avgRating: avg_rating,
                     countRating: count_rating,
@@ -223,7 +226,7 @@ export default {
                 path: item.path,
                 filename: item.filename
             }))
-            const result = await productModel.insertImages(productId, listPath)
+            await productModel.insertImages(productId, listPath)
 
             res.status(200).send({
                 exitcode: 0,
