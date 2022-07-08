@@ -14,6 +14,13 @@ const config = {
     ADMIN: 'admin'
   },
 
+  payment: {
+    PAYPAL: 'paypal',
+    MOMO: 'momo',
+    PICKUP: 'pickup',
+    NOWPAYMENT: 'nowpayment'
+  },
+
   COULDINARY_CONFIG: {
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -26,7 +33,7 @@ const config = {
   JWT_EXP_TIME: 60 * 60 * 24,
   JWT_SECRET: process.env.JWT_SECRET,
   PORT: process.env.PORT || 8080,
-  
+
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,

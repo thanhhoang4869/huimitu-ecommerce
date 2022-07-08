@@ -110,7 +110,7 @@ CREATE TABLE "product_variant" (
 CREATE TABLE "order" (
   "id" SERIAL PRIMARY KEY,
   "email" varchar,
-  "created_time" timestamp,
+  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "payment_id" int NOT NULL,
   "shipping_address_id" int NOT NULL,
   "total" real NOT NULL,
