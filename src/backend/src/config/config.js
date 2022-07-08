@@ -9,7 +9,6 @@ const config = {
     port: 5432,
   },
 
-  NO_TOKEN_URL: ["/auth", "/location", "/category", "/product"],
   role: {
     USER: "user",
     ADMIN: "admin",
