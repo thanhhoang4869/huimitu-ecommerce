@@ -201,7 +201,6 @@ export default {
         }
     },
 
-
     async createProduct(req, res, next) {
         try {
             const {

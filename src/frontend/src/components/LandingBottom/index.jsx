@@ -4,12 +4,12 @@ import ItemHorizonList from "components/ItemHorizonList";
 import product from "services/product";
 
 const LandingBottom = () => {
-  const [bestSeller, setBestSeller] = useState([]);
+  // const [bestSeller, setBestSeller] = useState([]);
 
-  useEffect(() => {
-    setBestSeller(product.getBestSellers());
-    console.log("bestSeller", bestSeller);
-  }, []);
+  // useEffect(() => {
+  //   setBestSeller(product.getBestSellers());
+  //   console.log("bestSeller", bestSeller);
+  // }, []);
 
   return (
     <>
@@ -31,7 +31,7 @@ const LandingBottom = () => {
               <h2>Bán chạy</h2>
             </div>
           </div>
-          <ItemHorizonList product={bestSeller} />
+          <ItemHorizonList />
         </div>
       </section>
     </>
