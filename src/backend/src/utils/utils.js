@@ -26,6 +26,13 @@ const buildCategoryRoot = (parentId, category) => {
     return result
 }
 
+/**
+ * Search for a node in the list of Category Tree
+ * 
+ * @param {TreeCategory[]} rootList An array of category trie
+ * @param {string} categoryName The name of category need to find
+ * @returns {TreeCategory} The searching node
+ */
 const searchCategoryTree = (rootList, categoryName) => {
     if (rootList === null || rootList === undefined) {
         return null;
@@ -44,6 +51,12 @@ const searchCategoryTree = (rootList, categoryName) => {
     return null;
 }
 
+/**
+ * Reshape the category tree to an array
+ * 
+ * @param {TreeCategory} root A node of category tree
+ * @returns {Category[]} The category list after reshape 
+ */
 const toListCategory = (root) => {
     const { children, ...rest } = root
     let result = [rest]
@@ -59,5 +72,5 @@ const toListCategory = (root) => {
 export {
     buildCategoryRoot,
     searchCategoryTree,
-    toListCategory
+    toListCategory,
 }

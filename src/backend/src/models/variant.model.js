@@ -63,8 +63,12 @@ export default {
             price: price,
             discount_price: discountPrice,
             stock: stock
-        })
-        return result;
+        }).returning('id')
+        try {
+            return result[0].id;
+        } catch (err) {
+            return null;
+        }
     },
 
     async updateVariant(variantId, entity) {
