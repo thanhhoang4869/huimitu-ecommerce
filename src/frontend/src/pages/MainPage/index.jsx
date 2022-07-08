@@ -6,7 +6,7 @@ import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
 import LogInPage from "pages/LogInPage";
-import SignupPage from "pages/SignUpPage";
+import SignupPage from "pages/SignupPage";
 import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
@@ -34,7 +34,11 @@ const MainPage = () => {
           <Route exact path="/category/*" element={<CommercePage />} />
           <Route exact path="/search/*" element={<CommercePage />} />
           <Route exact path="/*" element={<LandingPage />} />
-          <Route exact path="/account/verify/:token" element={<VerificationPage />} />
+          <Route
+            exact
+            path="/account/verify/:token"
+            element={<VerificationPage />}
+          />
           <Route
             exact
             path="/login"
@@ -45,7 +49,11 @@ const MainPage = () => {
             path="/signup"
             element={<SignupPage handleLogin={login} />}
           />
-          <Route exact path="/product/detail/:id" element={<ProductDetailPage />} />
+          <Route
+            exact
+            path="/product/detail/:id"
+            element={<ProductDetailPage />}
+          />
         </Routes>
       </BrowserRouter>
       <Footer />
