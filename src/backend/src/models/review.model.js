@@ -14,16 +14,22 @@ export default {
 
     async getReview(productId) {
         const result = await db('review')
-        .join('product_variant','review.product_variant_id', 'product_variant.id')
-        .where({
-            "product_variant.product_id": productId,
-        })
-        .select(
-            'review.product_variant_id',
-            'review.order_id',
-            'review.rating',
-            'review.comment'
-        )
+            .join('product_variant', 'review.product_variant_id', 'product_variant.id')
+            .join('order', 'order.id', 'review.order_id')
+            .join('account', 'account.email', 'order.email')
+            .where({
+                "product_variant.product_id": productId,
+            })
+            .select(
+                'account.email',
+                'account.fullname',
+                'account.avatar_path',
+                'review.product_variant_id',
+                'review.order_id',
+                'review.rating',
+                'review.comment',
+                'review.created_time'
+            )
         return result
     }
 }
