@@ -1,9 +1,43 @@
 import ItemHorizonList from "components/ItemHorizonList";
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import {default as ProductService} from "services/product";
+import swal from "sweetalert2";
+
 import "./style.css";
 
 const ProductDetailPage = () => {
+  const [product, setProduct] = useState({})
+  const [error, setError] = useState("")
+  const { id } = useParams();
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const data = await ProductService.getProductById(id)
+        if (data.data.product) {
+          setProduct(data.data.product)
+          console.log(data.data.product)
+        } else {
+          swal.fire({
+            text: "Rất tiếc, mặt hàng này không tồn tại",
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+          //go to 404?
+        }
+      }
+      catch (error) {
+        
+        setError(error.message)
+      }
+    }
+    getData()
+    
+  }, [])
+
+
+
   return (
     <div>
       <div className="breadcrumb-area">
@@ -16,9 +50,9 @@ const ProductDetailPage = () => {
                 </a>
               </li>
               <li className="breadcrumb-item">
-                <Link to="/">Dụng cụ làm bánh</Link>
+                <Link to="/">{product.categoryName}</Link>
               </li>
-              <li className="breadcrumb-item">Túi và đầu chiết</li>
+              <li className="breadcrumb-item">{product.productName}</li>
             </ul>
           </div>
         </div>
@@ -45,7 +79,7 @@ const ProductDetailPage = () => {
               data-aos-delay="200"
             >
               <div className="product-details-content quickview-content p-3">
-                <h2>Tên sản phẩm</h2>
+                <h2>{product.productName}</h2>
 
                 <div className="product-infor">
                   <ul>
@@ -59,7 +93,7 @@ const ProductDetailPage = () => {
                 <div className="pricing-meta mt-4">
                   <ul>
                     <li>
-                      <strong>100.000</strong>
+                      <strong>{product.minPrice}</strong>
                     </li>
                   </ul>
                 </div>
@@ -84,7 +118,7 @@ const ProductDetailPage = () => {
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="add-cart" type="submit">
-                          <span>Thêm vào giỏ hàng</span>{" "}
+                          <span>Thêm vào giỏ hàng</span>
                         </button>
                       </form>
                     </span>
@@ -115,7 +149,7 @@ const ProductDetailPage = () => {
             </div>
           </div>
           <div className="product-description-text">
-            <div>Mô tả sản phẩm</div>
+            <div>{product.description}</div>
           </div>
         </div>
 

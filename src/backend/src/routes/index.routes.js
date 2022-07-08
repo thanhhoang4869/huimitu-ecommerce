@@ -12,20 +12,21 @@ import payment from '#src/routes/payment.routes'
 import order from '#src/routes/order.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
+import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
 import express from 'express'
 
 const router = express.Router();
 router.use('/auth', auth)
-router.use('/account', verifyLogin, account)
+router.use('/account', verifyLogin, verifyEmailVerified, account)
+router.use('/checkout', verifyLogin, verifyEmailVerified, checkout)
 router.use('/product', product)
 router.use('/category', category)
 router.use('/location', location)
 router.use('/variant', variant)
-router.use('/cart', verifyLogin, cart)
-router.use('/review', verifyLogin, review)
-router.use('/shippingAddress', verifyLogin, shippingAddress)
+router.use('/cart', verifyLogin, verifyEmailVerified, cart)
+router.use('/review', verifyLogin, verifyEmailVerified, review)
+router.use('/shippingAddress', verifyLogin, verifyEmailVerified, shippingAddress)
 router.use('/payment', payment)
 router.use('/order', verifyLogin, order)
-router.use('/checkout', verifyLogin, checkout)
 
 export default router;

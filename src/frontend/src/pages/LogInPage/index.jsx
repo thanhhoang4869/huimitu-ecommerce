@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
 import account from "services/account";
+import swal from "sweetalert2";
+
+import "./style.css";
 
 const LogInPage = (props) => {
   const handleLogin = props.handleLogin;
@@ -10,19 +13,65 @@ const LogInPage = (props) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState();
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await account.login(email, password);
-      const { exitcode, token } = response.data;
+  const validateFields = (email, password) => {
+    if (!email) {
+      swal.fire({
+        title: "Error",
+        text: "Vui lòng nhập email",
+        icon: "error",
+        confirmButtonText: "OK",
+      })
+      return false
+    }
+    if (!password) {
+      swal.fire({
+        title: "Error",
+        text: "Vui lòng nhập password",
+        icon: "error",
+        confirmButtonText: "OK",
+      })
+      return false
+    }
+    if (
+      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+        email
+      )
+    ) {
+      swal.fire({
+        title: "Error",
+        text: "Vui lòng nhập email hợp lệ",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return false;
+    }
+    // if (password.length < 6) {
+    //   swal.fire({
+    //     title: "Error",
+    //     text: "Mật khẩu phải có ít nhất 6 ký tự",
+    //     icon: "error",
+    //     confirmButtonText: "OK",
+    //   });
+    //   return false;
+    // }
+    return true
+  };
 
-      if (exitcode === 0) {
-        handleLogin(token);
-      } else {
-        setError(response.data);
+  const onSubmit = async (e) => {
+    e.preventDefault(); 
+    if (validateFields(email, password)) {
+      try {
+        const response = await account.login(email, password);
+        const { exitcode, token, message } = response.data;
+
+        if (exitcode === 0) {
+          handleLogin(token);
+        } else {
+          setError(message);
+        }
+      } catch (error) {
+        setError(error.response.data.message);
       }
-    } catch (error) {
-      setError(error);
     }
   };
 
@@ -45,7 +94,7 @@ const LogInPage = (props) => {
 
   return (
     <div className="d-flex container flex-column justify-content-center my-5">
-      {error && <p className="text-danger">{error.message}</p>}
+      {error && <p className="text-danger">{error}</p>}
       {localStorage.getItem("token") && <Navigate to="/" replace={true} />}
       <form
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"

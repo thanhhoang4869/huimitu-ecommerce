@@ -4,6 +4,7 @@ import config from '#src/config/config'
 import { verifyPassword, encryptPassword, generateToken } from '#src/utils/crypto'
 import oauth2Client from '#src/utils/oauth2'
 import { getMailOption, createTransport } from '#src/utils/nodemailer'
+import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 
 export default {
     async login(req, res, next) {
@@ -29,6 +30,12 @@ export default {
                     exitcode: 3,
                     message: "Email or password is not correct"
                 });
+            }
+
+            // Handle account not verified
+            const verified = account.verified;
+            if (!verified) {
+                throw new ErrorHandler(403, "Account is not verified");
             }
 
             // Create payload for encryption
