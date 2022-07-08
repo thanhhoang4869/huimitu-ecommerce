@@ -100,7 +100,7 @@ const createMomoLink = async (orderId, orderInfo, amount, userInfo, extraData = 
  * @param {String} orderInfo The note of order
  * @param {Long} amount The total amount user need to pay
  * @param {UserInfo} userInfo The information of user
- * @returns {[orderId, approveLink]} An array of 2 elements
+ * @returns {[String, String]} An array of 2 elements
  * Including the generated orderId of Paypal and the link to approve payment
  */
 const createPaypalLink = async (orderInfo, amount, userInfo) => {
