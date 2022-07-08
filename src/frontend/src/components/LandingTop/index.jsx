@@ -4,12 +4,12 @@ import SearchBar from "./SearchBar";
 import Banner from "./Banner";
 import { Route, Routes } from "react-router-dom";
 
-const LandingTop = () => {
+const LandingTop = (props) => {
   return (
     <section className="hero">
       <div className="container">
         <div className="row">
-          <CategoryBar />
+          <CategoryBar categoryList={props.categoryList} />
           <div className="col-lg-9">
             <SearchBar />
             <Routes>

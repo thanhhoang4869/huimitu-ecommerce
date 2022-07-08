@@ -10,8 +10,8 @@ const config = {
   },
 
   role: {
-    USER: 'user',
-    ADMIN: 'admin'
+    USER: "user",
+    ADMIN: "admin",
   },
 
   COULDINARY_CONFIG: {

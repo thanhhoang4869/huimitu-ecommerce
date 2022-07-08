@@ -14,11 +14,7 @@ const Banner = () => {
             Giá tốt
           </h2>
           <p>Đồng hành cùng bạn trong bếp bánh!</p>
-          <a
-            href="#"
-            className="primary-btn bg-key"
-            style={{ borderRadius: "5px" }}
-          >
+          <a href="#" className="primary-btn" style={{ borderRadius: "5px" }}>
             MUA NGAY
           </a>
         </div>
