@@ -18,6 +18,30 @@ const createHmacString = (message, key) => {
 }
 
 /**
+ * Encode the message with Base64
+ * 
+ * @param {String} message The message need to be encoded
+ * @returns {String} The encoded message
+ */
+const encryptBase64 = (message) => {
+    const wordArray = CryptoJS.enc.Utf8.parse(message)
+    const signature = CryptoJS.enc.Base64.stringify(wordArray)
+    return signature
+}
+
+/**
+ * Decode the signature to message with Base64
+ * 
+ * @param {String} signature The encoded message
+ * @returns {String} The message after decoding
+ */
+const decryptBase64 = (signature) => {
+    const wordArray = CryptoJS.enc.Base64.parse(signature)
+    const message = CryptoJS.enc.Utf8.stringify(wordArray)
+    return message
+}
+
+/**
  * Generate a random token whose size is `nByte`
  * 
  * @param {int} nByte The number of byte of the tokens
@@ -37,8 +61,7 @@ const generateToken = (nByte) => {
 const encryptPassword = (password) => {
     const salt = generateToken(config.NUMBER_BYTE_SALT);
     const hashedPassword = CryptoJS.SHA256(salt + password).toString();
-    const finalWordArray = CryptoJS.enc.Utf8.parse([salt, hashedPassword].join("&"))
-    const finalPassword = CryptoJS.enc.Base64.stringify(finalWordArray)
+    const finalPassword = encryptBase64([salt, hashedPassword].join("&"))
     return finalPassword;
 }
 
@@ -51,8 +74,7 @@ const encryptPassword = (password) => {
  */
 const verifyPassword = (input, signature) => {
     // Get salt
-    const signatureWordArray = CryptoJS.enc.Base64.parse(signature)
-    const [salt, hashedSignature] = CryptoJS.enc.Utf8.stringify(signatureWordArray).split("&")
+    const [salt, hashedSignature] = decryptBase64(signature).split("&")
 
     // Compare the password
     const hashedInput = CryptoJS.SHA256(salt + input).toString();
@@ -63,5 +85,7 @@ export {
     createHmacString,
     generateToken,
     encryptPassword,
-    verifyPassword
+    verifyPassword,
+    encryptBase64,
+    decryptBase64
 }

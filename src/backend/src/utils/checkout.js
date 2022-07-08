@@ -1,6 +1,6 @@
-import config from '#src/config/config'
-import { createHmacString } from "#src/utils/crypto"
-import axios from 'axios'
+import config from "#src/config/config"
+import { createHmacString, encryptBase64 } from "#src/utils/crypto"
+import axios from "axios"
 
 /**
  * Create payment link for Momo
@@ -8,10 +8,6 @@ import axios from 'axios'
  * @example
  * const orderInfo = "Pay with momo";
  * const amount = 50000;
- * const items = [
- *  { id: 1, name: "Product 01", price: 1000, quantity: 10, totalPrice: 10000 },
- *  { id: 2, name: "Product 02", price: 5000, quantity: 8, totalPrice: 40000 }
- * ]
  * const userInfo = { 
  *  name: "Do Vuong Phuc", 
  *  phoneNumber: "0707953475", 
@@ -20,16 +16,21 @@ import axios from 'axios'
  * const orderId = "MOMO-3025-896452-5748"
  * const payUrl = createMomoLink(orderId, orderInfo, amount, items, userInfo)
  * 
+ * @type {UserInfo} {
+ *  @type {String} name
+ *  @type {String} phoneNumber
+ *  @type {String} email
+ * }
+ * 
  * @param {String} orderId Id of the order (must be unique)
  * @param {String} orderInfo Information note of order
  * @param {Long} amount The total amount user need to pay
- * @param {Item[]} items List of breakdown items (optional)
- * @param {UserInfo} userInfo The user's information
+ * @param {UserInfo} userInfo The user"s information
  * @param {String} extraData Extra data encoded using Base64 (default is "")
  *
  * @return {string} The URL to pay for the request
  */
-const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extraData = "") => {
+const createMomoLink = async (orderId, orderInfo, amount, userInfo, extraData = "") => {
     const partnerCode = config.MOMO_PARTNER_CODE
     const accessKey = config.MOMO_ACCESS_KEY
     const secretKey = config.MOMO_SECRET_KEY
@@ -51,7 +52,7 @@ const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extra
         `redirectUrl=${redirectUrl}`,
         `requestId=${requestId}`,
         `requestType=${requestType}`,
-    ].join('&')
+    ].join("&")
     console.log(`Raw signature: ${rawSignature}`)
 
     const signature = createHmacString(rawSignature, secretKey)
@@ -61,7 +62,6 @@ const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extra
         amount: amount,
         extraData: extraData,
         ipnUrl: ipnUrl,
-        items: items,
         orderId: orderId,
         orderInfo: orderInfo,
         partnerCode: partnerCode,
@@ -71,58 +71,87 @@ const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extra
         userInfo: userInfo,
         signature: signature,
     }
-    try {
-        const response = await axios.post(
-            'https://test-payment.momo.vn:443/v2/gateway/api/create',
-            requestBody
-        )
-        return response.data.payUrl
-    } catch (err) {
-        console.error(err.response.data)
-        return null;
-    }
+    const response = await axios.post(
+        "https://test-payment.momo.vn:443/v2/gateway/api/create",
+        requestBody
+    )
+    return response.data.payUrl
 }
 
-const createPaypalLink = async (orderId, orderInfo, amount, items, userInfo, extraData = "") => {
-    const currencyCode = 'USD';
-    const intent = 'CAPTURE';
+/**
+ * Create Paypal order link
+ * 
+ * @example
+ * const orderInfo = "Pay with momo";
+ * const amount = 50000;
+ * const userInfo = {
+ *  name: "Do Vuong Phuc",
+ *  phoneNumber: "0707953475",
+ *  email: "phuc16102001@gmail.com"
+ * }
+ * const [id, url] = await createPaypalLink(orderInfo, amount, userInfo);
+ * 
+ * @type {UserInfo} {
+ *  @type {String} name
+ *  @type {String} phoneNumber
+ *  @type {String} email
+ * }
+ * 
+ * @param {String} orderInfo The note of order
+ * @param {Long} amount The total amount user need to pay
+ * @param {UserInfo} userInfo The information of user
+ * @returns {[orderId, approveLink]} An array of 2 elements
+ * Including the generated orderId of Paypal and the link to approve payment
+ */
+const createPaypalLink = async (orderInfo, amount, userInfo) => {
+    const currencyCode = "USD";
+    const intent = "CAPTURE";
     const description = orderInfo;
+
+    const clientId = config.PAYPAL_CLIENT_ID;
+    const secret = config.PAYPAL_SECRET
+    const signature = encryptBase64([clientId, secret].join(":"))
+
     const payer = {
         email_address: userInfo.email,
         name: {
             name: userInfo.fullname
         },
         phone: {
-            phone_number: userInfo.phone
-        }
+            phone_number: {
+                national_number: userInfo.phoneNumber
+            }
+        },
+        description: description
     };
     const purchaseUnits = [{
         amount: {
             currency_code: currencyCode,
-            value: "10.0"
+            value: amount,
         },
-        items: items.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            unit_amount: {
-                currency_code: currencyCode,
-                value: "1"
-            }
-        }))
     }]
-    const requestBody = {
 
+    const requestBody = {
+        intent: intent,
+        purchase_units: purchaseUnits,
+        payer: payer,
     }
     const headerConfig = {
         headers: {
-            Authorization: `Bearer ${config.PAYPAL_ACCESS_KEY}`
+            "Authorization": `Basic ${signature}`,
+            "Content-Type": "application/json"
         }
     }
-    const response = axios.post(
-        'https://api-m.sandbox.paypal.com/v2/checkout/order',
+
+    const response = await axios.post(
+        "https://api-m.sandbox.paypal.com/v2/checkout/orders",
         requestBody,
         headerConfig
     )
+
+    const { id, links } = response.data
+    const [{ href }] = links.filter(item => (item.rel === "approve"))
+    return [id, href]
 }
 
 export {
