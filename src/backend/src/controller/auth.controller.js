@@ -4,6 +4,7 @@ import config from '#src/config/config'
 import CryptoJS from 'crypto-js'
 import oauth2Client from '#src/utils/oauth2'
 import mailer from '#src/utils/nodemailer'
+import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 
 export default {
     async login(req, res, next) {
@@ -12,13 +13,13 @@ export default {
             const password = req.body.password
 
             // Get the database password
-            const encryptedPassword = await accountModel.getPassword(email);
+            const account = await accountModel.getByEmail(email);
+            const encryptedPassword = account.password;
             if (encryptedPassword === null) {
-                res.status(200).send({
+                return res.status(200).send({
                     exitcode: 3,
                     message: "Email or password is not correct"
                 });
-                return;
             }
 
             // Get salt
@@ -34,6 +35,12 @@ export default {
                     message: "Email or password is not correct"
                 });
                 return;
+            }
+
+            // Handle account not verified
+            const verified = account.verified;
+            if (!verified) {
+                throw new ErrorHandler(403, "Account is not verified");
             }
 
             // Create payload for encryption
