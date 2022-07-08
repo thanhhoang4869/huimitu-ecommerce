@@ -9,6 +9,7 @@ import cart from '#src/routes/cart.routes'
 import review from '#src/routes/review.routes'
 import shippingAddress from '#src/routes/shippingAddress.routes'
 import payment from '#src/routes/payment.routes'
+import order from '#src/routes/order.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import express from 'express'
@@ -16,7 +17,6 @@ import express from 'express'
 const router = express.Router();
 router.use('/auth', auth)
 router.use('/account', verifyLogin, account)
-router.use('/checkout', verifyLogin, checkout)
 router.use('/product', product)
 router.use('/category', category)
 router.use('/location', location)
@@ -25,5 +25,7 @@ router.use('/cart', verifyLogin, cart)
 router.use('/review', verifyLogin, review)
 router.use('/shippingAddress', verifyLogin, shippingAddress)
 router.use('/payment', payment)
+router.use('/order', verifyLogin, order)
+router.use('/checkout', verifyLogin, checkout)
 
 export default router;
