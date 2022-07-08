@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 const config = {
   DATABASE: {
     host: "localhost",
@@ -37,6 +38,10 @@ const config = {
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
   GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
+
+  MOMO_PARTNER_CODE: process.env.MOMO_PARTNER_CODE,
+  MOMO_ACCESS_KEY: process.env.MOMO_ACCESS_KEY,
+  MOMO_SECRET_KEY: process.env.MOMO_SECRET_KEY,
 
   GMAIL_USERNAME: process.env.GMAIL_USERNAME,
 

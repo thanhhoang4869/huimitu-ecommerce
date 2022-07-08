@@ -38,11 +38,19 @@ export default {
             }
 
         } catch (err) {
-
+            next(err)
         }
     },
 
     async buyFromCart(req, res, next) {
 
+    },
+
+    async successMomo(req, res, next) {
+
+    },
+
+    async successPaypal(req, res, next) {
+        
     }
 }
