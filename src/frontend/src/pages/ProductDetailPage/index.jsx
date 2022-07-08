@@ -1,35 +1,25 @@
 import ItemHorizonList from "components/ItemHorizonList";
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { default as ProductService } from "services/product";
-import swal from "sweetalert2";
 
 import "./style.css";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
-  const [error, setError] = useState("");
   const { id } = useParams();
 
   const [quantity, setQuantity] = useState(1);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getData = async () => {
-      try {
-        const data = await ProductService.getProductById(id);
-        if (data.data.product) {
-          setProduct(data.data.product);
-          console.log(data.data.product);
-        } else {
-          swal.fire({
-            text: "Rất tiếc, mặt hàng này không tồn tại",
-            icon: "info",
-            confirmButtonText: "OK",
-          });
-          //go to 404?
-        }
-      } catch (error) {
-        setError(error.message);
+      const data = await ProductService.getProductById(id);
+      if (data.data.product) {
+        setProduct(data.data.product);
+      } else {
+        navigate("/");
       }
     };
     getData();
