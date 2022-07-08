@@ -2,28 +2,37 @@ import db from '#src/utils/db'
 
 export default {
     async getProvinces() {
-        const result = await db('province').select('province_name');
+        const result = await db('province').select(
+            'id',
+            'province_name'
+        );
         return result || null;
     },
 
-    async getDistricts(provinceName) {
+    async getDistricts(provinceId) {
         const result = await db('district')
             .join('province', 'province.id', 'district.province_id')
             .where({
-                province_name: provinceName
-            }).select('district_name');
+                province_id: provinceId
+            }).select(
+                'district.id',
+                'district.district_name'
+            );
         return result || null;
     },
 
-    async getWards(provinceName, districtName) {
+    async getWards(provinceId, districtId) {
         const result = await db('ward')
             .join('district', 'district.id', 'ward.district_id')
             .join('province', 'province.id', 'district.province_id')
             .where({
-                province_name: provinceName,
-                district_name: districtName
+                province_id: provinceId,
+                district_id: districtId
             })
-            .select('ward_name');
+            .select(
+                'ward.id',
+                'ward.ward_name'
+            );
         return result || null;
     },
 }
