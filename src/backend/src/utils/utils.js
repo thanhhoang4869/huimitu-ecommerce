@@ -33,16 +33,16 @@ const buildCategoryRoot = (parentId, category) => {
  * @param {string} categoryName The name of category need to find
  * @returns {TreeCategory} The searching node
  */
-const searchCategoryTree = (rootList, categoryName) => {
+const searchCategoryTree = (rootList, categoryId) => {
     if (rootList === null || rootList === undefined) {
         return null;
     }
     for (let i = 0; i < rootList.length; i++) {
-        if (rootList[i].categoryName === categoryName) {
+        if (+rootList[i].id === +categoryId) {
             return rootList[i]
         }
         if (rootList[i].children) {
-            const result = searchCategoryTree(rootList[i].children)
+            const result = searchCategoryTree(rootList[i].children, categoryId)
             if (result) {
                 return result
             }

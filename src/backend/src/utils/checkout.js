@@ -82,3 +82,28 @@ const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extra
         return null;
     }
 }
+
+const createPaypalLink = async (orderId, orderInfo, amount, items, userInfo, extraData = "") => {
+    const intent = 'CAPTURE';
+    const description = orderInfo;
+    const payer = {
+        email_address: userInfo.email,
+        name: {
+            name: userInfo.fullname
+        },
+        phone: {
+            phone_number: userInfo.phone 
+        }
+    };
+    const purchaseUnits = [{
+        amount: {
+            "currency_code": "USD",
+            "value": "10.0"
+        }
+    }] 
+}
+
+export {
+    createMomoLink,
+    createPaypalLink
+}
