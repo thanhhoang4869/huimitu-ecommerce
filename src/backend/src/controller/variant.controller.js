@@ -75,10 +75,11 @@ export default {
                 discountPrice,
                 stock
             }
-            const result = await variantModel.createVariant(entity);
+            const variantId = await variantModel.createVariant(entity);
             res.status(200).send({
                 exitcode: 0,
-                message: "Create variant successfully"
+                message: "Create variant successfully",
+                variantId: variantId
             })
         } catch (err) {
             next(err)
