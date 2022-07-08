@@ -33,6 +33,8 @@ const config = {
 
   JWT_EXP_TIME: 60 * 60 * 24,
   JWT_SECRET: process.env.JWT_SECRET,
+  NUMBER_BYTE_VERIFY_TOKEN: 256 / 8,
+  NUMBER_BYTE_SALT: 16 / 8,
   PORT: process.env.PORT || 8080,
 
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
