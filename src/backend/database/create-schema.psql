@@ -297,11 +297,6 @@ BEGIN
     ON ov.variant_id = pv.id
   ) 
   WHERE o.id = COALESCE(OLD.order_id,NEW.order_id);
-
-  UPDATE "product_variant" AS pv
-  SET (stock) = (pv.stock - ov.quantity)
-  WHERE pv.id = ov.variant_id;
-
   RETURN NULL;
 END;
 $$
@@ -432,11 +427,9 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khay cuộn bánh không dính','120000',NULL,'29');
 
--- Import province, district, ward data
+INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1, 'Ahamove');
 
 -- INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A');
-
--- INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1,'Ahamove');
 
 -- INSERT INTO "voucher"("id","voucher_code","discount","minimum_price","start_date","end_date") VALUES(1,'123',10,100,'2023-01-01',NULL);
 

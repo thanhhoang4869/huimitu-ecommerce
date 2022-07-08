@@ -1,22 +1,6 @@
 import config from '#src/config/config'
-import CryptoJS from 'crypto-js'
+import { createHmacString } from "#src/utils/crypto"
 import axios from 'axios'
-
-/**
- * Sign the message using secret key by HmacSHA256 
- * 
- * @param {String} message The message need to be signed
- * @param {String} key The secret key used to sign
- * @returns The signature after signing the message using the key
- */
-const createHmacString = (message, key) => {
-    const keyByte = CryptoJS.enc.Utf8.parse(key)
-    const messageByte = CryptoJS.enc.Utf8.parse(message)
-    const signature = CryptoJS.enc.Hex.stringify(
-        CryptoJS.HmacSHA256(messageByte, keyByte)
-    )
-    return signature
-}
 
 /**
  * Create payment link for Momo
@@ -89,7 +73,7 @@ const createMomoLink = async (orderId, orderInfo, amount, items, userInfo, extra
     }
     try {
         const response = await axios.post(
-            'https://test-payment.momo.vn:443/v2/gateway/api/create', 
+            'https://test-payment.momo.vn:443/v2/gateway/api/create',
             requestBody
         )
         return response.data.payUrl

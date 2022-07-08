@@ -1,24 +1,26 @@
 import variantModel from '#src/models/variant.model'
 
 export default {
-    async checkout(req, res, next) {
+    async checkoutBuyNow(req, res, next) {
         try {
             const { email } = req.payload;
-            const { orderId } = req.params;
             const {
-                payment,
+                variantId,
+                quantity,
+                paymentId,
                 shippingAddressId,
-                voucherCode
+                shippingProviderId,
+                voucherId
             } = req.body;
 
-            // const variant = await variantModel.getByVariantId(variantId)
-            // const variantStock = variant.stock
-            // if (variantStock < quantity) {
-            //     return res.send({
-            //         exitcode: 101,
-            //         message: "Out of stock"
-            //     })
-            // }
+            const variant = await variantModel.getByVariantId(variantId)
+            const variantStock = variant.stock
+            if (variantStock < quantity) {
+                return res.send({
+                    exitcode: 101,
+                    message: "Out of stock"
+                })
+            }
 
             const shippingAddress = await shippingAddressModel.getById(shippingAddressId);
             if (shippingAddress === null || shippingAddress.email !== email) {
@@ -28,17 +30,25 @@ export default {
                 })
             }
 
-            const voucher = await voucherModel.getByVoucherCode(voucherCode);
-            if (voucher === null) {
-                return res.send({
-                    exitcode: 103,
-                    message: "Voucher code not found"
-                })
+            if (voucher) {
+                const voucher = await voucherModel.getByVoucherCode(voucherCode);
+                if (voucher === null) {
+                    return res.send({
+                        exitcode: 103,
+                        message: "Voucher code not found"
+                    })
+                }
             }
+
+
 
         } catch (err) {
             next(err)
         }
+    },
+
+    async checkoutCart(req, res, next) {
+
     },
 
     async successMomo(req, res, next) {
