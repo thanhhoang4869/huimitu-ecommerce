@@ -3,7 +3,6 @@ import config from "config/config";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
-  timeout: 5000,
 });
 
 api.interceptors.request.use(async (currentConfig) => {
