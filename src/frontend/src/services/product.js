@@ -10,6 +10,11 @@ const product = {
     const response = await api.get(`/product/${id}`);
     return response;
   },
+
+  async getProductReviews(productId) {
+    const respone = await api.post("/review", {productId})
+    return respone
+  }
 };
 
 export default product;

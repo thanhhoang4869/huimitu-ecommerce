@@ -4,23 +4,27 @@ import { Link, useParams } from "react-router-dom";
 import swal from "sweetalert2";
 
 import { default as ProductService } from "services/product";
+import account from "services/account";
 
 import "./style.css";
 import CustomComment from "components/CustomComment";
 import ProductDetailTilte from "components/ProductDetailTitle";
 
 const ProductDetailPage = () => {
-  const [product, setProduct] = useState({});
-  const [error, setError] = useState("");
+  const [product, setProduct] = useState({})
+  const [reviews, setReviews] = useState([])
+  const [error, setError] = useState("")
   const { id } = useParams();
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await ProductService.getProductById(id);
-        if (data.data.product) {
-          setProduct(data.data.product);
-          console.log(data.data.product);
+        const productData = await ProductService.getProductById(id)
+        const reviewsData = await ProductService.getProductReviews(id)
+
+        if (productData.data.product) {
+          setProduct(productData.data.product)
+          console.log(productData.data.product)
         } else {
           swal.fire({
             text: "Rất tiếc, mặt hàng này không tồn tại",
@@ -29,12 +33,41 @@ const ProductDetailPage = () => {
           });
           //go to 404?
         }
-      } catch (error) {
-        setError(error.message);
+
+        if (reviewsData.reviews) {
+          setReviews(reviewsData.reviews)
+        }
       }
-    };
-    getData();
-  }, []);
+      catch (error) {
+        
+        setError(error.message)
+      }
+    }
+    getData()
+    
+  }, [])
+
+  const addToCartOnSubmit = async (e) => {
+    e.preventDefault()
+    console.log("submit add to cart")
+    try {
+      //TODO: pass the quantity in params
+      const response = await account.addProductToCart(product.id, 1);
+      const { exitcode, message } = response.data;
+
+      console.log(response.data)
+
+      if (exitcode === 0) {
+        //TODO: update the number of item in cart
+
+      } else {
+        setError(message);
+      }
+    } catch (error) {
+      setError(error.response.data.message);
+    }
+  }
+
 
   return (
     <div>
