@@ -111,11 +111,13 @@ export default {
             const categoryTree = buildCategoryRoot(category);
             const selectedRoot = searchCategoryTree(categoryTree, categoryId);
             const listSelectedCategory = toListCategory(selectedRoot)
+            const listSelectedId = listSelectedCategory.map(item => item.id)
+            const count = await productModel.countProductByCategoryList(listSelectedId);
 
             res.status(200).send({
                 exitcode: 0,
                 message: "Get count of product in category successfully",
-                count: listSelectedCategory.length()
+                count: count
             })
         } catch (err) {
             next(err)

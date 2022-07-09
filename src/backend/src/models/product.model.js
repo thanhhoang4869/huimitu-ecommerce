@@ -12,7 +12,7 @@ export default {
             .where('order_state.state', config.orderState.SUCCESS)
             .groupBy('product.id', 'category.category_name')
             .sum('order_variant.quantity as sold_quantity')
-            .orderBy('sold_quantity','desc')
+            .orderBy('sold_quantity', 'desc')
             .select(
                 'product.id',
                 'product.product_name',
@@ -161,5 +161,13 @@ export default {
             )
             .offset(offset).limit(limit)
         return result || null;
+    },
+
+    async countProductByCategoryList(listId) {
+        const result = await db('product')
+            .join('category', 'product.category_id', 'category.id')
+            .whereIn('category.id', listId)
+            .count()
+        return result[0].count;
     }
 }
