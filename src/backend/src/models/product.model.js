@@ -9,7 +9,7 @@ export default {
             .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
             .leftJoin('order', 'order.id', 'order_variant.order_id')
             .leftJoin('order_state', 'order_state.order_id', 'order.id')
-            .where('order_state.state', 'completed')
+            .where('order_state.state', config.orderState.SUCCESS)
             .groupBy('product.id', 'category.category_name')
             .orderByRaw('sold_quantity desc')
             .select(

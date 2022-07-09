@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS "voucher" CASCADE;
 
 CREATE TYPE role_type AS ENUM('user','admin');
 CREATE TYPE gender_type AS ENUM('male','female');
-CREATE TYPE state_type AS ENUM('pending','shipping','cancel','success', 'reviewed');
+CREATE TYPE state_type AS ENUM('pending','paid','shipping','cancel','success', 'reviewed');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,

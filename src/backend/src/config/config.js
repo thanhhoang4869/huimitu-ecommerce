@@ -18,8 +18,17 @@ const config = {
   payment: {
     PAYPAL: 'paypal',
     MOMO: 'momo',
-    PICKUP: 'pickup',
+    COD: 'cod',
     NOWPAYMENT: 'nowpayment'
+  },
+
+  orderState: {
+    PENDING: 'pending',
+    PAID: 'paid',
+    SHIPPING: 'shipping',
+    CANCEL: 'cancel',
+    SUCCESS: 'success',
+    REVIEWED: 'reviewed'
   },
 
   COULDINARY_CONFIG: {
