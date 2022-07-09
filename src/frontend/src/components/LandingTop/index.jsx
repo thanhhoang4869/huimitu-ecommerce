@@ -1,8 +1,9 @@
 import React from "react";
-import CategoryBar from "./CategoryBar";
-import SearchBar from "./SearchBar";
-import Banner from "./Banner";
+import CategoryBar from "../CategoryBar";
+import SearchBar from "../SearchBar";
+import Banner from "../Banner";
 import { Route, Routes } from "react-router-dom";
+import ProductResult from "components/ProductResult";
 
 const LandingTop = (props) => {
   return (
@@ -14,6 +15,7 @@ const LandingTop = (props) => {
             <SearchBar />
             <Routes>
               <Route exact path="/" element={<Banner />} />
+              <Route path="/*" element={<ProductResult />} />
             </Routes>
           </div>
         </div>

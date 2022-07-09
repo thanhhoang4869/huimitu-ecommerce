@@ -3,9 +3,13 @@ import { Link } from "react-router-dom";
 
 import StarRatings from "react-star-ratings";
 
-const ProductItem = ({ product }) => {
+const ProductItem = ({ product, isResult }) => {
   return (
-    <div className="col-lg-3 col-md-4 col-sm-6 mix oranges fresh-meat">
+    <div
+      className={`${
+        isResult ? "col-lg-4" : "col-lg-3"
+      } col-md-4 col-sm-6 mix oranges fresh-meat`}
+    >
       <div className="featured__item">
         <div
           className="featured__item__pic set-bg"

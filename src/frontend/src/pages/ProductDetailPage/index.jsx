@@ -1,81 +1,71 @@
+import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
-import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import account from "services/account";
-import {default as ProductService} from "services/product";
-import swal from "sweetalert2";
-import api from "utils/api";
-
 import { default as ProductService } from "services/product";
 
-import "./style.css";
 import CustomComment from "components/CustomComment";
 import ProductDetailTilte from "components/ProductDetailTitle";
+import "./style.css";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
+  const [category, setCategory] = useState({});
+  const [childCategory, setChildCategory] = useState({});
   const [error, setError] = useState("");
   const { id } = useParams();
 
+  const [quantity, setQuantity] = useState(1);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getData = async () => {
-      const data = await ProductService.getProductById(id);
-        if (data.data.product) {
-          setProduct(data.data.product);
-          console.log(data.data.product);
-        } else {
-          swal.fire({
-            text: "Rất tiếc, mặt hàng này không tồn tại",
-            icon: "info",
-            confirmButtonText: "OK",
-          });
-          //go to 404?
-        }
+      const response = await ProductService.getProductById(id);
+      if (response.data.product) {
+        setProduct(response.data.product);
+        setCategory(response.data.product.category);
+        setChildCategory(response.data.product.category.children);
+      } else {
+        navigate("/");
+      }
+    };
+    getData();
+  }, []);
+
+  const updateQuantity = (delta) => {
+    if (quantity + delta > 0) {
+      setQuantity(quantity + delta);
+      return;
+    } else if (delta >= 1) {
+      setQuantity(delta);
     }
-    getData()
-    
-  }, [])
+  };
 
   const addToCartOnSubmit = async (e) => {
-    e.preventDefault()
-    console.log("submit add to cart")
+    e.preventDefault();
+    console.log("submit add to cart");
     try {
       //TODO: pass the quantity in params
       const response = await account.addProductToCart(product.id, 1);
       const { exitcode, message } = response.data;
 
-      console.log(response.data)
+      console.log(response.data);
 
       if (exitcode === 0) {
         //TODO: update the number of item in cart
-        
       } else {
         setError(message);
       }
     } catch (error) {
       setError(error.response.data.message);
     }
-  }
+  };
 
   return (
     <div>
-      <div className="breadcrumb-area">
-        <div className="container">
-          <div className="d-flex align-items-center">
-            <ul className="breadcrumb-list">
-              <li className="breadcrumb-item">
-                <a href="/">
-                  <i className="fa fa-home"></i>
-                </a>
-              </li>
-              <li className="breadcrumb-item">
-                <Link to="/">{product.categoryName}</Link>
-              </li>
-              <li className="breadcrumb-item">{product.productName}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Breadcrumb category={category} childCategory={childCategory} />
       <div className="product-details-area section-25">
         <div className="container">
           <div className="row">
@@ -118,15 +108,40 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="pro-details-quality">
                   <div className="cart-plus-minus">
-                    <div className="dec qtybutton">-</div>
+                    <div
+                      className="dec qtybutton"
+                      onClick={() => {
+                        updateQuantity(-1);
+                      }}
+                    >
+                      -
+                    </div>
                     <input
                       id="quantity"
                       className="cart-plus-minus-box"
                       min="1"
-                      defaultValue="1"
+                      value={quantity}
                       name="quantity"
+                      number="true"
+                      onChange={(e) => {
+                        if (
+                          e.target.value < 1 ||
+                          Number.isNaN(e.target.value)
+                        ) {
+                          setQuantity(1);
+                        } else {
+                          setQuantity(e.target.value);
+                        }
+                      }}
                     />
-                    <div className="inc qtybutton">+</div>
+                    <div
+                      className="inc qtybutton"
+                      onClick={() => {
+                        updateQuantity(1);
+                      }}
+                    >
+                      +
+                    </div>
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">
@@ -162,23 +177,23 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title = "Mô tả" />
+          <ProductDetailTilte title="Mô tả" />
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
         </div>
 
-        {/* {{!-- Related Product --}} */}
-        <div className="container">
-          <ProductDetailTilte title ="Sản phẩm liên quan" />
-          <ItemHorizonList />
+        <div className="container section-50 mt-5 mb-5">
+          <ProductDetailTilte title="Đánh giá" />
+          <CustomComment />
+          <CustomComment />
+          <CustomComment />
         </div>
 
-        <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title ="Đánh giá" />
-          <CustomComment/>
-          <CustomComment/>
-          <CustomComment/>
+        {/* {{!-- Related Product --}} */}
+        <div className="container">
+          <ProductDetailTilte title="Sản phẩm liên quan" />
+          <ItemHorizonList />
         </div>
       </div>
     </div>
