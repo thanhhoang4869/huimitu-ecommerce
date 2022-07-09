@@ -32,6 +32,7 @@ export default {
                 'district.district_name',
                 'ward.ward_name',
                 'shipping_address.id',
+                'shipping_address.email',
                 'shipping_address.address',
                 'shipping_address.receiver_phone',
                 'shipping_address.receiver_name'

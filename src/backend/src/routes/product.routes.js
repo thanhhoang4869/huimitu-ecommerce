@@ -16,6 +16,7 @@ const router = express.Router();
 router.get('/bestSeller', product.getBestSeller)
 router.get('/newestArrival', product.getNewestArrival)
 router.post('/getByCategory', product.getProductByCategory)
+router.post('/countByCategory', product.countProductByCategory)
 
 router.post(
     '/', 

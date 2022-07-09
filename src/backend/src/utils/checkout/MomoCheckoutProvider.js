@@ -1,7 +1,7 @@
 import config from "#src/config/config"
 import { createHmacString } from "#src/utils/crypto"
 import axios from "axios"
-import {generateOrderId} from '#src/utils/checkout/orderIdGenerator'
+import { generateOrderId } from '#src/utils/checkout/orderIdGenerator'
 
 class MomoCheckoutProvider {
     /**
@@ -38,7 +38,7 @@ class MomoCheckoutProvider {
         const requestId = partnerCode + new Date().getTime();
 
         const redirectUrl = "https://www.facebook.com/phuc16102001"
-        const ipnUrl = "localhost:8080/checkout/momoSuccess"
+        const ipnUrl = "https://9ceb-2402-800-631c-2e16-e1fa-a09b-38bf-7af9.ap.ngrok.io/checkout/successMomo"
         const requestType = "captureWallet"
 
         const rawSignature = [
