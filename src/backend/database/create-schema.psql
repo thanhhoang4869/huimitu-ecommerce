@@ -146,7 +146,7 @@ CREATE TABLE "review" (
   "order_id" int,
   "rating" int,
   "comment" varchar,
-  "created_time" timestamp NOT NULL,
+  "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY ("product_variant_id", "order_id")
 );
 
