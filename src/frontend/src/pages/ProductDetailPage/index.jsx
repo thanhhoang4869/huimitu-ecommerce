@@ -11,20 +11,22 @@ import CustomComment from "components/CustomComment";
 import ProductDetailTilte from "components/ProductDetailTitle";
 
 const ProductDetailPage = () => {
-  const [product, setProduct] = useState({})
-  const [reviews, setReviews] = useState([])
-  const [error, setError] = useState("")
+  const [product, setProduct] = useState({});
+  const [reviews, setReviews] = useState([]);
+  const [error, setError] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const productData = await ProductService.getProductById(id)
-        const reviewsData = await ProductService.getProductReviews(id)
+        const productResponse = await ProductService.getProductById(id);
+        const reviewsResponse = await ProductService.getProductReviews(id);
 
-        if (productData.data.product) {
-          setProduct(productData.data.product)
-          console.log(productData.data.product)
+        const productData = productResponse.data.product;
+        const reviewsData = reviewsResponse.data.reviews;
+        if (productData) {
+          setProduct(productData);
+          console.log(productData);
         } else {
           swal.fire({
             text: "Rất tiếc, mặt hàng này không tồn tại",
@@ -34,40 +36,36 @@ const ProductDetailPage = () => {
           //go to 404?
         }
 
-        if (reviewsData.reviews) {
-          setReviews(reviewsData.reviews)
+        console.log(reviewsData);
+        if (reviewsData) {
+          setReviews(reviewsData);
         }
+      } catch (error) {
+        setError(error.message);
       }
-      catch (error) {
-        
-        setError(error.message)
-      }
-    }
-    getData()
-    
-  }, [])
+    };
+    getData();
+  }, []);
 
   const addToCartOnSubmit = async (e) => {
-    e.preventDefault()
-    console.log("submit add to cart")
+    e.preventDefault();
+    console.log("submit add to cart");
     try {
       //TODO: pass the quantity in params
       const response = await account.addProductToCart(product.id, 1);
       const { exitcode, message } = response.data;
 
-      console.log(response.data)
+      console.log(response.data);
 
       if (exitcode === 0) {
         //TODO: update the number of item in cart
-
       } else {
         setError(message);
       }
     } catch (error) {
       setError(error.response.data.message);
     }
-  }
-
+  };
 
   return (
     <div>
@@ -174,7 +172,7 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title = "Mô tả" />
+          <ProductDetailTilte title="Mô tả" />
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
@@ -182,15 +180,16 @@ const ProductDetailPage = () => {
 
         {/* {{!-- Related Product --}} */}
         <div className="container">
-          <ProductDetailTilte title ="Sản phẩm liên quan" />
+          <ProductDetailTilte title="Sản phẩm liên quan" />
           <ItemHorizonList />
         </div>
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title ="Đánh giá" />
-          <CustomComment/>
-          <CustomComment/>
-          <CustomComment/>
+          <ProductDetailTilte title="Đánh giá" />
+
+          {reviews.map((review, index) => (
+            <CustomComment key={index} review={review} />
+          ))}
         </div>
       </div>
     </div>

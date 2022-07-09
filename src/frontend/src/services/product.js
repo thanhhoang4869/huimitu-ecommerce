@@ -12,7 +12,7 @@ const product = {
   },
 
   async getProductReviews(productId) {
-    const respone = await api.post("/review", {productId})
+    const respone = await api.post("/review/getReview", {productId})
     return respone
   }
 };

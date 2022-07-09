@@ -1,36 +1,37 @@
 import React from "react";
+import { UserOutlined } from "@ant-design/icons";
+
 import { Avatar, Comment, Tooltip } from "antd";
 import StarRatings from "react-star-ratings";
 import moment from "moment";
 
 import "./style.css";
 
-const CustomComment = () => {
+const CustomComment = ({ review }) => {
   return (
     <div className="comment">
       <div className="comment-content">
         <Comment
           // actions={actions}
-          author={<a>Nguyễn Nga</a>}
+          author={<a>{review.fullName}</a>}
           avatar={
-            <Avatar src="https://joeschmoe.io/api/v1/random" alt="Nguyễn Nga" />
+            <Avatar
+              src={review.avatarPath}
+              icon={<UserOutlined />}
+              alt={review.fullName}
+            />
           }
-          content={
-            <p>
-              Hàng đẹp nha mọi người , xinh lắm luôn . Đóng gói sản phẩm cẩn thận. Sẽ ủng hộ.
-              Chất lượng sản phẩm tốt, đóng gói đẹp cẩn thận, giao hàng đúng số lượng nhanh chóng
-            </p>
-          }
+          content={<p>{review.comment}</p>}
           datetime={
-            <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-              <span>{moment().fromNow()}</span>
-            </Tooltip>
+            <span>
+              {moment(review.createdTime).format("DD/MM/YYYY HH:mm:ss")}
+            </span>
           }
         />
       </div>
       <div className="comment-rating">
         <StarRatings
-          rating={4.5}
+          rating={parseFloat(review.rating)}
           starRatedColor="orange"
           starDimension="20px"
           // changeRating={this.changeRating}
