@@ -29,7 +29,7 @@ export default {
             }
 
             // Check for shipping address correctness
-            const shippingAddress = await shippingAddressModel.getById(shippingAddressId);
+            const shippingAddress = await shippingAddressModel.getShippingAddressById(shippingAddressId);
             if (shippingAddress === null || shippingAddress.email !== email) {
                 return res.send({
                     exitcode: 102,

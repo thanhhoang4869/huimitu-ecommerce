@@ -43,30 +43,30 @@ CREATE TABLE "account" (
 
 CREATE TABLE "province" (
   "id" int PRIMARY KEY,
-  "province_name" varchar 
+  "province_name" varchar NOT NULL
 );
 
 CREATE TABLE "district" (
   "id" int PRIMARY KEY,
-  "district_name" varchar,
-  "province_id" int
+  "district_name" varchar NOT NULL,
+  "province_id" int NOT NULL
 );
 
 CREATE TABLE "ward" (
   "id" int PRIMARY KEY,
-  "ward_name" varchar,
-  "district_id" int
+  "ward_name" varchar NOT NULL,
+  "district_id" int NOT NULL
 );
 
 CREATE TABLE "shipping_address" (
   "id" SERIAL PRIMARY KEY,
-  "email" varchar,
-  "province_id" int,
-  "district_id" int,
-  "ward_id" int,
-  "address" varchar,
-  "receiver_phone" varchar,
-  "receiver_name" varchar
+  "email" varchar NOT NULL,
+  "province_id" int NOT NULL,
+  "district_id" int NOT NULL,
+  "ward_id" int NOT NULL,
+  "address" varchar NOT NULL,
+  "receiver_phone" varchar NOT NULL,
+  "receiver_name" varchar NOT NULL
 );
 
 CREATE TABLE "category" (

@@ -29,17 +29,17 @@ export default {
         try {
             const { email } = req.payload;
             const {
-                provinceName,
-                districtName,
-                wardName,
+                provinceId,
+                districtId,
+                wardId,
                 address,
                 receiverPhone,
                 receiverName
             } = req.body;
             const entity = {
-                provinceName: provinceName,
-                districtName: districtName,
-                wardName: wardName,
+                provinceId: provinceId,
+                districtId: districtId,
+                wardId: wardId,
                 address: address,
                 receiverPhone: receiverPhone,
                 receiverName: receiverName
