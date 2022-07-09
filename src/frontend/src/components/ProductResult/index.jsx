@@ -12,14 +12,18 @@ const ProductResult = () => {
   const [isBigCategory, setIsBigCategory] = useState(false);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
+
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
+
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const page = searchParams.get("page");
     getCategory(+location.pathname.split("/")[2]);
-    getProducts(+location.pathname.split("/")[2]);
-    // getTotalProduct(+location.pathname.split("/")[2]);
+    getProducts(+location.pathname.split("/")[2], page);
+    getTotalProduct(+location.pathname.split("/")[2]);
   }, [location]); // eslint-disable-line
 
   const getCategory = (categoryId) => {
@@ -40,12 +44,12 @@ const ProductResult = () => {
     }
   };
 
-  const getProducts = async (categoryId) => {
+  const getProducts = async (categoryId, page) => {
     try {
       const request = {
         categoryId: +categoryId,
         limit: 6,
-        offset: 0,
+        offset: +(page - 1) * 6,
       };
       const response = await productService.getProductsByCategory(request);
       setProducts(response.data.products);
@@ -72,6 +76,13 @@ const ProductResult = () => {
     }
   };
 
+  const onPageChange = (page) => {
+    navigate({
+      pathname: `/category/${category.id}`,
+      search: `?page=${page}`,
+    });
+  };
+
   return (
     <>
       <Breadcrumb
@@ -90,7 +101,7 @@ const ProductResult = () => {
             <>
               <ItemHorizonList products={products} isResult={true} />
               <div style={{ textAlign: "end" }}>
-                <Paging total={total} />
+                <Paging total={total} onPageChange={onPageChange} />
               </div>
             </>
           ) : (

@@ -21,8 +21,8 @@ const product = {
     return response;
   },
 
-  async countByCategory(productId) {
-    const response = await api.post("/product/countByCategory", { productId });
+  async countByCategory(categoryId) {
+    const response = await api.post("/product/countByCategory", { categoryId });
     return response;
   },
 };

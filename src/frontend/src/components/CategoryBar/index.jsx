@@ -40,7 +40,10 @@ const CategoryBar = (props) => {
 
   const onClick = (e) => {
     setCurrent(e.key);
-    navigate(`/category/${e.key}`);
+    navigate({
+      pathname: `/category/${e.key}`,
+      search: "?page=1",
+    });
   };
 
   const [current, setCurrent] = useState("1");

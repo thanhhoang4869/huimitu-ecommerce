@@ -6,11 +6,11 @@ const showTotal = (total) => `Total ${total} items`;
 const Paging = (props) => (
   <>
     <Pagination
-      total={50}
+      total={props.total}
       pageSize={6}
       showTotal={showTotal}
       onChange={(page) => {
-        alert(page);
+        props.onPageChange(page);
       }}
     />
   </>
