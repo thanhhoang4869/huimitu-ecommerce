@@ -9,7 +9,7 @@ export default {
             .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
             .leftJoin('order', 'order.id', 'order_variant.order_id')
             .leftJoin('order_state', 'order_state.order_id', 'order.id')
-            .where('order_state.state', 'completed')
+            .where('order_state.state', config.orderState.SUCCESS)
             .groupBy('product.id', 'category.category_name')
             .orderByRaw('sold_quantity desc')
             .select(
@@ -54,18 +54,19 @@ export default {
             .where({
                 "product.id": productId,
             })
-            .select(
-                'product.id',
-                'product.product_name',
-                'category.category_name',
-                'product.description',
-                'product.avg_rating',
-                'product.count_rating',
-                'product.min_price',
-                'product.max_price',
-                'product.stock',
-                'product.created_time'
-            )
+            .select({
+                id: 'product.id',
+                product_name: 'product.product_name',
+                category_id: 'category.id',
+                category_name: 'category.category_name',
+                description: 'product.description',
+                avg_rating: 'product.avg_rating',
+                count_rating: 'product.count_rating',
+                min_price: 'product.min_price',
+                max_price: 'product.max_price',
+                stock: 'product.stock',
+                created_tim: 'product.created_time'
+            })
         return result[0] || null;
     },
 

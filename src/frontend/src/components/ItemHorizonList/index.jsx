@@ -1,7 +1,7 @@
 import React from "react";
 import ProductItem from "components/ProductItem";
 
-const ItemHorizonList = () => {
+const ItemHorizonList = (props) => {
   const products = [
     {
       id: 0,
@@ -26,11 +26,19 @@ const ItemHorizonList = () => {
   ];
 
   return (
-    <div className="row featured__filter">
-      {products.map((product) => {
-        return <ProductItem key={product.id} product={product} />;
-      })}
-    </div>
+    <>
+      <div className="row">
+        {products.map((product) => {
+          return (
+            <ProductItem
+              key={product.id}
+              product={product}
+              isResult={props.isResult}
+            />
+          );
+        })}
+      </div>
+    </>
   );
 };
 
