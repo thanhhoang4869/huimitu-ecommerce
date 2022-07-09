@@ -5,27 +5,39 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 const ProductResult = () => {
-  const location = useLocation();
   const [category, setCategory] = useState({});
   const [childCategory, setChildCategory] = useState({});
+  const [isBigCategory, setIsBigCategory] = useState(false);
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
+  const location = useLocation();
 
   useEffect(() => {
-    const categoryId = window.location.pathname.split("/")[2];
+    const categoryId = location.pathname.split("/")[2];
+
     for (let category in categoryList) {
-      const children = categoryList[category].children;
-      for (let child in children) {
-        if (+children[child].id === +categoryId) {
-          setCategory(categoryList[category]);
-          setChildCategory(children[child]);
+      if (+categoryList[category].id === +categoryId) {
+        setIsBigCategory(true);
+        setCategory(categoryList[category]);
+      } else {
+        const children = categoryList[category].children;
+        for (let index in children) {
+          if (+children[index].id === +categoryId) {
+            setIsBigCategory(false);
+            setCategory(categoryList[category]);
+            setChildCategory(children[index]);
+          }
         }
       }
     }
-  }, [window.location.pathname]);
+  }, [location]); // eslint-disable-line
 
   return (
     <>
-      <Breadcrumb category={category} childCategory={childCategory} />
+      <Breadcrumb
+        isBigCategory={isBigCategory}
+        category={category}
+        childCategory={childCategory}
+      />
       <section className="mb-3 mt-3">
         <div className="container">
           {/* <div className="row">
