@@ -8,9 +8,9 @@ const api = axios.create({
 api.interceptors.request.use(async (currentConfig) => {
   const customHeaders = {};
 
-  const accessToken = localStorage.getItem(config.storageKeys.ACCESS_TOKEN);
+  const accessToken = localStorage.getItem(config.storageKeys.ACCESS_KEY);
   if (accessToken) {
-    customHeaders.Authorization = accessToken;
+    customHeaders['x-access-token'] = accessToken;
   }
 
   return {

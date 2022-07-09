@@ -10,6 +10,7 @@ const config = {
     port: 5432,
   },
 
+  NO_TOKEN_URL: ["/auth", "/location", "/category", "/product"],
   role: {
     USER: "user",
     ADMIN: "admin",
@@ -34,7 +35,7 @@ const config = {
   COULDINARY_CONFIG: {
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
+    api_secret: process.env.CLOUDINARY_API_SECRET,
   },
 
   CLOUDINARY_PRODUCT_PATH: "huimitu/product/",
@@ -60,7 +61,7 @@ const config = {
 
   BEST_SELLER_LIMIT: 4,
   PRODUCT_IMAGE_NUMBER_LIMIT: 4,
-  AVATAR_IMAGE_NUMBER_LIMIT: 1
+  AVATAR_IMAGE_NUMBER_LIMIT: 1,
 };
 
 export default config;

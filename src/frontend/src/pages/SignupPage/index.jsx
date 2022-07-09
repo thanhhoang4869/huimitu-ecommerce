@@ -47,7 +47,11 @@ const SignupPage = (props) => {
       });
       return;
     }
-    if (phone.length !== 10) {
+
+    if (
+      phone.length !== 10 ||
+      !/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(phone)
+    ) {
       swal.fire({
         title: "Error",
         text: "Vui lòng nhập số điện thoại hợp lệ",
@@ -162,7 +166,6 @@ const SignupPage = (props) => {
           <i className="ml-2 fa fa-phone"></i>
           <input
             name="phone"
-            type="number"
             placeholder="SĐT"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
