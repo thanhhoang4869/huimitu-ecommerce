@@ -10,7 +10,7 @@ const NotFoundPage = () => {
       className="d-flex container flex-column justify-content-center my-5"
       style={{ height: "60vh" }}
       title="404"
-      subTitle="Sorry, the page you visited does not exist."
+      subTitle="Trang bạn tìm kiếm không tồn tại."
       extra={
         <Button
           type="primary"
@@ -18,7 +18,7 @@ const NotFoundPage = () => {
             navigation("/");
           }}
         >
-          Homepage
+          Trang chủ
         </Button>
       }
     />

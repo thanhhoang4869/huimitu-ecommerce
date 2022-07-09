@@ -8,7 +8,7 @@ const NotFoundPage = () => {
     <Result
       status="500"
       title="500"
-      subTitle="Sorry, something went wrong."
+      subTitle="Đã có lỗi xảy ra. Vui lòng thử lại sau."
       extra={
         <Button
           type="primary"
@@ -16,7 +16,7 @@ const NotFoundPage = () => {
             navigation("/");
           }}
         >
-          Homepage
+          Trang chủ
         </Button>
       }
     />

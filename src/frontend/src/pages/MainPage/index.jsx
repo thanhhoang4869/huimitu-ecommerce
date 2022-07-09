@@ -13,6 +13,7 @@ import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
 import category from "services/category";
 import NotFoundPage from "pages/NotFoundPage";
+import ServerErrorPage from "pages/ServerErrorPage";
 
 const MainPage = () => {
   const [token, setToken] = useState(
@@ -80,6 +81,7 @@ const MainPage = () => {
             path="/product/detail/:id"
             element={<ProductDetailPage />}
           />
+          <Route exact path="/error" element={<ServerErrorPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

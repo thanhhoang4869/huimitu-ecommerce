@@ -1,4 +1,7 @@
-DROP TYPE IF EXISTS "role" CASCADE;
+DROP TYPE IF EXISTS "role_type" CASCADE;
+DROP TYPE IF EXISTS "gender_type" CASCADE;
+DROP TYPE IF EXISTS "state_type" CASCADE;
+
 DROP TABLE IF EXISTS "account" CASCADE;
 DROP TABLE IF EXISTS "province" CASCADE;
 DROP TABLE IF EXISTS "district" CASCADE;
@@ -20,7 +23,9 @@ DROP TABLE IF EXISTS "voucher" CASCADE;
 
 ----------------------- CREATE TABLE -------------------------
 
-CREATE TYPE role AS ENUM('user','admin');
+CREATE TYPE role_type AS ENUM('user','admin');
+CREATE TYPE gender_type AS ENUM('male','female');
+CREATE TYPE state_type AS ENUM('pending','paid','shipping','cancel','success','reviewed');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -28,9 +33,10 @@ CREATE TABLE "account" (
   "phone" varchar UNIQUE,
   "fullname" varchar,
   "birthday" date,
-  "gender" varchar,
-  "avatar" varchar,
-  "role" role,
+  "gender" gender_type,
+  "avatar_path" varchar,
+  "avatar_filename" varchar,
+  "role" role_type,
   "verified" bool DEFAULT false,
   "token" char(64)
 );
@@ -92,7 +98,7 @@ CREATE TABLE "product_image" (
   "id" SERIAL PRIMARY KEY,
   "product_id" int,
   "path" varchar NOT NULL,
-  "is_primary" boolean 
+  "filename" varchar
 );
 
 CREATE TABLE "product_variant" (
@@ -105,9 +111,9 @@ CREATE TABLE "product_variant" (
 );
 
 CREATE TABLE "order" (
-  "id" SERIAL PRIMARY KEY,
+  "id" varchar PRIMARY KEY,
   "email" varchar,
-  "created_time" timestamp,
+  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "payment_id" int NOT NULL,
   "shipping_address_id" int NOT NULL,
   "total" real NOT NULL,
@@ -117,7 +123,7 @@ CREATE TABLE "order" (
 );
 
 CREATE TABLE "order_variant" (
-  "order_id" int,
+  "order_id" varchar,
   "variant_id" int,
   "quantity" int NOT NULL,
   "variant_price" real NOT NULL,
@@ -139,11 +145,12 @@ CREATE TABLE "cart_variant" (
 );
 
 CREATE TABLE "review" (
-  "product_id" int,
-  "order_id" int,
+  "product_variant_id" int,
+  "order_id" varchar,
   "rating" int,
   "comment" varchar,
-  PRIMARY KEY ("product_id", "order_id")
+  "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY ("product_variant_id", "order_id")
 );
 
 CREATE TABLE "shipping_provider" (
@@ -152,9 +159,9 @@ CREATE TABLE "shipping_provider" (
 );
 
 CREATE TABLE "order_state" (
-  "order_id" int,
-  "state" varchar NOT NULL,
-  "created_time" timestamp NOT NULL,
+  "order_id" varchar,
+  "state" state_type NOT NULL,
+  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY ("order_id", "state")
 );
 
@@ -179,15 +186,13 @@ ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "account" ("
 
 ALTER TABLE "order" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 
-ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
-
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
 
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
 ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id") ON DELETE CASCADE;
 ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id") ON DELETE CASCADE;
 
-ALTER TABLE "review" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
+ALTER TABLE "review" ADD FOREIGN KEY ("product_variant_id") REFERENCES "product_variant" ("id");
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
 ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "product_variant" ("id");
@@ -201,6 +206,7 @@ ALTER TABLE "order" ADD FOREIGN KEY ("voucher_id") REFERENCES "voucher" ("id");
 ALTER TABLE "order_variant" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
+ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email") ON DELETE CASCADE;
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
 ------------------------- FUNCTION ---------------------------
@@ -209,7 +215,6 @@ ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 CREATE OR REPLACE FUNCTION update_min_max_price_stock_product() RETURNS trigger AS
 $$
 BEGIN
-
   -- Update prices
   UPDATE "product" AS p
   SET ("min_price", "max_price") = (
@@ -233,6 +238,26 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+--- Update avg_rating and count_rating of a product after add review
+CREATE OR REPLACE FUNCTION update_avg_count_rating_product() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE "product" AS p
+  SET ("avg_rating", "count_rating") = (
+    SELECT cast(sum(r.rating) AS DECIMAL) / count(*), count(*)
+    FROM "review" AS r JOIN "product_variant" AS pv 
+    ON pv.id = COALESCE(NEW.product_variant_id, OLD.product_variant_id)
+    WHERE pv.product_id = p.id
+  )
+  WHERE p.id = (
+    SELECT pv.product_id FROM product_variant AS pv
+    WHERE pv.id = COALESCE(NEW.product_variant_id, OLD.product_variant_id)
+  );
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
 --- Create cart related to the account
 CREATE OR REPLACE FUNCTION create_cart_for_account() RETURNS trigger AS
 $$
@@ -249,18 +274,43 @@ $$
 BEGIN
   UPDATE "cart" AS c
   SET (total, count) = (
-    SELECT SUM(cv.quantity * LEAST(pv.price,pv.discount_price)), SUM(cv.quantity)
+    SELECT COALESCE(0,SUM(cv.quantity * LEAST(pv.price,pv.discount_price))), COALESCE(0,SUM(cv.quantity))
     FROM "cart_variant" AS cv
     JOIN "product_variant" AS pv
     ON cv.variant_id = pv.id
   ) 
   WHERE c.id = COALESCE(OLD.cart_id,NEW.cart_id);
-
   RETURN NULL;
 END;
 $$
 LANGUAGE 'plpgsql';
 
+--- Update total price of order
+CREATE OR REPLACE FUNCTION update_total_order() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE "order" AS o
+  SET (total) = (
+    SELECT COALESCE(0,SUM(ov.quantity * LEAST(pv.price,pv.discount_price)))
+    FROM "order_variant" AS ov
+    JOIN "product_variant" AS pv
+    ON ov.variant_id = pv.id
+  ) 
+  WHERE o.id = COALESCE(OLD.order_id,NEW.order_id);
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+--- Create pending state for order
+CREATE OR REPLACE FUNCTION create_order_pending_state() RETURNS trigger AS
+$$
+BEGIN
+  INSERT INTO "order_state"("order_id","state") VALUES(NEW.id, 'pending');
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
 -------------------------- TRIGGER ------------------------------
 
 --- Update min, max, stock of product after change variant
@@ -269,6 +319,13 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "product_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_min_max_price_stock_product();
+
+--- Update rating count and avg when review changes
+CREATE TRIGGER insert_review
+AFTER INSERT OR UPDATE OR DELETE
+ON "review"
+FOR EACH ROW
+EXECUTE PROCEDURE update_avg_count_rating_product();
 
 --- Create cart after insert new account
 CREATE TRIGGER insert_account
@@ -284,24 +341,38 @@ ON "cart_variant"
 FOR EACH ROW 
 EXECUTE PROCEDURE update_total_count_cart();
 
+--- Create status for order
+CREATE TRIGGER create_order
+AFTER INSERT
+ON "order"
+FOR EACH ROW
+EXECUTE PROCEDURE create_order_pending_state();
+
+--- Insert variant for order
+CREATE TRIGGER insert_order_variant
+AFTER INSERT OR UPDATE OR DELETE
+ON "order_variant"
+FOR EACH ROW
+EXECUTE PROCEDURE update_total_order();
+
 ----------------------- INSERT DATA -------------------------
 
---- Admin password: admin
---- User password: user
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('phuc16102001@gmail.com','ODYyNCYzZjA5M2ZjNTUyMTc3NDg1YWU4YzljZDNkMDZhOGNkNGE5YTcyMTE3ODVkYTNkNGQwNTViYmU3MWZkYmU3YjJh','0707953475','Đỗ Vương Phúc','2001-10-16','male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('thanhhoang4869@gmail.com','MGE5MiY4NTQ5OWY5M2ZlN2I3YzEyOGJmYzE3MzljMTg1N2RlOWQxNzhiYjFiNWM0YjUwNDhhZDE0NzFhYTBhMGViM2Nj','0933442607','Hoàng Như Thanh','2001-07-26','female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nnhatdu@gmail.com','MmJlZSZkZDhlYjY0MjQ3MGYwODIwMWJjNWQ5MWQyMDM0MDA0MjliYmQ2YWFkZTczMzQ5YmFiNjI0MTZiMTI3YzI3ODVi','0987654321','Ngô Nhật Du',NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('longmydu@gmail.com','ZGM5NyZmZDM1MzgyMTFkN2U3MzJhZGYwMWQzMWM5MjQ1NzY0ZDBiOTE5OTQ1Nzg3ZDNlMDBmMDY3YTdhNWQwYjNjNGJl','0987654322','Long Mỹ Du',NULL,'female',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('nhkduy201@gmail.com','Y2JiYyZiMzBkODNmYmQ0OTcxNzFhZTcyMTZiNGE5ZWQ2NmVhN2NjODg3NTUyZmRjZmVjMTA1M2FlMDIwOWY3Nzg2MTJk','0987654323','Nguyễn Hoàng Khánh Duy',NULL,'male',NULL,'admin');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user1@gmail.com','NGQyNiYyZjNhMjIxYjEwNzRkYWUzZGRkOGQ0NmIyN2I3ZmRiZDgwNWU1ZjhjZTMyMmE3NTExZGQ0NzFlMDk5MmVmMjdi','0987654324','User 1',NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user2@gmail.com','NTk2NCY1N2ZjYjY4OTVmNzYwZTQ3OWY0ZGVhNzJkM2Y4ZWZkMjY1NWU0Yjk3M2I2ZGZmZTY5YTNkMGMzMDhiNTM0ZDJm','0987654325','User 2',NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user3@gmail.com','NWRhNSYyZmM2MGZlNTQ1ZDk1Y2Q1YzY0MjI3ZTMwOGUzZjExNDQ0Y2NmOTUzMTZjMGZjMWNiZjI0NjhiMmQyNDg2NGEy','0987654326','User 3',NULL,'female',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user4@gmail.com','MDRlMSYyMGI4YzRiMmVhMThiMmNhNWY3YmUyMGE1MzhjYjMzZWU2MTk0OTNkZjkzMjk3MzFjMzg3MzA2MmY4NmEzNTI5','0987654327','User 4',NULL,'male',NULL,'user');
-INSERT INTO "account"("email","password","phone","fullname","birthday","gender","avatar","role") VALUES('user5@gmail.com','MjUzYSYwYTkwYTFhNDhhZjRiOGYxODEwZWQ2YWM3ZGVkNjc2NzZkOTg1ZTI4ZmI0ZjE5MTFjZWM1MTBlNmRmZmVjM2Ey','0987654328','User 5',NULL,'female',NULL,'user');
+--- Admin password: admin123
+--- User password: user123
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('phuc16102001@gmail.com','MzkwNyY5ODhlOTFhNTM1MGMwN2E4NGViMThhOTljNzhjN2Q2Mzg3OTE3YzJmNzRiODU4MDU1Y2ZiMjE5YmE0NTA4NWU2','0707953475','Đỗ Vương Phúc','2001-10-16','male','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('thanhhoang4869@gmail.com','NTgzMyYzNGQ3NWIzY2UwMTM4MDFjNmFiYjQ5ZjM0YzU5NDYwZGFjN2U4ZDc3MTU0ODNjZWMwZWI0ZjIyNzE1YmNmY2Zj','0933442607','Hoàng Như Thanh','2001-07-26','female','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('nnhatdu@gmail.com','YTIwZCYyYWUyZmMxYmIyZDUwYzFlNDhkMzRkZjk5ZTZmYzg4YjM4ZDAwYzliNTU0MGViMWRiNWU4OTg4YjdmZjA4ZTE0','0987654321','Ngô Nhật Du',NULL,'female','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('longmydu@gmail.com','ZDYxYyZhZjY5YmNhMGQ2YjkzMzZhNjZhYzk4MDBhMTcwZTE0OGQ5ZDRlYmRkMjA0NDE2ODc1MmIyOTAyN2NlNGU5OWM0','0987654322','Long Mỹ Du',NULL,'female','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('nhkduy201@gmail.com','OThiNCYyZGQyNTA0N2Y0YmRhZTYwN2I2ZTc3YjA5OTAzZWJkY2QyZDdkOTE3ZDUxOTYxNTU4ODlhYjRiNDllNTZmNjE2','0987654323','Nguyễn Huỳnh Khánh Duy',NULL,'male','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user1@gmail.com','MGU0ZCZkMTljZWM3ZDRlNGRlZGQxYTRkYTdkYThmM2YzNWU2YTE1OTlkZmUyN2JhM2EyYjI5MzNkZWVjMzQ3OWRlYjVm','0987654324','User 1',NULL,'female','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user2@gmail.com','OTgwMiZkYjhjMWQwZGFhOGJhNjBiMDJhOWUyZTVkOWI1MTkwMWI2N2MxZGYyYzJhMDE0ZjQ5MTVjMjczMWIxMjFlYTQ3','0987654325','User 2',NULL,'male','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user3@gmail.com','OWQ3MiY5NjcxODhlNGU4Njk3YzkxMjc1ZmY0YTgwYTcxYmQzM2VjNDMzNGUzYTE2MGM5NzVjZDYyMWFhNTQ2YWMzNGM2','0987654326','User 3',NULL,'female','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user4@gmail.com','NjM2NyZiM2FiYTI5OWFiN2RjN2IzNjVlMjIyNWI3ZjZkMDhmOTg5ZjY5M2ZhZDgyMDkyMGEyNWZkODRmMTI1OTg2OTI3','0987654327','User 4',NULL,'male','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user5@gmail.com','NGI5MCZkZjQxYzY5YzE4ZjJhOGY4MDExOTU1NTI3MzNhY2Y3MzliYzc3Yjg5Y2Q2NDBhOWJmMjBmYWFiNDY3Y2Y2YWMw','0987654328','User 5',NULL,'female','user',true);
 
 INSERT INTO "payment"("provider") VALUES('paypal');
 INSERT INTO "payment"("provider") VALUES('momo');
-INSERT INTO "payment"("provider") VALUES('pickup');
+INSERT INTO "payment"("provider") VALUES('cod');
 INSERT INTO "payment"("provider") VALUES('nowpayment');
 
 INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ trang trí',NULL);
@@ -355,3 +426,17 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
 INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khay cuộn bánh không dính','120000',NULL,'29');
+
+INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1, 'Ahamove');
+
+-- INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A');
+
+-- INSERT INTO "voucher"("id","voucher_code","discount","minimum_price","start_date","end_date") VALUES(1,'123',10,100,'2023-01-01',NULL);
+
+-- INSERT INTO "order"("id","email","created_time","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_id") VALUES(1, 'nhkduy201@gmail.com', '2023-01-01', 1, 1, 100, 1, 10, 1);
+-- INSERT INTO "order"("id","email","created_time","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_id") VALUES(2, 'nhkduy201@gmail.com', '2023-02-02', 1, 1, 100, 1, 10, 1);
+-- INSERT INTO "order"("id","email","created_time","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_id") VALUES(3, 'nhkduy201@gmail.com', '2023-03-03', 1, 1, 100, 1, 10, 1);
+
+-- INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,1,5,'This is the first comment!','2022-01-01');
+-- INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,2,0,'This is the second comment!','2022-01-01');
+-- INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,3,3,'This is the third comment!','2022-01-01');

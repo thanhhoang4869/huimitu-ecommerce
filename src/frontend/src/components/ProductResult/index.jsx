@@ -2,18 +2,27 @@ import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 import Paging from "components/Paging";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { default as productService } from "services/product";
 
 const ProductResult = () => {
   const [category, setCategory] = useState({});
   const [childCategory, setChildCategory] = useState({});
   const [isBigCategory, setIsBigCategory] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [categoryId, setCategoryId] = useState(1);
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const categoryId = location.pathname.split("/")[2];
+    setCategoryId(+location.pathname.split("/")[2]);
+    getCategory(categoryId);
+    getProducts(categoryId);
+  }, [location]); // eslint-disable-line
 
+  const getCategory = (categoryId) => {
     for (let category in categoryList) {
       if (+categoryList[category].id === +categoryId) {
         setIsBigCategory(true);
@@ -29,7 +38,27 @@ const ProductResult = () => {
         }
       }
     }
-  }, [location]); // eslint-disable-line
+  };
+
+  const getProducts = async () => {
+    try {
+      const request = {
+        categoryId: +categoryId,
+        limit: 6,
+        offset: 0,
+      };
+      const response = await productService.getProductsByCategory(request);
+      const products = response.data.products;
+      setProducts(products);
+      console.log(response.data.products);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
 
   return (
     <>
