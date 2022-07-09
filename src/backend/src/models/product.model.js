@@ -143,10 +143,10 @@ export default {
         return result;
     },
 
-    async getProductByCategoryList(listName, limit, offset) {
+    async getProductByCategoryList(listId, limit, offset) {
         const result = await db('product')
             .join('category', 'product.category_id', 'category.id')
-            .whereIn('category.category_name', listName)
+            .whereIn('category.id', listId)
             .select(
                 'product.id',
                 'product.product_name',

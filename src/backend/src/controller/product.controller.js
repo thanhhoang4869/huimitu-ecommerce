@@ -72,9 +72,9 @@ export default {
             const categoryTree = buildCategoryRoot(category);
             const selectedRoot = searchCategoryTree(categoryTree, categoryId);
             const listSelectedCategory = toListCategory(selectedRoot)
-            const listSelectedName = listSelectedCategory.map(item => item.categoryName)
+            const listSelectedId = listSelectedCategory.map(item => item.id)
 
-            const resultProduct = await productModel.getProductByCategoryList(listSelectedName, limit, offset);
+            const resultProduct = await productModel.getProductByCategoryList(listSelectedId, limit, offset);
             const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
@@ -97,6 +97,25 @@ export default {
                 exitcode: 0,
                 message: "Get product successfully",
                 products: products
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async countProductByCategory(req, res, next) {
+        try {
+            const { categoryId } = req.body;
+            const category = await categoryModel.get()
+
+            const categoryTree = buildCategoryRoot(category);
+            const selectedRoot = searchCategoryTree(categoryTree, categoryId);
+            const listSelectedCategory = toListCategory(selectedRoot)
+
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get count of product in category successfully",
+                count: listSelectedCategory.length()
             })
         } catch (err) {
             next(err)
