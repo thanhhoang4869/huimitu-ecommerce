@@ -62,15 +62,15 @@ const LogInPage = (props) => {
     if (validateFields(email, password)) {
       try {
         const response = await account.login(email, password);
-        const { exitcode, token } = response.data;
-  
+        const { exitcode, token, message } = response.data;
+
         if (exitcode === 0) {
           handleLogin(token);
         } else {
-          setError(response.data);
+          setError(message);
         }
       } catch (error) {
-        setError(error.message);
+        setError(error.response.data.message);
       }
     }
   };
@@ -94,7 +94,7 @@ const LogInPage = (props) => {
 
   return (
     <div className="d-flex container flex-column justify-content-center my-5">
-      {error && <p className="text-danger">{error.message}</p>}
+      {error && <p className="text-danger">{error}</p>}
       {localStorage.getItem("token") && <Navigate to="/" replace={true} />}
       <form
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"

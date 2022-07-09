@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from "components/Header";
@@ -10,6 +10,7 @@ import SignupPage from "pages/SignUpPage";
 import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
+import category from "services/category";
 
 const MainPage = () => {
   const [token, setToken] = useState(
@@ -26,14 +27,39 @@ const MainPage = () => {
     setToken(null);
   };
 
+  const [categoryList, setCategoryList] = useState([]);
+
+  const getCategoryList = async () => {
+    const response = await category.getCategoryList();
+    const data = response.data.categories;
+    localStorage.setItem("categoryList", JSON.stringify(data));
+    setCategoryList(data);
+  };
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
+
   return (
     <div className="MainDiv">
       <BrowserRouter>
         <Header handleLogout={logout} />
         <Routes>
-          <Route exact path="/category/*" element={<CommercePage />} />
-          <Route exact path="/search/*" element={<CommercePage />} />
-          <Route exact path="/*" element={<LandingPage />} />
+          <Route
+            exact
+            path="/category/*"
+            element={<CommercePage categoryList={categoryList} />}
+          />
+          <Route
+            exact
+            path="/search/*"
+            element={<CommercePage categoryList={categoryList} />}
+          />
+          <Route
+            exact
+            path="/*"
+            element={<LandingPage categoryList={categoryList} />}
+          />
           <Route
             exact
             path="/account/verify/:token"

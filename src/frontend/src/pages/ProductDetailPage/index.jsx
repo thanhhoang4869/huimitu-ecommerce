@@ -1,4 +1,6 @@
+import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
+
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import swal from "sweetalert2";
@@ -13,8 +15,15 @@ import ProductDetailTilte from "components/ProductDetailTitle";
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [category, setCategory] = useState({});
+  const [childCategory, setChildCategory] = useState({});
+
   const [error, setError] = useState("");
   const { id } = useParams();
+
+  const [quantity, setQuantity] = useState(1);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
@@ -26,6 +35,8 @@ const ProductDetailPage = () => {
         const reviewsData = reviewsResponse.data.reviews;
         if (productData) {
           setProduct(productData);
+          setCategory(productData.category);
+          setChildCategory(productData.category.children);
           console.log(productData);
         } else {
           swal.fire({
@@ -33,7 +44,7 @@ const ProductDetailPage = () => {
             icon: "info",
             confirmButtonText: "OK",
           });
-          //go to 404?
+          navigate("/");
         }
 
         console.log(reviewsData);
@@ -42,10 +53,21 @@ const ProductDetailPage = () => {
         }
       } catch (error) {
         setError(error.message);
+
       }
     };
     getData();
   }, []);
+
+
+  const updateQuantity = (delta) => {
+    if (quantity + delta > 0) {
+      setQuantity(quantity + delta);
+      return;
+    } else if (delta >= 1) {
+      setQuantity(delta);
+    }
+  };
 
   const addToCartOnSubmit = async (e) => {
     e.preventDefault();
@@ -69,23 +91,7 @@ const ProductDetailPage = () => {
 
   return (
     <div>
-      <div className="breadcrumb-area">
-        <div className="container">
-          <div className="d-flex align-items-center">
-            <ul className="breadcrumb-list">
-              <li className="breadcrumb-item">
-                <a href="/">
-                  <i className="fa fa-home"></i>
-                </a>
-              </li>
-              <li className="breadcrumb-item">
-                <Link to="/">{product.categoryName}</Link>
-              </li>
-              <li className="breadcrumb-item">{product.productName}</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <Breadcrumb category={category} childCategory={childCategory} />
       <div className="product-details-area section-25">
         <div className="container">
           <div className="row">
@@ -128,22 +134,47 @@ const ProductDetailPage = () => {
                 </div>
                 <div className="pro-details-quality">
                   <div className="cart-plus-minus">
-                    <div className="dec qtybutton">-</div>
+                    <div
+                      className="dec qtybutton"
+                      onClick={() => {
+                        updateQuantity(-1);
+                      }}
+                    >
+                      -
+                    </div>
                     <input
                       id="quantity"
                       className="cart-plus-minus-box"
                       min="1"
-                      defaultValue="1"
+                      value={quantity}
                       name="quantity"
+                      number="true"
+                      onChange={(e) => {
+                        if (
+                          e.target.value < 1 ||
+                          Number.isNaN(e.target.value)
+                        ) {
+                          setQuantity(1);
+                        } else {
+                          setQuantity(e.target.value);
+                        }
+                      }}
                     />
-                    <div className="inc qtybutton">+</div>
+                    <div
+                      className="inc qtybutton"
+                      onClick={() => {
+                        updateQuantity(1);
+                      }}
+                    >
+                      +
+                    </div>
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">
                       <form
                         id="formAddCart"
                         method="post"
-                        action="/account/cart-add"
+                        onSubmit={addToCartOnSubmit}
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="add-cart" type="submit">
@@ -176,6 +207,13 @@ const ProductDetailPage = () => {
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
+        </div>
+
+        <div className="container section-50 mt-5 mb-5">
+          <ProductDetailTilte title="Đánh giá" />
+          <CustomComment />
+          <CustomComment />
+          <CustomComment />
         </div>
 
         {/* {{!-- Related Product --}} */}

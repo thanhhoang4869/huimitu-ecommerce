@@ -172,6 +172,24 @@ ol {
   margin: 0 auto;
 }
 
+.section-title h4 {
+  color: #1c1c1c;
+  font-weight: 700;
+  position: relative;
+}
+
+.section-title h4:after {
+  position: absolute;
+  left: 0;
+  bottom: -15px;
+  right: 0;
+  height: 4px;
+  width: 60px;
+  background: #18aeac;
+  content: "";
+  margin: 0 auto;
+}
+
 .set-bg {
   background-repeat: no-repeat;
   background-size: cover;
@@ -3563,7 +3581,6 @@ ol {
   font-size: 32px;
   font-weight: 500;
 }
-
 
 /* responsive */
 @media screen and (max-width: 768px) {

@@ -4,7 +4,10 @@ export default {
     async getProvinces(req, res, next) {
         try {
             const result = await locationModel.getProvinces();
-            const provinces = result.map(item => item.province_name)
+            const provinces = result.map(item => ({
+                id: item.id,
+                provinceName: item.province_name
+            }))
             res.status(200).send({
                 exitcode: 0,
                 message: "Get provinces successfully",
@@ -17,9 +20,12 @@ export default {
 
     async getDistricts(req, res, next) {
         try {
-            const { provinceName } = req.body
-            const result = await locationModel.getDistricts(provinceName);
-            const districts = result.map(item => item.district_name)
+            const { provinceId } = req.body
+            const result = await locationModel.getDistricts(provinceId);
+            const districts = result.map(item => ({
+                id: item.id,
+                districtName: item.district_name
+            }))
             res.status(200).send({
                 exitcode: 0,
                 message: "Get districts successfully",
@@ -32,12 +38,15 @@ export default {
 
     async getWards(req, res, next) {
         try {
-            const { provinceName, districtName } = req.body;
-            const result = await locationModel.getWards(provinceName, districtName);
-            const wards = result.map(item => item.ward_name)
+            const { provinceId, districtId } = req.body;
+            const result = await locationModel.getWards(provinceId, districtId);
+            const wards = result.map(item => ({
+                id: item.id,
+                wardName: item.ward_name
+            }))
             res.status(200).send({
                 exitcode: 0,
-                message: "Get districts successfully",
+                message: "Get wards successfully",
                 wards: wards
             })
         } catch (err) {
