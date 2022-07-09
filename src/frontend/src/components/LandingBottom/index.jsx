@@ -13,22 +13,22 @@ const LandingBottom = () => {
 
   return (
     <>
-      <section className="mb-3">
+      <section className="mb-5">
         <div className="container">
           <div className="row">
             <div className="section-title">
-              <h2>Giảm giá</h2>
+              <h2>Bán chạy</h2>
             </div>
           </div>
           <ItemHorizonList />
         </div>
       </section>
 
-      <section className="mb-5">
+      <section className="mb-3">
         <div className="container">
           <div className="row">
             <div className="section-title">
-              <h2>Bán chạy</h2>
+              <h2>Hàng mới</h2>
             </div>
           </div>
           <ItemHorizonList />

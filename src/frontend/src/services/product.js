@@ -7,14 +7,14 @@ const product = {
   },
 
   async getProductById(id) {
-    const response = await api.get(`/product/${id}`);
+    const response = await api.get(`/product/1`);
     return response;
   },
 
   async getProductReviews(productId) {
-    const respone = await api.post("/review/getReview", {productId})
-    return respone
-  }
+    const respone = await api.post("/review/getReview", { productId });
+    return respone;
+  },
 };
 
 export default product;

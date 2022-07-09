@@ -1,16 +1,17 @@
 import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 
-import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import swal from "sweetalert2";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { default as ProductService } from "services/product";
 import account from "services/account";
+import { default as ProductService } from "services/product";
+
+import CustomComment from "components/CustomComment";
+import ImageSlider from "components/ImageSlider";
+import ProductDetailTilte from "components/ProductDetailTitle";
 
 import "./style.css";
-import CustomComment from "components/CustomComment";
-import ProductDetailTilte from "components/ProductDetailTitle";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
@@ -39,12 +40,7 @@ const ProductDetailPage = () => {
           setChildCategory(productData.category.children);
           console.log(productData);
         } else {
-          swal.fire({
-            text: "Rất tiếc, mặt hàng này không tồn tại",
-            icon: "info",
-            confirmButtonText: "OK",
-          });
-          navigate("/");
+          navigate("/error");
         }
 
         console.log(reviewsData);
@@ -53,12 +49,10 @@ const ProductDetailPage = () => {
         }
       } catch (error) {
         setError(error.message);
-
       }
     };
     getData();
   }, []);
-
 
   const updateQuantity = (delta) => {
     if (quantity + delta > 0) {
@@ -99,11 +93,7 @@ const ProductDetailPage = () => {
               <div className="swiper-container zoom-top">
                 <div className="swiper-wrapper">
                   <div className="swiper-slide">
-                    <img
-                      className="img-responsive m-auto"
-                      src="https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg"
-                      alt=""
-                    />
+                    <ImageSlider className="img-responsive m-auto" />
                   </div>
                 </div>
               </div>

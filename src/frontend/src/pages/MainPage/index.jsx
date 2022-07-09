@@ -5,7 +5,7 @@ import Header from "components/Header";
 import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
-import LogInPage from "pages/LoginPage";
+import LoginPage from "pages/LoginPage";
 import SignupPage from "pages/SignupPage";
 
 import config from "config/config";
@@ -68,7 +68,7 @@ const MainPage = () => {
           <Route
             exact
             path="/login"
-            element={<LogInPage handleLogin={login} />}
+            element={<LoginPage handleLogin={login} />}
           />
           <Route
             exact
