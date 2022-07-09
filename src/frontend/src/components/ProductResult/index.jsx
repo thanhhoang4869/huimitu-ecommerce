@@ -11,15 +11,15 @@ const ProductResult = () => {
   const [childCategory, setChildCategory] = useState({});
   const [isBigCategory, setIsBigCategory] = useState(false);
   const [products, setProducts] = useState([]);
-  const [categoryId, setCategoryId] = useState(1);
+  const [total, setTotal] = useState(0);
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setCategoryId(+location.pathname.split("/")[2]);
-    getCategory(categoryId);
-    getProducts(categoryId);
+    getCategory(+location.pathname.split("/")[2]);
+    getProducts(+location.pathname.split("/")[2]);
+    // getTotalProduct(+location.pathname.split("/")[2]);
   }, [location]); // eslint-disable-line
 
   const getCategory = (categoryId) => {
@@ -40,7 +40,7 @@ const ProductResult = () => {
     }
   };
 
-  const getProducts = async () => {
+  const getProducts = async (categoryId) => {
     try {
       const request = {
         categoryId: +categoryId,
@@ -48,9 +48,21 @@ const ProductResult = () => {
         offset: 0,
       };
       const response = await productService.getProductsByCategory(request);
-      const products = response.data.products;
-      setProducts(products);
-      console.log(response.data.products);
+      setProducts(response.data.products);
+      console.log("Result page: ", response.data.products);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
+
+  const getTotalProduct = async (categoryId) => {
+    try {
+      const response = await productService.countByCategory(categoryId);
+      setTotal(response.data.count);
     } catch (error) {
       if (error.response.status === 500) {
         navigate("/error");
@@ -74,10 +86,18 @@ const ProductResult = () => {
               <h4>Result</h4>
             </div>
           </div> */}
-          <ItemHorizonList isResult={true} />
-          <div style={{ textAlign: "end" }}>
-            <Paging />
-          </div>
+          {products.length > 0 ? (
+            <>
+              <ItemHorizonList products={products} isResult={true} />
+              <div style={{ textAlign: "end" }}>
+                <Paging total={total} />
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ height: "50vh" }}>Không có sản phẩm.</div>
+            </>
+          )}
         </div>
       </section>
     </>

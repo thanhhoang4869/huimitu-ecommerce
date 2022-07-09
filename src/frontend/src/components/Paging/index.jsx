@@ -3,9 +3,16 @@ import React from "react";
 
 const showTotal = (total) => `Total ${total} items`;
 
-const Paging = () => (
+const Paging = (props) => (
   <>
-    <Pagination total={50} showTotal={showTotal} />
+    <Pagination
+      total={50}
+      pageSize={6}
+      showTotal={showTotal}
+      onChange={(page) => {
+        alert(page);
+      }}
+    />
   </>
 );
 

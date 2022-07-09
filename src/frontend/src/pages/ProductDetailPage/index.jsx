@@ -23,6 +23,7 @@ const ProductDetailPage = () => {
   const { id } = useParams();
 
   const [quantity, setQuantity] = useState(1);
+  const [relatedProducts, setRelatedProducts] = useState([]);
 
   const navigate = useNavigate();
 
@@ -200,10 +201,12 @@ const ProductDetailPage = () => {
         </div>
 
         {/* {{!-- Related Product --}} */}
-        <div className="container">
-          <ProductDetailTilte title="Sản phẩm liên quan" />
-          <ItemHorizonList />
-        </div>
+        {relatedProducts.length > 0 && (
+          <div className="container">
+            <ProductDetailTilte title="Sản phẩm liên quan" />
+            <ItemHorizonList />
+          </div>
+        )}
 
         <div className="container section-50 mt-5 mb-5">
           <ProductDetailTilte title="Đánh giá" />

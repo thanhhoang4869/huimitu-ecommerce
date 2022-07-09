@@ -18,7 +18,11 @@ const product = {
 
   async getProductsByCategory(request) {
     const response = await api.post("/product/getByCategory", request);
-    console.log(response);
+    return response;
+  },
+
+  async countByCategory(productId) {
+    const response = await api.post("/product/countByCategory", { productId });
     return response;
   },
 };

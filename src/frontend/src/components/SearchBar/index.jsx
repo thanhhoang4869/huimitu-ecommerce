@@ -1,18 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
+import swal from "sweetalert2";
 
 const SearchBar = () => {
+  const [search, setSearch] = useState("");
+
+  const onClick = () => {
+    if (search.length > 0) {
+      alert(search);
+    } else {
+      swal.fire({
+        title: "Info",
+        text: "Vui lòng nhập từ khóa",
+        icon: "info",
+        confirmButtonText: "OK",
+      });
+    }
+  };
+
   return (
     <>
       <div className="hero__search">
         <div className="hero__search__form" style={{ borderRadius: "5px" }}>
-          <form action="#">
-            <div className="hero__search__categories">
+          <form>
+            {/* <div className="hero__search__categories">
               Tất cả
               <span className="arrow_carrot-down"></span>
-            </div>
-            <input type="text" placeholder="Bạn cần tìm gì?" />
+            </div> */}
+            <input
+              type="text"
+              placeholder="Bạn cần tìm gì?"
+              onChange={(e) => setSearch(e.target.value)}
+            />
             <button
-              type="submit"
+              type="button"
+              onClick={onClick}
               className="site-btn bg-key"
               style={{
                 borderTopRightRadius: "5px",

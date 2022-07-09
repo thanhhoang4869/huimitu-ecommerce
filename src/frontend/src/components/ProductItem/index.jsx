@@ -13,11 +13,13 @@ const ProductItem = ({ product, isResult }) => {
       <div className="featured__item">
         <div
           className="featured__item__pic set-bg"
-          style={{ backgroundImage: `url(${product.img})` }}
+          style={{
+            backgroundImage: `url("https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg")`,
+          }}
         >
           <ul className="featured__item__pic__hover">
             <li>
-              <Link to="/product/detail">
+              <Link to={`/product/detail/${product.id}`}>
                 <i className="fa fa-info"></i>
               </Link>
             </li>
@@ -30,10 +32,12 @@ const ProductItem = ({ product, isResult }) => {
         </div>
         <div className="featured__item__text">
           <h5>
-            <Link to="/product/detail">{product.name}</Link>
+            <Link to={`/product/detail/${product.id}`}>
+              {product.productName}
+            </Link>
           </h5>
           <StarRatings
-            rating={4.5}
+            rating={product.avgRating}
             starRatedColor="orange"
             starDimension="30px"
             // changeRating={this.changeRating}
@@ -41,7 +45,8 @@ const ProductItem = ({ product, isResult }) => {
             name="rating"
           />
           <div className="mt-2">
-            <span>100.000</span> <span>-</span> <span>120.000</span>
+            <span>{product.minPrice}</span> <span>-</span>{" "}
+            <span>{product.maxPrice}</span>
           </div>
         </div>
       </div>
