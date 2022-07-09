@@ -38,7 +38,7 @@ const ProductItem = ({ product, isResult }) => {
           </ul>
         </div>
         <div className="featured__item__text">
-          <Popover content={content}>
+          <Popover content={content} placement="bottomLeft">
             <Link to={`/product/detail/${product.id}`}>
               <h5 className="text-truncate">{product.productName}</h5>
             </Link>{" "}
