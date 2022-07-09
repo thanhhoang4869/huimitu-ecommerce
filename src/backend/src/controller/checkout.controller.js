@@ -2,6 +2,7 @@ import variantModel from '#src/models/variant.model'
 import paymentModel from '#src/models/payment.model'
 import accountModel from '#src/models/account.model'
 import shippingAddressModel from '#src/models/shippingAddress.model'
+import shippingProviderModel from '#src/models/shippingProvider.model'
 import config from '#src/config/config'
 import { MomoCheckoutProvider, PaypalCheckoutProvider, ShipCodCheckoutProvider } from '#src/utils/checkout'
 
@@ -29,7 +30,7 @@ export default {
             }
 
             // Check for shipping address correctness
-            const shippingAddress = await shippingAddressModel.getById(shippingAddressId);
+            const shippingAddress = await shippingAddressModel.getShippingAddressById(shippingAddressId);
             if (shippingAddress === null || shippingAddress.email !== email) {
                 return res.send({
                     exitcode: 102,
@@ -38,26 +39,33 @@ export default {
             }
 
             // Verify voucher code
-            if (voucherId) {
-                const voucher = await voucherModel.getByVoucherCode(voucherCode);
-                if (voucher === null) {
-                    return res.send({
-                        exitcode: 103,
-                        message: "Voucher code not found"
-                    })
-                }
-            }
+            // if (voucherId) {
+            //     const voucher = await voucherModel.getByVoucherCode(voucherCode);
+            //     if (voucher === null) {
+            //         return res.send({
+            //             exitcode: 103,
+            //             message: "Voucher code not found"
+            //         })
+            //     }
+            // }
 
             // Calculate fee
-            const shippingProvider = await shippingProviderModel.getById(shippingProviderId);
+            const shippingProvider = await shippingProviderModel.getShippingProvider(shippingProviderId);
+            if (shippingProvider === null) {
+                return res.send({
+                    exitcode: 104,
+                    message: "Invalid shipping provider ID"
+                })
+            }
+            const fee = 0;
 
 
             // Create link for order
             const payment = await paymentModel.getById(paymentId)
             if (payment === null) {
                 return res.end({
-                    exitcode: 104,
-                    message: "Invalid payment"
+                    exitcode: 105,
+                    message: "Invalid payment ID"
                 })
             }
 
@@ -77,7 +85,8 @@ export default {
                 fullname: fullname,
                 phoneNumber: phone
             }
-            const amount = 10_000;
+            const variantPrice = (variant.discount_price) ? (variant.discount_price) : (variant.price)
+            const amount = variantPrice * quantity;
 
             try {
                 const [orderId, redirectUrl] = await checkoutProvider.createLink(amount, userInfo);
@@ -105,7 +114,7 @@ export default {
     },
 
     async successMomo(req, res, next) {
-
+        console.log("Get")
     },
 
     async successPaypal(req, res, next) {

@@ -26,12 +26,13 @@ export default {
             .join('district', 'shipping_address.district_id', 'district.id')
             .join('ward', 'shipping_address.ward_id', 'ward.id')
             .where({
-                id: shippingAddressId
+                'shipping_address.id': shippingAddressId
             }).select(
                 'province.province_name',
                 'district.district_name',
                 'ward.ward_name',
                 'shipping_address.id',
+                'shipping_address.email',
                 'shipping_address.address',
                 'shipping_address.receiver_phone',
                 'shipping_address.receiver_name'
@@ -41,31 +42,13 @@ export default {
 
     async createShippingAddress(email, entity) {
         const {
-            provinceName,
-            districtName,
-            wardName,
+            provinceId,
+            districtId,
+            wardId,
             address,
             receiverPhone,
             receiverName
         } = entity
-
-        const province = await db('province').select('id').where({
-            province_name: provinceName
-        })
-        const provinceId = province[0].id;
-
-        const district = await db('district').select('id').where({
-            province_id: provinceId,
-            district_name: districtName
-        })
-        const districtId = district[0].id;
-
-        const ward = await db('ward').select('id').where({
-            district_id: districtId,
-            ward_name: wardName
-        })
-        const wardId = ward[0].id
-
         const shippingAddressId = await db('shipping_address').insert({
             email: email,
             province_id: provinceId,

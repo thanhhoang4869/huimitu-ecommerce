@@ -90,7 +90,7 @@ export default {
             // Send the time for each mail is different
             // This prevent the html being trimmed by Gmail
             const mailOption = getMailOption(email, req.headers.origin, verifyToken);
-            // await createTransport().sendMail(mailOption);
+            await createTransport().sendMail(mailOption);
 
             // Create entity to insert to DB
             const entity = {
