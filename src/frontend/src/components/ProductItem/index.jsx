@@ -1,9 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Popover } from "antd";
 
 import StarRatings from "react-star-ratings";
+import formatter from "../../utils/formatter";
 
 const ProductItem = ({ product, isResult }) => {
+  const content = (
+    <div>
+      <p>{product.productName}</p>
+    </div>
+  );
   return (
     <div
       className={`${
@@ -31,11 +38,12 @@ const ProductItem = ({ product, isResult }) => {
           </ul>
         </div>
         <div className="featured__item__text">
-          <h5>
+          <Popover content={content}>
             <Link to={`/product/detail/${product.id}`}>
-              {product.productName}
-            </Link>
-          </h5>
+              <h5 className="text-truncate">{product.productName}</h5>
+            </Link>{" "}
+          </Popover>
+
           <StarRatings
             rating={product.avgRating}
             starRatedColor="orange"
@@ -45,8 +53,9 @@ const ProductItem = ({ product, isResult }) => {
             name="rating"
           />
           <div className="mt-2">
-            <span>{product.minPrice}</span> <span>-</span>{" "}
-            <span>{product.maxPrice}</span>
+            <span>{formatter.formatPrice(product.minPrice)}</span>{" "}
+            <span>-</span>{" "}
+            <span>{formatter.formatPrice(product.maxPrice)}</span>
           </div>
         </div>
       </div>
