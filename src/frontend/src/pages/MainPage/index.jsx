@@ -6,7 +6,7 @@ import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
 import LogInPage from "pages/LogInPage";
-import SignupPage from "pages/SignupPage";
+import SignupPage from "pages/SignUpPage";
 import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";

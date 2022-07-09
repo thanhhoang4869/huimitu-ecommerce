@@ -2,14 +2,18 @@ import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import account from "services/account";
 import { default as ProductService } from "services/product";
 
+import CustomComment from "components/CustomComment";
+import ProductDetailTilte from "components/ProductDetailTitle";
 import "./style.css";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
   const [category, setCategory] = useState({});
   const [childCategory, setChildCategory] = useState({});
+  const [error, setError] = useState("");
   const { id } = useParams();
 
   const [quantity, setQuantity] = useState(1);
@@ -36,6 +40,26 @@ const ProductDetailPage = () => {
       return;
     } else if (delta >= 1) {
       setQuantity(delta);
+    }
+  };
+
+  const addToCartOnSubmit = async (e) => {
+    e.preventDefault();
+    console.log("submit add to cart");
+    try {
+      //TODO: pass the quantity in params
+      const response = await account.addProductToCart(product.id, 1);
+      const { exitcode, message } = response.data;
+
+      console.log(response.data);
+
+      if (exitcode === 0) {
+        //TODO: update the number of item in cart
+      } else {
+        setError(message);
+      }
+    } catch (error) {
+      setError(error.response.data.message);
     }
   };
 
@@ -124,7 +148,7 @@ const ProductDetailPage = () => {
                       <form
                         id="formAddCart"
                         method="post"
-                        action="/account/cart-add"
+                        onSubmit={addToCartOnSubmit}
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="add-cart" type="submit">
@@ -153,24 +177,22 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container section-50 mt-5 mb-5">
-          <div className="product-description mb-3">
-            <div className="product-description-title">
-              <p>Mô tả</p>
-            </div>
-          </div>
+          <ProductDetailTilte title="Mô tả" />
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
         </div>
 
+        <div className="container section-50 mt-5 mb-5">
+          <ProductDetailTilte title="Đánh giá" />
+          <CustomComment />
+          <CustomComment />
+          <CustomComment />
+        </div>
+
         {/* {{!-- Related Product --}} */}
         <div className="container">
-          <div className="product-description mb-3">
-            <div className="product-description-title">
-              <p>Sản phẩm liên quan</p>
-            </div>
-          </div>
-
+          <ProductDetailTilte title="Sản phẩm liên quan" />
           <ItemHorizonList />
         </div>
       </div>
