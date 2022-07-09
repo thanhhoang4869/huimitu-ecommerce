@@ -114,7 +114,17 @@ export default {
     },
 
     async successMomo(req, res, next) {
-        console.log("Get")
+        res.status(204).send({}, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        const provider = new MomoCheckoutProvider()
+        await provider.queryPayment(
+            req.body.requestId,
+            req.body.orderId
+        )
     },
 
     async successPaypal(req, res, next) {
