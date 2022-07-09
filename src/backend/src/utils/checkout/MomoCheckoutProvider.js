@@ -2,6 +2,7 @@ import config from "#src/config/config"
 import { createHmacString } from "#src/utils/crypto"
 import axios from "axios"
 import { generateOrderId } from '#src/utils/checkout/orderIdGenerator'
+import { raw } from "express"
 
 class MomoCheckoutProvider {
     /**
@@ -55,6 +56,7 @@ class MomoCheckoutProvider {
         ].join("&")
 
         const signature = createHmacString(rawSignature, secretKey)
+        console.log(signature)
 
         const requestBody = {
             accessKey: accessKey,
@@ -76,6 +78,84 @@ class MomoCheckoutProvider {
         )
         const { payUrl } = response.data
         return [orderId, payUrl]
+    }
+
+    queryPayment = async(requestId, orderId) => {
+        const partnerCode = config.MOMO_PARTNER_CODE;
+        const accessKey = config.MOMO_ACCESS_KEY;
+        const secretKey = config.MOMO_SECRET_KEY;
+        const lang = 'en';
+
+        const rawSignature = [
+            `accessKey=${accessKey}`,
+            `orderId=${orderId}`,
+            `partnerCode=${partnerCode}`,
+            `requestId=${requestId}`,
+        ].join('&')
+        const signature = createHmacString(rawSignature, secretKey)
+
+        const requestBody = {
+            partnerCode: partnerCode,
+            requestId: requestId,
+            orderId: orderId,
+            lang: lang,
+            signature: signature
+        }
+
+        try {
+            const response = await axios.post(
+                "https://test-payment.momo.vn:443/v2/gateway/api/query",
+                requestBody
+            )
+
+            const { data } = response;
+            console.log(data)
+        } catch (err) {
+            console.error(err.response.data)
+        }
+    }
+
+    confirmPayment = async (requestId, orderId, amount) => {
+        const partnerCode = config.MOMO_PARTNER_CODE;
+        const accessKey = config.MOMO_ACCESS_KEY;
+        const secretKey = config.MOMO_SECRET_KEY;
+        const requestType = "capture";
+        const description = "";
+        const lang = 'en';
+
+        const rawSignature = [
+            `accessKey=${accessKey}`,
+            `amount=${amount}`,
+            `description=${description}`,
+            `orderId=${orderId}`,
+            `partnerCode=${partnerCode}`,
+            `requestId=${requestId}`,
+            `requestType=${requestType}`
+        ].join('&')
+        const signature = createHmacString(rawSignature, secretKey)
+
+        const requestBody = {
+            partnerCode: partnerCode,
+            requestId: requestId,
+            orderId: orderId,
+            requestType: requestType,
+            amount: amount,
+            lang: lang,
+            description: description,
+            signature: signature
+        }
+
+        try {
+            const response = await axios.post(
+                "https://test-payment.momo.vn:443/v2/gateway/api/confirm",
+                requestBody
+            )
+
+            const { data } = response;
+            console.log(data)
+        } catch (err) {
+            console.error(err.response.data)
+        }
     }
 }
 
