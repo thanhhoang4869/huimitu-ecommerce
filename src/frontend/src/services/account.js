@@ -34,6 +34,12 @@ const account = {
     const response = await api.post("/auth/signup", entity);
     return response;
   },
+
+  async addProductToCart(variantId, quantity) {
+    const data = {variantId, quantity}
+    const respone = await api.post("/cart", data,)
+    return respone
+  }
 };
 
 export default account;
