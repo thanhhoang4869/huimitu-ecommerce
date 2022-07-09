@@ -7,6 +7,7 @@ import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
 import LogInPage from "pages/LoginPage";
 import SignupPage from "pages/SignupPage";
+
 import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";

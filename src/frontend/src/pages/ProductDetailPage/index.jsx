@@ -1,18 +1,23 @@
 import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import account from "services/account";
-import { default as ProductService } from "services/product";
 
+import React, { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import swal from "sweetalert2";
+
+import { default as ProductService } from "services/product";
+import account from "services/account";
+
+import "./style.css";
 import CustomComment from "components/CustomComment";
 import ProductDetailTilte from "components/ProductDetailTitle";
-import "./style.css";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
+  const [reviews, setReviews] = useState([]);
   const [category, setCategory] = useState({});
   const [childCategory, setChildCategory] = useState({});
+
   const [error, setError] = useState("");
   const { id } = useParams();
 
@@ -22,17 +27,38 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await ProductService.getProductById(id);
-      if (response.data.product) {
-        setProduct(response.data.product);
-        setCategory(response.data.product.category);
-        setChildCategory(response.data.product.category.children);
-      } else {
-        navigate("/");
+      try {
+        const productResponse = await ProductService.getProductById(id);
+        const reviewsResponse = await ProductService.getProductReviews(id);
+
+        const productData = productResponse.data.product;
+        const reviewsData = reviewsResponse.data.reviews;
+        if (productData) {
+          setProduct(productData);
+          setCategory(productData.category);
+          setChildCategory(productData.category.children);
+          console.log(productData);
+        } else {
+          swal.fire({
+            text: "Rất tiếc, mặt hàng này không tồn tại",
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+          navigate("/");
+        }
+
+        console.log(reviewsData);
+        if (reviewsData) {
+          setReviews(reviewsData);
+        }
+      } catch (error) {
+        setError(error.message);
+
       }
     };
     getData();
   }, []);
+
 
   const updateQuantity = (delta) => {
     if (quantity + delta > 0) {
@@ -183,17 +209,18 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
-        <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title="Đánh giá" />
-          <CustomComment />
-          <CustomComment />
-          <CustomComment />
-        </div>
-
         {/* {{!-- Related Product --}} */}
         <div className="container">
           <ProductDetailTilte title="Sản phẩm liên quan" />
           <ItemHorizonList />
+        </div>
+
+        <div className="container section-50 mt-5 mb-5">
+          <ProductDetailTilte title="Đánh giá" />
+
+          {reviews.map((review, index) => (
+            <CustomComment key={index} review={review} />
+          ))}
         </div>
       </div>
     </div>
