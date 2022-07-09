@@ -1,7 +1,10 @@
 import ItemHorizonList from "components/ItemHorizonList";
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import account from "services/account";
+import {default as ProductService} from "services/product";
 import swal from "sweetalert2";
+import api from "utils/api";
 
 import { default as ProductService } from "services/product";
 
@@ -16,8 +19,7 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     const getData = async () => {
-      try {
-        const data = await ProductService.getProductById(id);
+      const data = await ProductService.getProductById(id);
         if (data.data.product) {
           setProduct(data.data.product);
           console.log(data.data.product);
@@ -29,12 +31,31 @@ const ProductDetailPage = () => {
           });
           //go to 404?
         }
-      } catch (error) {
-        setError(error.message);
+    }
+    getData()
+    
+  }, [])
+
+  const addToCartOnSubmit = async (e) => {
+    e.preventDefault()
+    console.log("submit add to cart")
+    try {
+      //TODO: pass the quantity in params
+      const response = await account.addProductToCart(product.id, 1);
+      const { exitcode, message } = response.data;
+
+      console.log(response.data)
+
+      if (exitcode === 0) {
+        //TODO: update the number of item in cart
+        
+      } else {
+        setError(message);
       }
-    };
-    getData();
-  }, []);
+    } catch (error) {
+      setError(error.response.data.message);
+    }
+  }
 
   return (
     <div>
@@ -112,7 +133,7 @@ const ProductDetailPage = () => {
                       <form
                         id="formAddCart"
                         method="post"
-                        action="/account/cart-add"
+                        onSubmit={addToCartOnSubmit}
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="add-cart" type="submit">
