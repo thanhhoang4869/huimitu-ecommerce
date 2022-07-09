@@ -1,0 +1,14 @@
+.comment {
+    position: relative;
+}
+
+.comment-rating {
+    position: absolute;
+    top: 0.6rem;
+    right: 0;
+    padding: 0;
+}
+
+.ant-comment-content-detail {
+    margin-top: 0.5rem;
+}

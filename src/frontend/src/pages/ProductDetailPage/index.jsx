@@ -1,23 +1,26 @@
 import ItemHorizonList from "components/ItemHorizonList";
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import {default as ProductService} from "services/product";
 import swal from "sweetalert2";
 
+import { default as ProductService } from "services/product";
+
 import "./style.css";
+import CustomComment from "components/CustomComment";
+import ProductDetailTilte from "components/ProductDetailTitle";
 
 const ProductDetailPage = () => {
-  const [product, setProduct] = useState({})
-  const [error, setError] = useState("")
+  const [product, setProduct] = useState({});
+  const [error, setError] = useState("");
   const { id } = useParams();
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const data = await ProductService.getProductById(id)
+        const data = await ProductService.getProductById(id);
         if (data.data.product) {
-          setProduct(data.data.product)
-          console.log(data.data.product)
+          setProduct(data.data.product);
+          console.log(data.data.product);
         } else {
           swal.fire({
             text: "Rất tiếc, mặt hàng này không tồn tại",
@@ -26,17 +29,12 @@ const ProductDetailPage = () => {
           });
           //go to 404?
         }
+      } catch (error) {
+        setError(error.message);
       }
-      catch (error) {
-        
-        setError(error.message)
-      }
-    }
-    getData()
-    
-  }, [])
-
-
+    };
+    getData();
+  }, []);
 
   return (
     <div>
@@ -143,11 +141,7 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container section-50 mt-5 mb-5">
-          <div className="product-description mb-3">
-            <div className="product-description-title">
-              <p>Mô tả</p>
-            </div>
-          </div>
+          <ProductDetailTilte title = "Mô tả" />
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
@@ -155,13 +149,15 @@ const ProductDetailPage = () => {
 
         {/* {{!-- Related Product --}} */}
         <div className="container">
-          <div className="product-description mb-3">
-            <div className="product-description-title">
-              <p>Sản phẩm liên quan</p>
-            </div>
-          </div>
-
+          <ProductDetailTilte title ="Sản phẩm liên quan" />
           <ItemHorizonList />
+        </div>
+
+        <div className="container section-50 mt-5 mb-5">
+          <ProductDetailTilte title ="Đánh giá" />
+          <CustomComment/>
+          <CustomComment/>
+          <CustomComment/>
         </div>
       </div>
     </div>
