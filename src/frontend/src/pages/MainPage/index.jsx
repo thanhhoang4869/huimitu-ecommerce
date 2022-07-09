@@ -5,12 +5,13 @@ import Header from "components/Header";
 import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
-import LogInPage from "pages/LogInPage";
+import LogInPage from "pages/LoginPage";
 import SignupPage from "pages/SignupPage";
 import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
 import category from "services/category";
+import NotFoundPage from "pages/NotFoundPage";
 
 const MainPage = () => {
   const [token, setToken] = useState(
@@ -47,18 +48,16 @@ const MainPage = () => {
         <Routes>
           <Route
             exact
+            path="/"
+            element={<LandingPage categoryList={categoryList} />}
+          />
+          <Route
             path="/category/*"
             element={<CommercePage categoryList={categoryList} />}
           />
           <Route
-            exact
             path="/search/*"
             element={<CommercePage categoryList={categoryList} />}
-          />
-          <Route
-            exact
-            path="/*"
-            element={<LandingPage categoryList={categoryList} />}
           />
           <Route
             exact
@@ -80,6 +79,7 @@ const MainPage = () => {
             path="/product/detail/:id"
             element={<ProductDetailPage />}
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
       <Footer />
