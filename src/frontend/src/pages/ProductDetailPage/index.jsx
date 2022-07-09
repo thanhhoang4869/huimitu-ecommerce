@@ -2,7 +2,7 @@ import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import swal from "sweetalert2";
 
 import { default as ProductService } from "services/product";
@@ -207,13 +207,6 @@ const ProductDetailPage = () => {
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
-        </div>
-
-        <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title="Đánh giá" />
-          <CustomComment />
-          <CustomComment />
-          <CustomComment />
         </div>
 
         {/* {{!-- Related Product --}} */}
