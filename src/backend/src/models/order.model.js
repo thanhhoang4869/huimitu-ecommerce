@@ -1,6 +1,22 @@
 import db from '#src/utils/db'
 
 export default {
+    async getOrderById(orderId) {
+        const result = await db('order').where({
+            id: orderId
+        }).select(
+            "email",
+            "created_time",
+            "payment_id",
+            "shipping_address_id",
+            "total",
+            "shipping_provider_id",
+            "shipping_price",
+            "voucher_code"
+        )
+        return result[0] || null;
+    }
+
     async createOrder(email, orderId, entity) {
         const {
             paymentId,
@@ -17,7 +33,7 @@ export default {
             shippingProviderId: shippingProviderId,
             voucherId: voucherId
         }).returning('id')
-        
+
         try {
             return order[0].id;
         } catch (err) {

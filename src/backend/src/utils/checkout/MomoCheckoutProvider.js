@@ -2,7 +2,6 @@ import config from "#src/config/config"
 import { createHmacString } from "#src/utils/crypto"
 import axios from "axios"
 import { generateOrderId } from '#src/utils/checkout/orderIdGenerator'
-import { raw } from "express"
 
 class MomoCheckoutProvider {
     /**
@@ -80,7 +79,7 @@ class MomoCheckoutProvider {
         return [orderId, payUrl]
     }
 
-    queryPayment = async(requestId, orderId) => {
+    queryPayment = async (requestId, orderId) => {
         const partnerCode = config.MOMO_PARTNER_CODE;
         const accessKey = config.MOMO_ACCESS_KEY;
         const secretKey = config.MOMO_SECRET_KEY;
@@ -113,6 +112,43 @@ class MomoCheckoutProvider {
         } catch (err) {
             console.error(err.response.data)
         }
+    }
+
+    verifyIpnSignature = (body) => {
+        const accessKey = config.MOMO_ACCESS_KEY;
+        const secretKey = config.MOMO_SECRET_KEY;
+        const {
+            partnerCode,
+            orderId,
+            requestId,
+            amount,
+            orderInfo,
+            orderType,
+            transId,
+            resultCode,
+            message,
+            payType,
+            responseTime,
+            extraData,
+            signature
+        } = body;
+        const rawSignature = [
+            `accessKey=${accessKey}`,
+            `amount=${amount}`,
+            `extraData=${extraData}`,
+            `message=${message}`,
+            `orderId=${orderId}`,
+            `orderInfo=${orderInfo}`,
+            `orderType=${orderType}`,
+            `partnerCode=${partnerCode}`,
+            `payType=${payType}`,
+            `requestId=${requestId}`,
+            `responseTime =${responseTime}`,
+            `resultCode = ${resultCode}`,
+            `transId = ${transId}`
+        ].join('&')
+        const correctSignature = createHmacString(rawSignature, secretKey);
+        return (correctSignature === signature);
     }
 
     confirmPayment = async (requestId, orderId, amount) => {
