@@ -11,6 +11,7 @@ import shippingAddress from '#src/routes/shippingAddress.routes'
 import payment from '#src/routes/payment.routes'
 import shippingProvider from '#src/routes/shippingProvider.routes'
 import order from '#src/routes/order.routes'
+import search from '#src/routes/search.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
@@ -30,5 +31,6 @@ router.use('/shippingAddress', verifyLogin, verifyEmailVerified, shippingAddress
 router.use('/payment', payment)
 router.use('/shippingProvider', shippingProvider)
 router.use('/order', verifyLogin, order)
+router.use('/search', search)
 
 export default router;

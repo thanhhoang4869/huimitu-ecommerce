@@ -73,7 +73,8 @@ CREATE TABLE "category" (
   "id" SERIAL PRIMARY KEY,
   "parent_id" int,
   "category_name" varchar,
-  "description" varchar
+  "description" varchar,
+  "category_fts" tsvector
 );
 
 CREATE TABLE "payment" (
@@ -91,7 +92,8 @@ CREATE TABLE "product" (
   "min_price" int DEFAULT 0,
   "max_price" int DEFAULT 0,
   "stock" int DEFAULT 0,
-  "created_time" timestamp DEFAULT CURRENT_TIMESTAMP
+  "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
+  "product_fts" tsvector
 );
 
 CREATE TABLE "product_image" (
@@ -209,6 +211,15 @@ ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id")
 
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
+----------------------- FULL TEXT SEARCH -------------------------
+CREATE INDEX idx_product_fts
+ON product 
+USING GIN(product_fts);
+
+CREATE INDEX idx_category_fts
+ON category
+USING GIN(category_fts);
+
 ------------------------- FUNCTION ---------------------------
 
 --- Update price and stock of a product after add variant
@@ -311,6 +322,34 @@ BEGIN
 END;
 $$
 LANGUAGE 'plpgsql';
+CREATE OR REPLACE FUNCTION update_product_fts_column() RETURNS trigger AS
+$$
+BEGIN
+  IF TG_TABLE_NAME = 'product' THEN
+    NEW.product_fts = setweight(to_tsvector(lower(NEW.product_name)), 'A')
+    || setweight(to_tsvector(coalesce(lower(NEW.description), '')), 'B');
+  ELSIF TG_TABLE_NAME = 'product_variant' THEN
+    UPDATE "product" AS p
+    SET product_fts = setweight(to_tsvector(lower(p.product_name)), 'A')
+    || setweight(to_tsvector(coalesce(lower(p.description), '')), 'B')
+    || setweight(to_tsvector(lower(NEW.variant_name)), 'A')
+    WHERE p.id = NEW.product_id;
+  END IF;
+  RETURN NEW;
+END
+$$
+LANGUAGE 'plpgsql';
+
+CREATE OR REPLACE FUNCTION update_category_fts_column() RETURNS trigger AS
+$$
+BEGIN
+  NEW.category_fts = setweight(to_tsvector(lower(NEW.category_name)), 'A') 
+  || setweight(to_tsvector(coalesce(lower(NEW.description), '')), 'B');
+  RETURN NEW;
+END
+$$
+LANGUAGE 'plpgsql';
+
 -------------------------- TRIGGER ------------------------------
 
 --- Update min, max, stock of product after change variant
@@ -354,6 +393,26 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "order_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_total_order();
+--- Update product FTS data before insert or update product
+CREATE TRIGGER update_product_fts
+BEFORE INSERT OR UPDATE
+ON "product"
+FOR EACH ROW 
+EXECUTE PROCEDURE update_product_fts_column();
+
+--- Update product FTS data before insert or update variant
+CREATE TRIGGER update_product_variant_fts
+BEFORE INSERT OR UPDATE
+ON "product_variant"
+FOR EACH ROW 
+EXECUTE PROCEDURE update_product_fts_column();
+
+--- Update category FTS data before insert or update category
+CREATE TRIGGER update_category_variant_fts
+BEFORE INSERT OR UPDATE
+ON "category"
+FOR EACH ROW 
+EXECUTE PROCEDURE update_category_fts_column();
 
 ----------------------- INSERT DATA -------------------------
 
