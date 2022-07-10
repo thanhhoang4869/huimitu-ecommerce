@@ -23,6 +23,12 @@ const config = {
     NOWPAYMENT: 'nowpayment'
   },
 
+  currency: {
+    USD: 'usd',
+    VND: 'vnd',
+    ETH: 'eth',
+  },
+
   orderState: {
     PENDING: 'pending',
     PAID: 'paid',
