@@ -15,5 +15,4 @@ export default {
             next(err)
         }
     }
-  },
 };

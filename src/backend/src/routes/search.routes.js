@@ -2,6 +2,7 @@ import search from '#src/controller/search.controller'
 import express from 'express'
 
 const router = express.Router();
-router.post("/", search.getResult)
+router.post("/get", search.getProduct)
+router.post("/count", search.countProduct)
 
 export default router;

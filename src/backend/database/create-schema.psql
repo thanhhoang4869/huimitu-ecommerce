@@ -73,8 +73,7 @@ CREATE TABLE "category" (
   "id" SERIAL PRIMARY KEY,
   "parent_id" int,
   "category_name" varchar,
-  "description" varchar,
-  "category_fts" tsvector
+  "description" varchar
 );
 
 CREATE TABLE "payment" (
@@ -216,11 +215,29 @@ CREATE INDEX idx_product_fts
 ON product 
 USING GIN(product_fts);
 
-CREATE INDEX idx_category_fts
-ON category
-USING GIN(category_fts);
-
 ------------------------- FUNCTION ---------------------------
+
+--- Aggregate multiple rows of text search vector
+CREATE OR REPLACE AGGREGATE tsvector_agg(tsvector) (
+   STYPE = pg_catalog.tsvector,
+   SFUNC = pg_catalog.tsvector_concat,
+   INITCOND = ''
+);
+
+--- Remove accent of Vietnamese
+CREATE OR REPLACE FUNCTION vn_unaccent(text) RETURNS text AS
+$$
+BEGIN
+	RETURN lower(
+		translate(
+			$1,
+			'¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽžёЁ',
+			'123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyYyYZzZzZzеЕ'
+		)
+);
+END
+$$ 
+LANGUAGE 'plpgsql' IMMUTABLE;
 
 --- Update price and stock of a product after add variant
 CREATE OR REPLACE FUNCTION update_min_max_price_stock_product() RETURNS trigger AS
@@ -323,32 +340,46 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
--- Update the FTS data on product table on change of product data and variant data
+--- Update the FTS data on product table on change of product data and variant data
 CREATE OR REPLACE FUNCTION update_product_fts_column() RETURNS trigger AS
 $$
+  DECLARE update_product_id integer:=0;
 BEGIN
-  IF TG_TABLE_NAME = 'product' THEN
-    NEW.product_fts = setweight(to_tsvector(lower(NEW.product_name)), 'A')
-    || setweight(to_tsvector(coalesce(lower(NEW.description), '')), 'B');
-  ELSIF TG_TABLE_NAME = 'product_variant' THEN
-    UPDATE "product" AS p
-    SET product_fts = setweight(to_tsvector(lower(p.product_name)), 'A')
-    || setweight(to_tsvector(coalesce(lower(p.description), '')), 'B')
-    || setweight(to_tsvector(lower(NEW.variant_name)), 'A')
-    WHERE p.id = NEW.product_id;
-  END IF;
-  RETURN NEW;
-END
-$$
-LANGUAGE 'plpgsql';
+  --- Get product ID need to update
 
--- Update the FTS data on category table on change of category data
-CREATE OR REPLACE FUNCTION update_category_fts_column() RETURNS trigger AS
-$$
-BEGIN
-  NEW.category_fts = setweight(to_tsvector(lower(NEW.category_name)), 'A') 
-  || setweight(to_tsvector(coalesce(lower(NEW.description), '')), 'B');
-  RETURN NEW;
+  IF TG_TABLE_NAME = 'product' THEN
+    update_product_id := COALESCE(NEW.id, OLD.id);
+  ELSIF TG_TABLE_NAME = 'product_variant' THEN
+    update_product_id := COALESCE(NEW.product_id, OLD.product_id);
+  END IF;
+
+  UPDATE "product"
+  SET "product_fts" = (
+    --- Aggregate all result
+    SELECT tsvector_agg(subquery.searchable) FROM (
+      --- The product with its category (1st level), and parent category (2nd level)
+      SELECT 
+        setweight(to_tsvector('simple',vn_unaccent(p.product_name)),'A') || 
+        setweight(to_tsvector('simple',vn_unaccent(COALESCE(c1.category_name, ''))),'B') ||
+        setweight(to_tsvector('simple',vn_unaccent(COALESCE(c2.category_name, ''))),'C') ||
+        setweight(to_tsvector('simple',vn_unaccent(COALESCE(p.description, ''))),'D') AS searchable
+      FROM product AS p
+      JOIN category AS c1 ON p.category_id = c1.id
+      LEFT JOIN category AS c2 ON c1.parent_id = c2.id
+      WHERE p.id = update_product_id
+
+      UNION ALL
+
+      --- All of the product's variants
+      SELECT 
+        setweight(to_tsvector('simple',vn_unaccent(pv.variant_name)),'B') AS searchable
+      FROM product_variant AS pv
+      WHERE pv.product_id = update_product_id
+    ) AS subquery
+  )
+  WHERE id = update_product_id;
+
+  RETURN NULL;
 END
 $$
 LANGUAGE 'plpgsql';
@@ -413,26 +444,22 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "order_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE update_total_order();
---- Update product FTS data before insert or update product
+
+--- Update product FTS data after insert or update product
 CREATE TRIGGER update_product_fts
-BEFORE INSERT OR UPDATE
+AFTER INSERT OR UPDATE
+OF "product_name", "category_id", "description"
 ON "product"
 FOR EACH ROW 
 EXECUTE PROCEDURE update_product_fts_column();
 
---- Update product FTS data before insert or update variant
+--- Update product FTS data after insert or update variant
 CREATE TRIGGER update_product_variant_fts
-BEFORE INSERT OR UPDATE
+AFTER INSERT OR DELETE OR UPDATE
+OF "variant_name", "product_id"
 ON "product_variant"
 FOR EACH ROW 
 EXECUTE PROCEDURE update_product_fts_column();
-
---- Update category FTS data before insert or update category
-CREATE TRIGGER update_category_variant_fts
-BEFORE INSERT OR UPDATE
-ON "category"
-FOR EACH ROW 
-EXECUTE PROCEDURE update_category_fts_column();
 
 --- Update price of order_variant to match variant price
 CREATE TRIGGER insert_order_variant_update_price

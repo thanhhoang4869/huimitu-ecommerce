@@ -29,7 +29,6 @@ export default {
         return result || null;
     },
 
-
     async getNewestArrival() {
         const result = await db('product')
             .join('category', 'product.category_id', 'category.id')
@@ -65,7 +64,7 @@ export default {
                 min_price: 'product.min_price',
                 max_price: 'product.max_price',
                 stock: 'product.stock',
-                created_tim: 'product.created_time'
+                created_time: 'product.created_time'
             })
         return result[0] || null;
     },
