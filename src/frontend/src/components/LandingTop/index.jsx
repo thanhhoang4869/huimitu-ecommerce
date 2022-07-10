@@ -1,11 +1,14 @@
-import React from "react";
+import ProductResult from "components/ProductResult";
+import Banner from "../Banner";
 import CategoryBar from "../CategoryBar";
 import SearchBar from "../SearchBar";
-import Banner from "../Banner";
-import { Route, Routes } from "react-router-dom";
-import ProductResult from "components/ProductResult";
+
+import { useLocation } from "react-router-dom";
 
 const LandingTop = (props) => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
   return (
     <section className="hero">
       <div className="container">
@@ -13,10 +16,7 @@ const LandingTop = (props) => {
           <CategoryBar categoryList={props.categoryList} />
           <div className="col-lg-9">
             <SearchBar />
-            <Routes>
-              <Route exact path="/" element={<Banner />} />
-              <Route path="/*" element={<ProductResult />} />
-            </Routes>
+            {searchParams.get("category") ? <ProductResult /> : <Banner />}
           </div>
         </div>
       </div>

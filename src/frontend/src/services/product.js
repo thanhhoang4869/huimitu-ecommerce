@@ -25,6 +25,16 @@ const product = {
     const response = await api.post("/product/countByCategory", { categoryId });
     return response;
   },
+
+  // async getProductsByKeyword(request) {
+  //   const response = await api.post("/product/getByKeyword", request);
+  //   return response;
+  // },
+
+  // async countByKeyword(keyword) {
+  //   const response = await api.post("/product/countByKeyword", { keyword });
+  //   return response;
+  // },
 };
 
 export default product;

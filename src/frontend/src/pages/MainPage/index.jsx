@@ -54,11 +54,7 @@ const MainPage = () => {
             element={<LandingPage categoryList={categoryList} />}
           />
           <Route
-            path="/category/*"
-            element={<CommercePage categoryList={categoryList} />}
-          />
-          <Route
-            path="/search/*"
+            path="/product/*"
             element={<CommercePage categoryList={categoryList} />}
           />
           <Route

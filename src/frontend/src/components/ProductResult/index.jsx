@@ -17,6 +17,7 @@ const ProductResult = () => {
   const [isSearchByCategory, setIsSearchByCategory] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [keyword, setKeyword] = useState("");
 
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
 
@@ -26,13 +27,60 @@ const ProductResult = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const page = searchParams.get("page");
-    const categoryId = +location.pathname.split("/")[2];
-    setIsSearchByCategory(location.pathname.includes("category"));
+    const categoryId = searchParams.get("category");
+    const keywordParam = searchParams.get("keyword");
 
-    getCategory(categoryId);
-    getProducts(categoryId, page);
-    getTotalProduct(categoryId);
+    setIsSearchByCategory(categoryId);
+
+    if (categoryId) {
+      searchByCategory(categoryId, page);
+    } else if (keywordParam) {
+      setKeyword(keywordParam);
+      searchByKeyword(keywordParam, page);
+    }
   }, [location]); // eslint-disable-line
+
+  const searchByKeyword = (keyword, page) => {
+    getProductsByKeyword(keyword, page);
+    getTotalProductByKeyword(keyword);
+  };
+
+  const searchByCategory = (categoryId, page) => {
+    getCategory(categoryId);
+    getProductsByCategory(categoryId, page);
+    getTotalProductByCategory(categoryId);
+  };
+
+  const getProductsByKeyword = async (keyword, page) => {
+    try {
+      const request = {
+        keyword,
+        limit: 6,
+        offset: +(page - 1) * 6,
+      };
+      const response = await productService.getProductsByKeyword(request);
+      setProducts(response.data.products);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
+
+  const getTotalProductByKeyword = async (keyword) => {
+    try {
+      const response = await productService.countByKeyword(keyword);
+      setTotal(response.data.count);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
 
   const getCategory = (categoryId) => {
     for (let category in categoryList) {
@@ -52,7 +100,7 @@ const ProductResult = () => {
     }
   };
 
-  const getProducts = async (categoryId, page) => {
+  const getProductsByCategory = async (categoryId, page) => {
     try {
       const request = {
         categoryId: +categoryId,
@@ -70,7 +118,7 @@ const ProductResult = () => {
     }
   };
 
-  const getTotalProduct = async (categoryId) => {
+  const getTotalProductByCategory = async (categoryId) => {
     try {
       const response = await productService.countByCategory(categoryId);
       setTotal(response.data.count);
@@ -145,7 +193,7 @@ const ProductResult = () => {
         />
       ) : (
         <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
-          <h5 className="text-key">Từ khóa: {"Hello"}</h5>
+          <h5 className="text-key">Từ khóa: {keyword}</h5>
         </div>
       )}
 

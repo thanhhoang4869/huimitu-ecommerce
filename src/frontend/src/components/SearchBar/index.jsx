@@ -1,12 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import swal from "sweetalert2";
 
 const SearchBar = () => {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const onClick = () => {
     if (search.length > 0) {
-      alert(search);
+      navigate({
+        pathname: `/product`,
+        search: `?keyword=${search}&page=1`,
+      });
     } else {
       swal.fire({
         title: "Info",
@@ -22,10 +27,6 @@ const SearchBar = () => {
       <div className="hero__search">
         <div className="hero__search__form" style={{ borderRadius: "5px" }}>
           <form>
-            {/* <div className="hero__search__categories">
-              Tất cả
-              <span className="arrow_carrot-down"></span>
-            </div> */}
             <input
               type="text"
               placeholder="Bạn cần tìm gì?"
