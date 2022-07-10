@@ -4,7 +4,7 @@ import logo from "../../images/logo.png";
 const Footer = () => {
   return (
     <>
-      <div className="banner pb-5">
+      {/* <div className="banner pb-5">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-6 col-sm-6">
@@ -19,7 +19,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <footer className="footer spad border">
         <div className="container">

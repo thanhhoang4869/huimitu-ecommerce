@@ -9,9 +9,10 @@ export default {
             .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
             .leftJoin('order', 'order.id', 'order_variant.order_id')
             .leftJoin('order_state', 'order_state.order_id', 'order.id')
-            .where('order_state.state', 'completed')
+            .where('order_state.state', config.orderState.SUCCESS)
             .groupBy('product.id', 'category.category_name')
-            .orderByRaw('sold_quantity desc')
+            .sum('order_variant.quantity as sold_quantity')
+            .orderBy('sold_quantity', 'desc')
             .select(
                 'product.id',
                 'product.product_name',
@@ -24,7 +25,6 @@ export default {
                 'product.stock',
                 'product.created_time'
             )
-            .sum('order_variant.quantity as sold_quantity')
             .limit(config.BEST_SELLER_LIMIT)
         return result || null;
     },
@@ -143,10 +143,10 @@ export default {
         return result;
     },
 
-    async getProductByCategoryList(listName, limit, offset) {
+    async getProductByCategoryList(listId, limit, offset) {
         const result = await db('product')
             .join('category', 'product.category_id', 'category.id')
-            .whereIn('category.category_name', listName)
+            .whereIn('category.id', listId)
             .select(
                 'product.id',
                 'product.product_name',
@@ -161,5 +161,13 @@ export default {
             )
             .offset(offset).limit(limit)
         return result || null;
+    },
+
+    async countProductByCategoryList(listId) {
+        const result = await db('product')
+            .join('category', 'product.category_id', 'category.id')
+            .whereIn('category.id', listId)
+            .count()
+        return result[0].count;
     }
 }

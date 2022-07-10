@@ -30,10 +30,14 @@ export default {
             const { productId } = req.body;
             const result = await reviewModel.getReview(productId);
             const reviews = result.map(review => ({
+                email: review.email,
+                fullName: review.fullname,
+                avatarPath: review.avatar_path, 
                 productVariantId: review.product_variant_id,
                 orderId: review.order_id,
                 rating: review.rating,
-                comment: review.comment
+                comment: review.comment,
+                createdTime: review.created_time
             }))
             res.status(200).send({
                 exitcode: 0,

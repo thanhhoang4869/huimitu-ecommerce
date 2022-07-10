@@ -1,5 +1,5 @@
-import categoryModel from '#src/models/category.model'
-import { buildCategoryRoot } from '#src/utils/utils'
+import categoryModel from "#src/models/category.model";
+import { buildCategoryRoot } from "#src/utils/utils";
 
 export default {
     async get(req, res, next) {
@@ -15,4 +15,5 @@ export default {
             next(err)
         }
     }
-} 
+  },
+};

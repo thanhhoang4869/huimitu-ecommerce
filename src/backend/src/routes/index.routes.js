@@ -20,7 +20,7 @@ import express from 'express'
 const router = express.Router();
 router.use('/auth', auth)
 router.use('/account', verifyLogin, verifyEmailVerified, account)
-router.use('/checkout', verifyLogin, verifyEmailVerified, checkout)
+router.use('/checkout', checkout)
 router.use('/product', product)
 router.use('/category', category)
 router.use('/location', location)

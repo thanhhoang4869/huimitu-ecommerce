@@ -1,10 +1,13 @@
 import checkout from '#src/controller/checkout.controller'
 import express from 'express'
 
+import verifyLogin from '#src/middlewares/verifyLogin.mdw'
+import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
+
 const router = express.Router();
-router.post('/checkoutBuyNow', checkout.checkoutBuyNow)
-router.post('/checkoutCart', checkout.checkoutCart)
-router.post('/momoSuccess', checkout.successMomo)
-router.post('/paypalSuccess', checkout.successPaypal)
+router.post('/buynow', verifyLogin, verifyEmailVerified, checkout.checkoutBuyNow)
+router.post('/cart',  verifyLogin,  verifyEmailVerified, checkout.checkoutCart)
+router.post('/successMomo', checkout.successMomo)
+router.post('/successPaypal', checkout.successPaypal)
 
 export default router;
