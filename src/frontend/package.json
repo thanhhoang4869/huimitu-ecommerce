@@ -24,7 +24,8 @@
     "react-star-ratings": "^2.3.0",
     "sass": "^1.53.0",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.4.19"
+    "sweetalert2": "^11.4.19",
+    "text-mask-addons": "^3.8.0"
   },
   "scripts": {
     "start": "craco start",

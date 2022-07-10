@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { default as productService } from "services/product";
+import FilterSection from "components/FilterSection";
+import swal from "sweetalert2";
 
 const ProductResult = () => {
   const [category, setCategory] = useState({});
@@ -12,6 +14,9 @@ const ProductResult = () => {
   const [isBigCategory, setIsBigCategory] = useState(false);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
+  const [isSearchByCategory, setIsSearchByCategory] = useState(false);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
 
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
 
@@ -21,9 +26,12 @@ const ProductResult = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const page = searchParams.get("page");
-    getCategory(+location.pathname.split("/")[2]);
-    getProducts(+location.pathname.split("/")[2], page);
-    getTotalProduct(+location.pathname.split("/")[2]);
+    const categoryId = +location.pathname.split("/")[2];
+    setIsSearchByCategory(location.pathname.includes("category"));
+
+    getCategory(categoryId);
+    getProducts(categoryId, page);
+    getTotalProduct(categoryId);
   }, [location]); // eslint-disable-line
 
   const getCategory = (categoryId) => {
@@ -53,7 +61,6 @@ const ProductResult = () => {
       };
       const response = await productService.getProductsByCategory(request);
       setProducts(response.data.products);
-      console.log("Result page: ", response.data.products);
     } catch (error) {
       if (error.response.status === 500) {
         navigate("/error");
@@ -76,6 +83,35 @@ const ProductResult = () => {
     }
   };
 
+  const onMinPriceChange = (value) => {
+    setMinPrice(value);
+  };
+
+  const onMaxPriceChange = (value) => {
+    setMaxPrice(value);
+  };
+
+  const handleFilter = async () => {
+    if (!minPrice && !maxPrice) {
+      return swal.fire({
+        title: "Error",
+        text: "Vui lòng nhập khoảng giá!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+    if (minPrice >= maxPrice) {
+      return swal.fire({
+        title: "Error",
+        text: "Vui lòng nhập khoảng giá hợp lệ!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+    console.log("min", minPrice);
+    console.log("max", maxPrice);
+  };
+
   const onPageChange = (page) => {
     navigate({
       pathname: `/category/${category.id}`,
@@ -83,20 +119,50 @@ const ProductResult = () => {
     });
   };
 
+  const mapCategoriesToLinearList = (categoryList) => {
+    if (!categoryList) {
+      return [];
+    }
+
+    let linearList = [];
+    for (let category in categoryList) {
+      const { children, ...rest } = categoryList[category];
+      linearList.push(rest);
+
+      const result = mapCategoriesToLinearList(children);
+      linearList = linearList.concat(result);
+    }
+    return linearList;
+  };
+
   return (
     <>
-      <Breadcrumb
-        isBigCategory={isBigCategory}
-        category={category}
-        childCategory={childCategory}
-      />
+      {isSearchByCategory ? (
+        <Breadcrumb
+          isBigCategory={isBigCategory}
+          category={category}
+          childCategory={childCategory}
+        />
+      ) : (
+        <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
+          <h5 className="text-key">Từ khóa: {"Hello"}</h5>
+        </div>
+      )}
+
       <section className="mb-3 mt-3">
         <div className="container">
-          {/* <div className="row">
-            <div className="section-title">
-              <h4>Result</h4>
-            </div>
-          </div> */}
+          <div style={{ marginBottom: "40px" }}>
+            <FilterSection
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              setMinPrice={onMinPriceChange}
+              setMaxPrice={onMaxPriceChange}
+              onFilter={handleFilter}
+              disableSelect={isSearchByCategory}
+              categoryList={mapCategoriesToLinearList(categoryList)}
+            />
+          </div>
+
           {products.length > 0 ? (
             <>
               <ItemHorizonList products={products} isResult={true} />
