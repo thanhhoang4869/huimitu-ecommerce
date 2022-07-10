@@ -162,8 +162,8 @@ const ProductResult = () => {
 
   const onPageChange = (page) => {
     navigate({
-      pathname: `/category/${category.id}`,
-      search: `?page=${page}`,
+      pathname: `/product`,
+      search: `?category=${category.id}&page=${page}`,
     });
   };
 
