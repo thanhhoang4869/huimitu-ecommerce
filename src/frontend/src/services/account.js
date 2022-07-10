@@ -37,7 +37,7 @@ const account = {
 
   async addProductToCart(variantId, quantity) {
     const data = {variantId, quantity}
-    const respone = await api.post("/cart", data,)
+    const respone = await api.post("/cart", data)
     return respone
   }
 };

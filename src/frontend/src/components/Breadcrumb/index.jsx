@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Breadcrumb = (props) => {
-  const { category, childCategory } = props;
+  const { category, childCategory, isBigCategory } = props;
+
   return (
     <div className="breadcrumb-area">
       <div className="container">
@@ -18,11 +19,18 @@ const Breadcrumb = (props) => {
                 {category.categoryName}
               </Link>
             </li>
-            <li className="breadcrumb-item">
+            {/* <li className="breadcrumb-item">
               <Link to={`/category/${childCategory.id}`}>
                 {childCategory.categoryName}
               </Link>
-            </li>
+            </li> */}
+            {isBigCategory === false ? (
+              <li className="breadcrumb-item">
+                <Link to={`/category/${childCategory.id}`}>
+                  {childCategory.categoryName}
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </div>
       </div>
