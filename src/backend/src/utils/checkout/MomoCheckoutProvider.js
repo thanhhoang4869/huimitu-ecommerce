@@ -55,7 +55,6 @@ class MomoCheckoutProvider {
         ].join("&")
 
         const signature = createHmacString(rawSignature, secretKey)
-        console.log(signature)
 
         const requestBody = {
             accessKey: accessKey,
@@ -151,7 +150,7 @@ class MomoCheckoutProvider {
         return (correctSignature === signature);
     }
 
-    confirmPayment = async (requestId, orderId, amount) => {
+    capturePayment = async (requestId, orderId, amount) => {
         const partnerCode = config.MOMO_PARTNER_CODE;
         const accessKey = config.MOMO_ACCESS_KEY;
         const secretKey = config.MOMO_SECRET_KEY;
@@ -192,6 +191,10 @@ class MomoCheckoutProvider {
         } catch (err) {
             console.error(err.response.data)
         }
+    }
+
+    getCurrency = () => {
+        return config.currency.VND;
     }
 }
 

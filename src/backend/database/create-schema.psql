@@ -162,7 +162,7 @@ CREATE TABLE "order_state" (
   "order_id" varchar,
   "state" state_type NOT NULL,
   "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY ("order_id", "state")
+  PRIMARY KEY ("order_id", "state", "created_time")
 );
 
 CREATE TABLE "voucher" (

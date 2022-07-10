@@ -15,14 +15,16 @@ export default {
             "voucher_code"
         )
         return result[0] || null;
-    }
+    },
 
     async createOrder(email, orderId, entity) {
         const {
             paymentId,
             shippingAddressId,
             shippingProviderId,
-            voucherId
+            voucherCode,
+            total,
+            shippingPrice
         } = entity
 
         const order = await db('order').insert({
@@ -30,8 +32,10 @@ export default {
             email: email,
             payment_id: paymentId,
             shipping_address_id: shippingAddressId,
-            shippingProviderId: shippingProviderId,
-            voucherId: voucherId
+            shipping_provider_id: shippingProviderId,
+            voucher_code: voucherCode,
+            total: total,
+            shipping_price: shippingPrice
         }).returning('id')
 
         try {
@@ -39,6 +43,14 @@ export default {
         } catch (err) {
             return null;
         }
+    },
+
+    async updateState(orderId, orderState) {
+        const result = await db('order_state').insert({
+            order_id: orderId,
+            state: orderState
+        })
+        return result;
     },
 
     async insertListVariantToOrder(orderId, listVariant) {

@@ -11,6 +11,7 @@ import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
 import category from "services/category";
+import PaypalButton from "components/PaypalButton";
 
 const MainPage = () => {
   const [token, setToken] = useState(
@@ -44,6 +45,7 @@ const MainPage = () => {
     <div className="MainDiv">
       <BrowserRouter>
         <Header handleLogout={logout} />
+        <PaypalButton />
         <Routes>
           <Route
             exact
