@@ -45,7 +45,6 @@ const MainPage = () => {
     <div className="MainDiv">
       <BrowserRouter>
         <Header handleLogout={logout} />
-        <PaypalButton />
         <Routes>
           <Route
             exact
