@@ -9,7 +9,17 @@ export default {
       const promises = resultProduct.map(async (item) => {
         const imagePath = await productModel.getSingleImageById(item.id)
         return {
-          ...item,
+          id: item.id,
+          productName: item.product_name,
+          categoryName: item.category_name,
+          description: item.description,
+          avgRating: item.avg_rating,
+          countRating: item.count_rating,
+          minPrice: item.min_price,
+          maxPrice: item.max_price,
+          stock: item.stock,
+          createdTime: item.created_time,
+          soldQuantity: item.sold_quantity,
           image: imagePath
         }
       });
