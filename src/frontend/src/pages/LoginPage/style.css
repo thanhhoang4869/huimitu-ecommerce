@@ -1,0 +1,28 @@
+/*----------------------------------------*/
+/* Login Form
+/*----------------------------------------*/
+
+.login-input {
+  border: 1px solid #ababab;
+  border-radius: 5px;
+  color: #ababab;
+}
+
+.login-input input {
+  border: none;
+  padding-left: 1rem;
+  width: 80%;
+  flex-grow: 1;
+}
+
+.login-btn {
+  border: none;
+  border-radius: 5px;
+  height: 3rem;
+}
+
+.login-input i {
+  width: 1.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+}
