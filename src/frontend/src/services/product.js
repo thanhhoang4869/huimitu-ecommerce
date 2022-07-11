@@ -26,15 +26,20 @@ const product = {
     return response;
   },
 
-  // async getProductsByKeyword(request) {
-  //   const response = await api.post("/product/getByKeyword", request);
-  //   return response;
-  // },
+  async getProductsBySearchQuery(request) {
+    const response = await api.post("/search/get", request);
+    return response;
+  },
 
-  // async countByKeyword(keyword) {
-  //   const response = await api.post("/product/countByKeyword", { keyword });
-  //   return response;
-  // },
+  async countBysearchQuery(searchQuery) {
+    const response = await api.post("/search/count", { searchQuery });
+    return response;
+  },
+
+  async getNewArrivals() {
+    const response = await api.get("/product/newestArrival");
+    return response;
+  },
 };
 
 export default product;
