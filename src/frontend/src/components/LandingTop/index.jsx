@@ -16,7 +16,7 @@ const LandingTop = (props) => {
           <CategoryBar categoryList={props.categoryList} />
           <div className="col-lg-9">
             <SearchBar />
-            {searchParams.get("category") || searchParams.get("keyword") ? (
+            {searchParams.get("category") || searchParams.get("searchQuery") ? (
               <ProductResult />
             ) : (
               <Banner />

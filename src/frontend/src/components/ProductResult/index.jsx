@@ -17,7 +17,7 @@ const ProductResult = () => {
   const [isSearchByCategory, setIsSearchByCategory] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [keyword, setKeyword] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
 
@@ -28,21 +28,21 @@ const ProductResult = () => {
     const searchParams = new URLSearchParams(location.search);
     const page = searchParams.get("page");
     const categoryId = searchParams.get("category");
-    const keywordParam = searchParams.get("keyword");
+    const searchQueryParam = searchParams.get("searchQuery");
 
     setIsSearchByCategory(categoryId);
 
     if (categoryId) {
       searchByCategory(categoryId, page);
-    } else if (keywordParam) {
-      setKeyword(keywordParam);
-      searchByKeyword(keywordParam, page);
+    } else if (searchQueryParam) {
+      setSearchQuery(searchQueryParam);
+      searchBysearchQuery(searchQueryParam, page);
     }
   }, [location]); // eslint-disable-line
 
-  const searchByKeyword = (keyword, page) => {
-    getProductsByKeyword(keyword, page);
-    getTotalProductByKeyword(keyword);
+  const searchBysearchQuery = (searchQuery, page) => {
+    getProductsBySearchQuery(searchQuery, page);
+    getTotalProductBysearchQuery(searchQuery);
   };
 
   const searchByCategory = (categoryId, page) => {
@@ -51,27 +51,28 @@ const ProductResult = () => {
     getTotalProductByCategory(categoryId);
   };
 
-  const getProductsByKeyword = async (keyword, page) => {
+  const getProductsBySearchQuery = async (searchQuery, page) => {
     try {
       const request = {
-        keyword,
+        searchQuery: searchQuery,
         limit: 6,
         offset: +(page - 1) * 6,
       };
-      const response = await productService.getProductsByKeyword(request);
+      const response = await productService.getProductsBySearchQuery(request);
+      console.log(response.data.products);
       setProducts(response.data.products);
     } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+      // if (error.response.status === 500) {
+      //   navigate("/error");
+      // } else {
+      //   navigate("/404");
+      // }
     }
   };
 
-  const getTotalProductByKeyword = async (keyword) => {
+  const getTotalProductBysearchQuery = async (searchQuery) => {
     try {
-      const response = await productService.countByKeyword(keyword);
+      const response = await productService.countBysearchQuery(searchQuery);
       setTotal(response.data.count);
     } catch (error) {
       if (error.response.status === 500) {
@@ -193,7 +194,7 @@ const ProductResult = () => {
         />
       ) : (
         <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
-          <h5 className="text-key">Từ khóa: {keyword}</h5>
+          <h5 className="text-key">Từ khóa: {searchQuery}</h5>
         </div>
       )}
 

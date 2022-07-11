@@ -1,16 +1,34 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ItemHorizonList from "components/ItemHorizonList";
-import product from "services/product";
+import productService from "services/product";
 
 const LandingBottom = () => {
-  const [bestSeller, setBestSeller] = useState([]);
-  const [newArrivals, setNewArrivals] = useState([]);
+  const [newArrivals, setNewArrivals] = useState(JSON.stringify([]));
+  const [bestSellers, setBestSellers] = useState(JSON.stringify([]));
 
-  // useEffect(() => {
-  //   setBestSeller(product.getBestSellers());
-  //   console.log("bestSeller", bestSeller);
-  // }, []);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // getBestSellers();
+    getNewArrivals();
+  });
+
+  console.log(newArrivals);
+
+  const getNewArrivals = async () => {
+    try {
+      const response = await productService.getNewArrivals();
+      setNewArrivals(JSON.stringify(response.data.products));
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
 
   return (
     <>
@@ -21,7 +39,7 @@ const LandingBottom = () => {
               <h2>Bán chạy</h2>
             </div>
           </div>
-          {bestSeller.length > 0 && <ItemHorizonList />}
+          {/* {bestSeller.length > 0 && <ItemHorizonList />} */}
         </div>
       </section>
 
@@ -32,7 +50,9 @@ const LandingBottom = () => {
               <h2>Hàng mới</h2>
             </div>
           </div>
-          {newArrivals.length > 0 && <ItemHorizonList />}
+          {JSON.parse(newArrivals).length > 0 && (
+            <ItemHorizonList products={JSON.parse(newArrivals)} />
+          )}
         </div>
       </section>
     </>
