@@ -145,7 +145,8 @@ export default {
                 min_price,
                 max_price,
                 stock,
-                created_time
+                created_time,
+                sold_quantity
             } = product
 
             const listImage = await productModel.getImageById(id)
@@ -171,6 +172,7 @@ export default {
                     maxPrice: max_price,
                     stock: stock,
                     createdTime: created_time,
+                    soldQuantity: sold_quantity,
                     images: images
                 }
             })
