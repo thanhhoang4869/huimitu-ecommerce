@@ -77,6 +77,32 @@ class PaypalCheckoutProvider {
         const [{ href }] = links.filter(item => (item.rel === "approve"))
         return [id, href]
     }
+
+    capturePayment = async (orderId) => {
+        const clientId = config.PAYPAL_CLIENT_ID;
+        const secret = config.PAYPAL_SECRET
+        const signature = encryptBase64([clientId, secret].join(":"))
+
+        const requestBody = {}
+        const headerConfig = {
+            headers: {
+                "Authorization": `Basic ${signature}`,
+                "Content-Type": "application/json"
+            }
+        }
+
+        const response = await axios.post(
+            `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderId}/capture`,
+            requestBody,
+            headerConfig
+        )
+        const { data } = response;
+        return data;
+    }
+
+    getCurrency = () => {
+        return config.currency.USD;
+    }
 }
 
 export default PaypalCheckoutProvider
