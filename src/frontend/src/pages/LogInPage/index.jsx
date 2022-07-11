@@ -6,7 +6,7 @@ import swal from "sweetalert2";
 
 import "./style.css";
 
-const LogInPage = (props) => {
+const LoginPage = (props) => {
   const handleLogin = props.handleLogin;
 
   const [email, setEmail] = useState("");
@@ -147,4 +147,4 @@ const LogInPage = (props) => {
   );
 };
 
-export default LogInPage;
+export default LoginPage;

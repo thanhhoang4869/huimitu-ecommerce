@@ -5,7 +5,7 @@ export default {
     async get(req, res, next) {
         try {
             const result = await categoryModel.get()
-            const categories = buildCategoryRoot(null, result)
+            const categories = buildCategoryRoot(result)
             res.status(200).send({
                 exitcode: 0,
                 message: "Get categories successfully",
