@@ -10,7 +10,7 @@ const SearchBar = () => {
     if (search.length > 0) {
       navigate({
         pathname: `/product`,
-        search: `?searchQuery=${search}`,
+        search: `searchQuery=${search}`,
       });
     } else {
       swal.fire({

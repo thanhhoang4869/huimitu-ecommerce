@@ -10,9 +10,11 @@ const FilterSection = (props) => {
 
   const handleChange = (value) => {
     if (!value) {
+      props.onSortChange("asc");
       return setSelected("asc");
     }
     setSelected(value);
+    props.onSortChange(value);
   };
 
   return (
@@ -49,7 +51,7 @@ const FilterSection = (props) => {
               min={0}
               controls={false}
               style={{ width: 100 }}
-              value={minPrice != 0 ? minPrice : undefined}
+              value={minPrice !== 0 ? minPrice : undefined}
               onChange={(value) => setMinPrice(value)}
               placeholder="Thấp nhất"
               formatter={(value) =>
@@ -70,7 +72,7 @@ const FilterSection = (props) => {
             />
             <InputNumber
               min={0}
-              value={maxPrice != 0 ? maxPrice : undefined}
+              value={maxPrice !== 0 ? maxPrice : undefined}
               onChange={(value) => setMaxPrice(value)}
               controls={false}
               formatter={(value) =>

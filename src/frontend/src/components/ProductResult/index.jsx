@@ -4,8 +4,8 @@ import Paging from "components/Paging";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { default as productService } from "services/product";
 import FilterSection from "components/FilterSection";
+import { default as productService } from "services/product";
 import swal from "sweetalert2";
 
 const ProductResult = () => {
@@ -19,7 +19,6 @@ const ProductResult = () => {
   const [maxPrice, setMaxPrice] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentSearchBaseQuery, setCurrentSearchBaseQuery] = useState("");
-  const [sortType, setSortType] = useState("asc");
 
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
 
@@ -31,36 +30,38 @@ const ProductResult = () => {
     const page = searchParams.get("page") || 1;
     const categoryId = searchParams.get("category");
     const searchQueryParam = searchParams.get("searchQuery");
+    const sortType = searchParams.get("sortType") || "asc";
 
     setIsSearchByCategory(categoryId);
 
     if (categoryId) {
-      searchByCategory(categoryId, page);
+      searchByCategory(categoryId, sortType, page);
       setCurrentSearchBaseQuery(`?category=${categoryId}`);
     } else if (searchQueryParam) {
       setSearchQuery(searchQueryParam);
-      searchBySearchQuery(searchQueryParam, page);
+      searchBySearchQuery(searchQueryParam, sortType, page);
       setCurrentSearchBaseQuery(`?searchQuery=${searchQueryParam}`);
     }
   }, [location]); // eslint-disable-line
 
-  const searchBySearchQuery = (searchQuery, page) => {
-    getProductsBySearchQuery(searchQuery, page);
+  const searchBySearchQuery = (searchQuery, sortType, page) => {
+    getProductsBySearchQuery(searchQuery, sortType, page);
     getTotalProductBysearchQuery(searchQuery);
   };
 
-  const searchByCategory = (categoryId, page) => {
+  const searchByCategory = (categoryId, sortType, page) => {
     getCategory(categoryId);
-    getProductsByCategory(categoryId, page);
+    getProductsByCategory(categoryId, sortType, page);
     getTotalProductByCategory(categoryId);
   };
 
-  const getProductsBySearchQuery = async (searchQuery, page) => {
+  const getProductsBySearchQuery = async (searchQuery, sortType, page) => {
     try {
       const request = {
         searchQuery: searchQuery,
         limit: 6,
         offset: +(page - 1) * 6,
+        sortType: sortType,
       };
       const response = await productService.getProductsBySearchQuery(request);
       console.log(response.data.products);
@@ -105,12 +106,13 @@ const ProductResult = () => {
     }
   };
 
-  const getProductsByCategory = async (categoryId, page) => {
+  const getProductsByCategory = async (categoryId, sortType, page) => {
     try {
       const request = {
         categoryId: +categoryId,
         limit: 6,
         offset: +(page - 1) * 6,
+        sortType: sortType,
       };
       const response = await productService.getProductsByCategory(request);
       setProducts(response.data.products);
@@ -168,24 +170,8 @@ const ProductResult = () => {
   const onPageChange = (page) => {
     navigate({
       pathname: `/product`,
-      search: `?${currentSearchBaseQuery}&page=${page}`,
+      search: `${currentSearchBaseQuery}&page=${page}`,
     });
-  };
-
-  const mapCategoriesToLinearList = (categoryList) => {
-    if (!categoryList) {
-      return [];
-    }
-
-    let linearList = [];
-    for (let category in categoryList) {
-      const { children, ...rest } = categoryList[category];
-      linearList.push(rest);
-
-      const result = mapCategoriesToLinearList(children);
-      linearList = linearList.concat(result);
-    }
-    return linearList;
   };
 
   const onSortChange = (sortType) => {
@@ -194,7 +180,7 @@ const ProductResult = () => {
     );
     navigate({
       pathname: `/product`,
-      search: `?${currentSearchBaseQuery}&sort=${sortType}`,
+      search: `${currentSearchBaseQuery}&sort=${sortType}`,
     });
   };
 
