@@ -4,20 +4,13 @@ import { Input, InputNumber, Select, Button } from "antd";
 
 const FilterSection = (props) => {
   const { Option } = Select;
-  const [selected, setSelected] = useState("def");
+  const [selected, setSelected] = useState("asc");
 
-  const {
-    minPrice,
-    maxPrice,
-    setMinPrice,
-    setMaxPrice,
-    disableSelect,
-    categoryList,
-  } = props;
+  const { minPrice, maxPrice, setMinPrice, setMaxPrice } = props;
 
   const handleChange = (value) => {
     if (!value) {
-      return setSelected("def");
+      return setSelected("asc");
     }
     setSelected(value);
   };
@@ -25,20 +18,19 @@ const FilterSection = (props) => {
   return (
     <div className="filter-container">
       <Select
-        disabled={disableSelect}
         allowClear
         value={selected}
         style={{
-          width: "220px",
+          width: "150px",
         }}
         onChange={handleChange}
       >
-        <Option value="def" hidden>
-          Danh mục
+        <Option key="1" value="asc">
+          Giá thấp đến cao
         </Option>
-        {categoryList.map((category) => (
-          <Option value={category.id}>{category.categoryName}</Option>
-        ))}
+        <Option key="2" value="desc">
+          Giá cao đến thấp
+        </Option>
       </Select>
 
       <div className="filter-container">

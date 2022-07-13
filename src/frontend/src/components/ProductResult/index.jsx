@@ -18,6 +18,8 @@ const ProductResult = () => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentSearchBaseQuery, setCurrentSearchBaseQuery] = useState("");
+  const [sortType, setSortType] = useState("asc");
 
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
 
@@ -26,7 +28,7 @@ const ProductResult = () => {
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const page = searchParams.get("page");
+    const page = searchParams.get("page") || 1;
     const categoryId = searchParams.get("category");
     const searchQueryParam = searchParams.get("searchQuery");
 
@@ -34,13 +36,15 @@ const ProductResult = () => {
 
     if (categoryId) {
       searchByCategory(categoryId, page);
+      setCurrentSearchBaseQuery(`?category=${categoryId}`);
     } else if (searchQueryParam) {
       setSearchQuery(searchQueryParam);
-      searchBysearchQuery(searchQueryParam, page);
+      searchBySearchQuery(searchQueryParam, page);
+      setCurrentSearchBaseQuery(`?searchQuery=${searchQueryParam}`);
     }
   }, [location]); // eslint-disable-line
 
-  const searchBysearchQuery = (searchQuery, page) => {
+  const searchBySearchQuery = (searchQuery, page) => {
     getProductsBySearchQuery(searchQuery, page);
     getTotalProductBysearchQuery(searchQuery);
   };
@@ -62,11 +66,11 @@ const ProductResult = () => {
       console.log(response.data.products);
       setProducts(response.data.products);
     } catch (error) {
-      // if (error.response.status === 500) {
-      //   navigate("/error");
-      // } else {
-      //   navigate("/404");
-      // }
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
     }
   };
 
@@ -164,7 +168,7 @@ const ProductResult = () => {
   const onPageChange = (page) => {
     navigate({
       pathname: `/product`,
-      search: `?category=${category.id}&page=${page}`,
+      search: `?${currentSearchBaseQuery}&page=${page}`,
     });
   };
 
@@ -182,6 +186,16 @@ const ProductResult = () => {
       linearList = linearList.concat(result);
     }
     return linearList;
+  };
+
+  const onSortChange = (sortType) => {
+    setCurrentSearchBaseQuery(
+      `?${currentSearchBaseQuery}&sortType=${sortType}`
+    );
+    navigate({
+      pathname: `/product`,
+      search: `?${currentSearchBaseQuery}&sort=${sortType}`,
+    });
   };
 
   return (
@@ -202,13 +216,12 @@ const ProductResult = () => {
         <div className="container">
           <div style={{ marginBottom: "40px" }}>
             <FilterSection
+              onSortChange={onSortChange}
               minPrice={minPrice}
               maxPrice={maxPrice}
               setMinPrice={onMinPriceChange}
               setMaxPrice={onMaxPriceChange}
               onFilter={handleFilter}
-              disableSelect={isSearchByCategory}
-              categoryList={mapCategoriesToLinearList(categoryList)}
             />
           </div>
 

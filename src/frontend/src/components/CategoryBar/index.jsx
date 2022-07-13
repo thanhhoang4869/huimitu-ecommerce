@@ -42,7 +42,7 @@ const CategoryBar = (props) => {
     setCurrent(e.key);
     navigate({
       pathname: `/product`,
-      search: `?category=${e.key}&page=1`,
+      search: `?category=${e.key}`,
     });
   };
 
