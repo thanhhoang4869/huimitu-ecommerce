@@ -4,41 +4,35 @@ import { Input, InputNumber, Select, Button } from "antd";
 
 const FilterSection = (props) => {
   const { Option } = Select;
-  const [selected, setSelected] = useState("def");
+  const [selected, setSelected] = useState("asc");
 
-  const {
-    minPrice,
-    maxPrice,
-    setMinPrice,
-    setMaxPrice,
-    disableSelect,
-    categoryList,
-  } = props;
+  const { minPrice, maxPrice, setMinPrice, setMaxPrice } = props;
 
   const handleChange = (value) => {
     if (!value) {
-      return setSelected("def");
+      props.onSortChange("asc");
+      return setSelected("asc");
     }
     setSelected(value);
+    props.onSortChange(value);
   };
 
   return (
     <div className="filter-container">
       <Select
-        disabled={disableSelect}
         allowClear
         value={selected}
         style={{
-          width: "220px",
+          width: "150px",
         }}
         onChange={handleChange}
       >
-        <Option value="def" hidden>
-          Danh mục
+        <Option key="1" value="asc">
+          Giá thấp đến cao
         </Option>
-        {categoryList.map((category) => (
-          <Option value={category.id}>{category.categoryName}</Option>
-        ))}
+        <Option key="2" value="desc">
+          Giá cao đến thấp
+        </Option>
       </Select>
 
       <div className="filter-container">
@@ -57,7 +51,7 @@ const FilterSection = (props) => {
               min={0}
               controls={false}
               style={{ width: 100 }}
-              value={minPrice != 0 ? minPrice : undefined}
+              value={minPrice !== 0 ? minPrice : undefined}
               onChange={(value) => setMinPrice(value)}
               placeholder="Thấp nhất"
               formatter={(value) =>
@@ -78,7 +72,7 @@ const FilterSection = (props) => {
             />
             <InputNumber
               min={0}
-              value={maxPrice != 0 ? maxPrice : undefined}
+              value={maxPrice !== 0 ? maxPrice : undefined}
               onChange={(value) => setMaxPrice(value)}
               controls={false}
               formatter={(value) =>
