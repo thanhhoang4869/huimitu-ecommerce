@@ -6,7 +6,7 @@ import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
 import LoginPage from "pages/LoginPage";
-import SignupPage from "pages/SignupPage";
+import SignupPage from "pages/SignUpPage";
 
 import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
@@ -14,6 +14,7 @@ import ProductDetailPage from "pages/ProductDetailPage";
 import category from "services/category";
 import NotFoundPage from "pages/NotFoundPage";
 import ServerErrorPage from "pages/ServerErrorPage";
+import OrderListPage from "pages/OrderListPage";
 
 const MainPage = () => {
   const [token, setToken] = useState(
@@ -76,6 +77,11 @@ const MainPage = () => {
             exact
             path="/product/detail/:id"
             element={<ProductDetailPage />}
+          />
+          <Route
+            exact
+            path="/order"
+            element={<OrderListPage />}
           />
           <Route exact path="/error" element={<ServerErrorPage />} />
           <Route path="*" element={<NotFoundPage />} />

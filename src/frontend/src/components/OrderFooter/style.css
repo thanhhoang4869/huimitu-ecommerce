@@ -1,0 +1,14 @@
+.order-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.order-total {
+    margin-top: 0.5rem;
+}
+
+.order-total-number {
+    margin-left: 1rem;
+    font-size: 1.5rem;
+}
