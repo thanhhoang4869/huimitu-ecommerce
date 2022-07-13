@@ -22,7 +22,6 @@ const ProductResult = () => {
   const [isBigCategory, setIsBigCategory] = useState(false);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
-  const [isSearchByCategory, setIsSearchByCategory] = useState();
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
 
@@ -65,7 +64,6 @@ const ProductResult = () => {
       minPrice: minPrice,
       maxPrice: maxPrice,
     };
-    setIsSearchByCategory(categoryId);
     setQuery(newQuery);
     search(newQuery);
   }, [location]); // eslint-disable-line
