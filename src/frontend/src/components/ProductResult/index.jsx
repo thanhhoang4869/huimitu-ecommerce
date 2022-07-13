@@ -22,9 +22,7 @@ const ProductResult = () => {
   const [isBigCategory, setIsBigCategory] = useState(false);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
-  const [isSearchByCategory, setIsSearchByCategory] = useState(
-    searchParams.get("category")
-  );
+  const [isSearchByCategory, setIsSearchByCategory] = useState();
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
 
@@ -32,7 +30,7 @@ const ProductResult = () => {
     page: searchParams.get("page"),
     sortType: searchParams.get("sortType"),
     searchQuery: searchParams.get("searchQuery"),
-    category: searchParams.get("category"),
+    categoryId: searchParams.get("categoryId"),
     minPrice: searchParams.get("minPrice"),
     maxPrice: searchParams.get("maxPrice"),
   });
@@ -53,23 +51,23 @@ const ProductResult = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const page = searchParams.get("page") || 1;
-    const categoryId = searchParams.get("category");
+    const categoryId = searchParams.get("categoryId");
     const searchQuery = searchParams.get("searchQuery");
-    const sortType = searchParams.get("sortType") || "asc";
+    const sortType = searchParams.get("sortType");
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    setIsSearchByCategory(categoryId);
-    setQuery({
+    const newQuery = {
       page: page,
       sortType: sortType,
       searchQuery: searchQuery,
-      category: categoryId,
+      categoryId: categoryId,
       minPrice: minPrice,
       maxPrice: maxPrice,
-    });
-
-    search({ categoryId, searchQuery, page, sortType });
+    };
+    setIsSearchByCategory(categoryId);
+    setQuery(newQuery);
+    search(newQuery);
   }, [location]); // eslint-disable-line
 
   const search = (data) => {
@@ -107,6 +105,8 @@ const ProductResult = () => {
         searchQuery: data.searchQuery,
         limit: 6,
         offset: +(data.page - 1) * 6,
+        minPrice: data.minPrice,
+        maxPrice: data.maxPrice,
         sortType: data.sortType,
       };
       const response = await productService.getProductsBySearchQuery(request);
@@ -122,9 +122,12 @@ const ProductResult = () => {
 
   const getTotalProductsBySearch = async (data) => {
     try {
-      const response = await productService.countBysearchQuery(
-        data.searchQuery
-      );
+      const request = {
+        searchQuery: data.searchQuery,
+        minPrice: data.minPrice,
+        maxPrice: data.maxPrice,
+      };
+      const response = await productService.countBysearchQuery(request);
       setTotal(response.data.count);
     } catch (error) {
       if (error.response.status === 500) {
@@ -141,6 +144,8 @@ const ProductResult = () => {
         categoryId: +data.categoryId,
         limit: 6,
         offset: +(data.page - 1) * 6,
+        minPrice: +data.minPrice,
+        maxPrice: +data.maxPrice,
         sortType: data.sortType,
       };
       const response = await productService.getProductsByCategory(request);
@@ -156,7 +161,12 @@ const ProductResult = () => {
 
   const getTotalProductsByCategory = async (data) => {
     try {
-      const response = await productService.countByCategory(data.categoryId);
+      const request = {
+        categoryId: +data.categoryId,
+        minPrice: +data.minPrice,
+        maxPrice: +data.maxPrice,
+      };
+      const response = await productService.countByCategory(request);
       setTotal(response.data.count);
     } catch (error) {
       if (error.response.status === 500) {
@@ -215,7 +225,7 @@ const ProductResult = () => {
 
   return (
     <>
-      {isSearchByCategory ? (
+      {query.categoryId ? (
         <Breadcrumb
           isBigCategory={isBigCategory}
           category={category}

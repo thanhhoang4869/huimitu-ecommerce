@@ -4,14 +4,14 @@ import { Input, InputNumber, Select, Button } from "antd";
 
 const FilterSection = (props) => {
   const { Option } = Select;
-  const [selected, setSelected] = useState("asc");
+  const [selected, setSelected] = useState(null);
 
   const { minPrice, maxPrice, setMinPrice, setMaxPrice } = props;
 
   const handleChange = (value) => {
     if (!value) {
-      props.onSortChange("asc");
-      return setSelected("asc");
+      props.onSortChange(null);
+      return setSelected(null);
     }
     setSelected(value);
     props.onSortChange(value);
@@ -27,10 +27,13 @@ const FilterSection = (props) => {
         }}
         onChange={handleChange}
       >
-        <Option key="1" value="asc">
+        <Option key="1" value={null}>
+          Mặc định
+        </Option>
+        <Option key="2" value="asc">
           Giá thấp đến cao
         </Option>
-        <Option key="2" value="desc">
+        <Option key="3" value="desc">
           Giá cao đến thấp
         </Option>
       </Select>
