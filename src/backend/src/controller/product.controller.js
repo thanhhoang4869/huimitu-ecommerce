@@ -66,7 +66,14 @@ export default {
 
     async getProductByCategory(req, res, next) {
         try {
-            const { categoryId, limit, offset } = req.body;
+            const {
+                categoryId,
+                minPrice,
+                maxPrice,
+                sortType,
+                limit,
+                offset
+            } = req.body;
             const category = await categoryModel.get()
 
             const categoryTree = buildCategoryRoot(category);
@@ -74,7 +81,14 @@ export default {
             const listSelectedCategory = toListCategory(selectedRoot)
             const listSelectedId = listSelectedCategory.map(item => item.id)
 
-            const resultProduct = await productModel.getProductByCategoryList(listSelectedId, limit, offset);
+            const resultProduct = await productModel.getProductByCategoryList(
+                listSelectedId,
+                limit,
+                offset,
+                minPrice,
+                maxPrice,
+                sortType
+            );
             const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
@@ -105,14 +119,18 @@ export default {
 
     async countProductByCategory(req, res, next) {
         try {
-            const { categoryId } = req.body;
+            const {
+                categoryId,
+                minPrice,
+                maxPrice,
+            } = req.body;
             const category = await categoryModel.get()
 
             const categoryTree = buildCategoryRoot(category);
             const selectedRoot = searchCategoryTree(categoryTree, categoryId);
             const listSelectedCategory = toListCategory(selectedRoot)
             const listSelectedId = listSelectedCategory.map(item => item.id)
-            const count = await productModel.countProductByCategoryList(listSelectedId);
+            const count = await productModel.countProductByCategoryList(listSelectedId, minPrice, maxPrice);
 
             res.status(200).send({
                 exitcode: 0,

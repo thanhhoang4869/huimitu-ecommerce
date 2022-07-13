@@ -21,8 +21,8 @@ const product = {
     return response;
   },
 
-  async countByCategory(categoryId) {
-    const response = await api.post("/product/countByCategory", { categoryId });
+  async countByCategory(request) {
+    const response = await api.post("/product/countByCategory", request);
     return response;
   },
 
@@ -31,8 +31,8 @@ const product = {
     return response;
   },
 
-  async countBysearchQuery(searchQuery) {
-    const response = await api.post("/search/count", { searchQuery });
+  async countBysearchQuery(request) {
+    const response = await api.post("/search/count", request);
     return response;
   },
 
