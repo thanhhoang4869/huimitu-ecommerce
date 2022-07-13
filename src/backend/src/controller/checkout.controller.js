@@ -47,7 +47,7 @@ export default {
             let maxDiscountPrice = 0;
             let minPrice = 0;
             if (voucherCode) {
-                const voucher = await voucherModel.getVoucherByCode(voucherCode);
+                const voucher = await voucherModel.getVoucherByCodeEmail(voucherCode, email);
                 if (voucher === null) {
                     return res.status(200).send({
                         exitcode: 103,

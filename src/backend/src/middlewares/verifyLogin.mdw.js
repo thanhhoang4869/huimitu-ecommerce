@@ -14,6 +14,6 @@ export default function verifyLogin(req, res, next) {
         }
         next()
     } catch (err) {
-        throw new ErrorHandler(401, "Invalid token")
+        throw new ErrorHandler(401, err.message)
     }
 } 
