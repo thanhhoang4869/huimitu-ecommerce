@@ -54,6 +54,15 @@ const CategoryBar = (props) => {
   };
 
   const items = getMenuItem(props.categoryList);
+
+  const onClick = (e) => {
+    setCurrent(e.key);
+    navigate({
+      pathname: `/product`,
+      search: `category=${e.key}`,
+    });
+  };
+
   const [current, setCurrent] = useState("1");
   const [openKey, setOpenKey] = useState("1");
 
