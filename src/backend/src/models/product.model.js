@@ -50,9 +50,16 @@ export default {
     async getProductById(productId) {
         const result = await db('product')
             .join('category', 'product.category_id', 'category.id')
+            .join('product_variant', 'product_variant.product_id', 'product.id')
+            .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
+            .leftJoin('order', 'order.id', 'order_variant.order_id')
+            .leftJoin('order_state', 'order_state.order_id', 'order.id')
             .where({
                 "product.id": productId,
+                "order_state.state": config.orderState.SUCCESS
             })
+            .groupBy('product.id', 'category.id', 'category.category_name')
+            .sum('order_variant.quantity as sold_quantity')
             .select({
                 id: 'product.id',
                 product_name: 'product.product_name',
