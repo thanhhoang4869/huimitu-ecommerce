@@ -1,5 +1,7 @@
 import { Avatar, List } from "antd";
 import React from "react";
+import formatter from "utils/formatter";
+
 import "./style.css";
 
 const ProductList = ({ productList }) => {
@@ -30,7 +32,7 @@ const ProductList = ({ productList }) => {
               </>
             }
           />
-          <span className="color-key">{product.price}</span>
+          <span className="color-key">{formatter.formatPrice(product.price)}</span>
         </List.Item>
       )}
     ></List>
