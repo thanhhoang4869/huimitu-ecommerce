@@ -149,31 +149,67 @@ export default {
         return result;
     },
 
-    async getProductByCategoryList(listId, limit, offset) {
-        const result = await db('product')
-            .join('category', 'product.category_id', 'category.id')
-            .whereIn('category.id', listId)
-            .select(
-                'product.id',
-                'product.product_name',
-                'category.category_name',
-                'product.description',
-                'product.avg_rating',
-                'product.count_rating',
-                'product.min_price',
-                'product.max_price',
-                'product.stock',
-                'product.created_time'
-            )
-            .offset(offset).limit(limit)
+    async getProductByCategoryList(listId, limit, offset, minPrice, maxPrice, sortType) {
+        let builder = db('product').select(
+            'product.id',
+            'product.product_name',
+            'category.category_name',
+            'product.description',
+            'product.avg_rating',
+            'product.count_rating',
+            'product.min_price',
+            'product.max_price',
+            'product.stock',
+            'product.created_time'
+        ).join(
+            'category',
+            'product.category_id',
+            'category.id'
+        ).whereIn('category.id', listId).as('searched')
+        let alias = 'searched'
+
+        if (minPrice && maxPrice) {
+            builder = db.from(builder).where(
+                `${alias}.min_price`, '>=', minPrice
+            ).andWhere(
+                `${alias}.max_price`, '<=', maxPrice
+            ).as('filtered')
+            alias = 'filtered'
+        }
+
+        if (sortType) {
+            builder = db.from(builder).orderBy(
+                `${alias}.min_price`,
+                sortType
+            ).as('sorted');
+            alias = 'sorted'
+        }
+
+        const result = await db.from(builder).offset(offset).limit(limit)
         return result || null;
     },
 
-    async countProductByCategoryList(listId) {
-        const result = await db('product')
+    async countProductByCategoryList(listId, minPrice, maxPrice) {
+        let builder = db('product')
             .join('category', 'product.category_id', 'category.id')
             .whereIn('category.id', listId)
-            .count()
+            .select(
+                'min_price',
+                'max_price'
+            )
+            .as('searched')
+        let alias = 'searched'
+
+        if (minPrice && maxPrice) {
+            builder = db.from(builder).where(
+                `${alias}.min_price`, '>=', minPrice
+            ).andWhere(
+                `${alias}.max_price`, '<=', maxPrice
+            ).as('filtered')
+            alias = 'filtered'
+        }
+
+        const result = await db.from(builder).count();
         return result[0].count;
     }
 }
