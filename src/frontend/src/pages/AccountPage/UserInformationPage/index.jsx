@@ -1,10 +1,11 @@
 import { Avatar, Button, Descriptions, Badge } from "antd";
 import defaultAvatar from "images/avatar.png";
+import moment from "moment";
 import React from "react";
 
 const UserInformationPage = (props) => {
   const account = props.account || {};
-  console.log(account);
+
   return (
     <div>
       <div className="d-flex justify-content-center">

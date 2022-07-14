@@ -25,7 +25,7 @@ const UpdateInformationPage = (props) => {
   const handleChangeInformation = async (data) => {
     try {
       const { fullname, gender, birthday, phone } = data;
-
+      console.log(moment(birthday).format("DD/MM/YYYY"));
       if (!(fullname && gender && birthday && phone)) {
         return swal.fire({
           text: "Vui lòng nhập tất cả thông tin",
@@ -46,7 +46,7 @@ const UpdateInformationPage = (props) => {
       const response = await accountService.updateInformation({
         fullname: fullname,
         gender: gender,
-        birthday: moment(birthday, "DD/MM/YYYY"),
+        birthday: moment(birthday).format("DD/MM/YYYY"),
         phone: phone,
       });
 
@@ -157,7 +157,7 @@ const UpdateInformationPage = (props) => {
           wrapperCol={{ span: 4 }}
           labelCol={{ span: 6 }}
           name="birthday"
-          initialValue={moment(account.birthday, "DD/MM/YYYY")}
+          initialValue={moment(account.birthday || new Date(), "DD/MM/YYYY")}
           label="Ngày sinh"
         >
           <DatePicker
@@ -198,7 +198,11 @@ const UpdateInformationPage = (props) => {
           <Input.Password size="large" placeholder="Nhập mật khẩu mới" />
         </Form.Item>
         <Form.Item label="Nhập lại mật khẩu mới" name="confirmPassword">
-          <Input.Password password size="large" placeholder="Nhập lại mật khẩu mới" />
+          <Input.Password
+            password
+            size="large"
+            placeholder="Nhập lại mật khẩu mới"
+          />
         </Form.Item>
         <Form.Item>
           <div className="d-flex justify-content-center">

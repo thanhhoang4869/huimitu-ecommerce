@@ -80,9 +80,10 @@ export default {
             const entity = {
                 phone,
                 fullname,
-                parseBirthday,
+                birthday: parseBirthday,
                 gender
             }
+
             await accountModel.updateInformation(email, entity)
 
             res.status(200).send({
