@@ -69,7 +69,7 @@ const MainPage = () => {
             exact
             path="/signup"
             element={
-              <GuardRoute auth={isLogin} redirectTo="/account/userInformation">
+              <GuardRoute auth={!isLogin} redirectTo="/account/userInformation">
                 <SignupPage />
               </GuardRoute>
             }

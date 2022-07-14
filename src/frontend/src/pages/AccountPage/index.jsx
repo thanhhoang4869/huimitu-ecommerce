@@ -34,7 +34,7 @@ const AccountPage = () => {
             <Routes>
               <Route
                 path="/userInformation"
-                element={<UserInformationPage />}
+                element={<UserInformationPage account={account} />}
               />
               <Route path="/changePassword" element={<ChangePasswordPage />} />
             </Routes>
