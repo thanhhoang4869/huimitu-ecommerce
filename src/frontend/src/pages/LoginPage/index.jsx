@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
-import account from "services/account";
+import authService from "services/auth";
 import swal from "sweetalert2";
 
 import "./style.css";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext/AuthContext";
 
-const LoginPage = (props) => {
-  const handleLogin = props.handleLogin;
+const LoginPage = () => {
+  const { login } = useContext(AuthContext);
+  const { state } = useLocation();
+  const navigator = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,8 +24,8 @@ const LoginPage = (props) => {
         text: "Vui lòng nhập email",
         icon: "error",
         confirmButtonText: "OK",
-      })
-      return false
+      });
+      return false;
     }
     if (!password) {
       swal.fire({
@@ -29,8 +33,8 @@ const LoginPage = (props) => {
         text: "Vui lòng nhập password",
         icon: "error",
         confirmButtonText: "OK",
-      })
-      return false
+      });
+      return false;
     }
     if (
       !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
@@ -54,18 +58,19 @@ const LoginPage = (props) => {
     //   });
     //   return false;
     // }
-    return true
+    return true;
   };
 
   const onSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     if (validateFields(email, password)) {
       try {
-        const response = await account.login(email, password);
+        const response = await authService.login(email, password);
         const { exitcode, token, message } = response.data;
 
         if (exitcode === 0) {
-          handleLogin(token);
+          login(token);
+          navigator(state?.path || "/");
         } else {
           setError(message);
         }
@@ -78,11 +83,12 @@ const LoginPage = (props) => {
   const handleGoogleSucces = async (response) => {
     const { credential } = response;
 
-    const result = await account.googleLogin(credential);
+    const result = await authService.googleLogin(credential);
     const { exitcode, token } = result.data;
 
     if (exitcode === 0) {
-      handleLogin(token);
+      login(token);
+      navigator(state?.path || "/");
     } else {
       setError(result.data);
     }
@@ -95,7 +101,6 @@ const LoginPage = (props) => {
   return (
     <div className="d-flex container flex-column justify-content-center my-5">
       {error && <p className="text-danger">{error}</p>}
-      {localStorage.getItem("token") && <Navigate to="/" replace={true} />}
       <form
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"
         onSubmit={onSubmit}

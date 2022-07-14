@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
-import account from "services/account";
+import authService from "services/auth";
 import swal from "sweetalert2";
 
 import "./style.css";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext/AuthContext";
 
 const SignupPage = (props) => {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -72,7 +75,7 @@ const SignupPage = (props) => {
           fullname,
           phone,
         };
-        const response = await account.signup(entity);
+        const response = await authService.signup(entity);
         const { exitcode, message } = response.data;
 
         if (exitcode === 0) {
@@ -101,11 +104,11 @@ const SignupPage = (props) => {
   const handleGoogleSucces = async (response) => {
     const { credential } = response;
 
-    const result = await account.googleLogin(credential);
+    const result = await authService.googleLogin(credential);
     const { exitcode, token } = result.data;
 
     if (exitcode === 0) {
-      props.handleLogin(token);
+      login(token);
     } else {
       setError(result.data);
     }
