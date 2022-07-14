@@ -32,8 +32,8 @@ CREATE TABLE "account" (
   "password" varchar,
   "phone" varchar UNIQUE,
   "fullname" varchar,
-  "birthday" date,
-  "gender" gender_type,
+  "birthday" date DEFAULT CURRENT_TIMESTAMP,
+  "gender" gender_type DEFAULT 'male',
   "avatar_path" varchar,
   "avatar_filename" varchar,
   "role" role_type,
@@ -470,9 +470,9 @@ EXECUTE PROCEDURE copy_price_order();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'd:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'd:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'd:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123

@@ -18,9 +18,19 @@ const validatePhone = (phone) => {
     return (phone.length === 10 && regex.test(phone))
 }
 
+const isImage = (fileType) => {
+    return (fileType === 'image/jpeg' || fileType === 'image/png')
+}
+
+const sizeLessMegaByte = (inputByte, megaByte) =>{
+    return inputByte/Math.pow(1024,2) < megaByte;    
+}
+
 export {
     validateEmail,
     validateMinLength,
     validateMaxLength,
-    validatePhone
+    validatePhone,
+    sizeLessMegaByte,
+    isImage
 }

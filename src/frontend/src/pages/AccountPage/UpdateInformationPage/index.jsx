@@ -25,7 +25,7 @@ const UpdateInformationPage = (props) => {
   const handleChangeInformation = async (data) => {
     try {
       const { fullname, gender, birthday, phone } = data;
-      console.log(moment(birthday).format("DD/MM/YYYY"));
+
       if (!(fullname && gender && birthday && phone)) {
         return swal.fire({
           text: "Vui lòng nhập tất cả thông tin",

@@ -12,6 +12,7 @@ import {
   validateMinLength,
   validatePhone,
 } from "utils/validator";
+import { Button } from "antd";
 
 const SignupPage = (props) => {
   const { login } = useContext(AuthContext);
@@ -21,6 +22,9 @@ const SignupPage = (props) => {
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigator = useNavigate();
 
   const validateFields = (password, passwordConfirm, email, phone) => {
@@ -61,6 +65,8 @@ const SignupPage = (props) => {
       });
       return;
     }
+
+    return true;
   };
 
   const onSubmit = async (e) => {
@@ -69,29 +75,29 @@ const SignupPage = (props) => {
         if (!validateFields(password, passwordConfirm, email, phone)) {
           return;
         }
-        try {
-          const entity = {
-            email,
-            password,
-            fullname,
-            phone,
-          };
-          const response = await authService.signup(entity);
-          const { exitcode, message } = response.data;
+        const entity = {
+          email,
+          password,
+          fullname,
+          phone,
+        };
 
-          if (exitcode === 0) {
-            swal.fire({
-              title: "Success",
-              text: "Vui lòng kiểm tra email để xác nhận tài khoản!",
-              icon: "success",
-              confirmButtonText: "OK",
-            });
-            navigator("/login");
-          } else {
-            setError(message);
-          }
-        } catch (error) {
-          setError(error.message);
+        setIsLoading(true);
+        const response = await authService.signup(entity);
+        setIsLoading(false);
+
+        const { exitcode, message } = response.data;
+
+        if (exitcode === 0) {
+          swal.fire({
+            title: "Success",
+            text: "Vui lòng kiểm tra email để xác nhận tài khoản!",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+          navigator("/login");
+        } else {
+          setError(message);
         }
       } else {
         swal.fire({
@@ -178,13 +184,16 @@ const SignupPage = (props) => {
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>
-        <button
+        <Button
           className="primary-btn bg-key signup-btn col-6"
-          type="button"
+          type="primary"
+          size="large"
           onClick={onSubmit}
+          isLoading={isLoading}
+          disabled={isLoading}
         >
           Đăng ký
-        </button>
+        </Button>
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
         <p>hoặc</p>

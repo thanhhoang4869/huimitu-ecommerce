@@ -1,10 +1,45 @@
 import { Avatar, Button, Descriptions, Badge } from "antd";
+import Upload from "antd/lib/upload/Upload";
 import defaultAvatar from "images/avatar.png";
-import moment from "moment";
-import React from "react";
+import React, { useState } from "react";
+import accountService from "services/account";
+import swal from "sweetalert2";
+import { isImage, sizeLessMegaByte } from "utils/validator";
 
 const UserInformationPage = (props) => {
   const account = props.account || {};
+  const [isUploading, setIsUploading] = useState(false);
+
+  const uploadProps = {
+    maxCount: 1,
+    accept: "image/png, image/jpeg",
+    showUploadList: false,
+
+    async beforeUpload(file) {
+      if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
+        swal.fire({
+          text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return false;
+      }
+
+      setIsUploading(true);
+      const response = await accountService.uploadAvatar(file);
+      const { exitcode } = response.data;
+      if (exitcode === 0) {
+        await swal.fire({
+          text: "Đổi avatar thành công",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        window.location.reload();
+      }
+      setIsUploading(false);
+      return false;
+    },
+  };
 
   return (
     <div>
@@ -16,9 +51,16 @@ const UserInformationPage = (props) => {
         />
       </div>
       <div className="my-2 d-flex justify-content-center">
-        <Button style={{ width: "128px" }} size="large">
-          Upload avatar
-        </Button>
+        <Upload {...uploadProps}>
+          <Button
+            disabled={isUploading}
+            loading={isUploading}
+            shape="round"
+            size="large"
+          >
+            Upload avatar
+          </Button>
+        </Upload>
       </div>
       <Badge.Ribbon
         text={account.verified ? "Đã xác thực" : "Chưa xác thực"}

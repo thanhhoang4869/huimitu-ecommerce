@@ -65,7 +65,8 @@ export default {
         try {
             const { phone, fullname, birthday, gender } = req.body;
             const { email } = req.payload;
-            const parseBirthday = moment(birthday, 'DD/MM/YYYY');
+            const parseBirthday = moment(birthday, 'DD/MM/YYYY').format('YYYY-MM-DD');
+            console.log(parseBirthday)
 
             if (phone) {
                 const accountPhone = await accountModel.getByPhone(phone)

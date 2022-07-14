@@ -37,6 +37,13 @@ const accountService = {
     }
     const response = await api.patch('/account/password', requestBody);
     return response
+  },
+
+  async uploadAvatar(file) {
+    const form = new FormData();
+    form.append("avatar", file)
+    const response = await api.patch('/account/avatar', form)
+    return response;
   }
 };
 

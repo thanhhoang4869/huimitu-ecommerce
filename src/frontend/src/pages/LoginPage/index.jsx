@@ -7,6 +7,7 @@ import swal from "sweetalert2";
 import "./style.css";
 import { useContext } from "react";
 import { AuthContext } from "context/AuthContext/AuthContext";
+import { validateEmail } from "utils/validator";
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -36,11 +37,7 @@ const LoginPage = () => {
       });
       return false;
     }
-    if (
-      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        email
-      )
-    ) {
+    if (!validateEmail(email)) {
       swal.fire({
         title: "Error",
         text: "Vui lòng nhập email hợp lệ",
@@ -49,15 +46,6 @@ const LoginPage = () => {
       });
       return false;
     }
-    // if (password.length < 6) {
-    //   swal.fire({
-    //     title: "Error",
-    //     text: "Mật khẩu phải có ít nhất 6 ký tự",
-    //     icon: "error",
-    //     confirmButtonText: "OK",
-    //   });
-    //   return false;
-    // }
     return true;
   };
 
@@ -66,13 +54,31 @@ const LoginPage = () => {
     if (validateFields(email, password)) {
       try {
         const response = await authService.login(email, password);
-        const { exitcode, token, message } = response.data;
+        const { exitcode, token } = response.data;
 
-        if (exitcode === 0) {
-          login(token);
-          navigator(state?.path || "/");
-        } else {
-          setError(message);
+        // eslint-disable-next-line default-case
+        switch (exitcode) {
+          case 0: {
+            login(token);
+            navigator(state?.path || "/");
+            break;
+          }
+          case 101: {
+            swal.fire({
+              text: "Email hoặc mật khẩu không chính xác",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+            break;
+          }
+          case 102: {
+            swal.fire({
+              text: "Email chưa được xác thực",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+            break;
+          }
         }
       } catch (error) {
         setError(error.response.data.message);
