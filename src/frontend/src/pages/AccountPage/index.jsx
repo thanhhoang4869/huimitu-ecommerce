@@ -2,7 +2,7 @@ import AccountBar from "components/AccountBar";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import accountService from "services/account";
-import ChangePasswordPage from "./ChangePasswordPage";
+import UpdateInformationPage from "./UpdateInformationPage";
 import UserInformationPage from "./UserInformationPage";
 
 const AccountPage = () => {
@@ -36,7 +36,11 @@ const AccountPage = () => {
                 path="/userInformation"
                 element={<UserInformationPage account={account} />}
               />
-              <Route path="/changePassword" element={<ChangePasswordPage />} />
+              <Route path="/order" element={<></>} />
+              <Route
+                path="/changeInformation"
+                element={<UpdateInformationPage account={account} />}
+              />
             </Routes>
           </div>
         </div>

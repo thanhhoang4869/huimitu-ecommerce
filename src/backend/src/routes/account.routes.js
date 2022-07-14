@@ -17,6 +17,8 @@ router.route('/')
     .patch(account.updateInformation)
     .get(account.getInformation);
 
+router.patch('/password', account.changePassword);
+
 router.post(
     '/uploadAvatar',
     verifyLogin,

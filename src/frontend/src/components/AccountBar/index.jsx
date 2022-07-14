@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const items = [
   { key: "userInformation", label: "Thông tin người dùng" },
-  { key: "changePassword", label: "Đổi mật khẩu" },
+  { key: "order", label: "Đơn hàng" },
+  { key: "changeInformation", label: "Đổi thông tin" },
 ];
 
 const AccountBar = () => {

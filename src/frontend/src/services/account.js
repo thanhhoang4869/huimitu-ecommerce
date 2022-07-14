@@ -16,6 +16,27 @@ const accountService = {
   async getInformation() {
     const response = await api.get("/account");
     return response;
+  },
+
+  async updateInformation(data) {
+    const requestBody = {
+      phone: data.phone,
+      birthday: data.birthday,
+      gender: data.gender,
+      fullname: data.fullname
+    }
+    const response = await api.patch('/account', requestBody)
+    return response
+  },
+
+  async changePassword(password, newPassword, confirmPassword) {
+    const requestBody = {
+      password: password,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword
+    }
+    const response = await api.patch('/account/password', requestBody);
+    return response
   }
 };
 
