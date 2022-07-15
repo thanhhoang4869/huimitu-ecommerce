@@ -1,18 +1,30 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
-import account from "services/account";
+import authService from "services/auth";
 import swal from "sweetalert2";
 
 import "./style.css";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext/AuthContext";
+import {
+  validateEmail,
+  validateMinLength,
+  validatePhone,
+} from "utils/validator";
+import { Button } from "antd";
 
 const SignupPage = (props) => {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigator = useNavigate();
 
   const validateFields = (password, passwordConfirm, email, phone) => {
@@ -25,11 +37,7 @@ const SignupPage = (props) => {
       });
       return;
     }
-    if (
-      !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        email
-      )
-    ) {
+    if (!validateEmail(email)) {
       swal.fire({
         title: "Error",
         text: "Vui lòng nhập email hợp lệ",
@@ -38,7 +46,7 @@ const SignupPage = (props) => {
       });
       return;
     }
-    if (password.length < 6) {
+    if (!validateMinLength(password, 6)) {
       swal.fire({
         title: "Error",
         text: "Mật khẩu phải có ít nhất 6 ký tự",
@@ -48,10 +56,7 @@ const SignupPage = (props) => {
       return;
     }
 
-    if (
-      phone.length !== 10 ||
-      !/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(phone)
-    ) {
+    if (!validatePhone(phone)) {
       swal.fire({
         title: "Error",
         text: "Vui lòng nhập số điện thoại hợp lệ",
@@ -60,19 +65,27 @@ const SignupPage = (props) => {
       });
       return;
     }
+
+    return true;
   };
 
   const onSubmit = async (e) => {
-    if (email && password && passwordConfirm && fullname && phone) {
-      validateFields(password, passwordConfirm, email, phone);
-      try {
+    try {
+      if (email && password && passwordConfirm && fullname && phone) {
+        if (!validateFields(password, passwordConfirm, email, phone)) {
+          return;
+        }
         const entity = {
           email,
           password,
           fullname,
           phone,
         };
-        const response = await account.signup(entity);
+
+        setIsLoading(true);
+        const response = await authService.signup(entity);
+        setIsLoading(false);
+
         const { exitcode, message } = response.data;
 
         if (exitcode === 0) {
@@ -86,26 +99,26 @@ const SignupPage = (props) => {
         } else {
           setError(message);
         }
-      } catch (error) {
-        setError(error.message);
+      } else {
+        swal.fire({
+          text: "Vui lòng nhập tất cả thông tin",
+          icon: "info",
+          confirmButtonText: "OK",
+        });
       }
-    } else {
-      swal.fire({
-        text: "Vui lòng nhập tất cả thông tin",
-        icon: "info",
-        confirmButtonText: "OK",
-      });
+    } catch (err) {
+      navigator("/error");
     }
   };
 
   const handleGoogleSucces = async (response) => {
     const { credential } = response;
 
-    const result = await account.googleLogin(credential);
+    const result = await authService.googleLogin(credential);
     const { exitcode, token } = result.data;
 
     if (exitcode === 0) {
-      props.handleLogin(token);
+      login(token);
     } else {
       setError(result.data);
     }
@@ -171,13 +184,16 @@ const SignupPage = (props) => {
             onChange={(e) => setPhone(e.target.value)}
           />
         </div>
-        <button
+        <Button
           className="primary-btn bg-key signup-btn col-6"
-          type="button"
+          type="primary"
+          size="large"
           onClick={onSubmit}
+          isLoading={isLoading}
+          disabled={isLoading}
         >
           Đăng ký
-        </button>
+        </Button>
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
         <p>hoặc</p>

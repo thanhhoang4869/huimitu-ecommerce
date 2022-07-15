@@ -1,4 +1,5 @@
 import voucherModel from '#src/models/voucher.model'
+import moment from 'moment'
 
 export default {
     async getVoucher(req, res, next) {
@@ -10,8 +11,8 @@ export default {
                 percentageDiscount: item.percentage_discount,
                 minimumPrice: item.minimum_price,
                 maximumDiscountPrice: item.maximum_discount_price,
-                startDate: new Date(item.start_date).toLocaleDateString(),
-                endDate: new Date(item.end_date).toLocaleDateString(),
+                startDate: moment(new Date(item.start_date)).format('DD/MM/YYYY'),
+                endDate: moment(new Date(item.end_date)).format('DD/MM/YYYY')
             }))
             res.status(200).send({
                 exitcode: 0,

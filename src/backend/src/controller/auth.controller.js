@@ -19,7 +19,7 @@ export default {
             // Check for correct email
             if (encryptedPassword === null) {
                 return res.status(200).send({
-                    exitcode: 3,
+                    exitcode: 101,
                     message: "Email or password is not correct"
                 });
             }
@@ -27,7 +27,7 @@ export default {
             // Check the correctness of password
             if (!verifyPassword(password, encryptedPassword)) {
                 return res.status(200).send({
-                    exitcode: 3,
+                    exitcode: 101,
                     message: "Email or password is not correct"
                 });
             }
@@ -35,7 +35,10 @@ export default {
             // Handle account not verified
             const verified = account.verified;
             if (!verified) {
-                throw new ErrorHandler(403, "Account is not verified");
+                return res.status(200).send({
+                    exitcode: 102,
+                    message: "Account is not verified"
+                });
             }
 
             // Create payload for encryption

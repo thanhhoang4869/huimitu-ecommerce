@@ -2,13 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext/AuthContext";
 
-const Header = ({ handleLogout }) => {
+const Header = () => {
+  const { logout, isLogin } = useContext(AuthContext);
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
         <div className="header__top">
-          <div className="container">
+          <div className="container" style={{ paddingTop: "25px" }}>
             <div className="row">
               <div className="col-lg-6 col-md-6">
                 <div className="header__top__left">
@@ -22,19 +25,18 @@ const Header = ({ handleLogout }) => {
               <div className="col-lg-6 col-md-6">
                 <div className="header__top__right">
                   <div className="header__top__right__social">
-                    <Link to="/">
+                    <Link to="/account/userInformation">
                       <i className="fa fa-user text-orange"></i>
                       <span className="ml-2 text-orange">Cá nhân</span>
                     </Link>
                   </div>
                   <div className="header__top__right__auth">
-                    {localStorage.getItem("token") && (
-                      <Link to="/login" onClick={handleLogout}>
+                    {isLogin ? (
+                      <Link to="/login" onClick={logout}>
                         <i className="fa fa-sign-out mr-2"></i>
                         Đăng xuất
                       </Link>
-                    )}
-                    {!localStorage.getItem("token") && (
+                    ) : (
                       <Link to="/login">
                         <i className="fa fa-sign-in mr-2"></i>
                         Đăng nhập
@@ -92,7 +94,7 @@ const Header = ({ handleLogout }) => {
               <div className="header__cart">
                 <ul>
                   <li>
-                    <Link to="#">
+                    <Link to="/account/cart">
                       <i className="fa fa-shopping-bag"></i> <span>3</span>
                     </Link>
                   </li>

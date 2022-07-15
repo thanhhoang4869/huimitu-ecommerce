@@ -17,8 +17,10 @@ router.route('/')
     .patch(account.updateInformation)
     .get(account.getInformation);
 
-router.post(
-    '/uploadAvatar',
+router.patch('/password', account.changePassword);
+
+router.patch(
+    '/avatar',
     verifyLogin,
     verifyEmailVerified,
     avatarImageUploader.array('avatar', config.AVATAR_IMAGE_NUMBER_LIMIT),
