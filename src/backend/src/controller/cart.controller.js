@@ -42,12 +42,21 @@ export default {
             const { id } = cartResult;
 
             const variantsResult = await variantModel.getByCartId(id);
-            const listVariantId = variantsResult.map(item => item.id);
+            const listVariantId = variantsResult.map(item => ({
+                id: item.id,
+                quantity: item.quantity,
+            }));
 
-            if (variantId in listVariantId) {
+            const matchVariant = listVariantId.filter(item => item.id === variantId)[0];
+            if (matchVariant) {
+                await cartModel.updateVariantOfCart(
+                    email, 
+                    variantId, 
+                    quantity+matchVariant.quantity
+                );
                 return res.status(200).send({
-                    exitcode: 102,
-                    message: "Item already in your cart"
+                    exitcode: 0,
+                    message: "Add item to cart successfully"
                 })
             }
 

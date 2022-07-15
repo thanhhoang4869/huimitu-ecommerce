@@ -4,45 +4,56 @@ import ItemHorizonList from "components/ItemHorizonList";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import account from "services/account";
-import { default as ProductService } from "services/product";
+import { default as productService } from "services/product";
 
 import CustomComment from "components/CustomComment";
 import ImageSlider from "components/ImageSlider";
-import ProductDetailTilte from "components/ProductDetailTitle";
+import ProductDetailTitle from "components/ProductDetailTitle";
 
 import "./style.css";
+import formatter from "utils/formatter";
+import { Radio, Space } from "antd";
+import variantService from "services/variant";
+import { useContext } from "react";
+import { AuthContext } from "context/AuthContext/AuthContext";
+import cartService from "services/cart";
+import swal from "sweetalert2";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
   const [reviews, setReviews] = useState([]);
   const [category, setCategory] = useState({});
+  const [variants, setVariants] = useState([]);
   const [childCategory, setChildCategory] = useState({});
 
   const [error, setError] = useState("");
   const { id } = useParams();
+  const [selectVariant, setSelectVariant] = useState({});
 
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
+
+  const { fetchCart } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const productResponse = await ProductService.getProductById(id);
-        const reviewsResponse = await ProductService.getProductReviews(id);
-        const relatedResponse = await ProductService.getRelatedProducts(id);
+        const productResponse = await productService.getProductById(id);
+        const reviewsResponse = await productService.getProductReviews(id);
+        const relatedResponse = await productService.getRelatedProducts(id);
+        const variantsResponse = await variantService.getByProductId(id);
 
         const productData = productResponse.data.product;
         const reviewsData = reviewsResponse.data.reviews;
         const relatedData = relatedResponse.data.products;
+        const variantsData = variantsResponse.data.variants;
 
         if (productData) {
           setProduct(productData);
           setCategory(productData.category);
           setChildCategory(productData.category.children);
-          console.log(productData);
         } else {
           navigate("/error");
         }
@@ -53,7 +64,12 @@ const ProductDetailPage = () => {
         }
 
         if (relatedData) {
-          setRelatedProducts(relatedData)
+          setRelatedProducts(relatedData);
+        }
+
+        if (variantsData) {
+          setSelectVariant(variantsData[0]);
+          setVariants(variantsData);
         }
       } catch (error) {
         setError(error.message);
@@ -61,6 +77,11 @@ const ProductDetailPage = () => {
     };
     getData();
   }, []);
+
+  const handleChangeSelectVariant = (e) => {
+    const variantId = e.target.value;
+    setSelectVariant(variants.filter((item) => item.id === variantId)[0]);
+  };
 
   const updateQuantity = (delta) => {
     if (quantity + delta > 0) {
@@ -71,23 +92,34 @@ const ProductDetailPage = () => {
     }
   };
 
-  const addToCartOnSubmit = async (e) => {
-    e.preventDefault();
-    console.log("submit add to cart");
+  const addToCartOnSubmit = async () => {
     try {
-      //TODO: pass the quantity in params
-      const response = await account.addProductToCart(product.id, 1);
-      const { exitcode, message } = response.data;
-
+      const response = await cartService.addToCart(selectVariant.id, quantity);
       console.log(response.data);
+      const { exitcode } = response.data;
 
-      if (exitcode === 0) {
-        //TODO: update the number of item in cart
-      } else {
-        setError(message);
+      // eslint-disable-next-line default-case
+      switch (exitcode) {
+        case 0: {
+          swal.fire({
+            text: "Thêm sản phẩm thành công",
+            icon: "success",
+            confirmButtonText: "OK",
+          });
+          await fetchCart();
+          break;
+        }
+        case 101: {
+          swal.fire({
+            text: "Không tìm thấy sản phẩm",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          break;
+        }
       }
     } catch (error) {
-      setError(error.response.data.message);
+      console.error(error);
     }
   };
 
@@ -120,13 +152,36 @@ const ProductDetailPage = () => {
                       Đã bán: <p>{product.soldQuantity}</p>
                     </li>
                     <li>Tùy chọn</li>
+                    <Radio.Group
+                      value={selectVariant.id}
+                      onChange={handleChangeSelectVariant}
+                    >
+                      <Space direction="vertical">
+                        {variants.map((item) => (
+                          <Radio key={item.id} value={item.id}>
+                            {item.variantName}
+                          </Radio>
+                        ))}
+                      </Space>
+                    </Radio.Group>
                   </ul>
                 </div>
 
                 <div className="pricing-meta mt-4">
                   <ul>
+                    <h6 className="text-secondary">
+                      {selectVariant.discountPrice && (
+                        <strike>{`${formatter.formatPrice(
+                          selectVariant.price
+                        )}₫`}</strike>
+                      )}
+                    </h6>
                     <li>
-                      <strong>{product.minPrice}</strong>
+                      <strong>
+                        {`${formatter.formatPrice(
+                          selectVariant.discountPrice || selectVariant.price
+                        )}₫`}
+                      </strong>
                     </li>
                   </ul>
                 </div>
@@ -169,16 +224,9 @@ const ProductDetailPage = () => {
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">
-                      <form
-                        id="formAddCart"
-                        method="post"
-                        onSubmit={addToCartOnSubmit}
-                      >
-                        <input type="hidden" className="stock" name="Stock" />
-                        <button className="add-cart" type="submit">
-                          <span>Thêm vào giỏ hàng</span>
-                        </button>
-                      </form>
+                      <button className="add-cart" onClick={addToCartOnSubmit}>
+                        <span>Thêm vào giỏ hàng</span>
+                      </button>
                     </span>
 
                     <span className="pro-details-cart">
@@ -201,7 +249,7 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title="Mô tả" />
+          <ProductDetailTitle title="Mô tả" />
           <div className="product-description-text">
             <div>{product.description}</div>
           </div>
@@ -210,13 +258,13 @@ const ProductDetailPage = () => {
         {/* {{!-- Related Product --}} */}
         {relatedProducts.length > 0 && (
           <div className="container">
-            <ProductDetailTilte title="Sản phẩm liên quan" />
+            <ProductDetailTitle title="Sản phẩm liên quan" />
             <ItemHorizonList products={relatedProducts} />
           </div>
         )}
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTilte title="Đánh giá" />
+          <ProductDetailTitle title="Đánh giá" />
 
           {reviews.map((review, index) => (
             <CustomComment key={index} review={review} />

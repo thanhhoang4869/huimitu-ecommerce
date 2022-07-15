@@ -7,12 +7,6 @@ const accountService = {
     return response;
   },
 
-  async addProductToCart(variantId, quantity) {
-    const data = { variantId, quantity }
-    const respone = await api.post("/cart", data)
-    return respone
-  },
-
   async getInformation() {
     const response = await api.get("/account");
     return response;

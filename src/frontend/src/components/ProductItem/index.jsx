@@ -6,6 +6,10 @@ import StarRatings from "react-star-ratings";
 import formatter from "../../utils/formatter";
 
 const ProductItem = ({ product, isResult }) => {
+  const handleAddToCart = () => {
+    console.log(product);
+  };
+
   const content = (
     <div>
       <p>{product.productName}</p>
@@ -28,11 +32,6 @@ const ProductItem = ({ product, isResult }) => {
             <li>
               <Link to={`/product/detail/${product.id}`}>
                 <i className="fa fa-info"></i>
-              </Link>
-            </li>
-            <li>
-              <Link to="/account/cart">
-                <i className="fa fa-shopping-cart"></i>
               </Link>
             </li>
           </ul>

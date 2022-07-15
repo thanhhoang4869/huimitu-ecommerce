@@ -314,7 +314,7 @@ $$
 BEGIN
   UPDATE "cart" AS c
   SET (total, count) = (
-    SELECT COALESCE(0,SUM(cv.quantity * LEAST(pv.price,pv.discount_price))), COALESCE(0,SUM(cv.quantity))
+    SELECT COALESCE(SUM(cv.quantity * LEAST(pv.price,pv.discount_price)),0), COALESCE(SUM(cv.quantity),0)
     FROM "cart_variant" AS cv
     JOIN "product_variant" AS pv
     ON cv.variant_id = pv.id
@@ -517,7 +517,7 @@ INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Kh
 
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
-INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) có thể tái sử dụng (10 cái)','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí có thể tái sử dụng (10 cái)','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống đầu (10 miếng)','4',NULL,'0','0');

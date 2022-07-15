@@ -1,16 +1,28 @@
 import { createContext } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import cartService from "services/cart";
 import tokenService from "services/token";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLogin, setIsLogin] = useState();
+  const [isLogin, setIsLogin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [cart, setCart] = useState({});
 
   useEffect(() => {
-    setIsLogin(tokenService.getAccessToken())
+    setIsLogin(tokenService.getAccessToken());
+    fetchCart();
   }, []);
+
+  const fetchCart = async () => {
+    console.log("GO GO AIRPLANE");
+    const response = await cartService.getCart();
+    console.log(response);
+    const { cart } = response.data;
+    setCart(cart);
+  };
 
   const login = (token) => {
     tokenService.setAccessToken(token);
@@ -23,7 +35,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLogin, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isLogin,
+        isAdmin,
+        cart,
+        fetchCart,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

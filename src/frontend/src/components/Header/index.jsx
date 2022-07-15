@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { AuthContext } from "context/AuthContext/AuthContext";
 
 const Header = () => {
-  const { logout, isLogin } = useContext(AuthContext);
+  const { logout, isLogin, cart } = useContext(AuthContext);
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
@@ -94,9 +94,12 @@ const Header = () => {
               <div className="header__cart">
                 <ul>
                   <li>
-                    <Link to="/account/cart">
-                      <i className="fa fa-shopping-bag"></i> <span>3</span>
-                    </Link>
+                    {isLogin && (
+                      <Link to="/account/cart">
+                        <i className="fa fa-shopping-bag"></i>{" "}
+                        <span>{cart.count}</span>
+                      </Link>
+                    )}
                   </li>
                 </ul>
               </div>
