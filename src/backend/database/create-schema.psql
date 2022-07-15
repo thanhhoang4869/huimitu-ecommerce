@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS "cart_variant" CASCADE;
 DROP TABLE IF EXISTS "review" CASCADE;
 DROP TABLE IF EXISTS "shipping_provider" CASCADE;
 DROP TABLE IF EXISTS "voucher" CASCADE;
+DROP TABLE IF EXISTS "frequent_product" CASCADE;
 
 ----------------------- CREATE TABLE -------------------------
 
@@ -175,6 +176,14 @@ CREATE TABLE "voucher" (
   "end_date" timestamp NOT NULL
 );
 
+CREATE TABLE "frequent_product" (
+  "support" float,
+  "confident" float,
+  "consequence_id" int,
+  "product_id" int,
+  PRIMARY KEY ("product_id", "consequence_id")
+);
+
 ----------------------- CONSTRAINT -------------------------
 
 ALTER TABLE "district" ADD FOREIGN KEY ("province_id") REFERENCES "province"("id");
@@ -209,6 +218,9 @@ ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id")
 
 ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email") ON DELETE CASCADE;
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
+
+ALTER TABLE "frequent_product" ADD FOREIGN KEY("product_id") REFERENCES "product"("id");
+ALTER TABLE "frequent_product" ADD FOREIGN KEY("consequence_id") REFERENCES "product"("id");
 
 ----------------------- FULL TEXT SEARCH -------------------------
 CREATE INDEX idx_product_fts

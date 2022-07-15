@@ -279,5 +279,48 @@ export default {
         } catch (err) {
             next(err)
         }
+    },
+
+    async relatedProduct(req, res, next) {
+        try {
+            const {
+                productId
+            } = req.params;
+
+            const resultProduct = await productModel.getRelatedProduct(productId);
+
+            if (resultProduct === null) {
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Related product not found"
+                })
+            }
+
+            const promises = resultProduct.map(async (item) => {
+                const imagePath = await productModel.getSingleImageById(item.id)
+                return {
+                    id: item.id,
+                    productName: item.product_name,
+                    categoryName: item.category_name,
+                    description: item.description,
+                    avgRating: item.avg_rating,
+                    countRating: item.count_rating,
+                    minPrice: item.min_price,
+                    maxPrice: item.max_price,
+                    stock: item.stock,
+                    createdTime: item.created_time,
+                    image: imagePath
+                }
+            });
+            const products = await Promise.all(promises)
+
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get related products successfully",
+                products: products
+            })
+        } catch (err) {
+            next(err)
+        }
     }
 }
