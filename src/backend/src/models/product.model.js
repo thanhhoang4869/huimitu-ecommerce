@@ -61,6 +61,28 @@ export default {
         return result || null;
     },
 
+    async getRelatedProduct(productId) {
+        const result = await db('frequent_product').where({
+            product_id: productId
+        })
+        .join('product', 'product.id', 'frequent_product.consequence_id')
+        .join('category', 'product.category_id', 'category.id')
+        .select(
+            'product.id',
+            'product.product_name',
+            'category.category_name',
+            'product.description',
+            'product.avg_rating',
+            'product.count_rating',
+            'product.min_price',
+            'product.max_price',
+            'product.stock',
+            'product.created_time'
+        ).orderBy('confident', 'desc').limit(config.RELATED_PRODUCT_LIMIT)
+        
+        return result || null;
+    },
+
     async getProductById(productId) {
         const result = await db('product')
             .join('category', 'product.category_id', 'category.id')
