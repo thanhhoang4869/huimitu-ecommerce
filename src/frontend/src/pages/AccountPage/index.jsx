@@ -2,6 +2,7 @@ import AccountBar from "components/AccountBar";
 import React, { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import accountService from "services/account";
+import CartPage from "./CartPage";
 import UpdateInformationPage from "./UpdateInformationPage";
 import UserInformationPage from "./UserInformationPage";
 
@@ -36,6 +37,7 @@ const AccountPage = () => {
                 path="/userInformation"
                 element={<UserInformationPage account={account} />}
               />
+              <Route path="/cart" element={<CartPage/>} />
               <Route path="/order" element={<></>} />
               <Route
                 path="/changeInformation"

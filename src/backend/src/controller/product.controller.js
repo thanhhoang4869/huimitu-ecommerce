@@ -6,6 +6,7 @@ export default {
     async getBestSeller(req, res, next) {
         try {
             const resultProduct = await productModel.getBestSeller()
+
             const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
@@ -146,8 +147,9 @@ export default {
         try {
             const productId = req.params.productId;
             const product = await productModel.getProductById(productId)
+
             if (product === null) {
-                res.status(200).send({
+                return res.status(200).send({
                     exitcode: 101,
                     message: "Product not found"
                 })

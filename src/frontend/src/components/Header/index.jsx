@@ -94,7 +94,7 @@ const Header = () => {
               <div className="header__cart">
                 <ul>
                   <li>
-                    <Link to="#">
+                    <Link to="/account/cart">
                       <i className="fa fa-shopping-bag"></i> <span>3</span>
                     </Link>
                   </li>

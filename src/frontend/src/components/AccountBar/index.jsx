@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const items = [
   { key: "userInformation", label: "Thông tin người dùng" },
+  { key: "cart", label: "Giỏ hàng" },
   { key: "order", label: "Đơn hàng" },
   { key: "changeInformation", label: "Đổi thông tin" },
 ];

@@ -28,8 +28,10 @@ api.interceptors.response.use(
   async (err) => {
     const originalConfig = err.config;
     if (originalConfig.url !== "/auth/login" && originalConfig.url !== "/auth/loginGoogle" && err.response) {
-      localStorage.removeItem(config.storageKeys.ACCESS_KEY);
-      window.location.assign(`/login`);
+      if (err.response.status === 401) {
+        localStorage.removeItem(config.storageKeys.ACCESS_KEY);
+        window.location.assign(`/login`);
+      }
     }
   }
 )
