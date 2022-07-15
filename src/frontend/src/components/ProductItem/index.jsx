@@ -6,9 +6,6 @@ import StarRatings from "react-star-ratings";
 import formatter from "../../utils/formatter";
 
 const ProductItem = ({ product, isResult }) => {
-  const handleAddToCart = () => {
-    console.log(product);
-  };
 
   const content = (
     <div>
