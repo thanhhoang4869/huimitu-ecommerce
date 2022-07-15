@@ -31,7 +31,7 @@ const ProductItem = ({ product, isResult }) => {
               </Link>
             </li>
             <li>
-              <Link to="javascript:;">
+              <Link to="/account/cart">
                 <i className="fa fa-shopping-cart"></i>
               </Link>
             </li>

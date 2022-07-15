@@ -40,6 +40,11 @@ const product = {
     const response = await api.get("/product/newestArrival");
     return response;
   },
+
+  async getRelatedProducts(productId) {
+    const response = await api.get(`/product/related/${productId}`)
+    return response;
+  }
 };
 
 export default product;

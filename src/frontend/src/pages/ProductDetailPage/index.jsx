@@ -32,9 +32,12 @@ const ProductDetailPage = () => {
       try {
         const productResponse = await ProductService.getProductById(id);
         const reviewsResponse = await ProductService.getProductReviews(id);
+        const relatedResponse = await ProductService.getRelatedProducts(id);
 
         const productData = productResponse.data.product;
         const reviewsData = reviewsResponse.data.reviews;
+        const relatedData = relatedResponse.data.products;
+
         if (productData) {
           setProduct(productData);
           setCategory(productData.category);
@@ -47,6 +50,10 @@ const ProductDetailPage = () => {
         console.log(reviewsData);
         if (reviewsData) {
           setReviews(reviewsData);
+        }
+
+        if (relatedData) {
+          setRelatedProducts(relatedData)
         }
       } catch (error) {
         setError(error.message);
@@ -110,7 +117,7 @@ const ProductDetailPage = () => {
                 <div className="product-infor">
                   <ul>
                     <li>
-                      Đã bán: <p>33</p>
+                      Đã bán: <p>{product.soldQuantity}</p>
                     </li>
                     <li>Tùy chọn</li>
                   </ul>
@@ -204,7 +211,7 @@ const ProductDetailPage = () => {
         {relatedProducts.length > 0 && (
           <div className="container">
             <ProductDetailTilte title="Sản phẩm liên quan" />
-            <ItemHorizonList />
+            <ItemHorizonList products={relatedProducts} />
           </div>
         )}
 
