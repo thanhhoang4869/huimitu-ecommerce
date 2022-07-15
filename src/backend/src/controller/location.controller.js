@@ -64,7 +64,6 @@ export default {
             });
             const result = await Geocode.geocode({
                 text: `${address}, ${ward}, ${district}, ${province}`,
-                sources: ["openstreetmap", "openaddresses", "whosonfirst", "geonames"],
                 boundary_country: "VN",
                 size: 1,
             });
