@@ -1,0 +1,59 @@
+.cart {
+  background-color: #ededed;
+  border-radius: 5px;
+}
+
+.badge,
+.badge-secondary,
+.badge-pill {
+  background-color: #18aeac;
+}
+
+.medium {
+  font-size: small;
+}
+
+.semi-thick {
+  font-weight: 500;
+}
+
+.checkout h6 {
+  color: black;
+  font-weight: 400;
+  font-size: x-small;
+  background-color: white;
+  text-align: center;
+  border-top: none;
+  padding: 0px 0px 0px;
+}
+
+.checkout .prod-code {
+  color: #18aeac;
+  font-weight: 600;
+  font-size: x-small;
+  text-align: center;
+  border-top: none;
+  padding: 0px 0px 0px;
+}
+
+.name:hover {
+  cursor: pointer;
+  color: #18aeac;
+}
+
+.bg-gray {
+  background-color: #ededed;
+}
+
+.text-key {
+  color: #18aeac;
+}
+
+.text-orange {
+  color: #ff8303;
+}
+
+.total {
+  color: #18aeac;
+  font-size: medium;
+}
