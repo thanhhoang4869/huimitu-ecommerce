@@ -1,4 +1,7 @@
-import { Input } from "antd";
+import { Input, Button } from "antd";
+import PaypalButton from "components/PaypalButton";
+import "./style.css";
+
 const { Search } = Input;
 
 const TotalSection = () => {
@@ -11,7 +14,15 @@ const TotalSection = () => {
         </div>
 
         <ul className="list-group mb-3">
-          <li className="list-group-item d-flex justify-content-between lh-condensed">
+          <li className="list-group-item d-flex justify-content-between">
+            <div>
+              <h6 className="my-0 name">Tên sản phẩm</h6>
+              <small className="text-muted">2x</small>
+            </div>
+            <span className="text-muted">$12</span>
+          </li>
+
+          <li className="list-group-item d-flex justify-content-between">
             <div>
               <h6 className="my-0 name">Tên sản phẩm</h6>
               <small className="text-muted">2x</small>
@@ -53,6 +64,19 @@ const TotalSection = () => {
           enterButton="Sử dụng"
           size="large"
         />
+      </div>
+      MDu condition render 2 cái nút ở dưới tùy vào option của nó chọn bên cái
+      radio btn nha
+      <Button
+        type="primary"
+        className="mt-4"
+        size="large"
+        style={{ width: "100%" }}
+      >
+        Đặt hàng
+      </Button>
+      <div className="mt-4">
+        <PaypalButton />
       </div>
     </div>
   );

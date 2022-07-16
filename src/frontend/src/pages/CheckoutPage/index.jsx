@@ -1,4 +1,3 @@
-import "./style.css";
 import TotalSection from "./TotalSection";
 import InformationSection from "./InformationSection";
 
