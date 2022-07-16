@@ -47,16 +47,59 @@ const ShippingAddressPage = () => {
 
   const [listShippingAddress, setListShippingAddress] = useState([]);
 
-  const handleQueryCoordinate = () => {};
+  const handleQueryCoordinate = async () => {
+    try {
+      const response = await locationService.getCoordinate(
+        selectProvinceId,
+        selectDistrictId,
+        selectWardId,
+        address
+      );
+      const { coordinates } = response.data;
+      setLong(coordinates[0]);
+      setLat(coordinates[1]);
+    } catch (err) {
+      console.error(err);
+      swal.fire({
+        text: "Tra cứu thất bại",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
 
-  const handleAddShippingAddress = () => {};
+  const handleAddShippingAddress = async () => {
+    try {
+      const response = await shippingAddressService.addShippingAddress(
+        address,
+        selectWardId,
+        selectDistrictId,
+        selectWardId,
+        lat,
+        long
+      );
+      const { exitcode } = response.data;
+      if (exitcode === 0) {
+        swal.fire({
+          text: "Thêm địa chỉ thành công",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        fetchShippingAddress();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchProvince = async () => {
     try {
       const response = await locationService.getListProvince();
-      const { provinces } = response.data;
-      setListProvince(provinces);
-      setSelectProvinceId(provinces[0].id);
+      const { exitcode, provinces } = response.data;
+      if (exitcode === 0) {
+        setListProvince(provinces);
+        setSelectProvinceId(provinces[0].id);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -67,9 +110,11 @@ const ShippingAddressPage = () => {
       if (!selectProvinceId) return;
 
       const response = await locationService.getListDistrict(selectProvinceId);
-      const { districts } = response.data;
-      setListDistrict(districts);
-      setSelectDistrictId(districts[0].id);
+      const { exitcode, districts } = response.data;
+      if (exitcode === 0) {
+        setListDistrict(districts);
+        setSelectDistrictId(districts[0].id);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -83,9 +128,11 @@ const ShippingAddressPage = () => {
         selectProvinceId,
         selectDistrictId
       );
-      const { wards } = response.data;
-      setListWard(wards);
-      setSelectWardId(wards[0].id);
+      const { exitcode, wards } = response.data;
+      if (exitcode === 0) {
+        setListWard(wards);
+        setSelectWardId(wards[0].id);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -96,7 +143,12 @@ const ShippingAddressPage = () => {
       const response = await shippingAddressService.getListShippingAddress();
       const { exitcode, shippingAddresses } = response.data;
       if (exitcode === 0) {
-        setListShippingAddress(shippingAddresses);
+        setListShippingAddress(
+          shippingAddresses.map((item) => ({
+            key: item.id,
+            ...item,
+          }))
+        );
       }
     } catch (err) {
       console.error(err);
@@ -179,7 +231,7 @@ const ShippingAddressPage = () => {
                 placeholder="Chọn tỉnh thành"
                 size="large"
                 value={selectProvinceId}
-                onChange={(value) => {
+                onSelect={(value) => {
                   setSelectProvinceId(value);
                 }}
               >

@@ -24,7 +24,14 @@ const location = {
     },
 
     async getCoordinate(provinceId, districtId, wardId, address) {
-        
+        const requestBody = {
+            provinceId: provinceId,
+            districtId: districtId,
+            wardId: wardId,
+            address: address
+        }
+        const response = await api.post("/location/coordinate", requestBody);
+        return response
     }
 };
 

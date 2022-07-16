@@ -35,4 +35,35 @@ export default {
             );
         return result || null;
     },
+
+
+    async getProvinceById(provinceId) {
+        const result = await db('province').where({
+            'id': provinceId
+        }).select(
+            'id',
+            'province_name'
+        );
+        return result[0] || null;
+    },
+
+    async getDistrictById(districtId) {
+        const result = await db('district').where({
+            'id': districtId
+        }).select(
+            'id',
+            'district_name'
+        );
+        return result[0] || null;
+    },
+
+    async getWardById(wardId) {
+        const result = await db('ward').where({
+            'id': wardId
+        }).select(
+            'id',
+            'ward_name'
+        );
+        return result[0] || null;
+    },
 }

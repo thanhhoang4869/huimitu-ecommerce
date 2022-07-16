@@ -42,6 +42,8 @@ export default {
             districtId,
             wardId,
             address,
+            lat,
+            long
         } = entity
         const shippingAddressId = await db('shipping_address').insert({
             email: email,
@@ -49,6 +51,8 @@ export default {
             district_id: districtId,
             ward_id: wardId,
             address: address,
+            lat: lat,
+            long: long
         }).returning('shipping_address.id')
 
         return shippingAddressId[0].id || null;

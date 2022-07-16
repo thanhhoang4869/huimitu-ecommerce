@@ -31,12 +31,16 @@ export default {
                 districtId,
                 wardId,
                 address,
+                lat,
+                long
             } = req.body;
             const entity = {
                 provinceId: provinceId,
                 districtId: districtId,
                 wardId: wardId,
                 address: address,
+                lat: lat,
+                long: long
             }
 
             const shippingAddressId = await shippingAddressModel.createShippingAddress(email, entity);
