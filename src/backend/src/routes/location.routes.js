@@ -5,5 +5,7 @@ const router = express.Router();
 router.get('/provinces', location.getProvinces)
 router.post('/districts', location.getDistricts)
 router.post('/wards', location.getWards)
+router.post('/query', location.query)
+router.post('/distance', location.getDistance)
 
 export default router;
