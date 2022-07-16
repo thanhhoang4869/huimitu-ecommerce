@@ -86,8 +86,9 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleSucces = async (response) => {
+  const handleGoogleSuccess = async (response) => {
     const { credential } = response;
+    console.log(response);
 
     const result = await authService.googleLogin(credential);
     const { exitcode, token } = result.data;
@@ -143,8 +144,8 @@ const LoginPage = () => {
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
         <p>hoặc</p>
         <GoogleLoginButton
-          handleGoogleError={handleGoogleError}
-          handleGoogleSucces={handleGoogleSucces}
+          onError={handleGoogleError}
+          onSuccess={handleGoogleSuccess}
         />
 
         <p className="mt-5">
