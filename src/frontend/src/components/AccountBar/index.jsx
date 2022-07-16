@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 const items = [
   { key: "userInformation", label: "Thông tin người dùng" },
+  { key: "changeInformation", label: "Đổi thông tin" },
+  { key: "shippingAddress", label: "Địa chỉ giao hàng" },
   { key: "cart", label: "Giỏ hàng" },
   { key: "order", label: "Đơn hàng" },
-  { key: "changeInformation", label: "Đổi thông tin" },
 ];
 
 const AccountBar = () => {

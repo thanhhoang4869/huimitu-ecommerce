@@ -10,7 +10,7 @@ export default {
                 id: item.id,
                 provinceName: item.province_name,
                 districtName: item.district_name,
-                wardName: item.wardName,
+                wardName: item.ward_name,
                 address: item.address,
                 receiverName: item.receiver_name,
                 receiverPhone: item.receiver_phone,
