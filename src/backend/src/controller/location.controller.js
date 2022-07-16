@@ -71,8 +71,29 @@ export default {
             res.status(200).send({
                 exitcode: 0,
                 message: "Get long lat successfully",
-                long: long,
-                lat: lat,
+                lon: long,
+                lat: lat
+            });
+        } catch (err) {
+            next(err);
+        }
+    },
+
+    async getDistance(req, res, next) {
+        try {
+            const { srcLong, srcLat, destLong, destLat } = req.body;
+            const Directions = new openrouteservice.Directions({
+                api_key: config.OPENROUTESERVICE_API_KEY,
+            });
+            const result = await Directions.calculate({
+                coordinates: [[srcLong, srcLat], [destLong, destLat]],
+                profile: "driving-car"
+            });
+            const distance = result.routes[0].summary.distance;
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get distance successfully",
+                distance: distance
             });
         } catch (err) {
             next(err);
