@@ -15,6 +15,19 @@ const getCoordinate = async (address, ward, district, province) => {
     return coordinates
 }
 
+const getDistance = async (srcLong, srcLat, desLong, desLat) => {
+    const Directions = new openrouteservice.Directions({
+        api_key: config.OPENROUTESERVICE_API_KEY,
+    });
+    const result = await Directions.calculate({
+        coordinates: [[srcLong, srcLat], [desLong, desLat]],
+        profile: "driving-car"
+    });
+    const { distance } = result.routes[0].summary;
+    return distance
+}
+
 export {
-    getCoordinate
+    getCoordinate,
+    getDistance
 }
