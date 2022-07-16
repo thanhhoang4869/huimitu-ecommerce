@@ -9,6 +9,7 @@ const TotalSection = () => {
           <span>Đơn hàng</span>
           <span className="badge badge-secondary badge-pill">3</span>
         </div>
+
         <ul className="list-group mb-3">
           <li className="list-group-item d-flex justify-content-between lh-condensed">
             <div>
@@ -17,13 +18,7 @@ const TotalSection = () => {
             </div>
             <span className="text-muted">$12</span>
           </li>
-          <li className="list-group-item d-flex justify-content-between lh-condensed">
-            <div>
-              <h6 className="my-0 name">Tên sản phẩm</h6>
-              <small className="text-muted">2x</small>
-            </div>
-            <span className="text-muted">$12</span>
-          </li>
+
           <li className="list-group-item d-flex justify-content-between">
             <div>
               <div className="prod-code my-0 text-key">Mã voucher</div>
@@ -31,9 +26,24 @@ const TotalSection = () => {
             </div>
             <span className="text-orange semi-thick">-$5</span>
           </li>
-          <li className="list-group-item d-flex justify-content-between">
-            <span className="medium text-key semi-thick">Tổng cộng</span>
-            <strong className="medium text-key">$20</strong>
+
+          <li className="list-group-item">
+            <li className="text-muted mb-2 d-flex justify-content-between">
+              <span>Tổng tiền sản phẩm</span>
+              <span>12</span>
+            </li>
+            <li className="text-muted mb-2 d-flex justify-content-between">
+              <span>Phí ship</span>
+              <span>12</span>
+            </li>
+            <li className="text-muted mb-2 d-flex justify-content-between">
+              <span>Giảm giá</span>
+              <span>12</span>
+            </li>
+            <li className="d-flex justify-content-between">
+              <span className="medium text-key semi-thick">Tổng cộng</span>
+              <strong className="medium text-key">$20</strong>
+            </li>
           </li>
         </ul>
 

@@ -1,6 +1,8 @@
 import React from "react";
 
 import { Input, Button, Form, Select } from "antd";
+import "./style.css";
+
 const { Option } = Select;
 const formRef = React.createRef();
 
@@ -13,49 +15,69 @@ const ShippingInformationForm = () => {
   };
   const onFill = () => {
     formRef.current.setFieldsValue({
-      note: "Hello world!",
-      gender: "male",
+      address: "Test",
     });
   };
 
   return (
     <div>
-      {" "}
       <Form
         style={{ justifySelf: "start", textAlign: "left" }}
         ref={formRef}
         name="control-ref"
         onFinish={onFinish}
       >
-        <Form.Item
-          name="note"
-          label="Note"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="gender"
-          label="Gender"
-          rules={[
-            {
-              required: true,
-            },
-          ]}
-        >
-          <Select
-            placeholder="Select a option and change input text above"
-            allowClear
+        <div className="flex-container">
+          <Form.Item
+            className="flex-item mr-3"
+            name="city"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
           >
-            <Option value="male">male</Option>
-            <Option value="female">female</Option>
-            <Option value="other">other</Option>
-          </Select>
-        </Form.Item>
+            <Select placeholder="Tỉnh/Thành phố" allowClear></Select>
+          </Form.Item>
+
+          <Form.Item
+            className="flex-item ml-3"
+            name="district"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select placeholder="Quận/Huyện" allowClear></Select>
+          </Form.Item>
+        </div>
+
+        <div className="flex-container">
+          <Form.Item
+            className="flex-item mr-3"
+            name="ward"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Select placeholder="Phường/Xã" allowClear></Select>
+          </Form.Item>
+
+          <Form.Item
+            name="address"
+            className="flex-item ml-3"
+            rules={[
+              {
+                required: true,
+              },
+            ]}
+          >
+            <Input placeholder="Số nhà" />
+          </Form.Item>
+        </div>
         <Form.Item
           noStyle
           shouldUpdate={(prevValues, currentValues) =>
@@ -66,7 +88,6 @@ const ShippingInformationForm = () => {
             getFieldValue("gender") === "other" ? (
               <Form.Item
                 name="customizeGender"
-                label="Customize Gender"
                 rules={[
                   {
                     required: true,
@@ -79,10 +100,9 @@ const ShippingInformationForm = () => {
           }
         </Form.Item>
         <Form.Item>
-          <Button type="primary">Submit</Button>
-          <Button type="link" htmlType="button" onClick={onFill}>
-            Fill form
-          </Button>
+          <div className="pick-address" onClick={onFill}>
+            Chọn địa chỉ có sẵn
+          </div>
         </Form.Item>
       </Form>
     </div>
