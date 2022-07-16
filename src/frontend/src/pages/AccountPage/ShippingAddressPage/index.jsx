@@ -15,7 +15,13 @@ import { Link } from "react-router-dom";
 import shippingAddressService from "services/shippingAddress";
 import swal from "sweetalert2";
 
-import { MapContainer, TileLayer, useMap, Marker } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  useMap,
+  Marker,
+  useMapEvents,
+} from "react-leaflet";
 import { Icon } from "leaflet";
 import marker from "leaflet/dist/images/marker-icon.png";
 import locationService from "services/location";
@@ -29,6 +35,15 @@ const SetViewOnClick = ({ lat, long }) => {
   const map = useMap();
   map.setView([lat, long], map.getZoom());
 
+  return null;
+};
+
+const LocationFinderDummy = ({ onClick }) => {
+  useMapEvents({
+    click(e) {
+      onClick(e);
+    },
+  });
   return null;
 };
 
@@ -90,6 +105,12 @@ const ShippingAddressPage = () => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleMapClick = (e) => {
+    const { lat, lng } = e.latlng;
+    setLat(lat);
+    setLong(lng);
   };
 
   const fetchProvince = async () => {
@@ -308,6 +329,7 @@ const ShippingAddressPage = () => {
             />
             <Marker position={[lat, long]} icon={markerIcon} />
             <SetViewOnClick lat={lat} long={long} />
+            <LocationFinderDummy onClick={handleMapClick} />
           </MapContainer>
         </div>
         <div className="d-flex mt-3 justify-content-center">
