@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Image, Space, Table, Tag } from "antd";
 import formatter from "utils/formatter";
 import { useContext } from "react";
@@ -9,6 +10,7 @@ import swal from "sweetalert2";
 
 const CartPage = () => {
   const { cart, variants, fetchCart } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleDelete = async (variantId) => {
     try {
@@ -120,8 +122,14 @@ const CartPage = () => {
             {formatter.formatPrice(cart.total)} VND
           </p>
         </div>
-        <Button type="primary" size="large">
-          Thanh toán
+        <Button
+          type="primary"
+          size="large"
+          onClick={() => {
+            navigate("/checkout");
+          }}
+        >
+          Đặt hàng
         </Button>
       </div>
     </div>

@@ -16,6 +16,7 @@ import ServerErrorPage from "pages/ServerErrorPage";
 import AccountPage from "pages/AccountPage";
 import { AuthContext } from "context/AuthContext/AuthContext";
 import GuardRoute from "components/GuardRoute";
+import CheckoutPage from "pages/CheckoutPage";
 
 const MainPage = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -31,6 +32,8 @@ const MainPage = () => {
   useEffect(() => {
     getCategoryList();
   }, []);
+
+  console.log("isLogin", isLogin);
 
   return (
     <div className="MainDiv">
@@ -53,6 +56,14 @@ const MainPage = () => {
               <GuardRoute auth={isLogin} redirectTo="/login">
                 <AccountPage />
               </GuardRoute>
+            }
+          />
+          <Route
+            path="/checkout/*"
+            element={
+              // <GuardRoute auth={isLogin} redirectTo="/login">
+              <CheckoutPage />
+              // </GuardRoute>
             }
           />
           <Route exact path="/verify/:token" element={<VerificationPage />} />
