@@ -67,7 +67,9 @@ CREATE TABLE "shipping_address" (
   "ward_id" int NOT NULL,
   "address" varchar NOT NULL,
   "receiver_phone" varchar NOT NULL,
-  "receiver_name" varchar NOT NULL
+  "receiver_name" varchar NOT NULL,
+  "lat" real NOT NULL,
+  "long" real NOT NULL
 );
 
 CREATE TABLE "category" (
@@ -561,7 +563,7 @@ INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1, 'Ahamov
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('TET30',10,100000,15000,'2023-01-01');
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('DEAL77',15,50000,10000,'2023-01-01');
 
-INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A');
+INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name", "long", "lat") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A',10.724669221658448, 106.62077984266271);
 
 INSERT INTO "order"("id","email","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_code") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 1, 15000, NULL);
 INSERT INTO "order"("id","email","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_code") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 1, 10000, 'TET30');
