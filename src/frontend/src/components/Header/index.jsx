@@ -26,8 +26,8 @@ const Header = () => {
                 <div className="header__top__right">
                   <div className="header__top__right__social">
                     <Link to="/account/userInformation">
-                      <i className="fa fa-user text-orange"></i>
-                      <span className="ml-2 text-orange">Cá nhân</span>
+                      <i className="fa fa-user"></i>
+                      <span className="ml-2">Cá nhân</span>
                     </Link>
                   </div>
                   <div className="header__top__right__auth">

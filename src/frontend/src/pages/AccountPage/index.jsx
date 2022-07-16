@@ -1,6 +1,7 @@
 import AccountBar from "components/AccountBar";
+import OrderListPage from "pages/OrderListPage";
 import React, { useEffect, useState } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import accountService from "services/account";
 import CartPage from "./CartPage";
 import ShippingAddressPage from "./ShippingAddressPage";
@@ -45,7 +46,7 @@ const AccountPage = () => {
                 element={<ShippingAddressPage />}
               />
               <Route exact path="/cart" element={<CartPage />} />
-              <Route exact path="/order" element={<></>} />
+              <Route exact path="/order" element={<OrderListPage />} />
               <Route
                 exact
                 path="/changeInformation"

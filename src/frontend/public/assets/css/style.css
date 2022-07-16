@@ -225,6 +225,7 @@ ol {
   font-weight: 700;
   background: #18aeac;
   letter-spacing: 2px;
+  border: none;
 }
 
 .primary-btn:hover {
