@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Input, Radio, Space, Select } from "antd";
 
 import "./style.css";
@@ -6,6 +7,7 @@ const { Option } = Select;
 
 const InformationSection = () => {
   const [value, setValue] = useState(1);
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
@@ -41,7 +43,11 @@ const InformationSection = () => {
               44 Võ Oanh, Phường 25, Quận Bình Thạnh, TP. HCM
             </Option>
           </Select>
-          <div className="text-cyan mt-2" style={{ textAlign: "end" }}>
+          <div
+            className="text-cyan mt-2"
+            onClick={() => navigate("/account/shippingAddress")}
+            style={{ textAlign: "end" }}
+          >
             Thêm mới
           </div>
         </div>

@@ -33,6 +33,8 @@ const MainPage = () => {
     getCategoryList();
   }, []);
 
+  console.log("isLogin", isLogin);
+
   return (
     <div className="MainDiv">
       <BrowserRouter>
@@ -57,7 +59,6 @@ const MainPage = () => {
             }
           />
           <Route
-            exact
             path="/checkout/*"
             element={
               // <GuardRoute auth={isLogin} redirectTo="/login">
