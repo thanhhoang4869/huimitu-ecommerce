@@ -141,7 +141,7 @@ CREATE TABLE "cart_variant" (
 CREATE TABLE "review" (
   "product_variant_id" int,
   "order_id" varchar,
-  "rating" int,
+  "rating" int NOT NULL CHECK("rating">=1),
   "comment" varchar,
   "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY ("product_variant_id", "order_id")
@@ -243,8 +243,8 @@ BEGIN
 	RETURN lower(
 		translate(
 			$1,
-			'¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽžёЁ',
-			'123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyYyYZzZzZzеЕ'
+			'¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿỳŶŷŸŹźŻżŽžёЁ',
+			'123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyyYyYZzZzZzeE'
 		)
 );
 END
@@ -314,7 +314,7 @@ $$
 BEGIN
   UPDATE "cart" AS c
   SET (total, count) = (
-    SELECT COALESCE(0,SUM(cv.quantity * LEAST(pv.price,pv.discount_price))), COALESCE(0,SUM(cv.quantity))
+    SELECT COALESCE(SUM(cv.quantity * LEAST(pv.price,pv.discount_price)),0), COALESCE(SUM(cv.quantity),0)
     FROM "cart_variant" AS cv
     JOIN "product_variant" AS pv
     ON cv.variant_id = pv.id
@@ -517,7 +517,7 @@ INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Kh
 
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
-INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) có thể tái sử dụng (10 cái)','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí có thể tái sử dụng (10 cái)','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống đầu (10 miếng)','4',NULL,'0','0');
@@ -582,6 +582,6 @@ INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
 INSERT INTO "order_state"("order_id","state") VALUES(2, 'success');
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'success');
 
-INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,1,5,'This is the first comment!','2022-01-01');
-INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,2,0,'This is the second comment!','2022-01-01');
-INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,3,3,'This is the third comment!','2022-01-01');
+INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
+INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,2,1,'This is the second comment!');
+INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,3,3,'This is the third comment!');
