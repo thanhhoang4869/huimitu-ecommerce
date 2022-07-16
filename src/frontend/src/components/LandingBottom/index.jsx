@@ -5,22 +5,35 @@ import ItemHorizonList from "components/ItemHorizonList";
 import productService from "services/product";
 
 const LandingBottom = () => {
-  const [newArrivals, setNewArrivals] = useState(JSON.stringify([]));
-  const [bestSellers, setBestSellers] = useState(JSON.stringify([]));
+  const [newArrivals, setNewArrivals] = useState([]);
+  const [bestSellers, setBestSellers] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    // getBestSellers();
+    getBestSellers();
     getNewArrivals();
-  });
+  }, []);
 
-  console.log(newArrivals);
+  const getBestSellers = async () => {
+    try {
+      const response = await productService.getBestSellers();
+      const { products } = response.data;
+      setBestSellers(products);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
 
   const getNewArrivals = async () => {
     try {
       const response = await productService.getNewArrivals();
-      setNewArrivals(JSON.stringify(response.data.products));
+      const { products } = response.data;
+      setNewArrivals(products);
     } catch (error) {
       if (error.response.status === 500) {
         navigate("/error");
@@ -39,7 +52,7 @@ const LandingBottom = () => {
               <h2>Bán chạy</h2>
             </div>
           </div>
-          {/* {bestSeller.length > 0 && <ItemHorizonList />} */}
+          {bestSellers && <ItemHorizonList products={bestSellers} />}
         </div>
       </section>
 
@@ -50,9 +63,7 @@ const LandingBottom = () => {
               <h2>Hàng mới</h2>
             </div>
           </div>
-          {JSON.parse(newArrivals).length > 0 && (
-            <ItemHorizonList products={JSON.parse(newArrivals)} />
-          )}
+          {newArrivals && <ItemHorizonList products={newArrivals} />}
         </div>
       </section>
     </>

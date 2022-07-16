@@ -8,7 +8,7 @@ export default {
             SELECT 
                 "product".id, 
                 "product".product_name, 
-                "category".id, 
+                "category".id AS categoryId, 
                 "category".category_name, 
                 "product".description, 
                 "product".avg_rating, 
@@ -35,11 +35,12 @@ export default {
                     ) AS "sucess_order"
                 ) AS quantity
             FROM "product"
-            JOIN "category" ON product.category_id = "category".id
+            JOIN "category" ON "product".category_id = "category".id
         ) AS "subquery"
         ORDER BY sold_quantity DESC
         LIMIT (?)
         `, [config.orderState.SUCCESS, config.BEST_SELLER_LIMIT])
+        console.log(result.rows)
         return result.rows || null;
     },
 

@@ -2,7 +2,7 @@ import api from "utils/api";
 
 const product = {
   async getBestSellers() {
-    const response = await api.post("/product/bestSeller");
+    const response = await api.get("/product/bestSeller");
     return response;
   },
 
