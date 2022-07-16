@@ -12,8 +12,6 @@ export default {
                 districtName: item.district_name,
                 wardName: item.ward_name,
                 address: item.address,
-                receiverName: item.receiver_name,
-                receiverPhone: item.receiver_phone,
             }));
             res.status(200).send({
                 exitcode: 0,
@@ -33,16 +31,16 @@ export default {
                 districtId,
                 wardId,
                 address,
-                receiverPhone,
-                receiverName
+                lat,
+                long
             } = req.body;
             const entity = {
                 provinceId: provinceId,
                 districtId: districtId,
                 wardId: wardId,
                 address: address,
-                receiverPhone: receiverPhone,
-                receiverName: receiverName
+                lat: lat,
+                long: long
             }
 
             const shippingAddressId = await shippingAddressModel.createShippingAddress(email, entity);
