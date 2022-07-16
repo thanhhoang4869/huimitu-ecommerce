@@ -91,6 +91,7 @@ const ProductResult = () => {
             setIsBigCategory(false);
             setCategory(categoryList[category]);
             setChildCategory(children[index]);
+            break;
           }
         }
       }

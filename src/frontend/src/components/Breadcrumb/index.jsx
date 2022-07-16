@@ -15,7 +15,7 @@ const Breadcrumb = (props) => {
               </Link>
             </li>
             <li className="breadcrumb-item">
-              <Link to={`/product?category=${category.id}`}>
+              <Link to={`/product?categoryId=${category.id}`}>
                 {category.categoryName}
               </Link>
             </li>
@@ -26,7 +26,7 @@ const Breadcrumb = (props) => {
             </li> */}
             {isBigCategory === false ? (
               <li className="breadcrumb-item">
-                <Link to={`/product?category=${childCategory.id}`}>
+                <Link to={`/product?categoryId=${childCategory.id}`}>
                   {childCategory.categoryName}
                 </Link>
               </li>

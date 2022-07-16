@@ -25,6 +25,7 @@ const ProductDetailPage = () => {
   const [category, setCategory] = useState({});
   const [variants, setVariants] = useState([]);
   const [childCategory, setChildCategory] = useState({});
+  const [isBigCategory, setIsBigCategory] = useState(false);
 
   const [error, setError] = useState("");
   const { id } = useParams();
@@ -54,6 +55,7 @@ const ProductDetailPage = () => {
           setProduct(productData);
           setCategory(productData.category);
           setChildCategory(productData.category.children);
+          setIsBigCategory(!productData.category.children);
         } else {
           navigate("/error");
         }
@@ -124,7 +126,11 @@ const ProductDetailPage = () => {
 
   return (
     <div>
-      <Breadcrumb category={category} childCategory={childCategory} />
+      <Breadcrumb
+        category={category}
+        isBigCategory={isBigCategory}
+        childCategory={childCategory}
+      />
       <div className="product-details-area section-25">
         <div className="container">
           <div className="row">
