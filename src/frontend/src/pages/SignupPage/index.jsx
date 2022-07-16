@@ -111,7 +111,7 @@ const SignupPage = (props) => {
     }
   };
 
-  const handleGoogleSucces = async (response) => {
+  const handleGoogleSuccess = async (response) => {
     const { credential } = response;
 
     const result = await authService.googleLogin(credential);
@@ -198,8 +198,8 @@ const SignupPage = (props) => {
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
         <p>hoặc</p>
         <GoogleLoginButton
-          handleGoogleError={handleGoogleError}
-          handleGoogleSucces={handleGoogleSucces}
+          onError={handleGoogleError}
+          onSuccess={handleGoogleSuccess}
         />
 
         <p className="mt-3">

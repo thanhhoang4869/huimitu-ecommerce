@@ -4,7 +4,6 @@ import config from '#src/config/config'
 import { verifyPassword, encryptPassword, generateToken } from '#src/utils/crypto'
 import oauth2Client from '#src/utils/oauth2'
 import { getMailOption, createTransport } from '#src/utils/nodemailer'
-import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 
 export default {
     async login(req, res, next) {
@@ -12,11 +11,18 @@ export default {
             const email = req.body.email
             const password = req.body.password
 
-            // Get the database password
-            const account = await accountModel.getByEmail(email);
-            const encryptedPassword = account.password;
-
             // Check for correct email
+            const account = await accountModel.getByEmail(email);
+            if (account === null) {
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Email or password is not correct"
+                });
+                
+            }
+            
+            // Get the database password
+            const encryptedPassword = account.password;
             if (encryptedPassword === null) {
                 return res.status(200).send({
                     exitcode: 101,
@@ -152,7 +158,8 @@ export default {
             const currentAccount = await accountModel.getByEmail(email);
             if (currentAccount === null) {
                 const newAccount = {
-                    email: email
+                    email: email,
+                    verified: true,
                 }
                 await accountModel.signup(newAccount);
             }
