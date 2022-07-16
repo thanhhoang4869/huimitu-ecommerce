@@ -12,7 +12,9 @@ export default {
             "total",
             "shipping_provider_id",
             "shipping_price",
-            "voucher_code"
+            "voucher_code",
+            "receiver_name",
+            "receiver_phone"
         )
         return result[0] || null;
     },
@@ -24,7 +26,9 @@ export default {
             shippingProviderId,
             voucherCode,
             total,
-            shippingPrice
+            shippingPrice,
+            receiverName,
+            receiverPhone
         } = entity
 
         const order = await db('order').insert({
@@ -35,7 +39,9 @@ export default {
             shipping_provider_id: shippingProviderId,
             voucher_code: voucherCode,
             total: total,
-            shipping_price: shippingPrice
+            shipping_price: shippingPrice,
+            receiver_name: receiverName,
+            reciever_phone: receiverPhone
         }).returning('id')
 
         try {

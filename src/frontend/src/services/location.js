@@ -23,6 +23,9 @@ const location = {
         return response;
     },
 
+    async getCoordinate(provinceId, districtId, wardId, address) {
+        
+    }
 };
 
 export default location;

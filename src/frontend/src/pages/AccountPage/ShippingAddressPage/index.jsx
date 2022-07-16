@@ -43,8 +43,13 @@ const ShippingAddressPage = () => {
   const [selectProvinceId, setSelectProvinceId] = useState();
   const [selectDistrictId, setSelectDistrictId] = useState();
   const [selectWardId, setSelectWardId] = useState();
+  const [address, setAddress] = useState("");
 
   const [listShippingAddress, setListShippingAddress] = useState([]);
+
+  const handleQueryCoordinate = () => {};
+
+  const handleAddShippingAddress = () => {};
 
   const fetchProvince = async () => {
     try {
@@ -152,16 +157,6 @@ const ShippingAddressPage = () => {
       key: "provinceName",
     },
     {
-      title: "Người nhận hàng",
-      dataIndex: "receiverName",
-      key: "receiverName",
-    },
-    {
-      title: "Số điện thoại",
-      dataIndex: "receiverPhone",
-      key: "receiverPhone",
-    },
-    {
       key: "delete",
       render: (_, record) => (
         <Space size="large">
@@ -235,20 +230,13 @@ const ShippingAddressPage = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Địa chỉ">
-              <Input size="large" placeholder="Nhập địa chỉ"></Input>
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Form.Item label="Tên người nhận">
-              <Input size="large" placeholder="Nhập tên người nhận"></Input>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item label="Số điện thoại">
-              <Input size="large" placeholder="Nhập số điện thoại"></Input>
+            <Form.Item label="Địa chỉ" name="address">
+              <Input
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                size="large"
+                placeholder="Nhập địa chỉ"
+              ></Input>
             </Form.Item>
           </Col>
         </Row>
@@ -271,12 +259,17 @@ const ShippingAddressPage = () => {
           </MapContainer>
         </div>
         <div className="d-flex mt-3 justify-content-center">
-          <Button className="mx-2" type="ghost" size="large">
+          <Button
+            onClick={handleQueryCoordinate}
+            className="mx-2"
+            type="ghost"
+            size="large"
+          >
             Tra cứu
           </Button>
           <Button
             className="mx-2"
-            htmlType="submit"
+            onClick={handleAddShippingAddress}
             type="primary"
             size="large"
           >

@@ -14,8 +14,6 @@ export default {
                 'ward.ward_name',
                 'shipping_address.id',
                 'shipping_address.address',
-                'shipping_address.receiver_phone',
-                'shipping_address.receiver_name'
             )
         return result || null;
     },
@@ -34,8 +32,6 @@ export default {
                 'shipping_address.id',
                 'shipping_address.email',
                 'shipping_address.address',
-                'shipping_address.receiver_phone',
-                'shipping_address.receiver_name'
             )
         return result[0] || null;
     },
@@ -46,8 +42,6 @@ export default {
             districtId,
             wardId,
             address,
-            receiverPhone,
-            receiverName
         } = entity
         const shippingAddressId = await db('shipping_address').insert({
             email: email,
@@ -55,8 +49,6 @@ export default {
             district_id: districtId,
             ward_id: wardId,
             address: address,
-            receiver_phone: receiverPhone,
-            receiver_name: receiverName
         }).returning('shipping_address.id')
 
         return shippingAddressId[0].id || null;
