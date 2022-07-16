@@ -18,6 +18,7 @@ import swal from "sweetalert2";
 import { MapContainer, TileLayer, useMap, Marker } from "react-leaflet";
 import { Icon } from "leaflet";
 import marker from "leaflet/dist/images/marker-icon.png";
+import locationService from "services/location";
 
 const markerIcon = new Icon({
   iconUrl: marker,
@@ -32,9 +33,58 @@ const SetViewOnClick = ({ lat, long }) => {
 };
 
 const ShippingAddressPage = () => {
-  const [listShippingAddress, setListShippingAddress] = useState([]);
   const [lat, setLat] = useState(10);
   const [long, setLong] = useState(106);
+
+  const [listProvince, setListProvince] = useState([]);
+  const [listDistrict, setListDistrict] = useState([]);
+  const [listWard, setListWard] = useState([]);
+
+  const [selectProvinceId, setSelectProvinceId] = useState();
+  const [selectDistrictId, setSelectDistrictId] = useState();
+  const [selectWardId, setSelectWardId] = useState();
+
+  const [listShippingAddress, setListShippingAddress] = useState([]);
+
+  const fetchProvince = async () => {
+    try {
+      const response = await locationService.getListProvince();
+      const { provinces } = response.data;
+      setListProvince(provinces);
+      setSelectProvinceId(provinces[0].id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchDistrict = async () => {
+    try {
+      if (!selectProvinceId) return;
+
+      const response = await locationService.getListDistrict(selectProvinceId);
+      const { districts } = response.data;
+      setListDistrict(districts);
+      setSelectDistrictId(districts[0].id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchWard = async () => {
+    try {
+      if (!selectProvinceId || !selectDistrictId) return;
+
+      const response = await locationService.getListWard(
+        selectProvinceId,
+        selectDistrictId
+      );
+      const { wards } = response.data;
+      setListWard(wards);
+      setSelectWardId(wards[0].id);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchShippingAddress = async () => {
     try {
@@ -49,7 +99,16 @@ const ShippingAddressPage = () => {
   };
 
   useEffect(() => {
+    fetchDistrict();
+  }, [selectProvinceId]);
+
+  useEffect(() => {
+    fetchWard();
+  }, [selectProvinceId, selectDistrictId]);
+
+  useEffect(() => {
     fetchShippingAddress();
+    fetchProvince();
   }, []);
 
   const handleDelete = async (shippingAddressId) => {
@@ -121,19 +180,58 @@ const ShippingAddressPage = () => {
         <Row>
           <Col span={12}>
             <Form.Item label="Tỉnh thành">
-              <Select placeholder="Chọn tỉnh thành" size="large"></Select>
+              <Select
+                placeholder="Chọn tỉnh thành"
+                size="large"
+                value={selectProvinceId}
+                onChange={(value) => {
+                  setSelectProvinceId(value);
+                }}
+              >
+                {listProvince.map((item) => (
+                  <Select.Option key={item.id} value={item.id}>
+                    {item.provinceName}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item label="Quận huyện">
-              <Select placeholder="Chọn quận huyện" size="large"></Select>
+              <Select
+                placeholder="Chọn quận huyện"
+                size="large"
+                value={selectDistrictId}
+                onChange={(value) => {
+                  setSelectDistrictId(value);
+                }}
+              >
+                {listDistrict.map((item) => (
+                  <Select.Option key={item.id} value={item.id}>
+                    {item.districtName}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
         </Row>
         <Row>
           <Col span={12}>
             <Form.Item label="Phường xã">
-              <Select placeholder="Chọn phường xã" size="large"></Select>
+              <Select
+                value={selectWardId}
+                onChange={(value) => {
+                  setSelectWardId(value);
+                }}
+                placeholder="Chọn phường xã"
+                size="large"
+              >
+                {listWard.map((item) => (
+                  <Select.Option key={item.id} value={item.id}>
+                    {item.wardName}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
