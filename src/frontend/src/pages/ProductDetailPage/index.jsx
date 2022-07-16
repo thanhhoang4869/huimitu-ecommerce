@@ -95,7 +95,6 @@ const ProductDetailPage = () => {
   const addToCartOnSubmit = async () => {
     try {
       const response = await cartService.addToCart(selectVariant.id, quantity);
-      console.log(response.data);
       const { exitcode } = response.data;
 
       // eslint-disable-next-line default-case

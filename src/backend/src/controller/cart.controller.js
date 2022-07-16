@@ -1,3 +1,4 @@
+import productModel from '#src/models/product.model'
 import cartModel from '#src/models/cart.model'
 import variantModel from '#src/models/variant.model'
 
@@ -10,14 +11,21 @@ export default {
             const { id, count, total } = cartResult;
 
             const variantsResult = await variantModel.getByCartId(id);
-            const variants = variantsResult.map(item => ({
-                id: item.id,
-                variantName: item.variant_name,
-                price: item.price,
-                discountPrice: item.discount_price,
-                stock: item.stock,
-                quantity: item.quantity
-            }))
+            const promises = variantsResult.map(async (item) => {
+                const imagePath = await productModel.getSingleImageById(item.product_id)
+
+                return {
+                    id: item.id,
+                    variantName: item.variant_name,
+                    price: item.price,
+                    discountPrice: item.discount_price,
+                    stock: item.stock,
+                    quantity: item.quantity,
+                    image: imagePath
+                }
+            });
+            const variants = await Promise.all(promises);
+
             res.status(200).send({
                 exitcode: 0,
                 message: "Get cart successfully",
@@ -50,9 +58,9 @@ export default {
             const matchVariant = listVariantId.filter(item => item.id === variantId)[0];
             if (matchVariant) {
                 await cartModel.updateVariantOfCart(
-                    email, 
-                    variantId, 
-                    quantity+matchVariant.quantity
+                    email,
+                    variantId,
+                    quantity + matchVariant.quantity
                 );
                 return res.status(200).send({
                     exitcode: 0,
@@ -110,7 +118,7 @@ export default {
     async deleteVariantFromCart(req, res, next) {
         try {
             const { email } = req.payload;
-            const { variantId } = req.body;
+            const { variantId } = req.params;
 
             const result = await cartModel.deleteVariantFromCart(email, variantId);
             if (result > 0) {

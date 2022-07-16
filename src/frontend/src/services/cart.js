@@ -15,6 +15,10 @@ const cartService = {
         return respone
     },
 
+    async deleteVariant(variantId) {
+        const respone = await api.delete(`/cart/${variantId}`);
+        return respone
+    }
 }
 
 export default cartService;

@@ -40,6 +40,7 @@ export default {
             })
             .select(
                 "product_variant.id",
+                "product_variant.product_id",
                 "product_variant.variant_name",
                 "product_variant.price",
                 "product_variant.discount_price",

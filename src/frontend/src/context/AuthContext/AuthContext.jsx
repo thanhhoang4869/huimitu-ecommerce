@@ -10,18 +10,23 @@ export const AuthProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [cart, setCart] = useState({});
+  const [variants, setVariants] = useState([]);
 
   useEffect(() => {
     setIsLogin(tokenService.getAccessToken());
-    fetchCart();
   }, []);
 
+  useEffect(() => {
+    fetchCart();
+  }, [isLogin]);
+
   const fetchCart = async () => {
-    console.log("GO GO AIRPLANE");
+    if (!isLogin) return;
+
     const response = await cartService.getCart();
-    console.log(response);
-    const { cart } = response.data;
+    const { cart, variants } = response.data;
     setCart(cart);
+    setVariants(variants);
   };
 
   const login = (token) => {
@@ -40,6 +45,7 @@ export const AuthProvider = ({ children }) => {
         isLogin,
         isAdmin,
         cart,
+        variants,
         fetchCart,
         login,
         logout,
