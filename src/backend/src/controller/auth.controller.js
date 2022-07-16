@@ -4,7 +4,6 @@ import config from '#src/config/config'
 import { verifyPassword, encryptPassword, generateToken } from '#src/utils/crypto'
 import oauth2Client from '#src/utils/oauth2'
 import { getMailOption, createTransport } from '#src/utils/nodemailer'
-import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 
 export default {
     async login(req, res, next) {
