@@ -1,13 +1,15 @@
-.header__top__right__auth > a{
-    color: #18AEAC;
+.header__top__right__auth > a,
+.header__top__right__social > a {
+  color: #18aeac;
 }
 
-.header__top__right__auth > a:hover{
-    color: #ff8303;
+.header__top__right__auth > a:hover,
+.header__top__right__social > a:hover {
+  color: #ff8303;
 }
 
-.container{
-    align-items: center;
+.container {
+  align-items: center;
 }
 
 .fa-shopping-bag {
