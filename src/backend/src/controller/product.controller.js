@@ -6,6 +6,7 @@ export default {
     async getBestSeller(req, res, next) {
         try {
             const resultProduct = await productModel.getBestSeller()
+
             const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
@@ -66,7 +67,14 @@ export default {
 
     async getProductByCategory(req, res, next) {
         try {
-            const { categoryId, limit, offset } = req.body;
+            const {
+                categoryId,
+                minPrice,
+                maxPrice,
+                sortType,
+                limit,
+                offset
+            } = req.body;
             const category = await categoryModel.get()
 
             const categoryTree = buildCategoryRoot(category);
@@ -74,7 +82,14 @@ export default {
             const listSelectedCategory = toListCategory(selectedRoot)
             const listSelectedId = listSelectedCategory.map(item => item.id)
 
-            const resultProduct = await productModel.getProductByCategoryList(listSelectedId, limit, offset);
+            const resultProduct = await productModel.getProductByCategoryList(
+                listSelectedId,
+                limit,
+                offset,
+                minPrice,
+                maxPrice,
+                sortType
+            );
             const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
                 return {
@@ -105,14 +120,18 @@ export default {
 
     async countProductByCategory(req, res, next) {
         try {
-            const { categoryId } = req.body;
+            const {
+                categoryId,
+                minPrice,
+                maxPrice,
+            } = req.body;
             const category = await categoryModel.get()
 
             const categoryTree = buildCategoryRoot(category);
             const selectedRoot = searchCategoryTree(categoryTree, categoryId);
             const listSelectedCategory = toListCategory(selectedRoot)
             const listSelectedId = listSelectedCategory.map(item => item.id)
-            const count = await productModel.countProductByCategoryList(listSelectedId);
+            const count = await productModel.countProductByCategoryList(listSelectedId, minPrice, maxPrice);
 
             res.status(200).send({
                 exitcode: 0,
@@ -128,8 +147,9 @@ export default {
         try {
             const productId = req.params.productId;
             const product = await productModel.getProductById(productId)
+
             if (product === null) {
-                res.status(200).send({
+                return res.status(200).send({
                     exitcode: 101,
                     message: "Product not found"
                 })
@@ -255,6 +275,49 @@ export default {
                 exitcode: 0,
                 message: "Create product successfully",
                 productId: productId
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async relatedProduct(req, res, next) {
+        try {
+            const {
+                productId
+            } = req.params;
+
+            const resultProduct = await productModel.getRelatedProduct(productId);
+
+            if (resultProduct === null) {
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Related product not found"
+                })
+            }
+
+            const promises = resultProduct.map(async (item) => {
+                const imagePath = await productModel.getSingleImageById(item.id)
+                return {
+                    id: item.id,
+                    productName: item.product_name,
+                    categoryName: item.category_name,
+                    description: item.description,
+                    avgRating: item.avg_rating,
+                    countRating: item.count_rating,
+                    minPrice: item.min_price,
+                    maxPrice: item.max_price,
+                    stock: item.stock,
+                    createdTime: item.created_time,
+                    image: imagePath
+                }
+            });
+            const products = await Promise.all(promises)
+
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get related products successfully",
+                products: products
             })
         } catch (err) {
             next(err)

@@ -20,6 +20,7 @@ DROP TABLE IF EXISTS "cart_variant" CASCADE;
 DROP TABLE IF EXISTS "review" CASCADE;
 DROP TABLE IF EXISTS "shipping_provider" CASCADE;
 DROP TABLE IF EXISTS "voucher" CASCADE;
+DROP TABLE IF EXISTS "frequent_product" CASCADE;
 
 ----------------------- CREATE TABLE -------------------------
 
@@ -32,8 +33,8 @@ CREATE TABLE "account" (
   "password" varchar,
   "phone" varchar UNIQUE,
   "fullname" varchar,
-  "birthday" date,
-  "gender" gender_type,
+  "birthday" date DEFAULT CURRENT_TIMESTAMP,
+  "gender" gender_type DEFAULT 'male',
   "avatar_path" varchar,
   "avatar_filename" varchar,
   "role" role_type,
@@ -65,8 +66,8 @@ CREATE TABLE "shipping_address" (
   "district_id" int NOT NULL,
   "ward_id" int NOT NULL,
   "address" varchar NOT NULL,
-  "receiver_phone" varchar NOT NULL,
-  "receiver_name" varchar NOT NULL
+  "lat" real NOT NULL,
+  "long" real NOT NULL
 );
 
 CREATE TABLE "category" (
@@ -111,18 +112,6 @@ CREATE TABLE "product_variant" (
   "stock" int NOT NULL
 );
 
-CREATE TABLE "order" (
-  "id" varchar PRIMARY KEY,
-  "email" varchar,
-  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "payment_id" int NOT NULL,
-  "shipping_address_id" int NOT NULL,
-  "total" real NOT NULL,
-  "shipping_provider_id" int NOT NULL,
-  "shipping_price" real NOT NULL,
-  "voucher_code" varchar
-);
-
 CREATE TABLE "cart" (
   "id" SERIAL PRIMARY KEY,
   "email" varchar,
@@ -140,7 +129,7 @@ CREATE TABLE "cart_variant" (
 CREATE TABLE "review" (
   "product_variant_id" int,
   "order_id" varchar,
-  "rating" int,
+  "rating" int NOT NULL CHECK("rating">=1),
   "comment" varchar,
   "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY ("product_variant_id", "order_id")
@@ -149,6 +138,20 @@ CREATE TABLE "review" (
 CREATE TABLE "shipping_provider" (
   "id" SERIAL PRIMARY KEY,
   "shipping_provider_name" varchar
+);
+
+CREATE TABLE "order" (
+  "id" varchar PRIMARY KEY,
+  "email" varchar,
+  "receiver_name" varchar,
+  "receiver_phone" varchar,
+  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "payment_id" int NOT NULL,
+  "shipping_address_id" int NOT NULL,
+  "total" real NOT NULL,
+  "shipping_provider_id" int NOT NULL,
+  "shipping_price" real NOT NULL,
+  "voucher_code" varchar
 );
 
 CREATE TABLE "order_variant" (
@@ -173,6 +176,14 @@ CREATE TABLE "voucher" (
   "maximum_discount_price" real NOT NULL,
   "start_date" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "end_date" timestamp NOT NULL
+);
+
+CREATE TABLE "frequent_product" (
+  "support" float,
+  "confident" float,
+  "consequence_id" int,
+  "product_id" int,
+  PRIMARY KEY ("product_id", "consequence_id")
 );
 
 ----------------------- CONSTRAINT -------------------------
@@ -210,6 +221,9 @@ ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id")
 ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email") ON DELETE CASCADE;
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
+ALTER TABLE "frequent_product" ADD FOREIGN KEY("product_id") REFERENCES "product"("id");
+ALTER TABLE "frequent_product" ADD FOREIGN KEY("consequence_id") REFERENCES "product"("id");
+
 ----------------------- FULL TEXT SEARCH -------------------------
 CREATE INDEX idx_product_fts
 ON product 
@@ -231,8 +245,8 @@ BEGIN
 	RETURN lower(
 		translate(
 			$1,
-			'¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿŶŷŸŹźŻżŽžёЁ',
-			'123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyYyYZzZzZzеЕ'
+			'¹²³ÀÁẢẠÂẤẦẨẬẪÃÄÅÆàáảạâấầẩẫậãäåæĀāĂẮẰẲẴẶăắằẳẵặĄąÇçĆćĈĉĊċČčĎďĐđÈÉẸÊẾỀỄỆËèéẹêềếễệëĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨÌÍỈỊÎÏìíỉịîïĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłÑñŃńŅņŇňŉŊŋÒÓỎỌÔỐỒỔỖỘỐỒỔỖỘƠỚỜỞỠỢÕÖòóỏọôốồổỗộơớờỡợởõöŌōŎŏŐőŒœØøŔŕŖŗŘřßŚśŜŝŞşŠšŢţŤťŦŧÙÚỦỤƯỪỨỬỮỰÛÜùúủụûưứừửữựüŨũŪūŬŭŮůŰűŲųŴŵÝýÿỳŶŷŸŹźŻżŽžёЁ',
+			'123AAAAAAAAAAAAAAaaaaaaaaaaaaaaAaAAAAAAaaaaaaAaCcCcCcCcCcDdDdEEEEEEEEEeeeeeeeeeEeEeEeEeEeGgGgGgGgHhHhIIIIIIIiiiiiiiIiIiIiIiIiJjKkkLlLlLlLlLlNnNnNnNnnNnOOOOOOOOOOOOOOOOOOOOOOOooooooooooooooooooOoOoOoEeOoRrRrRrSSsSsSsSsTtTtTtUUUUUUUUUUUUuuuuuuuuuuuuUuUuUuUuUuUuWwYyyyYyYZzZzZzeE'
 		)
 );
 END
@@ -302,7 +316,7 @@ $$
 BEGIN
   UPDATE "cart" AS c
   SET (total, count) = (
-    SELECT COALESCE(0,SUM(cv.quantity * LEAST(pv.price,pv.discount_price))), COALESCE(0,SUM(cv.quantity))
+    SELECT COALESCE(SUM(cv.quantity * LEAST(pv.price,pv.discount_price)),0), COALESCE(SUM(cv.quantity),0)
     FROM "cart_variant" AS cv
     JOIN "product_variant" AS pv
     ON cv.variant_id = pv.id
@@ -470,9 +484,9 @@ EXECUTE PROCEDURE copy_price_order();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'd:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'd:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'd:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123
@@ -505,7 +519,7 @@ INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Kh
 
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
-INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) có thể tái sử dụng (10 cái)','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí có thể tái sử dụng (10 cái)','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến chống đầu (10 miếng)','4',NULL,'0','0');
@@ -549,7 +563,7 @@ INSERT INTO "shipping_provider"("id","shipping_provider_name") VALUES(1, 'Ahamov
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('TET30',10,100000,15000,'2023-01-01');
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('DEAL77',15,50000,10000,'2023-01-01');
 
-INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address","receiver_phone","receiver_name") VALUES(1,'nhkduy201@gmail.com',1,1,1,'123','01234567899','Nguyễn Văn A');
+INSERT INTO "shipping_address"("id","email","province_id","district_id","ward_id","address", "long", "lat") VALUES(1,'nhkduy201@gmail.com',1,1,1,'113 Đường Nguyễn Văn Cừ',10.724669221658448, 106.62077984266271);
 
 INSERT INTO "order"("id","email","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_code") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 1, 15000, NULL);
 INSERT INTO "order"("id","email","payment_id","shipping_address_id","total","shipping_provider_id","shipping_price","voucher_code") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 1, 10000, 'TET30');
@@ -570,6 +584,6 @@ INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
 INSERT INTO "order_state"("order_id","state") VALUES(2, 'success');
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'success');
 
-INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,1,5,'This is the first comment!','2022-01-01');
-INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,2,0,'This is the second comment!','2022-01-01');
-INSERT INTO "review"("product_variant_id","order_id","rating","comment","created_time") VALUES(1,3,3,'This is the third comment!','2022-01-01');
+INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
+INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,2,1,'This is the second comment!');
+INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,3,3,'This is the third comment!');

@@ -10,7 +10,7 @@ const CategoryBar = (props) => {
     setCurrent(e.key);
     navigate({
       pathname: `/product`,
-      search: `?category=${e.key}&page=1`,
+      search: `?categoryId=${e.key}&page=1`,
     });
   };
 
@@ -20,7 +20,7 @@ const CategoryBar = (props) => {
     setCurrent(key);
     navigate({
       pathname: `/product`,
-      search: `?category=${key}&page=1`,
+      search: `?categoryId=${key}&page=1`,
     });
   };
 
@@ -54,6 +54,8 @@ const CategoryBar = (props) => {
   };
 
   const items = getMenuItem(props.categoryList);
+
+
   const [current, setCurrent] = useState("1");
   const [openKey, setOpenKey] = useState("1");
 

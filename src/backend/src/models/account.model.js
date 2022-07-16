@@ -45,6 +45,15 @@ export default {
         return result;
     },
 
+    async updatePassword(email, password) {
+        const result = await db('account').where({
+            email: email
+        }).update({
+            password: password
+        })
+        return result;
+    },
+
     async signup(data) {
         return db('account').insert({
             fullname: data.fullname,

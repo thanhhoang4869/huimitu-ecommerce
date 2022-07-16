@@ -2,7 +2,7 @@ import api from "utils/api";
 
 const product = {
   async getBestSellers() {
-    const response = await api.post("/product/bestSeller");
+    const response = await api.get("/product/bestSeller");
     return response;
   },
 
@@ -21,8 +21,8 @@ const product = {
     return response;
   },
 
-  async countByCategory(categoryId) {
-    const response = await api.post("/product/countByCategory", { categoryId });
+  async countByCategory(request) {
+    const response = await api.post("/product/countByCategory", request);
     return response;
   },
 
@@ -31,8 +31,8 @@ const product = {
     return response;
   },
 
-  async countBysearchQuery(searchQuery) {
-    const response = await api.post("/search/count", { searchQuery });
+  async countBysearchQuery(request) {
+    const response = await api.post("/search/count", request);
     return response;
   },
 
@@ -40,6 +40,11 @@ const product = {
     const response = await api.get("/product/newestArrival");
     return response;
   },
+
+  async getRelatedProducts(productId) {
+    const response = await api.get(`/product/related/${productId}`)
+    return response;
+  }
 };
 
 export default product;

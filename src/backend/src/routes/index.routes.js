@@ -12,6 +12,7 @@ import payment from '#src/routes/payment.routes'
 import shippingProvider from '#src/routes/shippingProvider.routes'
 import order from '#src/routes/order.routes'
 import search from '#src/routes/search.routes'
+import voucher from '#src/routes/voucher.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
@@ -26,11 +27,12 @@ router.use('/category', category)
 router.use('/location', location)
 router.use('/variant', variant)
 router.use('/cart', verifyLogin, verifyEmailVerified, cart)
-router.use('/review', verifyLogin, verifyEmailVerified, review)
+router.use('/review', review)
 router.use('/shippingAddress', verifyLogin, verifyEmailVerified, shippingAddress)
 router.use('/payment', payment)
 router.use('/shippingProvider', shippingProvider)
 router.use('/order', verifyLogin, order)
 router.use('/search', search)
+router.use('/voucher', verifyLogin, voucher)
 
 export default router;

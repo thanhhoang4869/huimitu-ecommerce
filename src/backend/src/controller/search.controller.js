@@ -4,8 +4,22 @@ import productModel from '#src/models/product.model'
 export default {
   async getProduct(req, res, next) {
     try {
-      const { searchQuery, limit, offset } = req.body;
-      const resultProduct = await searchModel.getProduct(searchQuery, limit, offset);
+      const {
+        searchQuery,
+        limit,
+        offset,
+        minPrice,
+        maxPrice,
+        sortType
+      } = req.body;
+      const resultProduct = await searchModel.getProduct(
+        searchQuery,
+        limit,
+        offset,
+        minPrice,
+        maxPrice,
+        sortType
+      );
       const promises = resultProduct.map(async (item) => {
         const imagePath = await productModel.getSingleImageById(item.id)
         return {
@@ -37,8 +51,12 @@ export default {
   async countProduct(req, res, next) {
 
     try {
-      const { searchQuery } = req.body;
-      const result = await searchModel.countProduct(searchQuery);
+      const {
+        searchQuery,
+        minPrice,
+        maxPrice
+      } = req.body;
+      const result = await searchModel.countProduct(searchQuery, minPrice, maxPrice);
       res.status(200).send({
         exitcode: 0,
         message: "Count search results successfully",

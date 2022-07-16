@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from "components/Header";
@@ -8,30 +8,20 @@ import Footer from "components/Footer";
 import LoginPage from "pages/LoginPage";
 import SignupPage from "pages/SignUpPage";
 
-import config from "config/config";
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
 import category from "services/category";
 import NotFoundPage from "pages/NotFoundPage";
 import ServerErrorPage from "pages/ServerErrorPage";
 import OrderListPage from "pages/OrderListPage";
+import AccountPage from "pages/AccountPage";
+import { AuthContext } from "context/AuthContext/AuthContext";
+import GuardRoute from "components/GuardRoute";
+import CheckoutPage from "pages/CheckoutPage";
 
 const MainPage = () => {
-  const [token, setToken] = useState(
-    localStorage.getItem(config.storageKeys.ACCESS_KEY)
-  );
-
-  const login = (token) => {
-    localStorage.setItem(config.storageKeys.ACCESS_KEY, token);
-    setToken(token);
-  };
-
-  const logout = () => {
-    localStorage.removeItem(config.storageKeys.ACCESS_KEY);
-    setToken(null);
-  };
-
   const [categoryList, setCategoryList] = useState([]);
+  const { isLogin } = useContext(AuthContext);
 
   const getCategoryList = async () => {
     const response = await category.getCategoryList();
@@ -44,10 +34,12 @@ const MainPage = () => {
     getCategoryList();
   }, []);
 
+  console.log("isLogin", isLogin);
+
   return (
     <div className="MainDiv">
       <BrowserRouter>
-        <Header handleLogout={logout} />
+        <Header />
         <Routes>
           <Route
             exact
@@ -60,18 +52,39 @@ const MainPage = () => {
           />
           <Route
             exact
-            path="/account/verify/:token"
-            element={<VerificationPage />}
+            path="/account/*"
+            element={
+              <GuardRoute auth={isLogin} redirectTo="/login">
+                <AccountPage />
+              </GuardRoute>
+            }
           />
+          <Route
+            path="/checkout/*"
+            element={
+              // <GuardRoute auth={isLogin} redirectTo="/login">
+              <CheckoutPage />
+              // </GuardRoute>
+            }
+          />
+          <Route exact path="/verify/:token" element={<VerificationPage />} />
           <Route
             exact
             path="/login"
-            element={<LoginPage handleLogin={login} />}
-          />
+            element={
+              <GuardRoute auth={!isLogin} redirectTo="/account/userInformation">
+                <LoginPage />
+              </GuardRoute>
+            }
+          ></Route>
           <Route
             exact
             path="/signup"
-            element={<SignupPage handleLogin={login} />}
+            element={
+              <GuardRoute auth={!isLogin} redirectTo="/account/userInformation">
+                <SignupPage />
+              </GuardRoute>
+            }
           />
           <Route
             exact

@@ -3,30 +3,45 @@ import config from '#src/config/config'
 
 export default {
     async getBestSeller() {
-        const result = await db('product')
-            .join('category', 'product.category_id', 'category.id')
-            .join('product_variant', 'product_variant.product_id', 'product.id')
-            .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
-            .leftJoin('order', 'order.id', 'order_variant.order_id')
-            .leftJoin('order_state', 'order_state.order_id', 'order.id')
-            .where('order_state.state', config.orderState.SUCCESS)
-            .groupBy('product.id', 'category.category_name')
-            .sum('order_variant.quantity as sold_quantity')
-            .orderBy('sold_quantity', 'desc')
-            .select(
-                'product.id',
-                'product.product_name',
-                'category.category_name',
-                'product.description',
-                'product.avg_rating',
-                'product.count_rating',
-                'product.min_price',
-                'product.max_price',
-                'product.stock',
-                'product.created_time'
-            )
-            .limit(config.BEST_SELLER_LIMIT)
-        return result || null;
+        const result = await db.raw(`
+        SELECT *, COALESCE(quantity, 0) as sold_quantity FROM (
+            SELECT 
+                "product".id, 
+                "product".product_name, 
+                "category".id AS categoryId, 
+                "category".category_name, 
+                "product".description, 
+                "product".avg_rating, 
+                "product".count_rating, 
+                "product".min_price, 
+                "product".max_price, 
+                "product".stock, 
+                "product".created_time, (
+                    SELECT "sucess_order".total
+                    FROM (
+                        SELECT SUM("order_variant".quantity) as total
+                        FROM "product_variant"
+                        LEFT JOIN "order_variant" ON "order_variant".variant_id = "product_variant".id
+                        LEFT JOIN (
+                            SELECT DISTINCT ("sorted_order".order_id), "sorted_order".state
+                            FROM (
+                                SELECT *
+                                FROM "order_state"
+                                ORDER BY created_time DESC
+                            ) AS "sorted_order"
+                        ) AS "last_state" ON "last_state".order_id = "order_variant".order_id
+                        WHERE "product_variant".product_id = "product".id
+                        AND "last_state".state = (?)
+                    ) AS "sucess_order"
+                ) AS quantity
+            FROM "product"
+            JOIN "category" ON "product".category_id = "category".id
+        ) AS "subquery"
+        ORDER BY sold_quantity DESC
+        LIMIT (?)
+        `, [config.orderState.SUCCESS, config.BEST_SELLER_LIMIT])
+        console.log(result.rows)
+        return result.rows || null;
     },
 
     async getNewestArrival() {
@@ -47,19 +62,33 @@ export default {
         return result || null;
     },
 
-    async getProductById(productId) {
-        const result = await db('product')
+    async getRelatedProduct(productId) {
+        const result = await db('frequent_product').where({
+            product_id: productId
+        })
+            .join('product', 'product.id', 'frequent_product.consequence_id')
             .join('category', 'product.category_id', 'category.id')
-            .join('product_variant', 'product_variant.product_id', 'product.id')
-            .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
-            .leftJoin('order', 'order.id', 'order_variant.order_id')
-            .leftJoin('order_state', 'order_state.order_id', 'order.id')
-            .where({
-                "product.id": productId,
-                "order_state.state": config.orderState.SUCCESS
-            })
-            .groupBy('product.id', 'category.id', 'category.category_name')
-            .sum('order_variant.quantity as sold_quantity')
+            .select(
+                'product.id',
+                'product.product_name',
+                'category.category_name',
+                'product.description',
+                'product.avg_rating',
+                'product.count_rating',
+                'product.min_price',
+                'product.max_price',
+                'product.stock',
+                'product.created_time'
+            ).orderBy('confident', 'desc').limit(config.RELATED_PRODUCT_LIMIT)
+
+        return result || null;
+    },
+
+    async getProductById(productId) {
+        const result = await db('product').where({
+            'product.id': productId
+        })
+            .join('category', 'product.category_id', 'category.id')
             .select({
                 id: 'product.id',
                 product_name: 'product.product_name',
@@ -71,7 +100,24 @@ export default {
                 min_price: 'product.min_price',
                 max_price: 'product.max_price',
                 stock: 'product.stock',
-                created_time: 'product.created_time'
+                created_time: 'product.created_time',
+                sold_quantity: db.from(
+                    db('product_variant').select(
+                        'order_state.order_id',
+                        'order_state.created_time',
+                        'order_variant.variant_id',
+                        'order_variant.quantity',
+                    )
+                        .leftJoin('order_variant', 'order_variant.variant_id', 'product_variant.id')
+                        .leftJoin('order_state', 'order_state.order_id', 'order_variant.order_id')
+                        .where({
+                            "product_variant.product_id": productId,
+                            "order_state.state": config.orderState.SUCCESS
+                        })
+                        .orderBy('order_state.created_time', 'desc')
+                        .distinct('order_state.order_id', 'order_variant.variant_id')
+                        .as('success_order')
+                ).select(db.raw('COALESCE(sum(success_order.quantity), 0) as sold_quantity'))
             })
         return result[0] || null;
     },
@@ -149,31 +195,67 @@ export default {
         return result;
     },
 
-    async getProductByCategoryList(listId, limit, offset) {
-        const result = await db('product')
-            .join('category', 'product.category_id', 'category.id')
-            .whereIn('category.id', listId)
-            .select(
-                'product.id',
-                'product.product_name',
-                'category.category_name',
-                'product.description',
-                'product.avg_rating',
-                'product.count_rating',
-                'product.min_price',
-                'product.max_price',
-                'product.stock',
-                'product.created_time'
-            )
-            .offset(offset).limit(limit)
+    async getProductByCategoryList(listId, limit, offset, minPrice, maxPrice, sortType) {
+        let builder = db('product').select(
+            'product.id',
+            'product.product_name',
+            'category.category_name',
+            'product.description',
+            'product.avg_rating',
+            'product.count_rating',
+            'product.min_price',
+            'product.max_price',
+            'product.stock',
+            'product.created_time'
+        ).join(
+            'category',
+            'product.category_id',
+            'category.id'
+        ).whereIn('category.id', listId).as('searched')
+        let alias = 'searched'
+
+        if (minPrice && maxPrice) {
+            builder = db.from(builder).where(
+                `${alias}.min_price`, '>=', minPrice
+            ).andWhere(
+                `${alias}.max_price`, '<=', maxPrice
+            ).as('filtered')
+            alias = 'filtered'
+        }
+
+        if (sortType) {
+            builder = db.from(builder).orderBy(
+                `${alias}.min_price`,
+                sortType
+            ).as('sorted');
+            alias = 'sorted'
+        }
+
+        const result = await db.from(builder).offset(offset).limit(limit)
         return result || null;
     },
 
-    async countProductByCategoryList(listId) {
-        const result = await db('product')
+    async countProductByCategoryList(listId, minPrice, maxPrice) {
+        let builder = db('product')
             .join('category', 'product.category_id', 'category.id')
             .whereIn('category.id', listId)
-            .count()
+            .select(
+                'min_price',
+                'max_price'
+            )
+            .as('searched')
+        let alias = 'searched'
+
+        if (minPrice && maxPrice) {
+            builder = db.from(builder).where(
+                `${alias}.min_price`, '>=', minPrice
+            ).andWhere(
+                `${alias}.max_price`, '<=', maxPrice
+            ).as('filtered')
+            alias = 'filtered'
+        }
+
+        const result = await db.from(builder).count();
         return result[0].count;
     }
 }

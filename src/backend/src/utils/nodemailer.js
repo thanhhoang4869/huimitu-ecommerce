@@ -35,7 +35,7 @@ const getMailOption = (toEmail, url, verifyToken) => {
             <h1>Huimitu Shop</h1>
             <h3>Thank you for registering</h3>
             <div>
-                <a href="${url}/account/verify/${verifyToken}">
+                <a href="${url}/verify/${verifyToken}">
                     <button style="
                         font-weight: bold; 
                         padding: 2em; 

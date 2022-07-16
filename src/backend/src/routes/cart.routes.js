@@ -7,6 +7,7 @@ router.route('/')
     .get(cart.getCart)
     .post(cart.addVariantToCart)
     .patch(cart.updateVariantOfCart)
-    .delete(cart.deleteVariantFromCart)
+
+router.delete('/:variantId',cart.deleteVariantFromCart)
 
 export default router;

@@ -1,0 +1,60 @@
+import voucherModel from '#src/models/voucher.model'
+import moment from 'moment'
+
+export default {
+    async getVoucher(req, res, next) {
+        try {
+            const { email } = req.payload;
+            const result = await voucherModel.getVoucherByEmail(email);
+            const vouchers = result.map(item => ({
+                voucherCode: item.voucher_code,
+                percentageDiscount: item.percentage_discount,
+                minimumPrice: item.minimum_price,
+                maximumDiscountPrice: item.maximum_discount_price,
+                startDate: moment(new Date(item.start_date)).format('DD/MM/YYYY'),
+                endDate: moment(new Date(item.end_date)).format('DD/MM/YYYY')
+            }))
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get vouchers successfully",
+                vouchers: vouchers
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async addVoucher(req, res, next) {
+        try {
+            const {
+                voucherCode,
+                percentageDiscount,
+                minimumPrice,
+                maximumDiscountPrice,
+                startDate,
+                endDate
+            } = req.body;
+            const resultFind = await voucherModel.getVoucherByCode(voucherCode);
+            if (resultFind !== null) {
+                return res.send({
+                    exitcode: 101,
+                    message: "Voucher code existed"
+                })
+            }
+            const resultAdd = await voucherModel.addVoucher({
+                voucherCode,
+                percentageDiscount,
+                minimumPrice,
+                maximumDiscountPrice,
+                startDate,
+                endDate
+            })
+            res.send({
+                exitcode: 0,
+                message: "Add voucher successfully"
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+} 

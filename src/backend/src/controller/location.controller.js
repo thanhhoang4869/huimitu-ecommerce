@@ -1,4 +1,7 @@
 import locationModel from '#src/models/location.model'
+import config from '#src/config/config'
+import openrouteservice from 'openrouteservice-js'
+import * as map from '#src/utils/map'
 
 export default {
     async getProvinces(req, res, next) {
@@ -52,5 +55,34 @@ export default {
         } catch (err) {
             next(err)
         }
-    }
-} 
+    },
+
+    async getCoordinate(req, res, next) {
+        try {
+            const {
+                address,
+                wardId,
+                districtId,
+                provinceId
+            } = req.body;
+
+            const province = await locationModel.getProvinceById(provinceId)
+            const district = await locationModel.getDistrictById(districtId)
+            const ward = await locationModel.getWardById(wardId)
+
+            const coordinates = await map.getCoordinate(
+                address,
+                ward.ward_name,
+                district.district_name,
+                province.province_name
+            );
+            res.status(200).send({
+                exitcode: 0,
+                message: "Get long lat successfully",
+                coordinates: coordinates
+            });
+        } catch (err) {
+            next(err);
+        }
+    },
+};

@@ -1,0 +1,19 @@
+.required::after {
+  content: " *";
+  color: red;
+}
+
+.label {
+  font-size: x-small;
+  margin-bottom: 5px;
+}
+
+.text-cyan {
+  text-decoration: underline;
+  color: #18aeac;
+}
+
+.text-cyan:hover {
+  cursor: pointer;
+  color: #ff8303;
+}

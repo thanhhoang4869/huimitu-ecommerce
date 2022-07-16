@@ -2,84 +2,80 @@ import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 import Paging from "components/Paging";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useLocation,
+  createSearchParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
-import { default as productService } from "services/product";
 import FilterSection from "components/FilterSection";
+import { default as productService } from "services/product";
 import swal from "sweetalert2";
+import { cleanObj } from "utils/objectUtils";
 
 const ProductResult = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [category, setCategory] = useState({});
   const [childCategory, setChildCategory] = useState({});
   const [isBigCategory, setIsBigCategory] = useState(false);
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
-  const [isSearchByCategory, setIsSearchByCategory] = useState(false);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const [query, setQuery] = useState({
+    page: searchParams.get("page"),
+    sortType: searchParams.get("sortType"),
+    searchQuery: searchParams.get("searchQuery"),
+    categoryId: searchParams.get("categoryId"),
+    minPrice: searchParams.get("minPrice"),
+    maxPrice: searchParams.get("maxPrice"),
+  });
 
   const categoryList = JSON.parse(localStorage.getItem("categoryList"));
 
   const location = useLocation();
   const navigate = useNavigate();
 
+  const navigateSearch = (query) => {
+    const queryClean = cleanObj(query);
+    navigate({
+      pathname: `/product`,
+      search: `${createSearchParams(queryClean)}`,
+    });
+  };
+
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
-    const page = searchParams.get("page");
-    const categoryId = searchParams.get("category");
-    const searchQueryParam = searchParams.get("searchQuery");
+    const page = searchParams.get("page") || 1;
+    const categoryId = searchParams.get("categoryId");
+    const searchQuery = searchParams.get("searchQuery");
+    const sortType = searchParams.get("sortType");
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
 
-    setIsSearchByCategory(categoryId);
-
-    if (categoryId) {
-      searchByCategory(categoryId, page);
-    } else if (searchQueryParam) {
-      setSearchQuery(searchQueryParam);
-      searchBysearchQuery(searchQueryParam, page);
-    }
+    const newQuery = {
+      page: page,
+      sortType: sortType,
+      searchQuery: searchQuery,
+      categoryId: categoryId,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+    };
+    setQuery(newQuery);
+    search(newQuery);
   }, [location]); // eslint-disable-line
 
-  const searchBysearchQuery = (searchQuery, page) => {
-    getProductsBySearchQuery(searchQuery, page);
-    getTotalProductBysearchQuery(searchQuery);
-  };
-
-  const searchByCategory = (categoryId, page) => {
-    getCategory(categoryId);
-    getProductsByCategory(categoryId, page);
-    getTotalProductByCategory(categoryId);
-  };
-
-  const getProductsBySearchQuery = async (searchQuery, page) => {
-    try {
-      const request = {
-        searchQuery: searchQuery,
-        limit: 6,
-        offset: +(page - 1) * 6,
-      };
-      const response = await productService.getProductsBySearchQuery(request);
-      console.log(response.data.products);
-      setProducts(response.data.products);
-    } catch (error) {
-      // if (error.response.status === 500) {
-      //   navigate("/error");
-      // } else {
-      //   navigate("/404");
-      // }
-    }
-  };
-
-  const getTotalProductBysearchQuery = async (searchQuery) => {
-    try {
-      const response = await productService.countBysearchQuery(searchQuery);
-      setTotal(response.data.count);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+  const search = (data) => {
+    getCategory(data.categoryId);
+    if (data.categoryId) {
+      getTotalProductsByCategory(data);
+      getProductsByCategory(data);
+    } else {
+      getTotalProductsBySearch(data);
+      getProductsBySearch(data);
     }
   };
 
@@ -95,18 +91,61 @@ const ProductResult = () => {
             setIsBigCategory(false);
             setCategory(categoryList[category]);
             setChildCategory(children[index]);
+            break;
           }
         }
       }
     }
   };
 
-  const getProductsByCategory = async (categoryId, page) => {
+  const getProductsBySearch = async (data) => {
     try {
       const request = {
-        categoryId: +categoryId,
+        searchQuery: data.searchQuery,
         limit: 6,
-        offset: +(page - 1) * 6,
+        offset: +(data.page - 1) * 6,
+        minPrice: data.minPrice,
+        maxPrice: data.maxPrice,
+        sortType: data.sortType,
+      };
+      const response = await productService.getProductsBySearchQuery(request);
+      setProducts(response.data.products);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
+
+  const getTotalProductsBySearch = async (data) => {
+    try {
+      const request = {
+        searchQuery: data.searchQuery,
+        minPrice: data.minPrice,
+        maxPrice: data.maxPrice,
+      };
+      const response = await productService.countBysearchQuery(request);
+      setTotal(response.data.count);
+    } catch (error) {
+      if (error.response.status === 500) {
+        navigate("/error");
+      } else {
+        navigate("/404");
+      }
+    }
+  };
+
+  const getProductsByCategory = async (data) => {
+    try {
+      const request = {
+        categoryId: +data.categoryId,
+        limit: 6,
+        offset: +(data.page - 1) * 6,
+        minPrice: +data.minPrice,
+        maxPrice: +data.maxPrice,
+        sortType: data.sortType,
       };
       const response = await productService.getProductsByCategory(request);
       setProducts(response.data.products);
@@ -119,9 +158,14 @@ const ProductResult = () => {
     }
   };
 
-  const getTotalProductByCategory = async (categoryId) => {
+  const getTotalProductsByCategory = async (data) => {
     try {
-      const response = await productService.countByCategory(categoryId);
+      const request = {
+        categoryId: +data.categoryId,
+        minPrice: +data.minPrice,
+        maxPrice: +data.maxPrice,
+      };
+      const response = await productService.countByCategory(request);
       setTotal(response.data.count);
     } catch (error) {
       if (error.response.status === 500) {
@@ -148,45 +192,39 @@ const ProductResult = () => {
         icon: "error",
         confirmButtonText: "OK",
       });
-    }
-    if (minPrice >= maxPrice) {
+    } else if (minPrice >= maxPrice) {
       return swal.fire({
         title: "Error",
         text: "Vui lòng nhập khoảng giá hợp lệ!",
         icon: "error",
         confirmButtonText: "OK",
       });
+    } else {
+      navigateSearch({
+        ...query,
+        minPrice: minPrice,
+        maxPrice: maxPrice,
+      });
     }
-    console.log("min", minPrice);
-    console.log("max", maxPrice);
   };
 
   const onPageChange = (page) => {
-    navigate({
-      pathname: `/product`,
-      search: `?category=${category.id}&page=${page}`,
+    navigateSearch({
+      ...query,
+      page: page,
     });
   };
 
-  const mapCategoriesToLinearList = (categoryList) => {
-    if (!categoryList) {
-      return [];
-    }
-
-    let linearList = [];
-    for (let category in categoryList) {
-      const { children, ...rest } = categoryList[category];
-      linearList.push(rest);
-
-      const result = mapCategoriesToLinearList(children);
-      linearList = linearList.concat(result);
-    }
-    return linearList;
+  const onSortChange = (sortType) => {
+    navigateSearch({
+      ...query,
+      sortType: sortType,
+    });
   };
 
   return (
     <>
-      {isSearchByCategory ? (
+      {query.categoryId ? (
         <Breadcrumb
           isBigCategory={isBigCategory}
           category={category}
@@ -194,7 +232,7 @@ const ProductResult = () => {
         />
       ) : (
         <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
-          <h5 className="text-key">Từ khóa: {searchQuery}</h5>
+          <h5 className="text-key">Từ khóa: {query.searchQuery}</h5>
         </div>
       )}
 
@@ -202,13 +240,12 @@ const ProductResult = () => {
         <div className="container">
           <div style={{ marginBottom: "40px" }}>
             <FilterSection
+              onSortChange={onSortChange}
               minPrice={minPrice}
               maxPrice={maxPrice}
               setMinPrice={onMinPriceChange}
               setMaxPrice={onMaxPriceChange}
               onFilter={handleFilter}
-              disableSelect={isSearchByCategory}
-              categoryList={mapCategoriesToLinearList(categoryList)}
             />
           </div>
 

@@ -27,6 +27,8 @@ router.post(
     product.createProduct
 )
 
+router.get('/related/:productId', product.relatedProduct);
+
 router.route('/:productId')
     .get(product.getSingleProduct)
     .patch(verifyLogin, verifyEmailVerified, verifyAdmin, product.updateProduct)

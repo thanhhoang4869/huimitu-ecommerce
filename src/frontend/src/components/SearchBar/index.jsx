@@ -6,11 +6,12 @@ const SearchBar = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
-  const onClick = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
     if (search.length > 0) {
       navigate({
         pathname: `/product`,
-        search: `?searchQuery=${search}&page=1`,
+        search: `searchQuery=${search}`,
       });
     } else {
       swal.fire({
@@ -26,15 +27,14 @@ const SearchBar = () => {
     <>
       <div className="hero__search">
         <div className="hero__search__form" style={{ borderRadius: "5px" }}>
-          <form>
+          <form onSubmit={handleSearch}>
             <input
               type="text"
               placeholder="Bạn cần tìm gì?"
               onChange={(e) => setSearch(e.target.value)}
             />
             <button
-              type="button"
-              onClick={onClick}
+              type="submit"
               className="site-btn bg-key"
               style={{
                 borderTopRightRadius: "5px",
