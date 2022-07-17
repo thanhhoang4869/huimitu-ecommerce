@@ -1,7 +1,7 @@
 import { List, Table } from "antd";
 import OrderItem from "components/OrderItem";
 import React, {useState, useEffect} from "react";
-import customer from "services/customer";
+import account from "services/account";
 
 const columns = [
   {
@@ -52,7 +52,7 @@ const OrderListPage = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const orderListRespone = await customer.getOrderList();
+        const orderListRespone = await account.getOrderList();
         const orderListData = orderListRespone.data
 
         console.log(orderListData)

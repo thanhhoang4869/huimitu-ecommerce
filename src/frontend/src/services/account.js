@@ -38,6 +38,10 @@ const accountService = {
     form.append("avatar", file)
     const response = await api.patch('/account/avatar', form)
     return response;
+  },
+  async getOrderList() {
+    const response = await api.post("/account/order");
+    return response;
   }
 };
 

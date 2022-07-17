@@ -12,7 +12,18 @@ const OrderHeader = ({order}) => {
         <p className='order-status'>
             Đang vận chuyển
         </p>
+        <div>
+          <p className="my-2">
+            <b>Tên người nhận: </b>
+            {"Long Mỹ Du"}
+          </p>
+          <p className="my-2">
+            <b>Sđt: </b>
+            {"012345678901"}
+          </p>
+        </div>
     </div>
+
   )
 }
 
