@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Image, Space, Table, Tag } from "antd";
+import { Button, Col, Image, Row, Space, Table, Tag } from "antd";
 import formatter from "utils/formatter";
 import { useContext } from "react";
 import { AuthContext } from "context/AuthContext/AuthContext";
 import { Link } from "react-router-dom";
 import cartService from "services/cart";
 import swal from "sweetalert2";
+import "./style.css";
 
 const CartPage = () => {
   const { cart, variants, fetchCart } = useContext(AuthContext);
@@ -14,6 +15,21 @@ const CartPage = () => {
 
   const handleDelete = async (variantId) => {
     try {
+      const result = await swal.fire({
+        text: "Bạn có chắc muốn xóa sản phẩm?",
+        icon: "question",
+        showCancelButton: true,
+        cancelButtonText: "Hủy",
+        confirmButtonText: "Chắc chắn",
+        customClass: {
+          cancelButton: "order-1",
+          confirmButton: "order-2",
+        },
+      });
+      if (result.isDismissed) {
+        return;
+      }
+
       const response = await cartService.deleteVariant(variantId);
       const { exitcode } = response.data;
 
@@ -21,13 +37,42 @@ const CartPage = () => {
       switch (exitcode) {
         case 0: {
           swal.fire({
-            text: "Delete successfully",
+            text: "Xoá thành công",
             icon: "success",
             confirmButtonText: "OK",
           });
           fetchCart();
           break;
         }
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdateQuantity = async (variantId, newQuantity) => {
+    try {
+      if (newQuantity === 0) {
+        const result = await swal.fire({
+          text: "Bạn có chắc muốn xóa sản phẩm?",
+          icon: "question",
+          showCancelButton: true,
+          cancelButtonText: "Hủy",
+          confirmButtonText: "Chắc chắn",
+          customClass: {
+            cancelButton: "order-1",
+            confirmButton: "order-2",
+          },
+        });
+        if (result.isDismissed) {
+          return;
+        }
+      }
+
+      const response = await cartService.updateVariant(variantId, newQuantity);
+      const { exitcode } = response.data;
+      if (exitcode === 0) {
+        fetchCart();
       }
     } catch (err) {
       console.error(err);
@@ -57,6 +102,35 @@ const CartPage = () => {
       title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
+      render: (quantity, record) => (
+        <Row>
+          <Col span={8}>
+            <Button
+              onClick={() =>
+                handleUpdateQuantity(record.id, record.quantity - 1)
+              }
+              size="small"
+              style={{ width: "32px" }}
+            >
+              -
+            </Button>
+          </Col>
+          <Col span={8}>
+            <div className="centered">{quantity}</div>
+          </Col>
+          <Col span={8} className="d-flex flex-row-reverse">
+            <Button
+              onClick={() =>
+                handleUpdateQuantity(record.id, record.quantity + 1)
+              }
+              size="small"
+              style={{ width: "32px" }}
+            >
+              +
+            </Button>
+          </Col>
+        </Row>
+      ),
     },
     {
       title: "Giá",
@@ -128,6 +202,10 @@ const CartPage = () => {
           onClick={() => {
             navigate("/checkout");
           }}
+          disabled={
+            variants.filter((item) => item.stock < item.quantity).length > 0 ||
+            variants.length < 1
+          }
         >
           Đặt hàng
         </Button>

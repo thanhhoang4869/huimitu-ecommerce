@@ -18,6 +18,15 @@ const cartService = {
     async deleteVariant(variantId) {
         const respone = await api.delete(`/cart/${variantId}`);
         return respone
+    },
+
+    async updateVariant(variantId, quantity) {
+        const requestBody = {
+            variantId: variantId,
+            quantity: quantity
+        }
+        const response = await api.patch('/cart', requestBody);
+        return response
     }
 }
 
