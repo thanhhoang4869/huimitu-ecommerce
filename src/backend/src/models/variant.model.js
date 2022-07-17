@@ -50,6 +50,23 @@ export default {
         return result || null;
     },
 
+    async getByOrderId(orderId) {
+        const result = await db('order')
+            .join('order_variant', 'order.id', 'order_variant.order_id')
+            .join('product_variant', 'order_variant.variant_id', 'product_variant.id')
+            .where({
+                "order.id": orderId,
+            })
+            .select(
+                "product_variant.id",
+                "product_variant.product_id",
+                "product_variant.variant_name",
+                "order_variant.variant_price",
+                "order_variant.quantity"
+            )
+        return result || null;
+    },
+
     async createVariant(entity) {
         const {
             productId,

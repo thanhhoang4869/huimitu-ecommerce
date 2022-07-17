@@ -164,7 +164,7 @@ export default {
             }
 
             // Verify for price
-            const order = orderModel.getById(orderId)
+            const order = orderModel.getOrderById(orderId)
             if (order.total !== amount) {
                 throw new ErrorHandler(400, "Amount is mismatch");
             }
