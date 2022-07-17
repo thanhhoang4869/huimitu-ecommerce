@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Radio, Space, Select } from "antd";
+import { PaymentMethodContext } from "..";
 
 import "./style.css";
 const { Option } = Select;
 
 const InformationSection = () => {
-  const [value, setValue] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useContext(PaymentMethodContext)
+
   const navigate = useNavigate();
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    setPaymentMethod(e.target.value);
   };
   return (
     <div className="col-md-7 order-md-1 p-3">
@@ -56,7 +58,7 @@ const InformationSection = () => {
       <div className="mb-5">
         <h4 className="mb-3 medium semi-thick">Thông tin thanh toán</h4>
         <div>
-          <Radio.Group onChange={onChange} value={value}>
+          <Radio.Group onChange={onChange} value={paymentMethod}>
             <Space direction="vertical">
               <Radio value={1}>Thanh toán Momo</Radio>
               <Radio value={2}>Thanh toán Paypal</Radio>

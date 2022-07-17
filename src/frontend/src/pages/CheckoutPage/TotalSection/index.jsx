@@ -1,10 +1,15 @@
 import { Input, Button } from "antd";
 import PaypalButton from "components/PaypalButton";
+import { useContext } from "react";
 import "./style.css";
+import { PaymentMethodContext } from "..";
 
 const { Search } = Input;
 
 const TotalSection = () => {
+  const [paymentMethod, setPaymentMethod] = useContext(PaymentMethodContext)
+
+
   return (
     <div className="col-md-5 order-md-2 mb-4">
       <div className="cart p-3">
@@ -65,19 +70,22 @@ const TotalSection = () => {
           size="large"
         />
       </div>
-      MDu condition render 2 cái nút ở dưới tùy vào option của nó chọn bên cái
-      radio btn nha
-      <Button
-        type="primary"
-        className="mt-4"
-        size="large"
-        style={{ width: "100%" }}
-      >
-        Đặt hàng
-      </Button>
-      <div className="mt-4">
-        <PaypalButton />
-      </div>
+      {/* <PaymentMethodContext.Consumer> */}
+        {paymentMethod == 2 ? (
+          <div className="mt-4">
+            <PaypalButton />
+          </div>
+        ) : (
+          <Button
+            type="primary"
+            className="mt-4"
+            size="large"
+            style={{ width: "100%" }}
+          >
+            Đặt hàng
+          </Button>
+        )}
+      {/* </PaymentMethodContext.Consumer> */}
     </div>
   );
 };
