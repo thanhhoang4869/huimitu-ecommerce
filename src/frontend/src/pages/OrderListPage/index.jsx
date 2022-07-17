@@ -1,6 +1,7 @@
 import { List, Table } from "antd";
 import OrderItem from "components/OrderItem";
-import React from "react";
+import React, {useState, useEffect} from "react";
+import customer from "services/customer";
 
 const columns = [
   {
@@ -45,6 +46,24 @@ const orderList = [
 ];
 
 const OrderListPage = () => {
+  const [error, setError] = useState("");
+  // const [orderList, setOrderList] = useState([])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const orderListRespone = await customer.getOrderList();
+        const orderListData = orderListRespone.data
+
+        console.log(orderListData)
+
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+    getData();
+  }, []);
+
   return (
     <div className="container">
       <List
