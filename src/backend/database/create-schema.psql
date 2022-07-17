@@ -165,7 +165,7 @@ CREATE TABLE "order_variant" (
 CREATE TABLE "order_state" (
   "order_id" varchar,
   "state" state_type NOT NULL,
-  "created_time" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "created_time" timestamp NOT NULL DEFAULT clock_timestamp(),
   PRIMARY KEY ("order_id", "state", "created_time")
 );
 
@@ -580,8 +580,22 @@ INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 4, 1);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 5, 2);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 9, 3);
 
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'paid');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'shipping');
+SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
-INSERT INTO "order_state"("order_id","state") VALUES(2, 'success');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'reviewed');
+
+INSERT INTO "order_state"("order_id","state") VALUES(2, 'paid');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(2, 'cancel');
+
+INSERT INTO "order_state"("order_id","state") VALUES(3, 'paid');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(3, 'shipping');
+SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'success');
 
 INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
