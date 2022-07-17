@@ -65,7 +65,7 @@ const Header = () => {
                     <Link to="/">Trang chủ</Link>
                   </li>
                   <li>
-                    <Link to="#">Sản phẩm</Link>
+                    <Link to="/product?page=1">Sản phẩm</Link>
                   </li>
                   <li>
                     <Link to="#">Chính sách</Link>

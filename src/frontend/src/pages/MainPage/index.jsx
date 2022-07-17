@@ -33,7 +33,6 @@ const MainPage = () => {
     getCategoryList();
   }, []);
 
-  console.log("isLogin", isLogin);
 
   return (
     <div className="MainDiv">

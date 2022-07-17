@@ -70,16 +70,21 @@ const ProductResult = () => {
 
   const search = (data) => {
     getCategory(data.categoryId);
-    if (data.categoryId) {
-      getTotalProductsByCategory(data);
-      getProductsByCategory(data);
-    } else {
+    if (data.searchQuery) {
       getTotalProductsBySearch(data);
       getProductsBySearch(data);
+    } else {
+      getTotalProducts(data);
+      getProducts(data);
     }
   };
 
   const getCategory = (categoryId) => {
+    if (!categoryId) {
+      setIsBigCategory(false);
+      return;
+    }
+
     for (let category in categoryList) {
       if (+categoryList[category].id === +categoryId) {
         setIsBigCategory(true);
@@ -137,7 +142,7 @@ const ProductResult = () => {
     }
   };
 
-  const getProductsByCategory = async (data) => {
+  const getProducts = async (data) => {
     try {
       const request = {
         categoryId: +data.categoryId,
@@ -147,7 +152,7 @@ const ProductResult = () => {
         maxPrice: +data.maxPrice,
         sortType: data.sortType,
       };
-      const response = await productService.getProductsByCategory(request);
+      const response = await productService.getProducts(request);
       setProducts(response.data.products);
     } catch (error) {
       if (error.response.status === 500) {
@@ -158,14 +163,14 @@ const ProductResult = () => {
     }
   };
 
-  const getTotalProductsByCategory = async (data) => {
+  const getTotalProducts = async (data) => {
     try {
       const request = {
         categoryId: +data.categoryId,
         minPrice: +data.minPrice,
         maxPrice: +data.maxPrice,
       };
-      const response = await productService.countByCategory(request);
+      const response = await productService.countProducts(request);
       setTotal(response.data.count);
     } catch (error) {
       if (error.response.status === 500) {
@@ -224,13 +229,14 @@ const ProductResult = () => {
 
   return (
     <>
-      {query.categoryId ? (
+      {query.categoryId && (
         <Breadcrumb
           isBigCategory={isBigCategory}
           category={category}
           childCategory={childCategory}
         />
-      ) : (
+      )}
+      {query.searchQuery && (
         <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
           <h5 className="text-key">Từ khóa: {query.searchQuery}</h5>
         </div>
