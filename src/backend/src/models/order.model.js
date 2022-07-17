@@ -3,21 +3,69 @@ import db from '#src/utils/db'
 export default {
     async getOrderById(orderId) {
         const result = await db('order').where({
-            id: orderId
-        }).select(
-            "email",
+            'order.id': orderId,
+        })
+            .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
+            .join('shipping_provider', 'order.shipping_provider_id', 'shipping_provider.id')
+            .join('province', 'shipping_address.province_id', 'province.id')
+            .join('district', 'shipping_address.district_id', 'district.id')
+            .join('ward', 'shipping_address.ward_id', 'ward.id')
+            .join('payment', 'order.payment_id', 'payment.id')
+            .select(
+                "order.email",
+                "created_time",
+                "payment.provider AS payment_name",
+                "province_name",
+                "district_name",
+                "ward_name",
+                "total",
+                "shipping_provider_name",
+                "shipping_price",
+                "voucher_code",
+                "receiver_name",
+                "receiver_phone"
+            )
+        return result[0] || null;
+    },
+
+    async getCountOrder(email) {
+        const result = await db('order').where({
+            email: email
+        }).count();
+        try {
+            return result[0].count;
+        } catch (err) {
+            return null;
+        }
+    },
+
+    async getListOrder(email, limit, offset) {
+        const result = await db('order').where({
+            'order.email': email
+        })
+        .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
+        .join('shipping_provider', 'order.shipping_provider_id', 'shipping_provider.id')
+        .join('province', 'shipping_address.province_id', 'province.id')
+        .join('district', 'shipping_address.district_id', 'district.id')
+        .join('ward', 'shipping_address.ward_id', 'ward.id')
+        .join('payment', 'order.payment_id', 'payment.id')
+        .select(
+            'order.id',
             "created_time",
-            "payment_id",
-            "shipping_address_id",
+            "payment.provider AS payment_name",
+            "province_name",
+            "district_name",
+            "ward_name",
             "total",
-            "shipping_provider_id",
+            "shipping_provider_name",
             "shipping_price",
             "voucher_code",
             "receiver_name",
             "receiver_phone"
-        )
-        return result[0] || null;
+        ).limit(limit).offset(offset)
+        return result || null;
     },
+
 
     async createOrder(email, orderId, entity) {
         const {

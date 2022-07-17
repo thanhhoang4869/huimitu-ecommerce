@@ -3,4 +3,8 @@ import express from 'express'
 
 const router = express.Router();
 
+router.get('/:orderId', orderController.getOrder);
+router.post('/get', orderController.getListOrder);
+router.get('/count', orderController.getCountOrder);
+
 export default router;

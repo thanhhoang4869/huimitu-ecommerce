@@ -115,7 +115,7 @@ export default {
 
             res.status(200).send({
                 exitcode: 0,
-                message: "Get product successfully",
+                message: "Get products successfully",
                 products: products
             })
         } catch (err) {
@@ -136,7 +136,7 @@ export default {
 
             res.status(200).send({
                 exitcode: 0,
-                message: "Get count of product in category successfully",
+                message: "Get count of products successfully",
                 count: count
             })
         } catch (err) {
