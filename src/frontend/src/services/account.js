@@ -40,7 +40,7 @@ const accountService = {
     return response;
   },
   async getOrderList() {
-    const response = await api.post("/account/order");
+    const response = await api.post("/order/get");
     return response;
   }
 };
