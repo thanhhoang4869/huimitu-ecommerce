@@ -11,9 +11,12 @@ export default {
             .join('district', 'shipping_address.district_id', 'district.id')
             .join('ward', 'shipping_address.ward_id', 'ward.id')
             .join('payment', 'order.payment_id', 'payment.id')
+            .join('order_state', 'order_state.order_id', 'order.id')
             .select(
+                'order.id',
                 "order.email",
-                "created_time",
+                "order.created_time",
+                'order_state.state',
                 "payment.provider AS payment_name",
                 "province_name",
                 "district_name",
@@ -25,6 +28,8 @@ export default {
                 "receiver_name",
                 "receiver_phone"
             )
+            .orderBy('order_state.created_time', 'desc')
+            .limit(1)
         return result[0] || null;
     },
 
@@ -40,19 +45,10 @@ export default {
     },
 
     async getListOrder(email, limit, offset) {
-        const result = await db('order').where({
-            'order.email': email
-        })
-        .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
-        .join('shipping_provider', 'order.shipping_provider_id', 'shipping_provider.id')
-        .join('province', 'shipping_address.province_id', 'province.id')
-        .join('district', 'shipping_address.district_id', 'district.id')
-        .join('ward', 'shipping_address.ward_id', 'ward.id')
-        .join('payment', 'order.payment_id', 'payment.id')
-        .select(
-            'order.id',
-            "created_time",
-            "payment.provider AS payment_name",
+        const distinctCols = [
+            "order.id",
+            "order.created_time",
+            "payment.provider",
             "province_name",
             "district_name",
             "ward_name",
@@ -61,8 +57,29 @@ export default {
             "shipping_price",
             "voucher_code",
             "receiver_name",
-            "receiver_phone"
-        ).limit(limit).offset(offset)
+            "receiver_phone",
+        ]
+        const selectCols = [
+            ...distinctCols,
+            'order_state.state'
+        ]
+        const result = await db('order').where({
+            'order.email': email
+        })
+            .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
+            .join('shipping_provider', 'order.shipping_provider_id', 'shipping_provider.id')
+            .join('province', 'shipping_address.province_id', 'province.id')
+            .join('district', 'shipping_address.district_id', 'district.id')
+            .join('ward', 'shipping_address.ward_id', 'ward.id')
+            .join('payment', 'order.payment_id', 'payment.id')
+            .join('order_state', 'order_state.order_id', 'order.id')
+            .select(selectCols)
+            .distinctOn(distinctCols)
+            .orderBy([...selectCols, 'order_state.created_time'].map((item) => ({
+                column: item,
+                order: 'desc'
+            })))
+            .limit(limit).offset(offset)
         return result || null;
     },
 
