@@ -15,8 +15,8 @@ const productImageUploader = createUploader(
 const router = express.Router();
 router.get('/bestSeller', product.getBestSeller)
 router.get('/newestArrival', product.getNewestArrival)
-router.post('/getByCategory', product.getProductByCategory)
-router.post('/countByCategory', product.countProductByCategory)
+router.post('/get', product.getProduct)
+router.post('/count', product.countProduct)
 
 router.post(
     '/', 

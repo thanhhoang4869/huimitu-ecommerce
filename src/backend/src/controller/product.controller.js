@@ -2,6 +2,16 @@ import productModel from '#src/models/product.model'
 import categoryModel from '#src/models/category.model'
 import { buildCategoryRoot, searchCategoryTree, toListCategory, getParentBranch } from '#src/utils/utils';
 
+const getListCategoryId = async (categoryId) => {
+    if (!categoryId) return [];
+
+    const category = await categoryModel.get()
+    const categoryTree = buildCategoryRoot(category);
+    const selectedRoot = searchCategoryTree(categoryTree, categoryId);
+    const listCategory = toListCategory(selectedRoot)
+    return listCategory.map(item => item.id)
+}
+
 export default {
     async getBestSeller(req, res, next) {
         try {
@@ -65,7 +75,7 @@ export default {
         }
     },
 
-    async getProductByCategory(req, res, next) {
+    async getProduct(req, res, next) {
         try {
             const {
                 categoryId,
@@ -75,20 +85,15 @@ export default {
                 limit,
                 offset
             } = req.body;
-            const category = await categoryModel.get()
 
-            const categoryTree = buildCategoryRoot(category);
-            const selectedRoot = searchCategoryTree(categoryTree, categoryId);
-            const listSelectedCategory = toListCategory(selectedRoot)
-            const listSelectedId = listSelectedCategory.map(item => item.id)
-
-            const resultProduct = await productModel.getProductByCategoryList(
-                listSelectedId,
+            const listSelectedId = await getListCategoryId(categoryId)
+            const resultProduct = await productModel.getProduct(
                 limit,
                 offset,
                 minPrice,
                 maxPrice,
-                sortType
+                sortType,
+                listSelectedId,
             );
             const promises = resultProduct.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.id)
@@ -118,20 +123,16 @@ export default {
         }
     },
 
-    async countProductByCategory(req, res, next) {
+    async countProduct(req, res, next) {
         try {
             const {
                 categoryId,
                 minPrice,
                 maxPrice,
             } = req.body;
-            const category = await categoryModel.get()
 
-            const categoryTree = buildCategoryRoot(category);
-            const selectedRoot = searchCategoryTree(categoryTree, categoryId);
-            const listSelectedCategory = toListCategory(selectedRoot)
-            const listSelectedId = listSelectedCategory.map(item => item.id)
-            const count = await productModel.countProductByCategoryList(listSelectedId, minPrice, maxPrice);
+            const listSelectedId = await getListCategoryId(categoryId)
+            const count = await productModel.countProduct(minPrice, maxPrice, listSelectedId);
 
             res.status(200).send({
                 exitcode: 0,

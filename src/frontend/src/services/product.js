@@ -16,13 +16,13 @@ const product = {
     return respone;
   },
 
-  async getProductsByCategory(request) {
-    const response = await api.post("/product/getByCategory", request);
+  async getProducts(request) {
+    const response = await api.post("/product/get", request);
     return response;
   },
 
-  async countByCategory(request) {
-    const response = await api.post("/product/countByCategory", request);
+  async countProducts(request) {
+    const response = await api.post("/product/count", request);
     return response;
   },
 
