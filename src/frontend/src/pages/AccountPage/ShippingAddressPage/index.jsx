@@ -89,7 +89,7 @@ const ShippingAddressPage = () => {
         address,
         selectWardId,
         selectDistrictId,
-        selectWardId,
+        selectProvinceId,
         lat,
         long
       );

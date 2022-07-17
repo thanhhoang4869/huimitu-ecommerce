@@ -195,10 +195,11 @@ export default {
         return result;
     },
 
-    async getProductByCategoryList(listId, limit, offset, minPrice, maxPrice, sortType) {
+    async getProduct(limit, offset, minPrice, maxPrice, sortType, categoryListId = []) {
         let builder = db('product').select(
             'product.id',
             'product.product_name',
+            'category.id AS category_id',
             'category.category_name',
             'product.description',
             'product.avg_rating',
@@ -211,8 +212,15 @@ export default {
             'category',
             'product.category_id',
             'category.id'
-        ).whereIn('category.id', listId).as('searched')
-        let alias = 'searched'
+        ).as('joined')
+        let alias = 'joined'
+
+        if (categoryListId.length > 0) {
+            builder = db.from(builder)
+                .whereIn('category_id', categoryListId)
+                .as('searched')
+            alias = "searched"
+        }
 
         if (minPrice && maxPrice) {
             builder = db.from(builder).where(
@@ -235,16 +243,23 @@ export default {
         return result || null;
     },
 
-    async countProductByCategoryList(listId, minPrice, maxPrice) {
+    async countProduct(minPrice, maxPrice, categoryListId = []) {
         let builder = db('product')
             .join('category', 'product.category_id', 'category.id')
-            .whereIn('category.id', listId)
             .select(
                 'min_price',
-                'max_price'
+                'max_price',
+                'category.id AS category_id'
             )
-            .as('searched')
-        let alias = 'searched'
+            .as('joined')
+        let alias = 'joined'
+
+        if (categoryListId.length > 0) {
+            builder = db.from(builder)
+                .whereIn('category_id', categoryListId)
+                .as('searched')
+            alias = "searched"
+        }
 
         if (minPrice && maxPrice) {
             builder = db.from(builder).where(

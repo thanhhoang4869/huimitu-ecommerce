@@ -11,8 +11,9 @@ const SearchBar = () => {
     if (search.length > 0) {
       navigate({
         pathname: `/product`,
-        search: `searchQuery=${search}`,
+        search: `searchQuery=${search}&page=1`,
       });
+      setSearch("");
     } else {
       swal.fire({
         title: "Info",
@@ -31,6 +32,7 @@ const SearchBar = () => {
             <input
               type="text"
               placeholder="Bạn cần tìm gì?"
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
             <button

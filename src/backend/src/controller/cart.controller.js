@@ -92,9 +92,11 @@ export default {
             const { variantId, quantity } = req.body;
 
             if (quantity < 1) {
+                const result = await cartModel.deleteVariantFromCart(email, variantId);
+
                 res.status(200).send({
-                    exitcode: 103,
-                    message: "Quantity must be equal or greater than 1"
+                    exitcode: 0,
+                    message: "Delete variant successfully"
                 })
             }
 
