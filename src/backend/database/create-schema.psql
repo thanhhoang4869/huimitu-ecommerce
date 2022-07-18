@@ -320,6 +320,7 @@ BEGIN
     FROM "cart_variant" AS cv
     JOIN "product_variant" AS pv
     ON cv.variant_id = pv.id
+    WHERE cv.cart_id = COALESCE(OLD.cart_id,NEW.cart_id)
   ) 
   WHERE c.id = COALESCE(OLD.cart_id,NEW.cart_id);
   RETURN NULL;
