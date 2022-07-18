@@ -236,10 +236,10 @@ const ProductDetailPage = () => {
 
                     <span className="pro-details-cart">
                       <Link
-                        to={`/checkout?variantId=${selectVariant.id}&stock=${quantity}`}
+                        to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
                       >
-                        <input type="hidden" className="stock" name="Stock" />
-                        <button className="buy-cart" type="submit">
+                        <input type="hidden" className="quantity" name="quantity" />
+                        <button className="buy-cart">
                           <span>Mua ngay</span>
                         </button>
                       </Link>

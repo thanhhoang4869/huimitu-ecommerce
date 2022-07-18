@@ -32,9 +32,9 @@ export default {
                 cart: {
                     id: id,
                     count: count,
-                    total: total
+                    total: total,
+                    variants: variants
                 },
-                variants: variants
             })
         } catch (err) {
             next(err)

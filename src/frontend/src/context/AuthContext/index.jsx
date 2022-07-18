@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
   );
   const [isAdmin, setIsAdmin] = useState(false);
   const [cart, setCart] = useState({});
-  const [variants, setVariants] = useState([]);
 
   useEffect(() => {
     setIsLogin(tokenService.getAccessToken());
@@ -26,9 +25,8 @@ export const AuthProvider = ({ children }) => {
     if (!isLogin) return;
 
     const response = await cartService.getCart();
-    const { cart, variants } = response.data;
+    const { cart } = response.data;
     setCart(cart);
-    setVariants(variants);
   };
 
   const login = (token) => {
@@ -47,7 +45,6 @@ export const AuthProvider = ({ children }) => {
         isLogin,
         isAdmin,
         cart,
-        variants,
         fetchCart,
         login,
         logout,

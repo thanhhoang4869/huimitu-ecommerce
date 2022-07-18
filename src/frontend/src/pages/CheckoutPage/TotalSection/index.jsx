@@ -3,11 +3,14 @@ import PaypalButton from "components/PaypalButton";
 import { useContext } from "react";
 import "./style.css";
 import { CheckoutContext } from "context/CheckoutContext";
+import formatter from "utils/formatter";
 
 const { Search } = Input;
 
-const TotalSection = () => {
+const TotalSection = (props) => {
   const { paymentMethod, setPaymentMethod } = useContext(CheckoutContext);
+
+  const variants = props.variants;
 
   return (
     <div className="col-md-5 order-md-2 mb-4">
@@ -18,21 +21,19 @@ const TotalSection = () => {
         </div>
 
         <ul className="list-group mb-3">
-          <li className="list-group-item d-flex justify-content-between">
-            <div>
-              <h6 className="my-0 name">Tên sản phẩm</h6>
-              <small className="text-muted">2x</small>
-            </div>
-            <span className="text-muted">$12</span>
-          </li>
-
-          <li className="list-group-item d-flex justify-content-between">
-            <div>
-              <h6 className="my-0 name">Tên sản phẩm</h6>
-              <small className="text-muted">2x</small>
-            </div>
-            <span className="text-muted">$12</span>
-          </li>
+          {variants.map((item) => (
+            <li className="list-group-item d-flex justify-content-between">
+              <div>
+                <h6 className="my-0 name">{item.variantName}</h6>
+                <small className="text-muted">x{item.quantity}</small>
+              </div>
+              <span className="text-muted">
+                {formatter.formatPrice(
+                  (item.discountPrice || item.price) * item.quantity
+                )}
+              </span>
+            </li>
+          ))}
 
           <li className="list-group-item d-flex justify-content-between">
             <div>

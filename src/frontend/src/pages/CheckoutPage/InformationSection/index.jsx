@@ -6,8 +6,9 @@ import "./style.css";
 import { CheckoutContext } from "context/CheckoutContext";
 const { Option } = Select;
 
-const InformationSection = () => {
+const InformationSection = (props) => {
   const { paymentMethod, setPaymentMethod } = useContext(CheckoutContext);
+  
 
   const navigate = useNavigate();
 
@@ -15,6 +16,7 @@ const InformationSection = () => {
     console.log("radio checked", e.target.value);
     setPaymentMethod(e.target.value);
   };
+
   return (
     <div className="col-md-7 order-md-1 p-3">
       <div className="mb-5">
