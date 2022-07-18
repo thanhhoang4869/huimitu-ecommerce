@@ -18,7 +18,9 @@ export default {
             }
 
             const {
+                id,
                 created_time,
+                state,
                 payment_name,
                 province_name,
                 district_name,
@@ -49,7 +51,9 @@ export default {
                 exitcode: 0,
                 message: "Get order successfully",
                 order: {
+                    id: id,
                     createdTime: moment(created_time).format('DD/MM/YYYY hh:mm:ss'),
+                    state: state,
                     paymentName: payment_name,
                     provinceName: province_name,
                     districtName: district_name,
@@ -91,7 +95,9 @@ export default {
                 const variants = await Promise.all(promises);
 
                 return {
+                    id: orderItem.id,
                     createdTime: moment(orderItem.created_time).format('DD/MM/YYYY hh:mm:ss'),
+                    state: orderItem.state,
                     paymentName: orderItem.payment_name,
                     provinceName: orderItem.province_name,
                     districtName: orderItem.district_name,

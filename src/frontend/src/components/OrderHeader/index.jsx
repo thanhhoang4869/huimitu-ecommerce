@@ -2,7 +2,6 @@ import React from 'react'
 import './style.css'
 import formatter from "utils/formatter";
 
-
 const OrderHeader = (order) => {
   return (
     <div className='order-header'>

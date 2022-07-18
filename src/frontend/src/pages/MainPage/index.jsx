@@ -17,7 +17,7 @@ import AccountPage from "pages/AccountPage";
 import { AuthContext } from "context/AuthContext";
 import GuardRoute from "components/GuardRoute";
 import CheckoutPage from "pages/CheckoutPage";
-import { CheckoutContext, CheckoutProvider } from "context/CheckoutContext";
+import { CheckoutProvider } from "context/CheckoutContext";
 
 const MainPage = () => {
   const [categoryList, setCategoryList] = useState([]);

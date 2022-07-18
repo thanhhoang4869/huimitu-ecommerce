@@ -1,20 +1,18 @@
 import { List, Table } from "antd";
 import OrderItem from "components/OrderItem";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import account from "services/account";
 
 const OrderListPage = () => {
   const [error, setError] = useState("");
-  const [orderList, setOrderList] = useState([])
+  const [orderList, setOrderList] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const orderListRespone = await account.getOrderList();
-       setOrderList(orderListRespone.data.orders)
-
-        console.log(orderListRespone.data.orders)
-
+        const response = await account.getOrderList();
+        const { orders } = response.data;
+        setOrderList(orders);
       } catch (error) {
         setError(error.message);
       }
@@ -34,7 +32,7 @@ const OrderListPage = () => {
           },
           pageSize: 3,
         }}
-        renderItem={(order) => <OrderItem order={order}/>}
+        renderItem={(order) => <OrderItem order={order} />}
       ></List>
     </div>
   );
