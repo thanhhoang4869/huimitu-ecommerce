@@ -6,7 +6,7 @@ import swal from "sweetalert2";
 
 import "./style.css";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import { validateEmail } from "utils/validator";
 
 const LoginPage = () => {

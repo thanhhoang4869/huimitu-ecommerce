@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Radio, Space, Select } from "antd";
-import { PaymentMethodContext } from "..";
 
 import "./style.css";
+import { CheckoutContext } from "context/CheckoutContext";
 const { Option } = Select;
 
 const InformationSection = () => {
-  const [paymentMethod, setPaymentMethod] = useContext(PaymentMethodContext)
+  const { paymentMethod, setPaymentMethod } = useContext(CheckoutContext);
 
   const navigate = useNavigate();
 

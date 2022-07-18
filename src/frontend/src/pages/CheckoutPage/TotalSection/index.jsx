@@ -2,13 +2,12 @@ import { Input, Button } from "antd";
 import PaypalButton from "components/PaypalButton";
 import { useContext } from "react";
 import "./style.css";
-import { PaymentMethodContext } from "..";
+import { CheckoutContext } from "context/CheckoutContext";
 
 const { Search } = Input;
 
 const TotalSection = () => {
-  const [paymentMethod, setPaymentMethod] = useContext(PaymentMethodContext)
-
+  const { paymentMethod, setPaymentMethod } = useContext(CheckoutContext);
 
   return (
     <div className="col-md-5 order-md-2 mb-4">
@@ -70,22 +69,20 @@ const TotalSection = () => {
           size="large"
         />
       </div>
-      {/* <PaymentMethodContext.Consumer> */}
-        {paymentMethod == 2 ? (
-          <div className="mt-4">
-            <PaypalButton />
-          </div>
-        ) : (
-          <Button
-            type="primary"
-            className="mt-4"
-            size="large"
-            style={{ width: "100%" }}
-          >
-            Đặt hàng
-          </Button>
-        )}
-      {/* </PaymentMethodContext.Consumer> */}
+      {paymentMethod == 2 ? (
+        <div className="mt-4">
+          <PaypalButton />
+        </div>
+      ) : (
+        <Button
+          type="primary"
+          className="mt-4"
+          size="large"
+          style={{ width: "100%" }}
+        >
+          Đặt hàng
+        </Button>
+      )}
     </div>
   );
 };

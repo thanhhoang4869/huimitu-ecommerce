@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Col, Image, Row, Space, Table, Tag } from "antd";
 import formatter from "utils/formatter";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import { Link } from "react-router-dom";
 import cartService from "services/cart";
 import swal from "sweetalert2";

@@ -6,7 +6,7 @@ import LandingPage from "pages/LandingPage";
 import CommercePage from "pages/CommercePage";
 import Footer from "components/Footer";
 import LoginPage from "pages/LoginPage";
-import SignupPage from "pages/SignUpPage";
+import SignupPage from "pages/SignupPage";
 
 import VerificationPage from "pages/VerificationPage";
 import ProductDetailPage from "pages/ProductDetailPage";
@@ -14,9 +14,10 @@ import category from "services/category";
 import NotFoundPage from "pages/NotFoundPage";
 import ServerErrorPage from "pages/ServerErrorPage";
 import AccountPage from "pages/AccountPage";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import GuardRoute from "components/GuardRoute";
 import CheckoutPage from "pages/CheckoutPage";
+import { CheckoutContext, CheckoutProvider } from "context/CheckoutContext";
 
 const MainPage = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -32,7 +33,6 @@ const MainPage = () => {
   useEffect(() => {
     getCategoryList();
   }, []);
-
 
   return (
     <div className="MainDiv">
@@ -60,9 +60,11 @@ const MainPage = () => {
           <Route
             path="/checkout/*"
             element={
-              // <GuardRoute auth={isLogin} redirectTo="/login">
-              <CheckoutPage />
-              // </GuardRoute>
+              <GuardRoute auth={isLogin} redirectTo="/login">
+                <CheckoutProvider>
+                  <CheckoutPage />
+                </CheckoutProvider>
+              </GuardRoute>
             }
           />
           <Route exact path="/verify/:token" element={<VerificationPage />} />

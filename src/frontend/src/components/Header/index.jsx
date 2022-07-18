@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AuthContext } from "context/AuthContext";
 
 const Header = () => {
   const { logout, isLogin, cart } = useContext(AuthContext);

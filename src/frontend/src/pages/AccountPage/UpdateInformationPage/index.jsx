@@ -1,5 +1,5 @@
 import { DatePicker, Form, Input, PageHeader, Radio, Button } from "antd";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import moment from "moment";
 import React from "react";
 import { useContext } from "react";

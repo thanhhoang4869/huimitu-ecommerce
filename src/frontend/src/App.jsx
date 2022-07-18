@@ -4,7 +4,7 @@ import config from "./config/config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import "./App.less";
-import { AuthProvider } from "context/AuthContext/AuthContext";
+import { AuthProvider } from "context/AuthContext";
 
 class App extends React.Component {
   render() {

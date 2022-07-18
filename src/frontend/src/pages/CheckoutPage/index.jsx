@@ -1,11 +1,10 @@
 import TotalSection from "./TotalSection";
 import InformationSection from "./InformationSection";
-import React, {createContext, useState} from 'react'
-import { useContext } from "react";
-const PaymentMethodContext = createContext();
+import React, { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 const CheckoutPage = () => {
-  const [paymentMethod, setPaymentMethod] = useState(1)
+  const searchParams = useSearchParams();
 
   return (
     <>
@@ -13,10 +12,8 @@ const CheckoutPage = () => {
         <section>
           <div className="container px-md-2 px-lg-3">
             <div className="row">
-              <PaymentMethodContext.Provider value={[paymentMethod, setPaymentMethod]}>
-                <TotalSection />
-                <InformationSection />
-              </PaymentMethodContext.Provider>
+              <TotalSection />
+              <InformationSection />
             </div>
           </div>
         </section>
@@ -26,4 +23,3 @@ const CheckoutPage = () => {
 };
 
 export default CheckoutPage;
-export  {PaymentMethodContext};

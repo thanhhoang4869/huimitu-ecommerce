@@ -2,7 +2,7 @@ import Breadcrumb from "components/Breadcrumb";
 import ItemHorizonList from "components/ItemHorizonList";
 
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { default as productService } from "services/product";
 
@@ -15,7 +15,7 @@ import formatter from "utils/formatter";
 import { Radio, Space } from "antd";
 import variantService from "services/variant";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AuthContext } from "context/AuthContext";
 import cartService from "services/cart";
 import swal from "sweetalert2";
 
@@ -235,16 +235,14 @@ const ProductDetailPage = () => {
                     </span>
 
                     <span className="pro-details-cart">
-                      <form
-                        method="get"
-                        id="formBuyNow"
-                        action="/product/buynow?ProID={{product.ProID}}&Stock=1"
+                      <Link
+                        to={`/checkout?variantId=${selectVariant.id}&stock=${quantity}`}
                       >
                         <input type="hidden" className="stock" name="Stock" />
                         <button className="buy-cart" type="submit">
                           <span>Mua ngay</span>
                         </button>
-                      </form>
+                      </Link>
                     </span>
                   </div>
                 </div>
