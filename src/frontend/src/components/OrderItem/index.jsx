@@ -6,10 +6,10 @@ import { Divider } from "antd";
 
 const OrderItem = ({order}) => {
   return (
-    <div key={order.id} className="my-3">
-      <Divider orientation="left" orientationMargin="0">{order.id}</Divider>
+    <div key={order.createdTime} className="my-3">
+      <Divider orientation="left"></Divider>
       <OrderHeader order={order} />
-      <ProductList productList={order.product_list} />
+      <ProductList productList={order.variants} />
       <OrderFooter order={order}/>
     </div>
   );

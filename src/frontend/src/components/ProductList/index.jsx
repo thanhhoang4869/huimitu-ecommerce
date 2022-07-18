@@ -8,31 +8,28 @@ const ProductList = ({ productList }) => {
   return (
     <List
       dataSource={productList}
-     
       renderItem={(product) => (
-        <List.Item key={product.variant_id}>
+        <List.Item key={product.id}>
           <List.Item.Meta
             avatar={
               <Avatar
                 className="product-img"
                 shape="square"
                 size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                src="https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg"
+                src={product.image}
               />
             }
-            title={<a href="https://ant.design">{product.productName}</a>}
+            title={<a href="https://ant.design">{product.variantName}</a>}
             description={
               <>
-                <p className="product-description">
-                  {
-                    "Ant Design, a design language for background applications, is refined by Ant UED Team"
-                  }
-                </p>
-                <span className="product-quantity">{"x1"}</span>
+                <p className="product-description">{product.variantName}</p>
+                <span className="product-quantity">{`x${product.quantity}`}</span>
               </>
             }
           />
-          <span className="color-key">{formatter.formatPrice(product.price)}</span>
+          <span className="color-key">
+            {formatter.formatPrice(product.price)}
+          </span>
         </List.Item>
       )}
     ></List>
