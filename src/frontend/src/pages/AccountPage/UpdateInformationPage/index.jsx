@@ -1,7 +1,7 @@
 import { DatePicker, Form, Input, PageHeader, Radio, Button } from "antd";
-import { AuthContext } from "context/AuthContext";
+import { AccountContext } from "context/AccountContext";
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import accountService from "services/account";
@@ -18,9 +18,13 @@ const formItemLayout = {
 };
 
 const UpdateInformationPage = (props) => {
-  const account = props.account || {};
+  const { account, fetchAccount } = useContext(AccountContext);
   const navigator = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const { logout } = useContext(AccountContext);
+
+  useEffect(() => {
+    fetchAccount();
+  }, [])
 
   const handleChangeInformation = async (data) => {
     try {

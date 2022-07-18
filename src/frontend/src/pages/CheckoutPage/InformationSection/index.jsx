@@ -1,20 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Radio, Space, Select } from "antd";
 
 import "./style.css";
-import { CheckoutContext } from "context/CheckoutContext";
 const { Option } = Select;
 
 const InformationSection = (props) => {
-  const { paymentMethod, setPaymentMethod } = useContext(CheckoutContext);
-  
+  const paymentId = props.paymentId;
+  const setPaymentId = props.setPaymentId;
+
+  const receiverPhone = props.receiverPhone;
+  const setReceiverPhone = props.setReceiverPhone;
+
+  const receiverName = props.receiverName;
+  const setReceiverName = props.setReceiverName;
 
   const navigate = useNavigate();
 
-  const onChange = (e) => {
-    console.log("radio checked", e.target.value);
-    setPaymentMethod(e.target.value);
+  const handlePaymentChange = (e) => {
+    setPaymentId(e.target.value);
   };
 
   return (
@@ -24,13 +28,17 @@ const InformationSection = (props) => {
         <div>
           <div className="label required">Tên người nhận</div>
           <Input
-            placeholder="Tên người nhận"
-            value={"Thanh"}
+            placeholder="Nhập tên người nhận"
+            value={receiverName}
+            onChange={(e) => setReceiverName(e.target.value)}
             className="mb-3"
           />
-
           <div className="label required">SĐT người nhận</div>
-          <Input placeholder="SĐT người nhận" value={"0933432607"} />
+          <Input
+            placeholder="SĐT người nhận"
+            value={receiverPhone}
+            onChange={(e) => setReceiverPhone(e.target.value)}
+          />
         </div>
       </div>
 
@@ -60,7 +68,7 @@ const InformationSection = (props) => {
       <div className="mb-5">
         <h4 className="mb-3 medium semi-thick">Thông tin thanh toán</h4>
         <div>
-          <Radio.Group onChange={onChange} value={paymentMethod}>
+          <Radio.Group onChange={handlePaymentChange} value={paymentId}>
             <Space direction="vertical">
               <Radio value={1}>Thanh toán Momo</Radio>
               <Radio value={2}>Thanh toán Paypal</Radio>

@@ -15,7 +15,6 @@ export default {
         return result[0] || null;
     },
 
-
     async getVoucherByCodeEmail(voucherCode, email) {
         const result = await db('voucher as v1').whereNotIn(
             'v1.voucher_code',

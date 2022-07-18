@@ -1,25 +1,24 @@
 import { Input, Button } from "antd";
 import PaypalButton from "components/PaypalButton";
-import { useContext } from "react";
 import "./style.css";
-import { CheckoutContext } from "context/CheckoutContext";
 import formatter from "utils/formatter";
 
 const { Search } = Input;
 
 const TotalSection = (props) => {
-  const { paymentMethod, setPaymentMethod } = useContext(CheckoutContext);
-
-  const variants = props.variants;
+  const paymentId = props.paymentId;
+  const variants = props.variants || [];
+  const shippingPrice = props.shippingPrice || 0;
+  const voucherPrice = props.voucherPrice || 0;
+  const voucherCode = props.voucherCode;
+  const handleApplyVoucherCode = props.handleApplyVoucherCode;
 
   return (
     <div className="col-md-5 order-md-2 mb-4">
       <div className="cart p-3">
         <div className="d-flex medium semi-thick justify-content-between align-items-center mb-3">
           <span>Đơn hàng</span>
-          <span className="badge badge-secondary badge-pill">3</span>
         </div>
-
         <ul className="list-group mb-3">
           {variants.map((item) => (
             <li className="list-group-item d-flex justify-content-between">
@@ -35,26 +34,35 @@ const TotalSection = (props) => {
             </li>
           ))}
 
-          <li className="list-group-item d-flex justify-content-between">
-            <div>
-              <div className="prod-code my-0 text-key">Mã voucher</div>
-              <small className="text-orange semi-thick">VUIBEPBANH</small>
-            </div>
-            <span className="text-orange semi-thick">-$5</span>
-          </li>
+          {voucherCode && (
+            <li className="list-group-item d-flex justify-content-between">
+              <div>
+                <div className="my-0 text-key">Mã voucher</div>
+                <small className="text-orange semi-thick">{voucherCode}</small>
+              </div>
+              <span className="text-orange semi-thick">
+                -{formatter.formatPrice(voucherPrice)}
+              </span>
+            </li>
+          )}
 
           <li className="list-group-item">
             <li className="text-muted mb-2 d-flex justify-content-between">
               <span>Tổng tiền sản phẩm</span>
-              <span>12</span>
+              <span>
+                {formatter.formatPrice(
+                  variants.reduce(
+                    (previous, item) =>
+                      previous +
+                      item.quantity * (item.discountPrice || item.price),
+                    0
+                  )
+                )}
+              </span>
             </li>
             <li className="text-muted mb-2 d-flex justify-content-between">
               <span>Phí ship</span>
-              <span>12</span>
-            </li>
-            <li className="text-muted mb-2 d-flex justify-content-between">
-              <span>Giảm giá</span>
-              <span>12</span>
+              <span>{formatter.formatPrice(shippingPrice)}</span>
             </li>
             <li className="d-flex justify-content-between">
               <span className="medium text-key semi-thick">Tổng cộng</span>
@@ -64,13 +72,15 @@ const TotalSection = (props) => {
         </ul>
 
         <Search
+          on
           placeholder="Nhập mã voucher"
           allowClear
           enterButton="Sử dụng"
           size="large"
+          onSearch={handleApplyVoucherCode}
         />
       </div>
-      {paymentMethod == 2 ? (
+      {paymentId === 2 ? (
         <div className="mt-4">
           <PaypalButton />
         </div>

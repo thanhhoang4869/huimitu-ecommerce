@@ -15,7 +15,7 @@ import formatter from "utils/formatter";
 import { Radio, Space } from "antd";
 import variantService from "services/variant";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext";
+import { AccountContext } from "context/AccountContext";
 import cartService from "services/cart";
 import swal from "sweetalert2";
 
@@ -34,7 +34,7 @@ const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-  const { fetchCart } = useContext(AuthContext);
+  const { fetchCart } = useContext(AccountContext);
 
   const navigate = useNavigate();
 

@@ -18,9 +18,8 @@ export default {
                     exitcode: 101,
                     message: "Email or password is not correct"
                 });
-                
             }
-            
+
             // Get the database password
             const encryptedPassword = account.password;
             if (encryptedPassword === null) {
@@ -47,6 +46,17 @@ export default {
                 });
             }
 
+            const returnAccount = {
+                email: email,
+                phone: phone,
+                fullname: fullname,
+                avatar: avatar_path,
+                birthday: (birthday) ? moment(new Date(birthday)).format('DD/MM/YYYY') : null,
+                gender: gender,
+                accountType: account_type,
+                verified: verified
+            }
+
             // Create payload for encryption
             const payload = {
                 email: email
@@ -59,6 +69,7 @@ export default {
                 token: jwt.sign(payload, config.JWT_SECRET, {
                     expiresIn: config.JWT_EXP_TIME
                 }),
+                account: returnAccount
             });
         } catch (err) {
             next(err)

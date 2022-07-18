@@ -6,7 +6,7 @@ import swal from "sweetalert2";
 
 import "./style.css";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext";
+import { AccountContext } from "context/AccountContext";
 import {
   validateEmail,
   validateMinLength,
@@ -15,7 +15,7 @@ import {
 import { Button } from "antd";
 
 const SignupPage = (props) => {
-  const { login } = useContext(AuthContext);
+  const { login } = useContext(AccountContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");

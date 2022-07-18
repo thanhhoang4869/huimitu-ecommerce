@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "config/config";
-import tokenService from "services/token";
+import storageService from "services/storage";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -9,7 +9,7 @@ const api = axios.create({
 api.interceptors.request.use(async (currentConfig) => {
   const customHeaders = {};
 
-  const accessToken = tokenService.getAccessToken();
+  const accessToken = storageService.getAccessToken();
   if (accessToken) {
     customHeaders['x-access-token'] = accessToken;
   }

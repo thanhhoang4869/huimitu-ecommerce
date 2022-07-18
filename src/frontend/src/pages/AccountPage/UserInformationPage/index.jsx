@@ -1,14 +1,20 @@
 import { Avatar, Button, Descriptions, Badge } from "antd";
 import Upload from "antd/lib/upload/Upload";
+import { AccountContext } from "context/AccountContext";
 import defaultAvatar from "images/avatar.png";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useContext } from "react";
 import accountService from "services/account";
 import swal from "sweetalert2";
 import { isImage, sizeLessMegaByte } from "utils/validator";
 
 const UserInformationPage = (props) => {
-  const account = props.account || {};
+  const { account, fetchAccount } = useContext(AccountContext);
   const [isUploading, setIsUploading] = useState(false);
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
 
   const uploadProps = {
     maxCount: 1,

@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext";
+import { AccountContext } from "context/AccountContext";
 
 const Header = () => {
-  const { logout, isLogin, cart } = useContext(AuthContext);
+  const { logout, isLogin, cart } = useContext(AccountContext);
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>

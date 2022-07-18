@@ -6,11 +6,11 @@ import swal from "sweetalert2";
 
 import "./style.css";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext";
+import { AccountContext } from "context/AccountContext";
 import { validateEmail } from "utils/validator";
 
 const LoginPage = () => {
-  const { login } = useContext(AuthContext);
+  const { login } = useContext(AccountContext);
   const { state } = useLocation();
   const navigator = useNavigate();
 
@@ -88,7 +88,6 @@ const LoginPage = () => {
 
   const handleGoogleSuccess = async (response) => {
     const { credential } = response;
-    console.log(response);
 
     const result = await authService.googleLogin(credential);
     const { exitcode, token } = result.data;
