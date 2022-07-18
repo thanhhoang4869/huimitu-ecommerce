@@ -36,7 +36,6 @@ const AccountPage = () => {
           <div className="col-lg-9">
             <Routes>
               <Route
-                exact
                 path="/userInformation"
                 element={<UserInformationPage account={account} />}
               />

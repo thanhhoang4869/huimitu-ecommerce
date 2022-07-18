@@ -7,7 +7,9 @@ import tokenService from "services/token";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(
+    tokenService.getAccessToken()
+  );
   const [isAdmin, setIsAdmin] = useState(false);
   const [cart, setCart] = useState({});
   const [variants, setVariants] = useState([]);

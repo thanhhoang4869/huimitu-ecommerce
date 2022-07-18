@@ -33,7 +33,6 @@ const MainPage = () => {
     getCategoryList();
   }, []);
 
-
   return (
     <div className="MainDiv">
       <BrowserRouter>
@@ -60,9 +59,9 @@ const MainPage = () => {
           <Route
             path="/checkout/*"
             element={
-              // <GuardRoute auth={isLogin} redirectTo="/login">
-              <CheckoutPage />
-              // </GuardRoute>
+              <GuardRoute auth={isLogin} redirectTo="/login">
+                <CheckoutPage />
+              </GuardRoute>
             }
           />
           <Route exact path="/verify/:token" element={<VerificationPage />} />
