@@ -1,6 +1,11 @@
 import React from "react";
+import { Route, Routes } from "react-router-dom";
 
 import SideBar from "./SideBar";
+import ViewProductSection from "./ViewProductSection";
+import AddProductSection from "./AddProductSection";
+import ViewVoucherSection from "./ViewVoucherSection";
+import AddVoucherSection from "./AddVoucherSection";
 
 const AdminPage = () => {
   return (
@@ -9,7 +14,14 @@ const AdminPage = () => {
         <div className="container">
           <div className="row">
             <SideBar />
-            <div className="col-lg-9">Hello</div>
+            <div className="col-lg-9">
+              <Routes>
+                <Route path="/viewProduct" element={<ViewProductSection />} />
+                <Route path="/addProduct" element={<AddProductSection />} />
+                <Route path="/viewVoucher" element={<ViewVoucherSection />} />
+                <Route path="/addVoucher" element={<AddVoucherSection />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </section>
