@@ -17,10 +17,11 @@ import AccountPage from "pages/AccountPage";
 import { AccountContext } from "context/AccountContext";
 import GuardRoute from "components/GuardRoute";
 import CheckoutPage from "pages/CheckoutPage";
+import AdminPage from "pages/AdminPage";
 
 const MainPage = () => {
   const [categoryList, setCategoryList] = useState([]);
-  const { isLogin } = useContext(AccountContext);
+  const { isLogin, isAdmin } = useContext(AccountContext);
 
   const getCategoryList = async () => {
     const response = await category.getCategoryList();
@@ -61,6 +62,14 @@ const MainPage = () => {
             element={
               <GuardRoute auth={isLogin} redirectTo="/login">
                 <CheckoutPage />
+              </GuardRoute>
+            }
+          />
+          <Route
+            path="/admin/*"
+            element={
+              <GuardRoute auth={isAdmin} redirectTo="/">
+                <AdminPage />
               </GuardRoute>
             }
           />
