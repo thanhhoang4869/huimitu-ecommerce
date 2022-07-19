@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Banner = () => {
   return (
@@ -14,9 +15,13 @@ const Banner = () => {
             Giá tốt
           </h2>
           <p>Đồng hành cùng bạn trong bếp bánh!</p>
-          <a href="#" className="primary-btn" style={{ borderRadius: "5px" }}>
+          <Link
+            to="/product?page=1"
+            className="primary-btn"
+            style={{ borderRadius: "5px" }}
+          >
             MUA NGAY
-          </a>
+          </Link>
         </div>
       </div>
     </>

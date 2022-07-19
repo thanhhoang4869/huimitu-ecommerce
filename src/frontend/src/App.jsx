@@ -4,13 +4,13 @@ import config from "./config/config";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import "./App.less";
-import { AuthProvider } from "context/AuthContext/AuthContext";
+import { AccountProvider } from "context/AccountContext";
 
 class App extends React.Component {
   render() {
     return (
       <>
-        <AuthProvider>
+        <AccountProvider>
           <PayPalScriptProvider
             options={{ "client-id": config.PAYPAL_CLIENT_ID }}
           >
@@ -18,7 +18,7 @@ class App extends React.Component {
               <MainPage />
             </GoogleOAuthProvider>
           </PayPalScriptProvider>
-        </AuthProvider>
+        </AccountProvider>
       </>
     );
   }

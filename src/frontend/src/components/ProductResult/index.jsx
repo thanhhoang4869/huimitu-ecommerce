@@ -221,6 +221,9 @@ const ProductResult = () => {
   };
 
   const onSortChange = (sortType) => {
+    if (sortType === "default") {
+      sortType = null;
+    }
     navigateSearch({
       ...query,
       sortType: sortType,

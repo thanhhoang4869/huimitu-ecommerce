@@ -1,33 +1,13 @@
 import AccountBar from "components/AccountBar";
 import OrderListPage from "pages/OrderListPage";
-import React, { useEffect, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import accountService from "services/account";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import CartPage from "./CartPage";
 import ShippingAddressPage from "./ShippingAddressPage";
 import UpdateInformationPage from "./UpdateInformationPage";
 import UserInformationPage from "./UserInformationPage";
 
 const AccountPage = () => {
-  const [account, setAccount] = useState({});
-  const navigator = useNavigate();
-
-  const fetchUser = async () => {
-    try {
-      const response = await accountService.getInformation();
-      const { exitcode, account } = response.data;
-      if (exitcode === 0) {
-        setAccount(account);
-      }
-    } catch (err) {
-      navigator("/error");
-    }
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   return (
     <section className="hero">
       <div className="container">
@@ -37,7 +17,7 @@ const AccountPage = () => {
             <Routes>
               <Route
                 path="/userInformation"
-                element={<UserInformationPage account={account} />}
+                element={<UserInformationPage/>}
               />
               <Route
                 exact
@@ -49,7 +29,7 @@ const AccountPage = () => {
               <Route
                 exact
                 path="/changeInformation"
-                element={<UpdateInformationPage account={account} />}
+                element={<UpdateInformationPage/>}
               />
             </Routes>
           </div>

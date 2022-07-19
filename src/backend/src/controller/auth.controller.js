@@ -4,6 +4,7 @@ import config from '#src/config/config'
 import { verifyPassword, encryptPassword, generateToken } from '#src/utils/crypto'
 import oauth2Client from '#src/utils/oauth2'
 import { getMailOption, createTransport } from '#src/utils/nodemailer'
+import moment from 'moment'
 
 export default {
     async login(req, res, next) {
@@ -18,9 +19,8 @@ export default {
                     exitcode: 101,
                     message: "Email or password is not correct"
                 });
-                
             }
-            
+
             // Get the database password
             const encryptedPassword = account.password;
             if (encryptedPassword === null) {
@@ -47,6 +47,17 @@ export default {
                 });
             }
 
+            const returnAccount = {
+                email: account.email,
+                phone: account.phone,
+                fullname: account.fullname,
+                avatar: account.avatar_path,
+                birthday: (account.birthday) ? moment(new Date(account.birthday)).format('DD/MM/YYYY') : null,
+                gender: account.gender,
+                accountType: account.account_type,
+                verified: account.verified
+            }
+
             // Create payload for encryption
             const payload = {
                 email: email
@@ -59,6 +70,7 @@ export default {
                 token: jwt.sign(payload, config.JWT_SECRET, {
                     expiresIn: config.JWT_EXP_TIME
                 }),
+                account: returnAccount
             });
         } catch (err) {
             next(err)

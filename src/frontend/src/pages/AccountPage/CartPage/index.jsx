@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Button, Col, Image, Row, Space, Table, Tag } from "antd";
 import formatter from "utils/formatter";
 import { useContext } from "react";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AccountContext } from "context/AccountContext";
 import { Link } from "react-router-dom";
 import cartService from "services/cart";
 import swal from "sweetalert2";
 import "./style.css";
 
 const CartPage = () => {
-  const { cart, variants, fetchCart } = useContext(AuthContext);
+  const { cart, fetchCart } = useContext(AccountContext);
   const navigate = useNavigate();
 
   const handleDelete = async (variantId) => {
@@ -179,7 +179,7 @@ const CartPage = () => {
     <div>
       <Table
         pagination={false}
-        dataSource={variants.map((item) => ({
+        dataSource={cart.variants.map((item) => ({
           key: item.id,
           ...item,
         }))}
@@ -203,8 +203,8 @@ const CartPage = () => {
             navigate("/checkout");
           }}
           disabled={
-            variants.filter((item) => item.stock < item.quantity).length > 0 ||
-            variants.length < 1
+            cart.variants.filter((item) => item.stock < item.quantity).length > 0 ||
+            cart.variants.length < 1
           }
         >
           Đặt hàng

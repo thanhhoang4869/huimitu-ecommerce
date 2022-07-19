@@ -14,13 +14,13 @@ import category from "services/category";
 import NotFoundPage from "pages/NotFoundPage";
 import ServerErrorPage from "pages/ServerErrorPage";
 import AccountPage from "pages/AccountPage";
-import { AuthContext } from "context/AuthContext/AuthContext";
+import { AccountContext } from "context/AccountContext";
 import GuardRoute from "components/GuardRoute";
 import CheckoutPage from "pages/CheckoutPage";
 
 const MainPage = () => {
   const [categoryList, setCategoryList] = useState([]);
-  const { isLogin } = useContext(AuthContext);
+  const { isLogin } = useContext(AccountContext);
 
   const getCategoryList = async () => {
     const response = await category.getCategoryList();

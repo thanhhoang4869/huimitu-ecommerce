@@ -8,4 +8,6 @@ router.route('/')
     .get(voucher.getVoucher)
     .post(verifyAdmin, voucher.addVoucher)
 
+router.get('/:voucherCode', voucher.getVoucherByCode);
+
 export default router;
