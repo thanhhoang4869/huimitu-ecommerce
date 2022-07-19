@@ -1,0 +1,35 @@
+.ant-form-item-label {
+  font-weight: 600;
+}
+
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.flex-item {
+  flex: 1;
+}
+
+.ck-editor__editable_inline {
+  min-height: 200px;
+}
+
+.ck.ck-editor__main .ck-content {
+  height: 239px;
+}
+
+.addVar {
+  text-align: end;
+  text-decoration: underline;
+}
+
+.addVar::before {
+  content: "+";
+}
+
+.addVar:hover {
+  cursor: pointer;
+}
