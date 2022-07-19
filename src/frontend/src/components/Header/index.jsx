@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
@@ -7,6 +7,7 @@ import { AccountContext } from "context/AccountContext";
 
 const Header = () => {
   const { logout, isLogin, cart, isAdmin } = useContext(AccountContext);
+
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
@@ -81,9 +82,11 @@ const Header = () => {
                       </li>
                     </ul>
                   </li>
-                  <li>
-                    <Link to="#">QTV</Link>
-                  </li>
+                  {isAdmin && (
+                    <li>
+                      <Link to="#">QTV</Link>
+                    </li>
+                  )}
                 </ul>
               </nav>
             </div>
