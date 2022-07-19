@@ -1,38 +1,60 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Table } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
+import swal from "sweetalert2";
+
 import product from "services/product";
 import formatter from "utils/formatter";
+import "./style.css";
 
 const ViewProductSection = () => {
   const location = useLocation();
   const [products, setProducts] = useState([]);
-  const [countProducts, setCountProducts] = useState(0);
-
-  const getCountProducts = async () => {
-    const res = await product.countProducts();
-    setCountProducts(res.data.count);
-    console.log(res.data.count);
-  };
 
   const getAllProducts = async () => {
+    const countResponse = await product.countProducts();
+
     const request = {
-      limit: countProducts || 6,
+      limit: countResponse.data.count,
       offset: 0,
     };
     const res = await product.getProducts(request);
     setProducts(res.data.products);
   };
 
+  const onDeleteProduct = async (id) => {
+    swal
+      .fire({
+        title: "Bạn chắc chắn muốn xóa sản phẩm này?",
+        text: "Sản phẩm đã xóa sẽ không thể khôi phục!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        CancelButtonText: "Hủy",
+        confirmButtonText: "Xóa",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          swal.fire("Đã xóa sản phẩm", "", "success");
+        }
+      });
+  };
+
   useEffect(() => {
-    getCountProducts();
     getAllProducts();
   }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const columns = [
     {
-      title: "Number",
+      dataIndex: "image",
+      width: "10%",
+    },
+    {
+      title: "ID",
       dataIndex: "id",
+      align: "center",
       sorter: (a, b) => +a.id - +b.id,
       sortDirections: ["descend"],
     },
@@ -53,6 +75,7 @@ const ViewProductSection = () => {
     {
       title: "Category",
       dataIndex: "categoryName",
+      width: "20%",
       filters: [
         {
           text: "Túi và đầu chiết",
@@ -89,14 +112,23 @@ const ViewProductSection = () => {
       ],
       onFilter: (value, record) => record.categoryName.indexOf(value) === 0,
     },
+    {
+      dataIndex: "action",
+    },
   ];
 
   const data = products.map((product) => {
     return {
+      image: (
+        <img
+          src="https://images-na.ssl-images-amazon.com/images/I/71tvKFymISL.jpg"
+          alt="img"
+        />
+      ),
       key: product.id,
       id: product.id,
       productName: (
-        <Link to="#" className="text-key">
+        <Link to={`/admin/editProduct/${product.id}`} className="text-key">
           {product.productName}
         </Link>
       ),
@@ -108,6 +140,11 @@ const ViewProductSection = () => {
       maxPrice: product.maxPrice,
       stock: product.stock,
       categoryName: product.categoryName,
+      action: (
+        <div className="del" onClick={onDeleteProduct}>
+          <DeleteOutlined />
+        </div>
+      ),
     };
   });
 
@@ -118,11 +155,13 @@ const ViewProductSection = () => {
   return (
     <>
       <Table
-        pagination={{ pageSize: 6 }}
+        pagination={{
+          pageSize: 5,
+          showTotal: (total) => `Total ${total} items`,
+        }}
         columns={columns}
         dataSource={data}
         onChange={onChange}
-        pageSize={6}
       />
     </>
   );

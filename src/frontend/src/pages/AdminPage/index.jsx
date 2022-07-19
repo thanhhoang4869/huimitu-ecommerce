@@ -6,10 +6,11 @@ import ViewProductSection from "./ViewProductSection";
 import AddProductSection from "./AddProductSection";
 import ViewVoucherSection from "./ViewVoucherSection";
 import AddVoucherSection from "./AddVoucherSection";
+import EditProductSection from "./EditProductSection";
 
 const AdminPage = () => {
   return (
-    <div style={{ height: "80vh" }}>
+    <div>
       <section className="hero">
         <div className="container">
           <div className="row">
@@ -20,6 +21,10 @@ const AdminPage = () => {
                 <Route path="/addProduct" element={<AddProductSection />} />
                 <Route path="/viewVoucher" element={<ViewVoucherSection />} />
                 <Route path="/addVoucher" element={<AddVoucherSection />} />
+                <Route
+                  path="/editProduct/:id"
+                  element={<EditProductSection />}
+                />
               </Routes>
             </div>
           </div>
