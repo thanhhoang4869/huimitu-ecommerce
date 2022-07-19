@@ -189,7 +189,7 @@ export default {
         const entities = listImage.map(item => ({
             product_id: productId,
             path: item.path,
-            filename: item.fileName
+            filename: item.filename
         }))
         const result = await db('product_image').insert(entities)
         return result;
@@ -272,5 +272,18 @@ export default {
 
         const result = await db.from(builder).count();
         return result[0].count;
-    }
+    },
+    
+    async deleteProductImage(productImageId) {
+        const result = await db('product_image').where({
+            id: productImageId
+        }).select(
+            'product_image.path AS product_image_path',
+            'product_image.filename AS product_image_filename'
+        )
+        await db('product_image').where({
+            id: productImageId
+        }).delete()
+        return result[0] || {};
+    },
 }
