@@ -30,6 +30,7 @@ export const AccountProvider = ({ children }) => {
       const { exitcode, account } = response.data;
       if (exitcode === 0) {
         setAccount(account);
+        setIsAdmin(account.role === "admin");
       }
     } catch (err) {
       console.error(err);
@@ -41,7 +42,7 @@ export const AccountProvider = ({ children }) => {
 
     const response = await cartService.getCart();
     const { cart } = response.data;
-    console.log(cart)
+    console.log(cart);
     setCart(cart);
   };
 

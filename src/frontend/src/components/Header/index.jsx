@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 
 const Header = () => {
-  const { logout, isLogin, cart } = useContext(AccountContext);
+  const { logout, isLogin, cart, isAdmin } = useContext(AccountContext);
   return (
     <>
       <header className="header border pb-1" style={{ marginBottom: "25px" }}>
