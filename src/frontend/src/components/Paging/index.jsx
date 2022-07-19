@@ -1,7 +1,7 @@
 import { Pagination } from "antd";
 import React from "react";
 
-const showTotal = (total) => `Total ${total} items`;
+const showTotal = (total) => `Tổng cộng: ${total}`;
 
 const Paging = (props) => {
   console.log(props);

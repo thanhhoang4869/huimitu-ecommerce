@@ -157,7 +157,7 @@ const ViewProductSection = () => {
       <Table
         pagination={{
           pageSize: 5,
-          showTotal: (total) => `Total ${total} items`,
+          showTotal: (total) => `${total} sản phẩm`,
         }}
         columns={columns}
         dataSource={data}
