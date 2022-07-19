@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
@@ -84,7 +84,7 @@ const Header = () => {
                   </li>
                   {isAdmin && (
                     <li>
-                      <Link to="/admin">Quản trị</Link>
+                      <Link to="/admin/viewProduct">Quản trị</Link>
                     </li>
                   )}
                 </ul>

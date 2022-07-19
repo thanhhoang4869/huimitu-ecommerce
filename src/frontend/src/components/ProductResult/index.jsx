@@ -15,7 +15,7 @@ import swal from "sweetalert2";
 import { cleanObj } from "utils/objectUtils";
 
 const ProductResult = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const [category, setCategory] = useState({});
   const [childCategory, setChildCategory] = useState({});
@@ -262,7 +262,11 @@ const ProductResult = () => {
             <>
               <ItemHorizonList products={products} isResult={true} />
               <div style={{ textAlign: "end" }}>
-                <Paging total={total} onPageChange={onPageChange} />
+                <Paging
+                  total={total}
+                  onPageChange={onPageChange}
+                  current={+query.page}
+                />
               </div>
             </>
           ) : (

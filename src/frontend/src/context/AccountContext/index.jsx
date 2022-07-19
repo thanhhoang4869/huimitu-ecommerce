@@ -9,8 +9,8 @@ export const AccountContext = createContext();
 
 export const AccountProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(storageService.getAccessToken());
-  const [isAdmin, setIsAdmin] = useState(false);
   const [account, setAccount] = useState({});
+  const [isAdmin, setIsAdmin] = useState(account?.role === "admin");
   const [cart, setCart] = useState({});
 
   useEffect(() => {
