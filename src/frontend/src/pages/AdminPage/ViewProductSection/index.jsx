@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Table } from "antd";
-import Paging from "components/Paging";
 import product from "services/product";
 import formatter from "utils/formatter";
 
 const ViewProductSection = () => {
   const location = useLocation();
-  const [page, setPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [countProducts, setCountProducts] = useState(0);
 
@@ -19,12 +17,10 @@ const ViewProductSection = () => {
 
   const getAllProducts = async () => {
     const request = {
-      page,
-      limit: 6,
-      offset: +(page - 1) * 6,
+      limit: countProducts || 6,
+      offset: 0,
     };
     const res = await product.getProducts(request);
-    console.log(res.data.products);
     setProducts(res.data.products);
   };
 
@@ -115,22 +111,19 @@ const ViewProductSection = () => {
     };
   });
 
-  const onChange = (filters, sorter, extra) => {
-    console.log("params", filters, sorter, extra);
+  const onChange = (pagination, filters, sorter, extra) => {
+    console.log("params", pagination, filters, sorter, extra);
   };
 
   return (
     <>
       <Table
-        pagination={false}
+        pagination={{ pageSize: 6 }}
         columns={columns}
         dataSource={data}
         onChange={onChange}
+        pageSize={6}
       />
-
-      <div className="mt-3" style={{ textAlign: "end" }}>
-        <Paging total={countProducts} page={page} current={page} />
-      </div>
     </>
   );
 };
