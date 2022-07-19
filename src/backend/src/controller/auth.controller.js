@@ -4,6 +4,7 @@ import config from '#src/config/config'
 import { verifyPassword, encryptPassword, generateToken } from '#src/utils/crypto'
 import oauth2Client from '#src/utils/oauth2'
 import { getMailOption, createTransport } from '#src/utils/nodemailer'
+import moment from 'moment'
 
 export default {
     async login(req, res, next) {
@@ -47,14 +48,14 @@ export default {
             }
 
             const returnAccount = {
-                email: email,
-                phone: phone,
-                fullname: fullname,
-                avatar: avatar_path,
-                birthday: (birthday) ? moment(new Date(birthday)).format('DD/MM/YYYY') : null,
-                gender: gender,
-                accountType: account_type,
-                verified: verified
+                email: account.email,
+                phone: account.phone,
+                fullname: account.fullname,
+                avatar: account.avatar_path,
+                birthday: (account.birthday) ? moment(new Date(account.birthday)).format('DD/MM/YYYY') : null,
+                gender: account.gender,
+                accountType: account.account_type,
+                verified: account.verified
             }
 
             // Create payload for encryption
