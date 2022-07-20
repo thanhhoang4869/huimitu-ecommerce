@@ -58,7 +58,7 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     fetchPrice();
-    console.log(shippingAddressId)
+    console.log(shippingAddressId);
   }, [listVariant, shippingAddressId, voucherCode]);
 
   const handleChangeShippingAddress = (value) => {
@@ -74,7 +74,6 @@ const CheckoutPage = () => {
   };
 
   const handleCheckout = async () => {
-    console.log("Hello:", shippingAddressId);
     try {
       const response = await checkoutService.checkout({
         receiverName,
@@ -87,7 +86,7 @@ const CheckoutPage = () => {
       });
       const { exitcode, orderId, redirectUrl } = response.data;
       if (exitcode === 0) {
-        if (redirectUrl) {
+        if (paymentId === 2) {
           window.location.assign(redirectUrl);
         }
         return orderId;
@@ -154,11 +153,14 @@ const CheckoutPage = () => {
               handleChangeShippingAddress={handleChangeShippingAddress}
             />
             <TotalSection
+              receiverPhone={receiverPhone}
               variants={listVariant}
+              receiverName={receiverName}
               paymentId={paymentId}
               voucherCode={voucherCode}
               totalPrice={totalPrice}
               shippingPrice={shippingPrice}
+              shippingAddressId={shippingAddressId}
               discountPrice={discountPrice}
               finalPrice={finalPrice}
               handleApplyVoucherCode={handleApplyVoucherCode}

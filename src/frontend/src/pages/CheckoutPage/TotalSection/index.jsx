@@ -1,5 +1,5 @@
 import { Input, Button } from "antd";
-import PaypalButton from "components/PaypalButton";
+import MyPaypalButton from "components/MyPaypalButton";
 import "./style.css";
 import formatter from "utils/formatter";
 
@@ -10,6 +10,9 @@ const TotalSection = (props) => {
   const variants = props.variants || [];
   const voucherCode = props.voucherCode;
   const handleApplyVoucherCode = props.handleApplyVoucherCode;
+  const shippingAddressId = props.shippingAddressId;
+  const receiverName = props.receiverName;
+  const receiverPhone = props.receiverPhone;
 
   const totalPrice = props.totalPrice || 0;
   const shippingPrice = props.shippingPrice || 0;
@@ -85,11 +88,11 @@ const TotalSection = (props) => {
       </div>
       {paymentId === 1 && (
         <div className="mt-4">
-          <PaypalButton
-            handleCheckout={() => {
-              console.log("R");
-              handleCheckout();
-            }}
+          <MyPaypalButton
+            shippingAddressId={shippingAddressId}
+            receiverPhone={receiverPhone}
+            receiverName={receiverName}
+            handleCheckout={handleCheckout}
           />
         </div>
       )}
@@ -97,10 +100,7 @@ const TotalSection = (props) => {
         <Button
           type="primary"
           className="mt-4"
-          onClick={() => {
-            console.log("R");
-            handleCheckout();
-          }}
+          onClick={handleCheckout}
           size="large"
           style={{ width: "100%", backgroundColor: "#a50064" }}
         >

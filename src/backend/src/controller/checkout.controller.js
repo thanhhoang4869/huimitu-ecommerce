@@ -90,6 +90,8 @@ export default {
         try {
             const { email } = req.payload;
             const {
+                receiverName,
+                receiverPhone,
                 variantId,
                 quantity,
                 paymentId,
@@ -188,6 +190,8 @@ export default {
 
             // Create order
             const basicInfo = {
+                receiverName: receiverName,
+                receiverPhone: receiverPhone,
                 paymentId: paymentId,
                 shippingAddressId: shippingAddressId,
                 voucherCode: voucherCode,

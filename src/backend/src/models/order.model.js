@@ -127,9 +127,5 @@ export default {
         }))
         const result = await db('order_variant').insert(listEntity)
         return result;
-    },
-
-    async createOrderByCart(orderId, cartId) {
-
     }
 }

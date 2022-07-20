@@ -2,16 +2,18 @@ import React from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import checkoutService from "services/checkout";
 
-const PaypalButton = (props) => {
+const MyPaypalButton = (props) => {
+  const shippingAddressId = props.shippingAddressId;
+  const receiverName = props.receiverName;
+  const receiverPhone = props.receiverPhone;
   const handleCheckout = props.handleCheckout;
 
-  const onClick = async (data, actions) => {
-    console.log("Run")
+  const createOrder = async (data, actions) => {
     const orderId = await handleCheckout();
-    if (!orderId) {
-      return actions.reject();
+    if (orderId) {
+      return orderId;
     }
-    return orderId;
+    return null;
   };
 
   const onApprove = async (data, actions) => {
@@ -34,7 +36,8 @@ const PaypalButton = (props) => {
   return (
     <div>
       <PayPalButtons
-        onClick={onClick}
+        createOrder={createOrder}
+        forceReRender={[shippingAddressId, receiverName, receiverPhone]}
         onApprove={onApprove}
         style={{ layout: "horizontal", tagline: false }}
       />
@@ -42,4 +45,4 @@ const PaypalButton = (props) => {
   );
 };
 
-export default PaypalButton;
+export default MyPaypalButton;
