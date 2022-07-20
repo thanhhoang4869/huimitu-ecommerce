@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Radio, Space, Select } from "antd";
 
 import "./style.css";
+import { AccountContext } from "context/AccountContext";
 const { Option } = Select;
 
 const InformationSection = (props) => {
@@ -14,6 +15,11 @@ const InformationSection = (props) => {
 
   const receiverName = props.receiverName;
   const setReceiverName = props.setReceiverName;
+
+  const shippingAddressId = props.shippingAddressId;
+  const handleChangeShippingAddress = props.handleChangeShippingAddress;
+
+  const { shippingAddress } = useContext(AccountContext);
 
   const navigate = useNavigate();
 
@@ -46,14 +52,18 @@ const InformationSection = (props) => {
         <h4 className="mb-3 medium semi-thick">Địa chỉ giao hàng</h4>
         <div>
           <Select
-            defaultValue="1"
+            value={shippingAddressId}
+            placeholder="Chọn địa điểm giao hàng"
+            onChange={handleChangeShippingAddress}
             style={{
               width: "100%",
             }}
           >
-            <Option value="1">
-              44 Võ Oanh, Phường 25, Quận Bình Thạnh, TP. HCM
-            </Option>
+            {shippingAddress.map((item) => (
+              <Option value={item.id}>
+                {`${item.address}, ${item.wardName}, ${item.districtName}, ${item.provinceName}`}
+              </Option>
+            ))}
           </Select>
           <div
             className="text-cyan mt-2"
@@ -70,8 +80,8 @@ const InformationSection = (props) => {
         <div>
           <Radio.Group onChange={handlePaymentChange} value={paymentId}>
             <Space direction="vertical">
-              <Radio value={1}>Thanh toán Momo</Radio>
-              <Radio value={2}>Thanh toán Paypal</Radio>
+              <Radio value={1}>Thanh toán Paypal</Radio>
+              <Radio value={2}>Thanh toán Momo</Radio>
               <Radio value={3}>Thanh toán khi nhận hàng</Radio>
             </Space>
           </Radio.Group>

@@ -25,6 +25,8 @@ import {
 import { Icon } from "leaflet";
 import marker from "leaflet/dist/images/marker-icon.png";
 import locationService from "services/location";
+import { useContext } from "react";
+import { AccountContext } from "context/AccountContext";
 
 const markerIcon = new Icon({
   iconUrl: marker,
@@ -60,7 +62,7 @@ const ShippingAddressPage = () => {
   const [selectWardId, setSelectWardId] = useState();
   const [address, setAddress] = useState("");
 
-  const [listShippingAddress, setListShippingAddress] = useState([]);
+  const { shippingAddress, fetchShippingAddress } = useContext(AccountContext);
 
   const handleQueryCoordinate = async () => {
     try {
@@ -153,23 +155,6 @@ const ShippingAddressPage = () => {
       if (exitcode === 0) {
         setListWard(wards);
         setSelectWardId(wards[0].id);
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const fetchShippingAddress = async () => {
-    try {
-      const response = await shippingAddressService.getListShippingAddress();
-      const { exitcode, shippingAddresses } = response.data;
-      if (exitcode === 0) {
-        setListShippingAddress(
-          shippingAddresses.map((item) => ({
-            key: item.id,
-            ...item,
-          }))
-        );
       }
     } catch (err) {
       console.error(err);
@@ -355,7 +340,7 @@ const ShippingAddressPage = () => {
       <Table
         columns={columns}
         pagination={false}
-        dataSource={listShippingAddress}
+        dataSource={shippingAddress}
       ></Table>
     </div>
   );

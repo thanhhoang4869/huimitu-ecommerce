@@ -14,6 +14,8 @@ export default {
                 'ward.ward_name',
                 'shipping_address.id',
                 'shipping_address.address',
+                "lat",
+                "long"
             )
         return result || null;
     },
@@ -31,7 +33,10 @@ export default {
                 'ward.ward_name',
                 'shipping_address.id',
                 'shipping_address.email',
-                'shipping_address.address',
+                'shipping_address.address', 
+                "lat",
+                "long"
+
             )
         return result[0] || null;
     },

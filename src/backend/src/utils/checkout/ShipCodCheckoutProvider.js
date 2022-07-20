@@ -1,4 +1,5 @@
 import { generateOrderId } from '#src/utils/checkout/orderIdGenerator'
+import config from '#src/config/config'
 
 class ShipCodCheckoutProvider {
     /**
@@ -28,6 +29,10 @@ class ShipCodCheckoutProvider {
         const orderId = generateOrderId();
         const url = null;
         return [orderId, url]
+    }
+
+    getCurrency = () => {
+        return config.currency.VND
     }
 }
 

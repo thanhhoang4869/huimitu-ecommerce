@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import accountService from "services/account";
 import cartService from "services/cart";
+import shippingAddressService from "services/shippingAddress";
 import storageService from "services/storage";
 
 export const AccountContext = createContext();
@@ -12,6 +13,7 @@ export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState({});
   const [isAdmin, setIsAdmin] = useState(account?.role === "admin");
   const [cart, setCart] = useState({});
+  const [shippingAddress, setShippingAddress] = useState([])
 
   useEffect(() => {
     setIsLogin(storageService.getAccessToken());
@@ -20,6 +22,7 @@ export const AccountProvider = ({ children }) => {
   useEffect(() => {
     fetchCart();
     fetchAccount();
+    fetchShippingAddress();
   }, [isLogin]); //eslint-disable-line
 
   const fetchAccount = async () => {
@@ -37,6 +40,25 @@ export const AccountProvider = ({ children }) => {
       console.error(err);
     }
   };
+
+  const fetchShippingAddress = async () => {
+    if (!isLogin) return;
+    
+    try {
+      const response = await shippingAddressService.getListShippingAddress();
+      const { exitcode, shippingAddresses } = response.data;
+      if (exitcode === 0) {
+        setShippingAddress(
+          shippingAddresses.map((item) => ({
+            key: item.id,
+            ...item,
+          }))
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   const fetchCart = async () => {
     if (!isLogin) return;
@@ -63,6 +85,8 @@ export const AccountProvider = ({ children }) => {
         isAdmin,
         cart,
         account,
+        shippingAddress,
+        fetchShippingAddress,
         fetchAccount,
         fetchCart,
         login,

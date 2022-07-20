@@ -15,6 +15,15 @@ const getCoordinate = async (address, ward, district, province) => {
     return coordinates
 }
 
+/**
+ * Get the distance of two coordinates
+ * 
+ * @param {float} srcLong Source longtitude
+ * @param {float} srcLat Source latitude
+ * @param {float} desLong Destination longtitude
+ * @param {float} desLat Destination latitude
+ * @returns The distance between two coordinates (in meters)
+ */
 const getDistance = async (srcLong, srcLat, desLong, desLat) => {
     const Directions = new openrouteservice.Directions({
         api_key: config.OPENROUTESERVICE_API_KEY,

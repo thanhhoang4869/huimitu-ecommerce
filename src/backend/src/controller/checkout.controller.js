@@ -2,81 +2,102 @@ import variantModel from '#src/models/variant.model'
 import voucherModel from '#src/models/voucher.model'
 import paymentModel from '#src/models/payment.model'
 import accountModel from '#src/models/account.model'
+import cartModel from '#src/models/cart.model'
 import shippingAddressModel from '#src/models/shippingAddress.model'
-import shippingProviderModel from '#src/models/shippingProvider.model'
 import config from '#src/config/config'
 import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 import { MomoCheckoutProvider, PaypalCheckoutProvider, ShipCodCheckoutProvider } from '#src/utils/checkout'
 import orderModel from '#src/models/order.model'
 import { getRate } from '#src/utils/currencyConverter'
+import { getDistance } from "#src/utils/map"
 
 export default {
-    async checkoutBuyNow(req, res, next) {
+    async getPrice(req, res, next) {
         try {
             const { email } = req.payload;
             const {
                 variantId,
                 quantity,
-                paymentId,
                 shippingAddressId,
-                shippingProviderId,
                 voucherCode
             } = req.body;
 
-            // Check for stock
-            const variant = await variantModel.getByVariantId(variantId)
-            const variantStock = variant.stock
-            if (variantStock < quantity) {
-                return res.status(200).send({
-                    exitcode: 101,
-                    message: "Out of stock"
-                })
+            // Calculate total price
+            let totalPrice = 0;
+            if (variantId && quantity) {
+                const variant = await variantModel.getByVariantId(variantId)
+                totalPrice = (variant.discount_price || variant.price) * quantity
+            } else {
+                const cart = await cartModel.getCartByEmail(email);
+                const variants = await variantModel.getByCartId(cart.id)
+                totalPrice = variants.reduce((previous, current) => (
+                    previous + (current.discount_price || current.price) * current.quantity
+                ), 0)
             }
 
-            // Check for shipping address correctness
-            const shippingAddress = await shippingAddressModel.getShippingAddressById(shippingAddressId);
-            if (shippingAddress === null || shippingAddress.email !== email) {
-                return res.status(200).send({
-                    exitcode: 102,
-                    message: "Invalid shipping address ID"
-                })
-            }
-
-            // Verify voucher code
-            let percentageDiscount = 0;
-            let maxDiscountPrice = 0;
-            let minPrice = 0;
+            // Calculate discount
+            let voucher = null;
             if (voucherCode) {
-                const voucher = await voucherModel.getVoucherByCodeEmail(voucherCode, email);
+                voucher = await voucherModel.getVoucherByCodeEmail(voucherCode, email);
                 if (voucher === null) {
                     return res.status(200).send({
-                        exitcode: 103,
-                        message: "Invalid voucher code"
+                        exitcode: 101,
+                        message: "Voucher not found"
                     })
                 }
-                percentageDiscount = voucher.percentage_discount
-                maxDiscountPrice = voucher.maximum_discount_price;
-                minPrice = voucher.minimum_price;
             }
 
-            // Calculate fee
-            const shippingProvider = await shippingProviderModel.getShippingProvider(shippingProviderId);
-            if (shippingProvider === null) {
+            const minPrice = voucher?.minimum_price || 0
+            if (minPrice > totalPrice) {
                 return res.status(200).send({
-                    exitcode: 104,
-                    message: "Invalid shipping provider ID"
+                    exitcode: 102,
+                    message: "Total price does not reach voucher requirement"
                 })
             }
-            const shippingFee = 0;
+            const percentageDiscount = voucher?.percentage_discount || 0
+            const maxDiscountPrice = voucher?.maximum_discount_price || 0
+            const discountPrice = Math.min(maxDiscountPrice, totalPrice * percentageDiscount)
 
-            // Verify payment ID
-            const payment = await paymentModel.getById(paymentId)
-            if (payment === null) {
-                return res.status(200).send({
-                    exitcode: 105,
-                    message: "Invalid payment ID"
-                })
-            }
+            // Calculate shipping fee
+            const shippingAddress = (shippingAddressId) ? await shippingAddressModel.getShippingAddressById(shippingAddressId) : null;
+            const distance = (shippingAddress) ? await getDistance(
+                config.SHOP_LONG,
+                config.SHOP_LAT,
+                shippingAddress.long,
+                shippingAddress.lat,
+            ) : null
+            const shippingPrice = distance ? (
+                (distance < 5000) ? (20000) : (40000)
+            ) : 0;
+
+            // Calculate final price
+            const finalPrice = Math.max(0, totalPrice - discountPrice) + shippingPrice;
+            res.status(200).send({
+                exitcode: 0,
+                message: "Estimate price successfully",
+                totalPrice: totalPrice,
+                discountPrice: discountPrice,
+                shippingPrice: shippingPrice,
+                finalPrice: finalPrice
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async checkout(req, res, next) {
+        console.log(req.headers)
+        try {
+            const { email } = req.payload;
+            const {
+                receiverName,
+                receiverPhone,
+                variantId,
+                quantity,
+                paymentId,
+                shippingAddressId,
+                voucherCode
+            } = req.body;
 
             // Get user information
             const account = await accountModel.getByEmail(email);
@@ -85,6 +106,15 @@ export default {
                 email: email,
                 fullname: fullname,
                 phoneNumber: phone
+            }
+
+            // Verify payment ID
+            const payment = await paymentModel.getById(paymentId)
+            if (payment === null) {
+                return res.status(200).send({
+                    exitcode: 105,
+                    message: "Invalid payment ID"
+                })
             }
 
             // Create checkout provider
@@ -97,56 +127,89 @@ export default {
                 new ShipCodCheckoutProvider()
             ))
 
-            // Calculate price
-            const variantPrice = (variant.discount_price) ? (variant.discount_price) : (variant.price)
-            const totalPrice = (variantPrice * quantity)
+            // Calculate total price
+            let totalPrice = 0;
+            if (variantId && quantity) {
+                const variant = await variantModel.getByVariantId(variantId)
+                totalPrice = (variant.discount_price || variant.price) * quantity
+            } else {
+                const cart = await cartModel.getCartByEmail(email);
+                const variants = await variantModel.getByCartId(cart.id)
+                console.log(cart)
+                totalPrice = variants.reduce((previous, current) => (
+                    previous + (current.discount_price || current.price) * current.quantity
+                ), 0)
+            }
+            console.log(totalPrice)
 
-            // Check for min price of voucher
-            if (totalPrice < minPrice) {
-                return res.status(200).send({
-                    exitcode: 106,
-                    message: "Do not reach voucher's minimum price"
-                })
+            // Calculate discount
+            let voucher = null;
+            if (voucherCode) {
+                voucher = await voucherModel.getVoucherByCodeEmail(voucherCode, email);
+                if (voucher === null) {
+                    return res.status(200).send({
+                        exitcode: 101,
+                        message: "Voucher not found"
+                    })
+                }
             }
 
-            // Calculate final price
+            const minPrice = voucher?.minimum_price || 0
+            if (minPrice > totalPrice) {
+                return res.status(200).send({
+                    exitcode: 102,
+                    message: "Total price does not reach voucher requirement"
+                })
+            }
+            const percentageDiscount = voucher?.percentage_discount || 0
+            const maxDiscountPrice = voucher?.maximum_discount_price || 0
             const discountPrice = Math.min(maxDiscountPrice, totalPrice * percentageDiscount)
-            const finalPrice = Math.round(
-                100 * (totalPrice - discountPrice + shippingFee) * getRate(config.currency.USD, config.currency.VND),
-            ) / 100;
+
+            // Calculate shipping fee
+            const shippingAddress = (shippingAddressId) ? await shippingAddressModel.getShippingAddressById(shippingAddressId) : null;
+            const distance = (shippingAddress) ? await getDistance(
+                config.SHOP_LONG,
+                config.SHOP_LAT,
+                shippingAddress.long,
+                shippingAddress.lat,
+            ) : null
+            const shippingPrice = distance ? (
+                (distance < 5000) ? (20000) : (40000)
+            ) : 0;
+
+            // Calculate final price
+            const finalPrice = Math.max(0, totalPrice - discountPrice) + shippingPrice;
+            const exchangedPrice = Math.round(100 * finalPrice * getRate(checkoutProvider.getCurrency(), config.currency.VND)) / 100;
 
             // Create orderId and link
-            const [orderId, redirectUrl] = await checkoutProvider.createLink(finalPrice, userInfo);
+            const [orderId, redirectUrl] = await checkoutProvider.createLink(
+                exchangedPrice,
+                userInfo
+            );
             console.debug(redirectUrl)
 
             // Create order
             const basicInfo = {
-                paymentId,
-                shippingAddressId,
-                shippingProviderId,
-                voucherCode,
+                receiverName: receiverName,
+                receiverPhone: receiverPhone,
+                paymentId: paymentId,
+                shippingAddressId: shippingAddressId,
+                voucherCode: voucherCode,
                 total: finalPrice,
-                shippingPrice: shippingFee
+                shippingPrice: shippingPrice
             }
             await orderModel.createOrder(email, orderId, basicInfo)
 
             // Response
-            if (providerName === config.payment.MOMO) {
-                res.redirect(301, redirectUrl);
-            } else {
-                res.status(200).send({
-                    exitcode: 0,
-                    message: "Checkout successfully",
-                    orderId: orderId
-                })
-            }
+            res.status(200).send({
+                exitcode: 0,
+                message: "Checkout successfully",
+                orderId: orderId,
+                redirectUrl: redirectUrl
+            })
         } catch (err) {
             next(err)
         }
-    },
-
-    async checkoutCart(req, res, next) {
-
     },
 
     async successMomo(req, res, next) {
