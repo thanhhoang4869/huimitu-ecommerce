@@ -33,5 +33,8 @@ router.route('/:productId')
     .get(product.getSingleProduct)
     .patch(verifyLogin, verifyEmailVerified, verifyAdmin, product.updateProduct)
     .delete(verifyLogin, verifyEmailVerified, verifyAdmin, product.deleteProduct)
-    
+
+router.route('/image/:productImageId')
+    .delete(verifyLogin, verifyEmailVerified, verifyAdmin, product.deleteProductImage)
+
 export default router;

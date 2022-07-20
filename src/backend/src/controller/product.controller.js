@@ -1,6 +1,7 @@
 import productModel from '#src/models/product.model'
 import categoryModel from '#src/models/category.model'
-import { buildCategoryRoot, searchCategoryTree, toListCategory, getParentBranch } from '#src/utils/utils';
+import { buildCategoryRoot, searchCategoryTree, toListCategory, getParentBranch } from '#src/utils/utils'
+import { cloudinary } from '#src/utils/cloudinary'
 
 const getListCategoryId = async (categoryId) => {
     if (!categoryId) return [];
@@ -319,6 +320,32 @@ export default {
                 exitcode: 0,
                 message: "Get related products successfully",
                 products: products
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
+    async deleteProductImage(req, res, next) {
+        try {
+            const {
+                productImageId
+            } = req.params;
+
+            const currentProductImage = await productModel.deleteProductImage(productImageId);
+            const currentFilename = currentProductImage.product_image_filename;
+            if (currentFilename) {
+                const uploader = cloudinary.uploader;
+                try {
+                    await uploader.destroy(currentFilename)
+                } catch (err) {
+                    console.log("Cannot delete product image")
+                }
+            }
+
+            res.status(200).send({
+                exitcode: 0,
+                message: "Delete product image successfully"
             })
         } catch (err) {
             next(err)
