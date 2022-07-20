@@ -9,7 +9,6 @@ import cart from '#src/routes/cart.routes'
 import review from '#src/routes/review.routes'
 import shippingAddress from '#src/routes/shippingAddress.routes'
 import payment from '#src/routes/payment.routes'
-import shippingProvider from '#src/routes/shippingProvider.routes'
 import order from '#src/routes/order.routes'
 import search from '#src/routes/search.routes'
 import voucher from '#src/routes/voucher.routes'
@@ -30,7 +29,6 @@ router.use('/cart', verifyLogin, verifyEmailVerified, cart)
 router.use('/review', review)
 router.use('/shippingAddress', verifyLogin, verifyEmailVerified, shippingAddress)
 router.use('/payment', payment)
-router.use('/shippingProvider', shippingProvider)
 router.use('/order', verifyLogin, order)
 router.use('/search', search)
 router.use('/voucher', verifyLogin, voucher)

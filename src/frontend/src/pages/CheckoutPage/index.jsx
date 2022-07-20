@@ -1,30 +1,32 @@
 import TotalSection from "./TotalSection";
 import InformationSection from "./InformationSection";
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 import variantService from "services/variant";
-import voucherService from "services/voucher";
 import swal from "sweetalert2";
+import checkoutService from "services/checkout";
 
 const CheckoutPage = () => {
-  const { cart, fetchCart, account, fetchAccount } = useContext(AccountContext);
+  const { cart, account } = useContext(AccountContext);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [variantId, setVariantId] = useState(searchParams.get("variantId"));
-  const [quantity, setQuantity] = useState(searchParams.get("quantity"));
+  const [searchParams] = useSearchParams();
+  const variantId = searchParams.get("variantId");
+  const quantity = searchParams.get("quantity");
 
   const [listVariant, setListVariant] = useState([]);
 
-  const [receiverName, setReceiverName] = useState(account.fullname);
-  const [receiverPhone, setReceiverPhone] = useState(account.phone);
+  const [receiverName, setReceiverName] = useState();
+  const [receiverPhone, setReceiverPhone] = useState();
   const [shippingAddressId, setShippingAddressId] = useState();
   const [paymentId, setPaymentId] = useState(1);
   const [voucherCode, setVoucherCode] = useState();
 
+  const [totalPrice, setTotalPrice] = useState(0);
   const [shippingPrice, setShippingPrice] = useState(0);
-  const [voucherPrice, setVoucherPrice] = useState(0);
+  const [discountPrice, setDiscountPrice] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(0);
 
   const fetchVariant = async () => {
     try {
@@ -37,8 +39,12 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    fetchAccount();
-    fetchCart();
+    if (!account) return;
+    setReceiverName(account.fullname);
+    setReceiverPhone(account.phone);
+  }, [account]);
+
+  useEffect(() => {
     if (variantId && quantity) {
       fetchVariant();
     }
@@ -50,38 +56,87 @@ const CheckoutPage = () => {
     }
   }, [cart]);
 
-  const handleChangeShippingAddress = (value) => {
-    setShippingAddressId(value);
+  useEffect(() => {
     fetchPrice();
+    console.log(shippingAddressId)
+  }, [listVariant, shippingAddressId, voucherCode]);
+
+  const handleChangeShippingAddress = (value) => {
+    console.log(value);
+    setShippingAddressId(value);
   };
 
-  const handleApplyVoucherCode = async (value, event) => {
+  const handleApplyVoucherCode = async (value) => {
     if (value.length < 1) {
       return;
     }
+    setVoucherCode(value);
+  };
 
+  const handleCheckout = async () => {
+    console.log("Hello:", shippingAddressId);
     try {
-      const response = await voucherService.getVoucherByCode(value);
-      const { exitcode, voucher } = response.data;
+      const response = await checkoutService.checkout({
+        receiverName,
+        receiverPhone,
+        variantId,
+        quantity,
+        paymentId,
+        shippingAddressId,
+        voucherCode,
+      });
+      const { exitcode, orderId, redirectUrl } = response.data;
       if (exitcode === 0) {
-        swal.fire({
-          text: "Áp dụng voucher thành công",
-          icon: "success",
-          confirmButtonText: "OK",
-        });
-        setVoucherCode(voucher.voucherCode);
-      } else {
-        swal.fire({
-          text: "Áp dụng voucher thất bại",
-          icon: "error",
-          confirmButtonText: "OK",
-        });
-        setVoucherCode(null);
+        if (redirectUrl) {
+          window.location.assign(redirectUrl);
+        }
+        return orderId;
       }
+      return null;
     } catch (err) {}
   };
 
-  const fetchPrice = async () => {};
+  const fetchPrice = async () => {
+    try {
+      const response = await checkoutService.getPrice(
+        shippingAddressId,
+        voucherCode,
+        variantId,
+        quantity
+      );
+      const { exitcode, finalPrice, shippingPrice, totalPrice, discountPrice } =
+        response.data;
+
+      // eslint-disable-next-line default-case
+      switch (exitcode) {
+        case 0: {
+          setFinalPrice(finalPrice);
+          setShippingPrice(shippingPrice);
+          setTotalPrice(totalPrice);
+          setDiscountPrice(discountPrice);
+          break;
+        }
+        case 101: {
+          swal.fire({
+            text: "Không tìm thấy voucher",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          setVoucherCode(null);
+          break;
+        }
+        case 102: {
+          swal.fire({
+            text: "Đơn của bạn chưa đủ điều kiện để áp dụng",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          setVoucherCode(null);
+          break;
+        }
+      }
+    } catch (err) {}
+  };
 
   return (
     <div className="checkout p-2 mb-5">
@@ -102,9 +157,12 @@ const CheckoutPage = () => {
               variants={listVariant}
               paymentId={paymentId}
               voucherCode={voucherCode}
+              totalPrice={totalPrice}
               shippingPrice={shippingPrice}
-              voucherPrice={voucherPrice}
+              discountPrice={discountPrice}
+              finalPrice={finalPrice}
               handleApplyVoucherCode={handleApplyVoucherCode}
+              handleCheckout={handleCheckout}
             />
           </div>
         </div>

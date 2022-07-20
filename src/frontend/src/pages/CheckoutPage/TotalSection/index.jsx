@@ -8,10 +8,15 @@ const { Search } = Input;
 const TotalSection = (props) => {
   const paymentId = props.paymentId;
   const variants = props.variants || [];
-  const shippingPrice = props.shippingPrice || 0;
-  const voucherPrice = props.voucherPrice || 0;
   const voucherCode = props.voucherCode;
   const handleApplyVoucherCode = props.handleApplyVoucherCode;
+
+  const totalPrice = props.totalPrice || 0;
+  const shippingPrice = props.shippingPrice || 0;
+  const discountPrice = props.discountPrice || 0;
+  const finalPrice = props.finalPrice || 0;
+
+  const handleCheckout = props.handleCheckout;
 
   return (
     <div className="col-md-5 order-md-2 mb-4">
@@ -41,7 +46,7 @@ const TotalSection = (props) => {
                 <small className="text-orange semi-thick">{voucherCode}</small>
               </div>
               <span className="text-orange semi-thick">
-                -{formatter.formatPrice(voucherPrice)}
+                -{formatter.formatPrice(discountPrice)}
               </span>
             </li>
           )}
@@ -49,30 +54,28 @@ const TotalSection = (props) => {
           <li className="list-group-item">
             <li className="text-muted mb-2 d-flex justify-content-between">
               <span>Tổng tiền sản phẩm</span>
-              <span>
-                {formatter.formatPrice(
-                  variants.reduce(
-                    (previous, item) =>
-                      previous +
-                      item.quantity * (item.discountPrice || item.price),
-                    0
-                  )
-                )}
-              </span>
+              <span>{formatter.formatPrice(totalPrice)}</span>
             </li>
             <li className="text-muted mb-2 d-flex justify-content-between">
               <span>Phí ship</span>
               <span>{formatter.formatPrice(shippingPrice)}</span>
             </li>
+            {discountPrice > 0 && (
+              <li className="text-muted mb-2 d-flex justify-content-between">
+                <span>Giảm giá</span>
+                <span>-{formatter.formatPrice(discountPrice)}</span>
+              </li>
+            )}
             <li className="d-flex justify-content-between">
               <span className="medium text-key semi-thick">Tổng cộng</span>
-              <strong className="medium text-key">$20</strong>
+              <strong className="medium text-key">
+                {formatter.formatPrice(finalPrice)}
+              </strong>
             </li>
           </li>
         </ul>
 
         <Search
-          on
           placeholder="Nhập mã voucher"
           allowClear
           enterButton="Sử dụng"
@@ -80,14 +83,35 @@ const TotalSection = (props) => {
           onSearch={handleApplyVoucherCode}
         />
       </div>
-      {paymentId === 2 ? (
+      {paymentId === 1 && (
         <div className="mt-4">
-          <PaypalButton />
+          <PaypalButton
+            handleCheckout={() => {
+              console.log("R");
+              handleCheckout();
+            }}
+          />
         </div>
-      ) : (
+      )}
+      {paymentId === 2 && (
         <Button
           type="primary"
           className="mt-4"
+          onClick={() => {
+            console.log("R");
+            handleCheckout();
+          }}
+          size="large"
+          style={{ width: "100%", backgroundColor: "#a50064" }}
+        >
+          Thanh toán với MOMO
+        </Button>
+      )}
+      {paymentId === 3 && (
+        <Button
+          type="primary"
+          className="mt-4"
+          onClick={handleCheckout}
           size="large"
           style={{ width: "100%" }}
         >

@@ -1,6 +1,6 @@
 import api from "utils/api";
 
-const shippingAddress = {
+const shippingAddressService = {
     async getListShippingAddress() {
         const response = await api.get("/shippingAddress");
         return response;
@@ -20,10 +20,9 @@ const shippingAddress = {
             lat: lat,
             long: long
         }
-        console.log(requestBody)
         const response = await api.post('/shippingAddress', requestBody);
         return response
     }
 };
 
-export default shippingAddress;
+export default shippingAddressService;

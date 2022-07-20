@@ -1,41 +1,47 @@
 import api from "utils/api";
 
-const checkout = {
+const checkoutService = {
 
     async confirmPaypal(orderId) {
-        const response = await api.post('/checkout/successPaypal',{
+        const response = await api.post('/checkout/successPaypal', {
             orderId: orderId
         })
-        console.log(response)
         return response;
     },
 
-    async checkoutBuyNow(data) {
+    async checkout(data) {
         const {
-            variantId, 
-            quantity, 
-            paymentId, 
-            shippingAddressId, 
-            shippingProviderId, 
-            voucherCode
-        } = data;
-        const requestBody = {
+            receiverName,
+            receiverPhone,
             variantId,
             quantity,
             paymentId,
             shippingAddressId,
-            shippingProviderId,
+            voucherCode
+        } = data;
+        const requestBody = {
+            receiverName,
+            receiverPhone,
+            variantId,
+            quantity,
+            paymentId,
+            shippingAddressId,
             voucherCode
         }
-        console.log(requestBody)
-        const response = await api.post('/checkout/buyNow', requestBody);
+        const response = await api.post('/checkout', requestBody);
         return response
     },
 
-    async checkoutCart() {
-        const response = await api.post("/checkout/cart");
-        return response;
-    },
+    async getPrice(shippingAddressId, voucherCode, variantId, quantity) {
+        const requestBody = {
+            shippingAddressId,
+            variantId,
+            quantity,
+            voucherCode
+        }
+        const response = await api.post('/checkout/price', requestBody)
+        return response
+    }
 };
 
-export default checkout;
+export default checkoutService;

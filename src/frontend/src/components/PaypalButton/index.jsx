@@ -1,32 +1,23 @@
 import React from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
-import checkout from "services/checkout";
+import checkoutService from "services/checkout";
 
 const PaypalButton = (props) => {
-  const variantId = 1;
-  const quantity = 3;
-  const paymentId = 1;
-  const shippingAddressId = 1;
-  const shippingProviderId = 1;
-  const voucherCode = undefined;
+  const handleCheckout = props.handleCheckout;
 
-  const createOrder = async (data, actions) => {
-    // Get order ID from server
-    const response = await checkout.checkoutBuyNow({
-      variantId,
-      quantity,
-      paymentId,
-      shippingAddressId,
-      shippingProviderId,
-      voucherCode,
-    });
-    return response.data.orderId;
+  const onClick = async (data, actions) => {
+    console.log("Run")
+    const orderId = await handleCheckout();
+    if (!orderId) {
+      return actions.reject();
+    }
+    return orderId;
   };
 
   const onApprove = async (data, actions) => {
     try {
       // Notify for server
-      const response = await checkout.confirmPaypal(data.orderID);
+      const response = await checkoutService.confirmPaypal(data.orderID);
 
       const { exitcode } = response.data;
       if (exitcode === 0) {
@@ -35,7 +26,7 @@ const PaypalButton = (props) => {
         alert("Transaction failed");
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
       alert("Server error");
     }
   };
@@ -43,9 +34,9 @@ const PaypalButton = (props) => {
   return (
     <div>
       <PayPalButtons
-        createOrder={createOrder}
+        onClick={onClick}
         onApprove={onApprove}
-        style={{ layout: "horizontal" }}
+        style={{ layout: "horizontal", tagline: false }}
       />
     </div>
   );

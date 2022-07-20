@@ -6,7 +6,6 @@ export default {
             'order.id': orderId,
         })
             .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
-            .join('shipping_provider', 'order.shipping_provider_id', 'shipping_provider.id')
             .join('province', 'shipping_address.province_id', 'province.id')
             .join('district', 'shipping_address.district_id', 'district.id')
             .join('ward', 'shipping_address.ward_id', 'ward.id')
@@ -22,7 +21,6 @@ export default {
                 "district_name",
                 "ward_name",
                 "total",
-                "shipping_provider_name",
                 "shipping_price",
                 "voucher_code",
                 "receiver_name",
@@ -53,7 +51,6 @@ export default {
             "district_name",
             "ward_name",
             "total",
-            "shipping_provider_name",
             "shipping_price",
             "voucher_code",
             "receiver_name",
@@ -67,7 +64,6 @@ export default {
             'order.email': email
         })
             .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
-            .join('shipping_provider', 'order.shipping_provider_id', 'shipping_provider.id')
             .join('province', 'shipping_address.province_id', 'province.id')
             .join('district', 'shipping_address.district_id', 'district.id')
             .join('ward', 'shipping_address.ward_id', 'ward.id')
@@ -88,7 +84,6 @@ export default {
         const {
             paymentId,
             shippingAddressId,
-            shippingProviderId,
             voucherCode,
             total,
             shippingPrice,
@@ -101,12 +96,11 @@ export default {
             email: email,
             payment_id: paymentId,
             shipping_address_id: shippingAddressId,
-            shipping_provider_id: shippingProviderId,
             voucher_code: voucherCode,
             total: total,
             shipping_price: shippingPrice,
             receiver_name: receiverName,
-            reciever_phone: receiverPhone
+            receiver_phone: receiverPhone
         }).returning('id')
 
         try {
