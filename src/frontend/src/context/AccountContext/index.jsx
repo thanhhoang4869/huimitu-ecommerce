@@ -10,8 +10,8 @@ export const AccountContext = createContext();
 
 export const AccountProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(storageService.getAccessToken());
-  const [isAdmin, setIsAdmin] = useState(false);
   const [account, setAccount] = useState({});
+  const [isAdmin, setIsAdmin] = useState(account?.role === "admin");
   const [cart, setCart] = useState({});
   const [shippingAddress, setShippingAddress] = useState([])
 
@@ -23,7 +23,7 @@ export const AccountProvider = ({ children }) => {
     fetchCart();
     fetchAccount();
     fetchShippingAddress();
-  }, [isLogin]);
+  }, [isLogin]); //eslint-disable-line
 
   const fetchAccount = async () => {
     if (!isLogin) return;
@@ -31,8 +31,10 @@ export const AccountProvider = ({ children }) => {
     try {
       const response = await accountService.getInformation();
       const { exitcode, account } = response.data;
+      console.log(account);
       if (exitcode === 0) {
         setAccount(account);
+        setIsAdmin(account.role === "admin");
       }
     } catch (err) {
       console.error(err);
@@ -63,7 +65,6 @@ export const AccountProvider = ({ children }) => {
 
     const response = await cartService.getCart();
     const { cart } = response.data;
-    console.log(cart)
     setCart(cart);
   };
 

@@ -31,7 +31,7 @@ const SearchBar = () => {
           <form onSubmit={handleSearch}>
             <input
               type="text"
-              placeholder="Bạn cần tìm gì?"
+              placeholder="Tìm theo tên, tìm theo danh mục..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

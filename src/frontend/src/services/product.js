@@ -42,9 +42,9 @@ const product = {
   },
 
   async getRelatedProducts(productId) {
-    const response = await api.get(`/product/related/${productId}`)
+    const response = await api.get(`/product/related/${productId}`);
     return response;
-  }
+  },
 };
 
 export default product;
