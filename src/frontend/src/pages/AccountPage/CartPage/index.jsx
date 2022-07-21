@@ -97,6 +97,11 @@ const CartPage = () => {
       title: "Tên sản phẩm",
       dataIndex: "variantName",
       key: "variantName",
+      render: (variantName, record) => (
+        <Link to={`/product/detail/${record.productId}`}>
+          <div>{variantName}</div>
+        </Link>
+      ),
     },
     {
       title: "Số lượng",
@@ -178,12 +183,12 @@ const CartPage = () => {
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "70vh",
       }}
     >
       <Table
         pagination={false}
-        dataSource={cart.variants.map((item) => ({
+        dataSource={(cart?.variants || []).map((item) => ({
           key: item.id,
           ...item,
         }))}
@@ -207,8 +212,8 @@ const CartPage = () => {
             navigate("/checkout");
           }}
           disabled={
-            cart.variants.filter((item) => item.stock < item.quantity).length >
-              0 || cart.variants.length < 1
+            (cart?.variants || []).filter((item) => item.stock < item.quantity)
+              .length > 0 || (cart.variants || []).length < 1
           }
         >
           Đặt hàng

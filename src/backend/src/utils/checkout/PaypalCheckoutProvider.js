@@ -4,6 +4,18 @@ import axios from "axios"
 
 class PaypalCheckoutProvider {
 
+    getAuthorizeHeader = () => {
+        const clientId = config.PAYPAL_CLIENT_ID;
+        const secret = config.PAYPAL_SECRET
+        const signature = encryptBase64([clientId, secret].join(":"))
+
+        const headers = {
+            "Authorization": `Basic ${signature}`,
+            "Content-Type": "application/json"
+        }
+        return headers
+    }
+
     /**
      * Create Paypal order link
      * 
@@ -27,14 +39,10 @@ class PaypalCheckoutProvider {
      * @returns {[String, String]} An array of 2 elements
      * Including the generated orderId of Paypal and the link to approve payment
      */
-    createLink = async (amount, userInfo) => {
+    createLink = async (amount, userInfo, redirectUrl) => {
         const currencyCode = "USD";
         const intent = "CAPTURE";
         const description = "Pay with paypal";
-
-        const clientId = config.PAYPAL_CLIENT_ID;
-        const secret = config.PAYPAL_SECRET
-        const signature = encryptBase64([clientId, secret].join(":"))
 
         const payer = {
             email_address: userInfo.email,
@@ -54,17 +62,18 @@ class PaypalCheckoutProvider {
                 value: amount
             },
         }]
+        const applicationContext = {
+            redirect_url: redirectUrl
+        }
 
         const requestBody = {
             intent: intent,
             purchase_units: purchaseUnits,
             payer: payer,
+            application_context: applicationContext
         }
         const headerConfig = {
-            headers: {
-                "Authorization": `Basic ${signature}`,
-                "Content-Type": "application/json"
-            }
+            headers: this.getAuthorizeHeader()
         }
 
         const response = await axios.post(
@@ -78,17 +87,23 @@ class PaypalCheckoutProvider {
         return [id, href]
     }
 
-    capturePayment = async (orderId) => {
-        const clientId = config.PAYPAL_CLIENT_ID;
-        const secret = config.PAYPAL_SECRET
-        const signature = encryptBase64([clientId, secret].join(":"))
+    getDetail = async (orderId) => {
+        const headerConfig = {
+            headers: this.getAuthorizeHeader()
+        }
 
+        const response = await axios.get(
+            `https://api-m.sandbox.paypal.com/v2/checkout/orders/${orderId}`,
+            headerConfig
+        )
+        const { data } = response;
+        return data;
+    }
+
+    capturePayment = async (orderId) => {
         const requestBody = {}
         const headerConfig = {
-            headers: {
-                "Authorization": `Basic ${signature}`,
-                "Content-Type": "application/json"
-            }
+            headers: this.getAuthorizeHeader()
         }
 
         const response = await axios.post(

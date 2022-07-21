@@ -21,7 +21,12 @@ const OrderListPage = () => {
   }, []);
 
   return (
-    <div className="container">
+    <div
+      style={{
+        minHeight: "70vh",
+      }}
+      className="container"
+    >
       <List
         className="mb-5"
         dataSource={orderList}

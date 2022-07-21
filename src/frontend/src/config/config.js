@@ -4,6 +4,11 @@ const config = {
     storageKeys: {
         ACCESS_KEY: 'token',
         ACCOUNT_KEY: 'account'
+    },
+    payment: {
+        PAYPAL: 'paypal',
+        MOMO: 'momo',
+        COD: 'cod',
     }
 }
 export default config

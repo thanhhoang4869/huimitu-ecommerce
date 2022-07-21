@@ -16,7 +16,7 @@ export default {
                 "order.email",
                 "order.created_time",
                 'order_state.state',
-                "payment.provider AS payment_name",
+                "payment.provider",
                 "province_name",
                 "district_name",
                 "ward_name", 
@@ -27,9 +27,9 @@ export default {
                 "shipping_price",
                 "voucher_code",
                 "receiver_name",
-                "receiver_phone"
+                "receiver_phone",
+                "reviewed"
             )
-            .orderBy('order_state.created_time', 'desc')
             .limit(1)
         return result[0] || null;
     },
@@ -47,8 +47,8 @@ export default {
 
     async getListOrder(email, limit, offset) {
         const distinctCols = [
-            "order.id",
             "order.created_time",
+            "order.id",
             "payment.provider",
             "province_name",
             "district_name",
@@ -60,6 +60,7 @@ export default {
             "voucher_code",
             "receiver_name",
             "receiver_phone",
+            "reviewed"
         ]
         const selectCols = [
             ...distinctCols,

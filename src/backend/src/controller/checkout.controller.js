@@ -69,7 +69,7 @@ export default {
                 shippingAddress.lat,
             ) : null
             const shippingPrice = distance ? (
-                (distance < 5000) ? (20000) : (40000)
+                (distance < 5000) ? (20000) : (30000)
             ) : 0;
 
             // Calculate final price
@@ -160,7 +160,8 @@ export default {
             // Create orderId and link
             const [orderId, redirectUrl] = await checkoutProvider.createLink(
                 exchangedPrice,
-                userInfo
+                userInfo,
+                `${req.headers.origin}/account/order`
             );
             console.debug(redirectUrl)
 
@@ -178,6 +179,12 @@ export default {
             }
             await orderModel.createOrder(email, orderId, basicInfo)
             await orderModel.insertListVariantToOrder(orderId, variants);
+            await cartModel.deleteCartByEmail(email);
+
+            // Change to pending without paying
+            if (providerName === config.payment.COD) {
+                await orderModel.updateState(orderId, config.orderState.PENDING);
+            }
 
             // Response
             res.status(200).send({
@@ -191,7 +198,7 @@ export default {
         }
     },
 
-    async successMomo(req, res, next) {
+    async notifyMomo(req, res, next) {
         try {
             const {
                 orderId,
@@ -201,23 +208,22 @@ export default {
 
             // Verify signature
             const provider = new MomoCheckoutProvider();
-            if (!provider.verifySignature(req.body)) {
+            if (!provider.verifyIpnSignature(req.body)) {
                 throw new ErrorHandler(400, "Signature is mismatch");
             }
 
             // Verify for price
-            const order = orderModel.getOrderById(orderId)
-            if (order.total !== amount) {
+            const order = await orderModel.getOrderById(orderId)
+            if (+order.final_price !== amount) {
                 throw new ErrorHandler(400, "Amount is mismatch");
             }
 
             // Check for transaction success
-            if (resultCode !== 0) {
-                throw new ErrorHandler(400, "Transaction failed");
+            if (resultCode === 0) {
+                await orderModel.updateState(orderId, config.orderState.PENDING);
+            } else {
+                await orderModel.updateState(orderId, config.orderState.CANCEL);
             }
-
-            // Update state
-            await orderModel.updateState(orderId, config.orderState.PAID);
 
             // Response for acknowledge
             res.status(204).send({}, {
@@ -230,25 +236,34 @@ export default {
         }
     },
 
-    async successPaypal(req, res, next) {
+    async notifyPaypal(req, res, next) {
         try {
             const {
                 orderId
             } = req.body;
             const provider = new PaypalCheckoutProvider();
 
-            // Update state
-            await orderModel.updateState(orderId, config.orderState.PAID);
+            const detailResponse = await provider.getDetail(orderId);
+            const { status } = detailResponse
+            if (status !== "APPROVED") {
+                await orderModel.updateState(orderId, config.orderState.CANCEL);
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Payment is not approved"
+                })
+            }
 
-            const response = await provider.capturePayment(orderId);
-            if (response.status === "COMPLETED") {
+            const captureResponse = await provider.capturePayment(orderId);
+            if (captureResponse.status === "COMPLETED") {
+                await orderModel.updateState(orderId, config.orderState.PENDING);
                 res.status(200).send({
                     exitcode: 0,
                     message: "Payment has been captured"
                 });
             } else {
+                await orderModel.updateState(orderId, config.orderState.CANCEL);
                 res.status(200).send({
-                    exitcode: 101,
+                    exitcode: 102,
                     message: "Payment capture failed"
                 })
             }

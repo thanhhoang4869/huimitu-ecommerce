@@ -17,6 +17,7 @@ export default {
                 return {
                     id: item.id,
                     variantName: item.variant_name,
+                    productId: item.product_id,
                     price: item.price,
                     discountPrice: item.discount_price,
                     stock: item.stock,

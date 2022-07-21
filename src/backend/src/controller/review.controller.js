@@ -15,6 +15,19 @@ export default {
                 rating: rating,
                 comment: comment,
             }
+            const order = await orderModel.getOrderById(orderId);
+            if (order===null){
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Order not found"
+                })
+            }
+            if (order.reviewed) {
+                return res.status(200).send({
+                    exitcode: 102, 
+                    message: "Order has been reviewed"
+                })
+            }
             const result = await reviewModel.createReview(entity);
             res.status(200).send({
                 exitcode: 0,

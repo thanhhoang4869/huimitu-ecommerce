@@ -1,12 +1,18 @@
 import React from "react";
 import "./style.css";
 import formatter from "utils/formatter";
+import { Button } from "antd";
+
+const buttonStyle = {
+  width: "192px",
+  borderRadius: "5px",
+};
 
 const OrderFooter = ({ order }) => {
   return (
     <div className="order-footer">
-      <p className="order-shipping-price">
-        Tiền vận chuyển:{" "}
+      <p className="pt-3 order-shipping-price">
+        Phí vận chuyển:{" "}
         <span className="color-key">
           {formatter.formatPrice(order.shippingPrice)}
         </span>
@@ -17,9 +23,34 @@ const OrderFooter = ({ order }) => {
           {formatter.formatPrice(order.finalPrice)}
         </span>
       </p>
-      <button className="primary-btn" style={{ borderRadius: "5px" }}>
-        Đánh giá
-      </button>
+      {order.state === "pending" && (
+        <Button
+          size="large"
+          style={{
+            backgroundColor: "red",
+            color: "white",
+            ...buttonStyle,
+          }}
+        >
+          Hủy
+        </Button>
+      )}
+      {order.state === "shipping" && (
+        <Button
+          size="large"
+          style={{
+            ...buttonStyle,
+          }}
+          type="primary"
+        >
+          Đã nhận được hàng
+        </Button>
+      )}
+      {order.state === "success" && (
+        <Button size="large" type="primary" style={{ ...buttonStyle }}>
+          Đánh giá
+        </Button>
+      )}
     </div>
   );
 };

@@ -22,17 +22,17 @@ export default {
                 created_time,
                 state,
                 payment_name,
-                province_name,
+                provider,
                 district_name,
                 ward_name,
-                shipping_provider_name,
                 total_price,
                 discount_price,
                 final_price,
                 shipping_price,
                 voucher_code,
                 receiver_name,
-                receiver_phone
+                receiver_phone,
+                reviewed
             } = result
 
             const variantsResult = await variantModel.getByOrderId(orderId);
@@ -57,11 +57,10 @@ export default {
                     createdTime: moment(created_time).format('DD/MM/YYYY HH:mm:ss'),
                     state: state,
                     paymentName: payment_name,
-                    provinceName: province_name,
+                    provinceName: provider,
                     districtName: district_name,
                     wardName: ward_name,
                     totalPrice: total,
-                    shippingProviderName: shipping_provider_name,
                     totalPrice: total_price,
                     discountPrice: discount_price,
                     shippingPrice: shipping_price,
@@ -69,6 +68,7 @@ export default {
                     voucherCode: voucher_code,
                     receiverName: receiver_name,
                     receiverPhone: receiver_phone,
+                    reviewed: reviewed,
                     variants: variants
                 }
             })
@@ -103,12 +103,11 @@ export default {
                     id: orderItem.id,
                     createdTime: moment(orderItem.created_time).format('DD/MM/YYYY HH:mm:ss'),
                     state: orderItem.state,
-                    paymentName: orderItem.payment_name,
+                    paymentName: orderItem.provider,
                     provinceName: orderItem.province_name,
                     districtName: orderItem.district_name,
                     wardName: orderItem.ward_name,
                     totalPrice: orderItem.total,
-                    shippingProviderName: orderItem.shipping_provider_name,
                     totalPrice: orderItem.total_price,
                     discountPrice: orderItem.discount_price,
                     shippingPrice: orderItem.shipping_price,
@@ -116,6 +115,7 @@ export default {
                     voucherCode: orderItem.voucher_code,
                     receiverName: orderItem.receiver_name,
                     receiverPhone: orderItem.receiver_phone,
+                    reviewed: orderItem.reviewed,
                     variants: variants
                 }
             })
@@ -143,5 +143,9 @@ export default {
         } catch (err) {
             next(err)
         }
+    },
+
+    async updateOrderState(req, res, next) {
+        
     }
 }
