@@ -463,9 +463,9 @@ EXECUTE PROCEDURE copy_price_order();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'D:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'D:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'D:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123
@@ -497,7 +497,7 @@ INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Kh
 INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khuôn tạo hình',NULL);
 
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3',NULL,'0','0');
-INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3',NULL,'0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết Open Star','3','<p>Bộ Đuôi Bắt Bông gồm: 5 đuôi inox + bao silicon bắt kem + cây vét + cọ quét + kéo nhựa + dù inox nhỏ<br><strong>Thông tin sản phẩm:</strong><br>Tên sản phẩm: Bộ Đuôi Bắt Kem LD-D04X<br>Xuất xứ: Trung Quốc</p><img src="https://dungculambanh.com.vn/wp-content/uploads/2019/10/bo_duoi.png">','0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí có thể tái sử dụng (10 cái)','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu chiết hình bông hoa','3',NULL,'0','0');
 INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu chiết Wilson','3',NULL,'0','0');

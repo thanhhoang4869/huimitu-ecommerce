@@ -1,99 +1,70 @@
 import { Table } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import React from "react";
+import formatter from "utils/formatter";
+
+import "./style.css";
+
 const columns = [
   {
-    title: "Name",
+    title: "Tên",
     dataIndex: "name",
-    filters: [
-      {
-        text: "Joe",
-        value: "Joe",
-      },
-      {
-        text: "Jim",
-        value: "Jim",
-      },
-      {
-        text: "Submenu",
-        value: "Submenu",
-        children: [
-          {
-            text: "Green",
-            value: "Green",
-          },
-          {
-            text: "Black",
-            value: "Black",
-          },
-        ],
-      },
-    ],
-    // specify the condition of filtering result
-    // here is that finding the name started with `value`
-    onFilter: (value, record) => record.name.indexOf(value) === 0,
-    sorter: (a, b) => a.name.length - b.name.length,
-    sortDirections: ["descend"],
   },
   {
-    title: "Age",
-    dataIndex: "age",
-    defaultSortOrder: "descend",
-    sorter: (a, b) => a.age - b.age,
+    title: "Giá",
+    dataIndex: "price",
+    sorter: (a, b) => a.price - b.price,
   },
   {
-    title: "Address",
-    dataIndex: "address",
-    filters: [
-      {
-        text: "London",
-        value: "London",
-      },
-      {
-        text: "New York",
-        value: "New York",
-      },
-    ],
-    onFilter: (value, record) => record.address.indexOf(value) === 0,
-  },
-];
-const data = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
+    title: "Giá giảm",
+    dataIndex: "discountPrice",
   },
   {
-    key: "2",
-    name: "Jim Green",
-    age: 42,
-    address: "London No. 1 Lake Park",
+    title: "Số lượng",
+    dataIndex: "stock",
+    sorter: (a, b) => a.price - b.price,
   },
   {
-    key: "3",
-    name: "Joe Black",
-    age: 32,
-    address: "Sidney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
+    dataIndex: "edit",
   },
 ];
 
-const onChange = (pagination, filters, sorter, extra) => {
-  console.log("params", pagination, filters, sorter, extra);
+const onChange = (filters, sorter, extra) => {
+  console.log("params", filters, sorter, extra);
 };
 
-const VariantTable = () => (
-  <Table
-    pagination={false}
-    columns={columns}
-    dataSource={data}
-    onChange={onChange}
-  />
-);
+const VariantTable = (props) => {
+  const variants = props.variants;
+  const handleEdit = props.handleEdit;
+
+  return (
+    <Table
+      pagination={false}
+      columns={columns}
+      onChange={onChange}
+      dataSource={variants.map((variant) => {
+        return {
+          key: variant.id,
+          name: variant.variantName,
+          price: formatter.formatPrice(variant.price),
+          discountPrice:
+            +formatter.formatPrice(variant.discountPrice) || "Không có",
+          stock: variant.stock,
+          edit: (
+            <div
+              className="text-key edit"
+              style={{
+                textAlign: "center",
+              }}
+              onClick={() => handleEdit(variant)}
+            >
+              <EditOutlined />
+            </div>
+          ),
+        };
+      })}
+    />
+  );
+};
 
 export default VariantTable;
