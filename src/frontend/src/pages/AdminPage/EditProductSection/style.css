@@ -14,11 +14,11 @@
 }
 
 .ck-editor__editable_inline {
-  min-height: 200px;
+  min-height: 250px;
 }
 
 .ck.ck-editor__main .ck-content {
-  height: 239px;
+  height: 400px;
 }
 
 .addVar {
