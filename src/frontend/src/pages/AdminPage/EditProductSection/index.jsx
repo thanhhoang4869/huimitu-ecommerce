@@ -11,9 +11,11 @@ import VariantTable from "../VariantTable";
 
 import { useForm } from "antd/lib/form/Form";
 
-import "./style.css";
 import productService from "services/product";
 import variantService from "services/variant";
+import AddVariantModal from "../AddVariantModal";
+import swal from "sweetalert2";
+import "./style.css";
 
 const EditProductSection = () => {
   const { id } = useParams();
@@ -21,6 +23,25 @@ const EditProductSection = () => {
   const [product, setProduct] = useState({});
   const [description, setDescription] = useState("");
   const [variants, setVariants] = useState("[]");
+
+  const [visible, setVisible] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    setVisible(false);
+    swal.fire({
+      text: "test",
+    });
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setVisible(false);
+  };
 
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -58,6 +79,14 @@ const EditProductSection = () => {
 
   return (
     <>
+      <AddVariantModal
+        title="Title"
+        visible={visible}
+        handleOk={handleOk}
+        confirmLoading={confirmLoading}
+        handleCancel={handleCancel}
+      />
+
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item initialValue={id} name="id" label="ID sản phẩm">
           <Input disabled />
@@ -90,7 +119,9 @@ const EditProductSection = () => {
           <Input />
         </Form.Item>
         <Form.Item label="Danh sách biến thể">
-          <div className="text-key mb-2 addVar">Thêm biến thể</div>
+          <div className="text-key mb-2 addVar" onClick={showModal}>
+            Thêm biến thể
+          </div>
           <VariantTable variants={JSON.parse(variants)} />
         </Form.Item>
         <Form.Item label="Mô tả sản phẩm">

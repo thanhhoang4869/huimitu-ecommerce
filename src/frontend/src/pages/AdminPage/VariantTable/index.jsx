@@ -1,6 +1,9 @@
 import { Table } from "antd";
+import { EditOutlined } from "@ant-design/icons";
 import React from "react";
 import formatter from "utils/formatter";
+
+import "./style.css";
 
 const columns = [
   {
@@ -21,6 +24,9 @@ const columns = [
     dataIndex: "stock",
     sorter: (a, b) => a.price - b.price,
   },
+  {
+    dataIndex: "edit",
+  },
 ];
 
 const onChange = (filters, sorter, extra) => {
@@ -38,8 +44,18 @@ const VariantTable = ({ variants }) => (
         name: variant.variantName,
         price: formatter.formatPrice(variant.price),
         discountPrice:
-          formatter.formatPrice(variant.discountPrice) || "Không có",
+          +formatter.formatPrice(variant.discountPrice) || "Không có",
         stock: variant.stock,
+        edit: (
+          <div
+            className="text-key edit"
+            style={{
+              textAlign: "center",
+            }}
+          >
+            <EditOutlined />
+          </div>
+        ),
       };
     })}
   />
