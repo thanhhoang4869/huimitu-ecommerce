@@ -16,10 +16,10 @@ const MyPaypalButton = (props) => {
     return null;
   };
 
-  const onApprove = async (data, actions) => {
+  const notifyPaypal = async (data, actions) => {
     try {
       // Notify for server
-      const response = await checkoutService.confirmPaypal(data.orderID);
+      const response = await checkoutService.notifyPaypal(data.orderID);
 
       const { exitcode } = response.data;
       if (exitcode === 0) {
@@ -32,13 +32,14 @@ const MyPaypalButton = (props) => {
       alert("Server error");
     }
   };
-
+  
   return (
     <div>
       <PayPalButtons
         createOrder={createOrder}
         forceReRender={[shippingAddressId, receiverName, receiverPhone]}
-        onApprove={onApprove}
+        onApprove={notifyPaypal}
+        onCancel={notifyPaypal}
         style={{ layout: "horizontal", tagline: false }}
       />
     </div>

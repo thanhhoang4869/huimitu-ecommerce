@@ -38,7 +38,7 @@ class MomoCheckoutProvider {
         const requestId = partnerCode + new Date().getTime();
 
         const redirectUrl = "https://www.facebook.com/phuc16102001"
-        const ipnUrl = "https://9ceb-2402-800-631c-2e16-e1fa-a09b-38bf-7af9.ap.ngrok.io/checkout/successMomo"
+        const ipnUrl = "https://0362-171-235-38-153.ap.ngrok.io/checkout/notifyMomo"
         const requestType = "captureWallet"
 
         const rawSignature = [

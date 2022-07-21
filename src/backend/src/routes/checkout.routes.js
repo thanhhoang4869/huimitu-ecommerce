@@ -17,8 +17,8 @@ router.post(
     checkout.getBreakDownPrice, checkout.getPrice
 );
 
-router.post('/successMomo', checkout.successMomo)
-router.post('/successPaypal', checkout.successPaypal)
+router.post('/notifyMomo', checkout.notifyMomo)
+router.post('/notifyPaypal', checkout.notifyPaypal)
 
 
 export default router;
