@@ -1,12 +1,15 @@
 import React from "react";
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import checkoutService from "services/checkout";
+import swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const MyPaypalButton = (props) => {
   const shippingAddressId = props.shippingAddressId;
   const receiverName = props.receiverName;
   const receiverPhone = props.receiverPhone;
   const handleCheckout = props.handleCheckout;
+  const navigator = useNavigate();
 
   const createOrder = async (data, actions) => {
     const orderId = await handleCheckout();
@@ -23,16 +26,27 @@ const MyPaypalButton = (props) => {
 
       const { exitcode } = response.data;
       if (exitcode === 0) {
-        alert("Transaction done!");
+        swal.fire({
+          title: "Thanh toán",
+          text: `Bạn đã thanh toán thành công cho đơn ${data.orderID}`,
+          icon: "info",
+          confirmButtonText: "OK",
+        });
       } else {
-        alert("Transaction failed");
+        swal.fire({
+          title: "Thanh toán",
+          text: `Thanh toán thất bại cho đơn ${data.orderID}`,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
+      navigator("/account/order");
     } catch (err) {
       console.error(err);
       alert("Server error");
     }
   };
-  
+
   return (
     <div>
       <PayPalButtons

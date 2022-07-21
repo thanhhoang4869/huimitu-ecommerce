@@ -1,3 +1,5 @@
+import { Col, Row } from "antd";
+import config from "config/config";
 import React from "react";
 import "./style.css";
 
@@ -45,18 +47,34 @@ const OrderHeader = (props) => {
         )}
       </p>
       <div>
-        <p className="my-2">
-          <b>Mã đơn hàng: </b>
-          {order.id}
-        </p>
-        <p className="my-2">
-          <b>Tên người nhận: </b>
-          {order.receiverName}
-        </p>
-        <p className="my-2">
-          <b>Sđt: </b>
-          {order.receiverPhone}
-        </p>
+        <Row>
+          <Col span={12}>
+            <p className="my-2">
+              <b>Mã đơn hàng: </b>
+              {order.id}
+            </p>
+            <p className="my-2">
+              <b>Hình thức: </b>
+              {order.paymentName === config.payment.PAYPAL && (
+                <span>Paypal</span>
+              )}
+              {order.paymentName === config.payment.MOMO && <span>Momo</span>}
+              {order.paymentName === config.payment.COD && (
+                <span>Thanh toán khi nhận hàng</span>
+              )}
+            </p>
+          </Col>
+          <Col span={12}>
+            <p className="my-2">
+              <b>Tên người nhận: </b>
+              {order.receiverName}
+            </p>
+            <p className="my-2">
+              <b>Số điện thoại: </b>
+              {order.receiverPhone}
+            </p>
+          </Col>
+        </Row>
       </div>
     </div>
   );

@@ -160,7 +160,8 @@ export default {
             // Create orderId and link
             const [orderId, redirectUrl] = await checkoutProvider.createLink(
                 exchangedPrice,
-                userInfo
+                userInfo,
+                `${req.headers.origin}/account/order`
             );
             console.debug(redirectUrl)
 
@@ -179,6 +180,11 @@ export default {
             await orderModel.createOrder(email, orderId, basicInfo)
             await orderModel.insertListVariantToOrder(orderId, variants);
             await cartModel.deleteCartByEmail(email);
+
+            // Change to pending without paying
+            if (providerName === config.payment.COD) {
+                await orderModel.updateState(orderId, config.orderState.PENDING);
+            }
 
             // Response
             res.status(200).send({
@@ -202,19 +208,19 @@ export default {
 
             // Verify signature
             const provider = new MomoCheckoutProvider();
-            if (!provider.verifySignature(req.body)) {
+            if (!provider.verifyIpnSignature(req.body)) {
                 throw new ErrorHandler(400, "Signature is mismatch");
             }
 
             // Verify for price
-            const order = orderModel.getOrderById(orderId)
-            if (order.total !== amount) {
+            const order = await orderModel.getOrderById(orderId)
+            if (+order.final_price !== amount) {
                 throw new ErrorHandler(400, "Amount is mismatch");
             }
 
             // Check for transaction success
             if (resultCode === 0) {
-                await orderModel.updateState(orderId, config.orderState.PAID);
+                await orderModel.updateState(orderId, config.orderState.PENDING);
             } else {
                 await orderModel.updateState(orderId, config.orderState.CANCEL);
             }
@@ -226,7 +232,6 @@ export default {
                 }
             })
         } catch (err) {
-            await orderModel.updateState(orderId, config.orderState.CANCEL);
             next(err);
         }
     },
@@ -238,9 +243,19 @@ export default {
             } = req.body;
             const provider = new PaypalCheckoutProvider();
 
-            const response = await provider.capturePayment(orderId);
-            if (response.status === "COMPLETED") {
-                await orderModel.updateState(orderId, config.orderState.PAID);
+            const detailResponse = await provider.getDetail(orderId);
+            const { status } = detailResponse
+            if (status !== "APPROVED") {
+                await orderModel.updateState(orderId, config.orderState.CANCEL);
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Payment is not approved"
+                })
+            }
+
+            const captureResponse = await provider.capturePayment(orderId);
+            if (captureResponse.status === "COMPLETED") {
+                await orderModel.updateState(orderId, config.orderState.PENDING);
                 res.status(200).send({
                     exitcode: 0,
                     message: "Payment has been captured"
@@ -248,12 +263,11 @@ export default {
             } else {
                 await orderModel.updateState(orderId, config.orderState.CANCEL);
                 res.status(200).send({
-                    exitcode: 101,
+                    exitcode: 102,
                     message: "Payment capture failed"
                 })
             }
         } catch (err) {
-            await orderModel.updateState(orderId, config.orderState.CANCEL);
             next(err)
         }
     }

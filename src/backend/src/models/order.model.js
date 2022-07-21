@@ -16,7 +16,7 @@ export default {
                 "order.email",
                 "order.created_time",
                 'order_state.state',
-                "payment.provider AS payment_name",
+                "payment.provider",
                 "province_name",
                 "district_name",
                 "ward_name", 

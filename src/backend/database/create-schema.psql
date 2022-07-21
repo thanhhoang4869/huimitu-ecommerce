@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS "frequent_product" CASCADE;
 
 CREATE TYPE role_type AS ENUM('user','admin');
 CREATE TYPE gender_type AS ENUM('male','female');
-CREATE TYPE state_type AS ENUM('pending','shipping','cancel','success');
+CREATE TYPE state_type AS ENUM('init', 'pending','shipping','cancel','success');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -276,9 +276,10 @@ $$
 LANGUAGE 'plpgsql';
 
 --- Update avg_rating and count_rating of a product after add review
-CREATE OR REPLACE FUNCTION update_avg_count_rating_product() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION update_rating_product_order_review() RETURNS trigger AS
 $$
 BEGIN
+  --- Update product rating
   UPDATE "product" AS p
   SET ("avg_rating", "count_rating") = (
     SELECT cast(sum(r.rating) AS DECIMAL) / count(*), count(*)
@@ -290,6 +291,12 @@ BEGIN
     SELECT pv.product_id FROM product_variant AS pv
     WHERE pv.id = COALESCE(NEW.product_variant_id, OLD.product_variant_id)
   );
+
+  --- Update order review state
+  UPDATE "order" AS o
+  SET "reviewed" = true
+  WHERE o.id = NEW.order_id;
+
   RETURN NULL;
 END;
 $$
@@ -327,7 +334,7 @@ LANGUAGE 'plpgsql';
 CREATE OR REPLACE FUNCTION create_order_pending_state() RETURNS trigger AS
 $$
 BEGIN
-  INSERT INTO "order_state"("order_id","state") VALUES(NEW.id, 'pending');
+  INSERT INTO "order_state"("order_id","state") VALUES(NEW.id, 'init');
   RETURN NULL;
 END;
 $$
@@ -394,18 +401,6 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
---- Update the price of order_variant to match the current variant price
-CREATE OR REPLACE FUNCTION update_order_review() RETURNS trigger AS
-$$
-BEGIN
-  UPDATE "order" AS o
-  SET ("reviewed") = true
-  WHERE o.id = NEW.order_id;
-  RETURN NULL;
-END;
-$$
-LANGUAGE 'plpgsql';
-
 -------------------------- TRIGGER ------------------------------
 
 --- Update min, max, stock of product after change variant
@@ -420,7 +415,7 @@ CREATE TRIGGER insert_review
 AFTER INSERT OR UPDATE OR DELETE
 ON "review"
 FOR EACH ROW
-EXECUTE PROCEDURE update_avg_count_rating_product();
+EXECUTE PROCEDURE update_rating_product_order_review();
 
 --- Create cart after insert new account
 CREATE TRIGGER insert_account
@@ -465,13 +460,6 @@ AFTER INSERT
 ON "order_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE copy_price_order();
-
---- Update review field of order when insert review
-CREATE TRIGGER insert_review
-AFTER INSERT
-ON "review"
-FOR EACH ROW
-EXECUTE PROCEDURE update_order_review();
 
 ----------------------- INSERT DATA -------------------------
 
@@ -570,15 +558,17 @@ INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 4, 1);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 5, 2);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 9, 3);
 
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'pending');
+SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'shipping');
 SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
 
 INSERT INTO "order_state"("order_id","state") VALUES(2, 'cancel');
 
-INSERT INTO "order_state"("order_id","state") VALUES(3, 'shipping');
+INSERT INTO "order_state"("order_id","state") VALUES(3, 'pending');
 SELECT pg_sleep(1);
-INSERT INTO "order_state"("order_id","state") VALUES(3, 'success');
+INSERT INTO "order_state"("order_id","state") VALUES(3, 'shipping');
 
 INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
 INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,2,1,'This is the second comment!');

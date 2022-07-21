@@ -28,7 +28,7 @@ class MomoCheckoutProvider {
      *
      * @return {[String, String]} The orderId and the URL to pay for the request
      */
-    createLink = async (amount, userInfo, extraData = "") => {
+    createLink = async (amount, userInfo, redirectUrl, extraData = "") => {
         const partnerCode = config.MOMO_PARTNER_CODE
         const accessKey = config.MOMO_ACCESS_KEY
         const secretKey = config.MOMO_SECRET_KEY
@@ -37,8 +37,7 @@ class MomoCheckoutProvider {
         const orderInfo = `Pay for order ID ${orderId} with Momo`
         const requestId = partnerCode + new Date().getTime();
 
-        const redirectUrl = "https://www.facebook.com/phuc16102001"
-        const ipnUrl = "https://0362-171-235-38-153.ap.ngrok.io/checkout/notifyMomo"
+        const ipnUrl = "https://6b6c-116-102-164-226.ap.ngrok.io/checkout/notifyMomo"
         const requestType = "captureWallet"
 
         const rawSignature = [
@@ -142,11 +141,12 @@ class MomoCheckoutProvider {
             `partnerCode=${partnerCode}`,
             `payType=${payType}`,
             `requestId=${requestId}`,
-            `responseTime =${responseTime}`,
-            `resultCode = ${resultCode}`,
-            `transId = ${transId}`
+            `responseTime=${responseTime}`,
+            `resultCode=${resultCode}`,
+            `transId=${transId}`
         ].join('&')
         const correctSignature = createHmacString(rawSignature, secretKey);
+        console.log(rawSignature, correctSignature)
         return (correctSignature === signature);
     }
 

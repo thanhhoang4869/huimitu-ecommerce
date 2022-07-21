@@ -25,7 +25,7 @@ class ShipCodCheckoutProvider {
      *
      * @return {[String, String]} The orderId and the URL to pay for the request
      */
-    createLink = async (amount, userInfo) => {
+    createLink = async (amount, userInfo, redirectUrl) => {
         const orderId = generateOrderId();
         const url = null;
         return [orderId, url]

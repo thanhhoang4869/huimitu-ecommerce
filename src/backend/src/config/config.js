@@ -30,12 +30,11 @@ const config = {
   },
 
   orderState: {
+    INIT: 'init',
     PENDING: 'pending',
-    PAID: 'paid',
     SHIPPING: 'shipping',
     CANCEL: 'cancel',
     SUCCESS: 'success',
-    REVIEWED: 'reviewed'
   },
 
   COULDINARY_CONFIG: {
