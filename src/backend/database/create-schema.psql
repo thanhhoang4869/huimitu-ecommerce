@@ -213,7 +213,7 @@ ALTER TABLE "order_variant" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id
 ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
 ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email") ON DELETE CASCADE;
-ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
+ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id")  ON DELETE CASCADE;
 
 ALTER TABLE "frequent_product" ADD FOREIGN KEY("product_id") REFERENCES "product"("id");
 ALTER TABLE "frequent_product" ADD FOREIGN KEY("consequence_id") REFERENCES "product"("id");
@@ -532,7 +532,8 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('TET30',10,100000,15000,'2023-01-01');
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('DEAL77',15,50000,10000,'2023-01-01');
 
-INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'113 Đường Nguyễn Văn Cừ',10.724669221658448, 106.62077984266271);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'113 Đường Nguyễn Văn Cừ',106.62077984266271, 10.724669221658448);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('phuc16102001@gmail.com',79,774,27301,'227 Nguyễn Văn Cừ',106.62077984266271, 10.724669221658448);
 
 INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 15000, NULL);
 INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 10000, 'TET30');

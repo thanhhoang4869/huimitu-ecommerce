@@ -1,6 +1,17 @@
 import db from '#src/utils/db'
 
 export default {
+
+    async deleteCartByEmail(email) {
+        const result = await db('cart_variant').where({
+            cart_id: db('cart').where({
+                email: email
+            }).select('id')
+        }).delete();
+
+        return result;
+    },
+
     async getCartByEmail(email) {
         const result = await db('cart').where({
             "cart.email": email,
