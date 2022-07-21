@@ -10,7 +10,7 @@ import checkoutService from "services/checkout";
 import { validatePhone } from "utils/validator";
 
 const CheckoutPage = () => {
-  const { cart, account } = useContext(AccountContext);
+  const { cart, account, fetchCart } = useContext(AccountContext);
 
   const [searchParams] = useSearchParams();
   const variantId = searchParams.get("variantId");
@@ -105,6 +105,8 @@ const CheckoutPage = () => {
       });
       const { exitcode, orderId, redirectUrl } = response.data;
       if (exitcode === 0) {
+        fetchCart();
+
         // eslint-disable-next-line default-case
         switch (paymentId) {
           case 1: {

@@ -178,6 +178,7 @@ export default {
             }
             await orderModel.createOrder(email, orderId, basicInfo)
             await orderModel.insertListVariantToOrder(orderId, variants);
+            await cartModel.deleteCartByEmail(email);
 
             // Response
             res.status(200).send({

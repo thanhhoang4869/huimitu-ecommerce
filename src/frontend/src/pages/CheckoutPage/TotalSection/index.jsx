@@ -2,6 +2,7 @@ import { Input, Button } from "antd";
 import MyPaypalButton from "components/MyPaypalButton";
 import "./style.css";
 import formatter from "utils/formatter";
+import { Link } from "react-router-dom";
 
 const { Search } = Input;
 
@@ -31,7 +32,9 @@ const TotalSection = (props) => {
           {variants.map((item) => (
             <li className="list-group-item d-flex justify-content-between">
               <div>
-                <h6 className="my-0 name">{item.variantName}</h6>
+                <Link to={`/product/detail/${item.productId}`}>
+                  <h6 className="my-0 name">{item.variantName}</h6>
+                </Link>
                 <small className="text-muted">x{item.quantity}</small>
               </div>
               <span className="text-muted">

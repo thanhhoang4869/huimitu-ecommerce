@@ -6,7 +6,6 @@ import StarRatings from "react-star-ratings";
 import formatter from "../../utils/formatter";
 
 const ProductItem = ({ product, isResult }) => {
-
   const content = (
     <div>
       <p>{product.productName}</p>
@@ -19,20 +18,14 @@ const ProductItem = ({ product, isResult }) => {
       } col-md-4 col-sm-6 mix oranges fresh-meat`}
     >
       <div className="featured__item">
-        <div
-          className="featured__item__pic set-bg"
-          style={{
-            backgroundImage: `url("https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg")`,
-          }}
-        >
-          <ul className="featured__item__pic__hover">
-            <li>
-              <Link to={`/product/detail/${product.id}`}>
-                <i className="fa fa-info"></i>
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <Link to={`/product/detail/${product.id}`}>
+          <div
+            className="featured__item__pic set-bg"
+            style={{
+              backgroundImage: `url("https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg")`,
+            }}
+          ></div>
+        </Link>
         <div className="featured__item__text">
           <Popover content={content} placement="bottomLeft">
             <Link to={`/product/detail/${product.id}`}>
