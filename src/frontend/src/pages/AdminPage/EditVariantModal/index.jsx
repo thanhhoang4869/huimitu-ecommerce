@@ -1,7 +1,7 @@
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
 
-const AddVariantModal = (props) => {
+const EditVariantModal = (props) => {
   const onFinish = (values) => {
     console.log("Success:", values);
   };
@@ -12,7 +12,7 @@ const AddVariantModal = (props) => {
 
   return (
     <Modal
-      title="Thêm biến thể"
+      title="Chỉnh sửa biến thể"
       destroyOnClose={true}
       visible={props.visible}
       onOk={props.handleOk}
@@ -107,4 +107,4 @@ const AddVariantModal = (props) => {
   );
 };
 
-export default AddVariantModal;
+export default EditVariantModal;

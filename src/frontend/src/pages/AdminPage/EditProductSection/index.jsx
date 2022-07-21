@@ -11,11 +11,12 @@ import VariantTable from "../VariantTable";
 
 import { useForm } from "antd/lib/form/Form";
 
+import "./style.css";
 import productService from "services/product";
 import variantService from "services/variant";
 import AddVariantModal from "../AddVariantModal";
+import EditVariantModal from "../EditVariantModal";
 import swal from "sweetalert2";
-import "./style.css";
 
 const EditProductSection = () => {
   const { id } = useParams();
@@ -24,23 +25,25 @@ const EditProductSection = () => {
   const [description, setDescription] = useState("");
   const [variants, setVariants] = useState("[]");
 
-  const [visible, setVisible] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [visibleAdd, setVisibleAdd] = useState(false);
+  const [visibleEdit, setVisibleEdit] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState({});
 
-  const showModal = () => {
-    setVisible(true);
+  const showAddModal = () => {
+    setVisibleAdd(true);
   };
 
-  const handleOk = () => {
-    setVisible(false);
-    swal.fire({
-      text: "test",
-    });
+  const showEditModal = (variant) => {
+    setVisibleEdit(true);
+    setSelectedVariant(variant);
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
+  const handleAddCancel = () => {
+    setVisibleAdd(false);
+  };
+
+  const handleEditCancel = () => {
+    setVisibleEdit(false);
   };
 
   const onFinish = (values) => {
@@ -81,10 +84,13 @@ const EditProductSection = () => {
     <>
       <AddVariantModal
         title="Title"
-        visible={visible}
-        handleOk={handleOk}
-        confirmLoading={confirmLoading}
-        handleCancel={handleCancel}
+        visible={visibleAdd}
+        handleCancel={handleAddCancel}
+      />
+      <EditVariantModal
+        title="Title"
+        visible={visibleEdit}
+        handleCancel={handleEditCancel}
       />
 
       <Form form={form} layout="vertical" onFinish={onFinish}>
@@ -119,10 +125,13 @@ const EditProductSection = () => {
           <Input />
         </Form.Item>
         <Form.Item label="Danh sách biến thể">
-          <div className="text-key mb-2 addVar" onClick={showModal}>
+          <div className="text-key mb-2 addVar" onClick={showAddModal}>
             Thêm biến thể
           </div>
-          <VariantTable variants={JSON.parse(variants)} />
+          <VariantTable
+            variants={JSON.parse(variants)}
+            handleEdit={showEditModal}
+          />
         </Form.Item>
         <Form.Item label="Mô tả sản phẩm">
           <CKEditor

@@ -33,32 +33,38 @@ const onChange = (filters, sorter, extra) => {
   console.log("params", filters, sorter, extra);
 };
 
-const VariantTable = ({ variants }) => (
-  <Table
-    pagination={false}
-    columns={columns}
-    onChange={onChange}
-    dataSource={variants.map((variant) => {
-      return {
-        key: variant.id,
-        name: variant.variantName,
-        price: formatter.formatPrice(variant.price),
-        discountPrice:
-          +formatter.formatPrice(variant.discountPrice) || "Không có",
-        stock: variant.stock,
-        edit: (
-          <div
-            className="text-key edit"
-            style={{
-              textAlign: "center",
-            }}
-          >
-            <EditOutlined />
-          </div>
-        ),
-      };
-    })}
-  />
-);
+const VariantTable = (props) => {
+  const variants = props.variants;
+  const handleEdit = props.handleEdit;
+
+  return (
+    <Table
+      pagination={false}
+      columns={columns}
+      onChange={onChange}
+      dataSource={variants.map((variant) => {
+        return {
+          key: variant.id,
+          name: variant.variantName,
+          price: formatter.formatPrice(variant.price),
+          discountPrice:
+            +formatter.formatPrice(variant.discountPrice) || "Không có",
+          stock: variant.stock,
+          edit: (
+            <div
+              className="text-key edit"
+              style={{
+                textAlign: "center",
+              }}
+              onClick={() => handleEdit(variant)}
+            >
+              <EditOutlined />
+            </div>
+          ),
+        };
+      })}
+    />
+  );
+};
 
 export default VariantTable;
