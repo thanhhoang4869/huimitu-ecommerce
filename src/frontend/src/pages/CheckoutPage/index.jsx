@@ -7,6 +7,7 @@ import { AccountContext } from "context/AccountContext";
 import variantService from "services/variant";
 import swal from "sweetalert2";
 import checkoutService from "services/checkout";
+import { validatePhone } from "utils/validator";
 
 const CheckoutPage = () => {
   const { cart, account } = useContext(AccountContext);
@@ -27,6 +28,8 @@ const CheckoutPage = () => {
   const [shippingPrice, setShippingPrice] = useState(0);
   const [discountPrice, setDiscountPrice] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
+
+  const navigator = useNavigate();
 
   const fetchVariant = async () => {
     try {
@@ -75,6 +78,22 @@ const CheckoutPage = () => {
 
   const handleCheckout = async () => {
     try {
+      if (!receiverName || !receiverPhone || !shippingAddressId) {
+        swal.fire({
+          text: "Vui Lòng điền đầy đủ các thông tin",
+          icon: "info",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+      if (!validatePhone(receiverPhone)) {
+        swal.fire({
+          text: "Số điện thoại không hợp lệ",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
       const response = await checkoutService.checkout({
         receiverName,
         receiverPhone,
@@ -86,10 +105,26 @@ const CheckoutPage = () => {
       });
       const { exitcode, orderId, redirectUrl } = response.data;
       if (exitcode === 0) {
-        if (paymentId === 2) {
-          window.location.assign(redirectUrl);
+        // eslint-disable-next-line default-case
+        switch (paymentId) {
+          case 1: {
+            return orderId;
+          }
+          case 2: {
+            window.location.assign(redirectUrl);
+            break;
+          }
+          case 3: {
+            await swal.fire({
+              title: "Đặt hàng thành công",
+              text: `Đơn hàng của bạn là: ${orderId}`,
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+            navigator("/account/order");
+            break;
+          }
         }
-        return orderId;
       }
       return null;
     } catch (err) {}

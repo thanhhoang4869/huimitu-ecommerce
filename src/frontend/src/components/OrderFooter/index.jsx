@@ -14,7 +14,7 @@ const OrderFooter = ({ order }) => {
       <p className="order-total">
         Tổng tiền:{" "}
         <span className="order-total-number color-key">
-          {formatter.formatPrice(order.totalPrice)}
+          {formatter.formatPrice(order.finalPrice)}
         </span>
       </p>
       <button className="primary-btn" style={{ borderRadius: "5px" }}>

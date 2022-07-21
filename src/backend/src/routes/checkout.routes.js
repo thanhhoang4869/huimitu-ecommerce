@@ -5,11 +5,20 @@ import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
 
 const router = express.Router();
-router.post('/', verifyLogin, verifyEmailVerified, checkout.checkout)
+router.post(
+    '/', 
+    verifyLogin, verifyEmailVerified, 
+    checkout.getBreakDownPrice, checkout.checkout
+)
+
+router.post(
+    '/price', 
+    verifyLogin, verifyEmailVerified, 
+    checkout.getBreakDownPrice, checkout.getPrice
+);
 
 router.post('/successMomo', checkout.successMomo)
 router.post('/successPaypal', checkout.successPaypal)
 
-router.post('/price', verifyLogin, verifyEmailVerified, checkout.getPrice);
 
 export default router;
