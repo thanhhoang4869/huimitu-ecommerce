@@ -19,8 +19,11 @@ export default {
                 "payment.provider AS payment_name",
                 "province_name",
                 "district_name",
-                "ward_name",
-                "total",
+                "ward_name", 
+                "total_price",
+                "discount_price",
+                "shipping_price",
+                "final_price",
                 "shipping_price",
                 "voucher_code",
                 "receiver_name",
@@ -50,8 +53,10 @@ export default {
             "province_name",
             "district_name",
             "ward_name",
-            "total",
+            "total_price",
+            "discount_price",
             "shipping_price",
+            "final_price",
             "voucher_code",
             "receiver_name",
             "receiver_phone",
@@ -85,23 +90,27 @@ export default {
             paymentId,
             shippingAddressId,
             voucherCode,
-            total,
+            totalPrice,
+            discountPrice,
+            finalPrice,
             shippingPrice,
             receiverName,
             receiverPhone
         } = entity
-
-        const order = await db('order').insert({
+        const insertOrder = {
             id: orderId,
             email: email,
             payment_id: paymentId,
             shipping_address_id: shippingAddressId,
             voucher_code: voucherCode,
-            total: total,
+            total_price: totalPrice,
+            discount_price: discountPrice,
+            final_price: finalPrice,
             shipping_price: shippingPrice,
             receiver_name: receiverName,
             receiver_phone: receiverPhone
-        }).returning('id')
+        }
+        const order = await db('order').insert(insertOrder).returning('id')
 
         try {
             return order[0].id;
@@ -121,8 +130,8 @@ export default {
     async insertListVariantToOrder(orderId, listVariant) {
         const listEntity = listVariant.map(item => ({
             order_id: orderId,
-            variant_id: item.variantId,
-            variant_price: item.variantPrice,
+            variant_id: item.id,
+            variant_price: item.discountPrice || item.variantPrice,
             quantity: item.quantity,
         }))
         const result = await db('order_variant').insert(listEntity)

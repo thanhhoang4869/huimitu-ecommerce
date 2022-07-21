@@ -1,5 +1,5 @@
 import AccountBar from "components/AccountBar";
-import OrderListPage from "pages/OrderListPage";
+import OrderListPage from "pages/AccountPage/OrderListPage";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import CartPage from "./CartPage";

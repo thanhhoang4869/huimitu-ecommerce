@@ -4,7 +4,9 @@ import OrderHeader from "components/OrderHeader";
 import OrderFooter from "components/OrderFooter";
 import { Divider } from "antd";
 
-const OrderItem = ({order}) => {
+const OrderItem = (props) => {
+  const order = props.order;
+  console.log(order)
   return (
     <div key={order.createdTime} className="my-3">
       <Divider orientation="left"></Divider>
