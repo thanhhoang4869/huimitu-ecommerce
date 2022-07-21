@@ -5,8 +5,8 @@ import formatter from "utils/formatter";
 const OrderFooter = ({ order }) => {
   return (
     <div className="order-footer">
-      <p className="order-shipping-price">
-        Tiền vận chuyển:{" "}
+      <p className="pt-3 order-shipping-price">
+        Phí vận chuyển:{" "}
         <span className="color-key">
           {formatter.formatPrice(order.shippingPrice)}
         </span>
@@ -17,9 +17,11 @@ const OrderFooter = ({ order }) => {
           {formatter.formatPrice(order.finalPrice)}
         </span>
       </p>
-      <button className="primary-btn" style={{ borderRadius: "5px" }}>
-        Đánh giá
-      </button>
+      {order.state === "success" && order.reviewed === false && (
+        <button className="primary-btn" style={{ borderRadius: "5px" }}>
+          Đánh giá
+        </button>
+      )}
     </div>
   );
 };

@@ -69,7 +69,7 @@ export default {
                 shippingAddress.lat,
             ) : null
             const shippingPrice = distance ? (
-                (distance < 5000) ? (20000) : (40000)
+                (distance < 5000) ? (20000) : (30000)
             ) : 0;
 
             // Calculate final price
@@ -226,6 +226,7 @@ export default {
                 }
             })
         } catch (err) {
+            await orderModel.updateState(orderId, config.orderState.CANCEL);
             next(err);
         }
     },
@@ -252,6 +253,7 @@ export default {
                 })
             }
         } catch (err) {
+            await orderModel.updateState(orderId, config.orderState.CANCEL);
             next(err)
         }
     }

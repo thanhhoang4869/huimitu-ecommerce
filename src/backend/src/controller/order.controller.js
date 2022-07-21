@@ -32,7 +32,8 @@ export default {
                 shipping_price,
                 voucher_code,
                 receiver_name,
-                receiver_phone
+                receiver_phone,
+                reviewed
             } = result
 
             const variantsResult = await variantModel.getByOrderId(orderId);
@@ -69,6 +70,7 @@ export default {
                     voucherCode: voucher_code,
                     receiverName: receiver_name,
                     receiverPhone: receiver_phone,
+                    reviewed: reviewed,
                     variants: variants
                 }
             })
@@ -116,6 +118,7 @@ export default {
                     voucherCode: orderItem.voucher_code,
                     receiverName: orderItem.receiver_name,
                     receiverPhone: orderItem.receiver_phone,
+                    reviewed: orderItem.reviewed,
                     variants: variants
                 }
             })
@@ -143,5 +146,9 @@ export default {
         } catch (err) {
             next(err)
         }
+    },
+
+    async updateOrderState(req, res, next) {
+        
     }
 }

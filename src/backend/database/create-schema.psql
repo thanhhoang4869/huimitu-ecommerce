@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS "frequent_product" CASCADE;
 
 CREATE TYPE role_type AS ENUM('user','admin');
 CREATE TYPE gender_type AS ENUM('male','female');
-CREATE TYPE state_type AS ENUM('pending','paid','shipping','cancel','success','reviewed');
+CREATE TYPE state_type AS ENUM('pending','shipping','cancel','success');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,
@@ -146,7 +146,8 @@ CREATE TABLE "order" (
   "discount_price" bigint NOT NULL DEFAULT 0,
   "shipping_price" bigint NOT NULL DEFAULT 0,
   "final_price" bigint NOT NULL DEFAULT 0,
-  "voucher_code" varchar
+  "voucher_code" varchar,
+  "reviewed" bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE "order_variant" (
@@ -393,6 +394,18 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+--- Update the price of order_variant to match the current variant price
+CREATE OR REPLACE FUNCTION update_order_review() RETURNS trigger AS
+$$
+BEGIN
+  UPDATE "order" AS o
+  SET ("reviewed") = true
+  WHERE o.id = NEW.order_id;
+  RETURN NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
 -------------------------- TRIGGER ------------------------------
 
 --- Update min, max, stock of product after change variant
@@ -452,6 +465,13 @@ AFTER INSERT
 ON "order_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE copy_price_order();
+
+--- Update review field of order when insert review
+CREATE TRIGGER insert_review
+AFTER INSERT
+ON "review"
+FOR EACH ROW
+EXECUTE PROCEDURE update_order_review();
 
 ----------------------- INSERT DATA -------------------------
 
@@ -535,9 +555,9 @@ INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maxi
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'113 Đường Nguyễn Văn Cừ',106.62077984266271, 10.724669221658448);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('phuc16102001@gmail.com',79,774,27301,'227 Nguyễn Văn Cừ',106.62077984266271, 10.724669221658448);
 
-INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 15000, NULL);
-INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 10000, 'TET30');
-INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code") VALUES(3, 'nhkduy201@gmail.com', 1, 1, 200000, 5000, 'DEAL77');
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code", "reviewed") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 15000, NULL, true);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code", "reviewed") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 10000, 'TET30', false);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price","voucher_code", "reviewed") VALUES(3, 'nhkduy201@gmail.com', 1, 1, 200000, 5000, 'DEAL77', false);
 
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 1, 3);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 3, 2);
@@ -550,20 +570,12 @@ INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 4, 1);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 5, 2);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 9, 3);
 
-INSERT INTO "order_state"("order_id","state") VALUES(1, 'paid');
-SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'shipping');
 SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
-SELECT pg_sleep(1);
-INSERT INTO "order_state"("order_id","state") VALUES(1, 'reviewed');
 
-INSERT INTO "order_state"("order_id","state") VALUES(2, 'paid');
-SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(2, 'cancel');
 
-INSERT INTO "order_state"("order_id","state") VALUES(3, 'paid');
-SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'shipping');
 SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'success');
