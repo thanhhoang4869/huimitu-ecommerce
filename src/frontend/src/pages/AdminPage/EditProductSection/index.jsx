@@ -20,7 +20,7 @@ const EditProductSection = () => {
   const [form] = useForm();
   const [product, setProduct] = useState({});
   const [description, setDescription] = useState("");
-  const [variants, setVariants] = useState("");
+  const [variants, setVariants] = useState("[]");
 
   const onFinish = (values) => {
     console.log("Success:", values);
@@ -91,7 +91,7 @@ const EditProductSection = () => {
         </Form.Item>
         <Form.Item label="Danh sách biến thể">
           <div className="text-key mb-2 addVar">Thêm biến thể</div>
-          <VariantTable variants={variants} />
+          <VariantTable variants={JSON.parse(variants)} />
         </Form.Item>
         <Form.Item label="Mô tả sản phẩm">
           <CKEditor
