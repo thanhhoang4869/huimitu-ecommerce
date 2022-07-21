@@ -2,8 +2,8 @@ import api from "utils/api";
 
 const checkoutService = {
 
-    async confirmPaypal(orderId) {
-        const response = await api.post('/checkout/successPaypal', {
+    async notifyPaypal(orderId) {
+        const response = await api.post('/checkout/notifyPaypal', {
             orderId: orderId
         })
         return response;
