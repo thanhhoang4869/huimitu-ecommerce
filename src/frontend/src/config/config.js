@@ -9,6 +9,13 @@ const config = {
         PAYPAL: 'paypal',
         MOMO: 'momo',
         COD: 'cod',
-    }
+    },
+    orderState: {
+      INIT: 'init',
+      PENDING: 'pending',
+      SHIPPING: 'shipping',
+      CANCEL: 'cancel',
+      SUCCESS: 'success',
+    },
 }
 export default config

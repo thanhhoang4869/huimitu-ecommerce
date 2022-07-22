@@ -2,13 +2,16 @@ import React from "react";
 import "./style.css";
 import formatter from "utils/formatter";
 import { Button } from "antd";
+import config from "config/config";
 
 const buttonStyle = {
   width: "192px",
   borderRadius: "5px",
 };
 
-const OrderFooter = ({ order }) => {
+const OrderFooter = (props) => {
+  const { order, handleCancel, handleSuccess, handleReview } = props;
+
   return (
     <div className="order-footer">
       <p className="pt-3 order-shipping-price">
@@ -23,7 +26,7 @@ const OrderFooter = ({ order }) => {
           {formatter.formatPrice(order.finalPrice)}
         </span>
       </p>
-      {order.state === "pending" && (
+      {order.state === config.orderState.PENDING && (
         <Button
           size="large"
           style={{
@@ -31,23 +34,30 @@ const OrderFooter = ({ order }) => {
             color: "white",
             ...buttonStyle,
           }}
+          onClick={() => handleCancel(order.id)}
         >
           Hủy
         </Button>
       )}
-      {order.state === "shipping" && (
+      {order.state === config.orderState.SHIPPING && (
         <Button
           size="large"
           style={{
             ...buttonStyle,
           }}
           type="primary"
+          onClick={() => handleSuccess(order.id)}
         >
           Đã nhận được hàng
         </Button>
       )}
-      {order.state === "success" && (
-        <Button size="large" type="primary" style={{ ...buttonStyle }}>
+      {order.state === config.orderState.SUCCESS && (
+        <Button
+          size="large"
+          type="primary"
+          style={{ ...buttonStyle }}
+          onClick={() => handleReview(order.id)}
+        >
           Đánh giá
         </Button>
       )}

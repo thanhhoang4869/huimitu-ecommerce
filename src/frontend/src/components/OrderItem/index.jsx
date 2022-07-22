@@ -5,14 +5,19 @@ import OrderFooter from "components/OrderFooter";
 import { Divider } from "antd";
 
 const OrderItem = (props) => {
-  const order = props.order;
-  console.log(order)
+  const { order, handleCancel, handleSuccess, handleReview } = props;
+
   return (
     <div key={order.createdTime} className="my-3">
       <Divider orientation="left"></Divider>
       <OrderHeader order={order} />
       <ProductList productList={order.variants} />
-      <OrderFooter order={order}/>
+      <OrderFooter
+        order={order}
+        handleCancel={handleCancel}
+        handleSuccess={handleSuccess}
+        handleReview={handleReview}
+      />
     </div>
   );
 };
