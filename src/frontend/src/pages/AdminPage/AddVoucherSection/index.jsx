@@ -11,8 +11,8 @@ const AddVoucherSection = () => {
   const onFinish = async (values) => {
     console.log(values);
     try {
-      const res = await voucherService.createVoucher(values)
-      console.log(res.data)
+      const res = await voucherService.createVoucher(values);
+      console.log(res.data);
       if (res.data.exitcode === 0) {
         swal.fire("Thêm voucher thành công", "", "success");
         form.resetFields();
@@ -20,15 +20,15 @@ const AddVoucherSection = () => {
         swal.fire({
           title: "Thêm voucher thất bại",
           text: `Lỗi: ${res.data.message}`,
-          icon: "error"
-        })
+          icon: "error",
+        });
       }
     } catch (error) {
       swal.fire({
         title: "Thêm voucher thất bại",
         text: `Lỗi: ${error}`,
-        icon: "error"
-      })
+        icon: "error",
+      });
     }
   };
 
@@ -38,7 +38,8 @@ const AddVoucherSection = () => {
 
   return (
     <>
-      <Form form={form}
+      <Form
+        form={form}
         name="basic"
         layout="vertical"
         initialValues={{
@@ -57,7 +58,7 @@ const AddVoucherSection = () => {
             },
           ]}
         >
-          <Input />
+          <Input placeholder="Nhập mã" />
         </Form.Item>
 
         <Form.Item
@@ -71,6 +72,7 @@ const AddVoucherSection = () => {
           ]}
         >
           <InputNumber
+          placeholder="Nhập giá"
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -90,6 +92,7 @@ const AddVoucherSection = () => {
           ]}
         >
           <InputNumber
+          placeholder="Nhập giá"
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -99,7 +102,7 @@ const AddVoucherSection = () => {
         </Form.Item>
 
         <Form.Item
-          label="% giảm"
+          label="Phần trăm giảm (%)"
           name="percentageDiscount"
           rules={[
             {
@@ -111,6 +114,7 @@ const AddVoucherSection = () => {
           <InputNumber
             min={0}
             max={100}
+            placeholder="Nhập phần trăm"
             formatter={(value) => `${value}%`}
             parser={(value) => value.replace("%", "")}
             style={{ width: "100%" }}
@@ -129,7 +133,7 @@ const AddVoucherSection = () => {
                 },
               ]}
             >
-              <DatePicker style={{ width: "100%" }} />
+              <DatePicker placeholder="Chọn ngày" style={{ width: "100%" }} />
             </Form.Item>
           </div>
           <div className="flex-item">
@@ -143,7 +147,7 @@ const AddVoucherSection = () => {
                 },
               ]}
             >
-              <DatePicker style={{ width: "100%" }} />
+              <DatePicker placeholder="Chọn ngày" style={{ width: "100%" }} />
             </Form.Item>
           </div>
         </div>
@@ -155,7 +159,7 @@ const AddVoucherSection = () => {
             }}
           >
             <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-              Lưu
+              Thêm
             </Button>
           </div>
         </Form.Item>

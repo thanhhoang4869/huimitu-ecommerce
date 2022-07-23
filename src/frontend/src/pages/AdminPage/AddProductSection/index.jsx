@@ -167,7 +167,7 @@ const AddProductSection = () => {
                 },
               ]}
             >
-              <Select showSearch onChange={handleParentCateChange}>
+              <Select onChange={handleParentCateChange}>
                 {parentCategories.map((category) => (
                   <Option value={category.id}>{category.categoryName}</Option>
                 ))}
@@ -185,7 +185,7 @@ const AddProductSection = () => {
                 },
               ]}
             >
-              <Select showSearch onChange={handleParentCateChange}>
+              <Select onChange={handleParentCateChange}>
                 {childCategories.map((category) => (
                   <Option value={category.id}>{category.categoryName}</Option>
                 ))}

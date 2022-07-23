@@ -5,18 +5,32 @@ import swal from "sweetalert2";
 
 import voucherService from "services/voucher";
 
+const swalDeleteProps = {
+  title: "Bạn chắc chắn muốn xóa voucher này?",
+  text: "Voucher đã xóa sẽ không thể khôi phục!",
+  icon: "warning",
+  showCancelButton: true,
+  cancelButtonText: "Hủy",
+  confirmButtonText: "Xóa",
+  customClass: {
+    cancelButton: "order-1",
+    confirmButton: "order-2",
+  },
+};
+
 const ViewVoucherSection = () => {
-  const [vouchers, setVouchers] = useState([])
+  const [vouchers, setVouchers] = useState([]);
 
   const columns = [
     {
       title: "Mã",
       dataIndex: "voucherCode",
-      align: "center"
+      align: "center",
     },
     {
-      title: "% giảm",
+      title: "Phần trăm giảm",
       dataIndex: "percentageDiscount",
+      render: (percentageDiscount) => <div>{percentageDiscount}%</div>,
     },
     {
       title: "Giá tối thiểu",
@@ -42,23 +56,14 @@ const ViewVoucherSection = () => {
   ];
 
   const onDeleteVoucher = async (id) => {
-    swal
-      .fire({
-        title: "Bạn chắc chắn muốn xóa voucher này?",
-        text: "Voucher đã xóa sẽ không thể khôi phục!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        CancelButtonText: "Hủy",
-        confirmButtonText: "Xóa",
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          //TODO
-          swal.fire("Đã xóa voucher", "", "success");
-        }
-      });
+    try {
+      const result = await swal.fire(swalDeleteProps);
+      if (result.isConfirmed) {
+        swal.fire("Đã xóa voucher", "", "success");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const data = vouchers.map((voucher) => {
@@ -69,19 +74,19 @@ const ViewVoucherSection = () => {
           <DeleteOutlined />
         </div>
       ),
-      ...voucher
+      ...voucher,
     };
   });
 
   const getAllVouchers = async () => {
     const res = await voucherService.getVouchers();
     setVouchers(res.data.vouchers);
-    console.log(vouchers)
+    console.log(vouchers);
   };
 
   useEffect(() => {
     getAllVouchers();
-  }, []); 
+  }, []);
 
   return (
     <>
