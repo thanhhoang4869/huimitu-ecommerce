@@ -36,6 +36,7 @@ export default {
                 ) AS quantity
             FROM "product"
             JOIN "category" ON "product".category_id = "category".id
+            WHERE "product".soft_delete = false
         ) AS "subquery"
         ORDER BY sold_quantity DESC
         LIMIT (?)
@@ -45,8 +46,9 @@ export default {
     },
 
     async getNewestArrival() {
-        const result = await db('product')
-            .join('category', 'product.category_id', 'category.id')
+        const result = await db('product').where({
+            soft_delete: false
+        }).join('category', 'product.category_id', 'category.id')
             .select(
                 'product.id',
                 'product.product_name',
@@ -86,7 +88,8 @@ export default {
 
     async getProductById(productId) {
         const result = await db('product').where({
-            'product.id': productId
+            'product.id': productId,
+            "product.soft_delete": false
         })
             .join('category', 'product.category_id', 'category.id')
             .select({
@@ -161,9 +164,12 @@ export default {
     },
 
     async deleteProduct(productId) {
+        console.log(productId)
         const result = await db('product').where({
             id: productId
-        }).delete()
+        }).update({
+            soft_delete: true
+        })
         return result
     },
 
@@ -196,7 +202,9 @@ export default {
     },
 
     async getProduct(limit, offset, minPrice, maxPrice, sortType, categoryListId = []) {
-        let builder = db('product').select(
+        let builder = db('product').where({
+            soft_delete: false
+        }).select(
             'product.id',
             'product.product_name',
             'category.id AS category_id',
@@ -244,7 +252,9 @@ export default {
     },
 
     async countProduct(minPrice, maxPrice, categoryListId = []) {
-        let builder = db('product')
+        let builder = db('product').where({
+            soft_delete: false,
+        })
             .join('category', 'product.category_id', 'category.id')
             .select(
                 'min_price',
@@ -273,7 +283,7 @@ export default {
         const result = await db.from(builder).count();
         return result[0].count;
     },
-    
+
     async deleteProductImage(productImageId) {
         const result = await db('product_image').where({
             id: productImageId
