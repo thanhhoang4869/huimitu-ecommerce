@@ -65,18 +65,26 @@ const AddProductSection = () => {
   };
 
   const onFinish = async (values) => {
+    //TODO
     values = {
       description,
+      files: [],
       ...values,
     };
     console.log("Success:", values);
 
-    // try {
-    //   const respone = await productService.createProduct(values)
-    //   console.log(respone.data)
-    // } catch(error) {
+    try {
+      // const respone = await productService.createProduct(values)
+      // const productId = respone.data.productId
 
-    // }
+      // const productRespone = await productService.getProductById(productId)
+      // setProduct(productRespone.data.product)
+      
+      // variants.map((variant) => createVariant(variant))
+      // console.log(respone.data)
+    } catch(error) {
+
+    }
   };
 
   const inputHandler = (event, editor) => {
@@ -104,6 +112,17 @@ const AddProductSection = () => {
       }
     } catch (e) {}
   };
+
+  const createVariant = async (variant) => {
+    variant = {
+      productId: product.id,
+      ...variant
+    }
+    console.log("Success:", variant);
+
+    const response = await variantService.createVariant(variant);
+    console.log(response.data);
+  }
 
   useEffect(() => {
     form.resetFields();
@@ -139,7 +158,6 @@ const AddProductSection = () => {
         <div className="flex-container ">
           <div className="flex-item mr-5">
             <Form.Item
-              initialValue={product?.category?.categoryName}
               name="bigCategoryName"
               label="Danh mục cha"
               rules={[
@@ -158,13 +176,12 @@ const AddProductSection = () => {
           </div>
           <div className="flex-item">
             <Form.Item
-              initialValue={product?.category?.children?.categoryName}
               name="categoryName"
               label="Danh mục"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng chọn danh mục cha!",
+                  message: "Vui lòng chọn danh mục!",
                 },
               ]}
             >
@@ -177,7 +194,6 @@ const AddProductSection = () => {
           </div>
         </div>
         <Form.Item
-          initialValue={product?.productName}
           name="productName"
           label="Tên sản phẩm"
           rules={[
