@@ -22,7 +22,7 @@ const SideBar = () => {
       getItem("Thêm sản phẩm", "addProduct"),
     ]),
     getItem("Voucher", "voucher", <PercentageOutlined />, [
-      getItem("Xem và chỉnh sửa", "viewVoucher"),
+      getItem("Xem", "viewVoucher"),
       getItem("Thêm voucher", "addVoucher"),
     ]),
   ];
