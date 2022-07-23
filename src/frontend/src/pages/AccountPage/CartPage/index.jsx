@@ -7,7 +7,19 @@ import { AccountContext } from "context/AccountContext";
 import { Link } from "react-router-dom";
 import cartService from "services/cart";
 import swal from "sweetalert2";
-import "./style.css";
+import { DeleteOutlined } from "@ant-design/icons";
+
+const swalDeleteProps = {
+  text: "Bạn có chắc muốn xóa sản phẩm?",
+  icon: "warning",
+  showCancelButton: true,
+  cancelButtonText: "Hủy",
+  confirmButtonText: "Xóa",
+  customClass: {
+    cancelButton: "order-1",
+    confirmButton: "order-2",
+  },
+};
 
 const CartPage = () => {
   const { cart, fetchCart } = useContext(AccountContext);
@@ -15,17 +27,7 @@ const CartPage = () => {
 
   const handleDelete = async (variantId) => {
     try {
-      const result = await swal.fire({
-        text: "Bạn có chắc muốn xóa sản phẩm?",
-        icon: "question",
-        showCancelButton: true,
-        cancelButtonText: "Hủy",
-        confirmButtonText: "Chắc chắn",
-        customClass: {
-          cancelButton: "order-1",
-          confirmButton: "order-2",
-        },
-      });
+      const result = await swal.fire(swalDeleteProps);
       if (result.isDismissed) {
         return;
       }
@@ -53,17 +55,7 @@ const CartPage = () => {
   const handleUpdateQuantity = async (variantId, newQuantity) => {
     try {
       if (newQuantity === 0) {
-        const result = await swal.fire({
-          text: "Bạn có chắc muốn xóa sản phẩm?",
-          icon: "question",
-          showCancelButton: true,
-          cancelButtonText: "Hủy",
-          confirmButtonText: "Chắc chắn",
-          customClass: {
-            cancelButton: "order-1",
-            confirmButton: "order-2",
-          },
-        });
+        const result = await swal.fire(swalDeleteProps);
         if (result.isDismissed) {
           return;
         }
@@ -172,9 +164,9 @@ const CartPage = () => {
       key: "delete",
       render: (_, record) => (
         <Space size="large">
-          <Link to="" onClick={() => handleDelete(record.id)}>
-            <i className="fa fa-trash"></i>
-          </Link>
+          <div className="del" onClick={() => handleDelete(record.id)}>
+            <DeleteOutlined />
+          </div>
         </Space>
       ),
     },

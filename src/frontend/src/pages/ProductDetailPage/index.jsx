@@ -238,7 +238,11 @@ const ProductDetailPage = () => {
                       <Link
                         to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
                       >
-                        <input type="hidden" className="quantity" name="quantity" />
+                        <input
+                          type="hidden"
+                          className="quantity"
+                          name="quantity"
+                        />
                         <button className="buy-cart">
                           <span>Mua ngay</span>
                         </button>
@@ -254,7 +258,9 @@ const ProductDetailPage = () => {
         <div className="container section-50 mt-5 mb-5">
           <ProductDetailTitle title="Mô tả" />
           <div className="product-description-text">
-            <div>{product.description}</div>
+            <div
+              dangerouslySetInnerHTML={{ __html: product.description }}
+            ></div>
           </div>
         </div>
 

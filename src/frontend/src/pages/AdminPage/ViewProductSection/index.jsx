@@ -8,6 +8,19 @@ import product from "services/product";
 import formatter from "utils/formatter";
 import "./style.css";
 
+const swalDeleteProps = {
+  title: "Bạn chắc chắn muốn xóa sản phẩm này?",
+  text: "Sản phẩm đã xóa sẽ không thể khôi phục!",
+  icon: "warning",
+  showCancelButton: true,
+  cancelButtonText: "Hủy",
+  confirmButtonText: "Xóa",
+  customClass: {
+    cancelButton: "order-1",
+    confirmButton: "order-2",
+  },
+};
+
 const ViewProductSection = () => {
   const location = useLocation();
   const [products, setProducts] = useState([]);
@@ -24,22 +37,14 @@ const ViewProductSection = () => {
   };
 
   const onDeleteProduct = async (id) => {
-    swal
-      .fire({
-        title: "Bạn chắc chắn muốn xóa sản phẩm này?",
-        text: "Sản phẩm đã xóa sẽ không thể khôi phục!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        CancelButtonText: "Hủy",
-        confirmButtonText: "Xóa",
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          swal.fire("Đã xóa sản phẩm", "", "success");
-        }
-      });
+    try {
+      const result = await swal.fire(swalDeleteProps);
+      if (result.isConfirmed) {
+        swal.fire("Đã xóa sản phẩm", "", "success");
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {

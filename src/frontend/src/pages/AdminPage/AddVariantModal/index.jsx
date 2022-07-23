@@ -2,8 +2,8 @@ import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
 
 const AddVariantModal = (props) => {
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = async (values) => {
+    props.handleSuccess(values)
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -31,7 +31,7 @@ const AddVariantModal = (props) => {
       >
         <Form.Item
           label="Tên biến thể"
-          name="addVariantName"
+          name="variantName"
           rules={[
             {
               required: true,

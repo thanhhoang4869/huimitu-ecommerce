@@ -3,7 +3,11 @@ import { Button, Form, Input } from "antd";
 
 const EditVariantModal = (props) => {
   const onFinish = (values) => {
-    console.log("Success:", values);
+    values = {
+      variantId: props.variant.id,
+      ...values
+    }
+    props.handleSuccess(values)
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -31,7 +35,8 @@ const EditVariantModal = (props) => {
       >
         <Form.Item
           label="Tên biến thể"
-          name="addVariantName"
+          name="variantName"
+          initialValue={props.variant.variantName}
           rules={[
             {
               required: true,
@@ -45,6 +50,7 @@ const EditVariantModal = (props) => {
         <Form.Item
           label="Giá"
           name="price"
+          initialValue={props.variant.price}
           rules={[
             {
               required: true,
@@ -61,7 +67,11 @@ const EditVariantModal = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Giá giảm" name="discountPrice">
+        <Form.Item
+          label="Giá giảm"
+          name="discountPrice"
+          initialValue={props.variant.discountPrice}
+        >
           <InputNumber
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -74,6 +84,7 @@ const EditVariantModal = (props) => {
         <Form.Item
           label="Số lượng"
           name="stock"
+          initialValue={props.variant.stock}
           rules={[
             {
               required: true,
@@ -98,7 +109,7 @@ const EditVariantModal = (props) => {
               Hủy
             </Button>
             <Button type="primary" htmlType="submit">
-              Thêm
+              Lưu
             </Button>
           </div>
         </Form.Item>
