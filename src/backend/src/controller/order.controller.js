@@ -1,7 +1,10 @@
 import orderModel from '#src/models/order.model'
 import variantModel from '#src/models/variant.model'
 import productModel from '#src/models/product.model'
+import accountModel from '#src/models/account.model'
 import moment from 'moment'
+import config from '#src/config/config'
+import { ErrorHandler } from '#src/middlewares/errorHandler.mdw'
 
 export default {
     async getOrder(req, res, next) {
@@ -145,7 +148,78 @@ export default {
         }
     },
 
-    async updateOrderState(req, res, next) {
-        
+    async updateState(req, res, next) {
+        try {
+            const { email } = req.payload;
+            const { state } = req.body;
+            const { orderId } = req.params;
+
+            const account = await accountModel.getByEmail(email);
+            const { role } = account;
+
+            const order = await orderModel.getOrderById(orderId);
+            if (!order) {
+                return res.status(200).send({
+                    exitcode: 101,
+                    message: "Order not found"
+                })
+            }
+
+            console.log(order)
+            let success = false;
+            switch (state) {
+                case (config.orderState.SHIPPING): {
+                    if (role !== config.role.ADMIN) {
+                        throw new ErrorHandler(403, "Only admin can do this operation")
+                    }
+                    if (order.state !== config.orderState.PENDING) {
+                        return res.status(200).send({
+                            exitcode: 102,
+                            message: "Order can only change to shipping during pending state"
+                        })
+                    }
+                    await orderModel.updateState(orderId, config.orderState.SHIPPING)
+                    success = true;
+                    break;
+                }
+                case (config.orderState.CANCEL): {
+                    if (order.email !== email) {
+                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    }
+                    if (order.state !== config.orderState.PENDING) {
+                        return res.status(200).send({
+                            exitcode: 102,
+                            message: "Order can only be cancelled during pending state"
+                        })
+                    }
+                    await orderModel.updateState(orderId, config.orderState.CANCEL)
+                    success = true;
+                    break;
+                }
+                case (config.orderState.SUCCESS): {
+                    if (order.email !== email) {
+                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    }
+                    if (order.state !== config.orderState.SHIPPING) {
+                        return res.status(200).send({
+                            exitcode: 103,
+                            message: "Order can only be cancelled during pending state"
+                        })
+                    }
+                    await orderModel.updateState(orderId, config.orderState.SUCCESS)
+                    success = true;
+                    break;
+                }
+            }
+
+            if (success) {
+                res.status(200).send({
+                    exitcode: 0,
+                    message: "Update order state successfully"
+                })
+            }
+        } catch (err) {
+            next(err)
+        }
     }
 }

@@ -70,13 +70,13 @@ export default {
                     message: "Voucher code existed"
                 })
             }
-            const resultAdd = await voucherModel.addVoucher({
+            await voucherModel.addVoucher({
                 voucherCode,
                 percentageDiscount,
                 minimumPrice,
                 maximumDiscountPrice,
-                startDate,
-                endDate
+                startDate: moment(startDate || new Date(), 'DD/MM/YYYY').toDate(),
+                endDate: moment(endDate, 'DD/MM/YYYY').toDate()
             })
             res.send({
                 exitcode: 0,

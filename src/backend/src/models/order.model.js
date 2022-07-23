@@ -30,6 +30,7 @@ export default {
                 "receiver_phone",
                 "reviewed"
             )
+            .orderBy('order_state.created_time','desc')
             .limit(1)
         return result[0] || null;
     },

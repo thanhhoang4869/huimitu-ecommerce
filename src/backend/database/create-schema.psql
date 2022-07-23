@@ -92,6 +92,7 @@ CREATE TABLE "product" (
   "max_price" bigint DEFAULT 0,
   "stock" int DEFAULT 0,
   "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
+  "soft_delete" boolean NOT NULL DEFAULT false,
   "product_fts" tsvector
 );
 
@@ -170,8 +171,8 @@ CREATE TABLE "voucher" (
   "percentage_discount" real NOT NULL,
   "minimum_price" bigint NOT NULL,
   "maximum_discount_price" bigint NOT NULL,
-  "start_date" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "end_date" timestamp NOT NULL
+  "start_date" date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "end_date" date NOT NULL
 );
 
 CREATE TABLE "frequent_product" (
@@ -197,8 +198,8 @@ ALTER TABLE "order" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
 
 ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id");
-ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id") ON DELETE CASCADE;
-ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id") ON DELETE CASCADE;
+ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
+ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
 ALTER TABLE "review" ADD FOREIGN KEY ("product_variant_id") REFERENCES "product_variant" ("id");
 ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
@@ -401,6 +402,28 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
+--- Remove variant from cart and order when soft delete product
+CREATE OR REPLACE FUNCTION remove_variant_from_cart() RETURNS trigger AS
+$$
+BEGIN
+
+  IF NEW.soft_delete = false THEN 
+  RETURN null;
+  END IF;
+
+  --- Remove variant from all carts
+  DELETE FROM cart_variant
+  WHERE variant_id IN (
+    SELECT product_variant.id
+    FROM product_variant
+    WHERE product_variant.product_id = NEW.id
+  );
+
+  return NULL;
+END;
+$$
+LANGUAGE 'plpgsql';
+
 -------------------------- TRIGGER ------------------------------
 
 --- Update min, max, stock of product after change variant
@@ -461,11 +484,19 @@ ON "order_variant"
 FOR EACH ROW
 EXECUTE PROCEDURE copy_price_order();
 
+--- Remove variants when delete product
+CREATE TRIGGER delete_product
+AFTER UPDATE
+OF "soft_delete"
+ON "product"
+FOR EACH ROW
+EXECUTE PROCEDURE remove_variant_from_cart();
+
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'D:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'D:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'D:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123
