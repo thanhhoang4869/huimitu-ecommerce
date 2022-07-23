@@ -45,6 +45,11 @@ const product = {
     const response = await api.get(`/product/related/${productId}`);
     return response;
   },
+
+  async createProduct(data) {
+    const response = await api.post("/product", data);
+    return response;
+  }
 };
 
 export default product;

@@ -1,23 +1,9 @@
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
 
-import variantService from "services/variant";
-
 const AddVariantModal = (props) => {
   const onFinish = async (values) => {
-    values = {
-      productId: props.product.id,
-      ...values
-    }
-    console.log("Success:", values);
-
-    const response = await variantService.createVariant(values);
-    console.log(response.data);
-
-    if (response.data.exitcode == 0) {
-      props.setVisible(false)
-      props.handleSuccess()
-    }
+    props.handleSuccess(values)
   };
 
   const onFinishFailed = (errorInfo) => {

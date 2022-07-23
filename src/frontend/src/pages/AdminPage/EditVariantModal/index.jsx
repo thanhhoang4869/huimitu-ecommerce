@@ -1,23 +1,13 @@
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
 
-import variantService from "services/variant";
-
 const EditVariantModal = (props) => {
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
     values = {
       variantId: props.variant.id,
       ...values
     }
-    console.log("Success:", values);
-
-    const response = await variantService.updateVariant(values);
-    console.log(response.data);
-
-    if (response.data.exitcode == 0) {
-      props.setVisible(false)
-      props.handleSuccess()
-    }
+    props.handleSuccess(values)
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -119,7 +109,7 @@ const EditVariantModal = (props) => {
               Hủy
             </Button>
             <Button type="primary" htmlType="submit">
-              Thêm
+              Lưu
             </Button>
           </div>
         </Form.Item>
