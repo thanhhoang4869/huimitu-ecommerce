@@ -1,9 +1,23 @@
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
 
+import variantService from "services/variant";
+
 const AddVariantModal = (props) => {
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    values = {
+      productId: props.product.id,
+      ...values
+    }
     console.log("Success:", values);
+
+    const response = await variantService.createVariant(values);
+    console.log(response.data);
+
+    if (response.data.exitcode == 0) {
+      props.setVisible(false)
+      props.handleSuccess()
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -31,7 +45,7 @@ const AddVariantModal = (props) => {
       >
         <Form.Item
           label="Tên biến thể"
-          name="addVariantName"
+          name="variantName"
           rules={[
             {
               required: true,

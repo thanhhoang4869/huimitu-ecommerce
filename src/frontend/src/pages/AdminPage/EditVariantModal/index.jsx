@@ -1,9 +1,23 @@
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
 
+import variantService from "services/variant";
+
 const EditVariantModal = (props) => {
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    values = {
+      variantId: props.variant.id,
+      ...values
+    }
     console.log("Success:", values);
+
+    const response = await variantService.updateVariant(values);
+    console.log(response.data);
+
+    if (response.data.exitcode == 0) {
+      props.setVisible(false)
+      props.handleSuccess()
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -31,7 +45,8 @@ const EditVariantModal = (props) => {
       >
         <Form.Item
           label="Tên biến thể"
-          name="addVariantName"
+          name="variantName"
+          initialValue={props.variant.variantName}
           rules={[
             {
               required: true,
@@ -45,6 +60,7 @@ const EditVariantModal = (props) => {
         <Form.Item
           label="Giá"
           name="price"
+          initialValue={props.variant.price}
           rules={[
             {
               required: true,
@@ -61,7 +77,11 @@ const EditVariantModal = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Giá giảm" name="discountPrice">
+        <Form.Item
+          label="Giá giảm"
+          name="discountPrice"
+          initialValue={props.variant.discountPrice}
+        >
           <InputNumber
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -74,6 +94,7 @@ const EditVariantModal = (props) => {
         <Form.Item
           label="Số lượng"
           name="stock"
+          initialValue={props.variant.stock}
           rules={[
             {
               required: true,

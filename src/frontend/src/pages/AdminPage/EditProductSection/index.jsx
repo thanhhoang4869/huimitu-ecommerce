@@ -38,9 +38,17 @@ const EditProductSection = () => {
     setSelectedVariant(variant);
   };
 
+  const handleAddSuccess = () => {
+    getVariants()
+  }
+
   const handleAddCancel = () => {
     setVisibleAdd(false);
   };
+
+  const handleEditSuccess = () => {
+    getVariants()
+  }
 
   const handleEditCancel = () => {
     setVisibleEdit(false);
@@ -85,11 +93,17 @@ const EditProductSection = () => {
       <AddVariantModal
         title="Title"
         visible={visibleAdd}
+        setVisible={setVisibleAdd}
+        handleSuccess={handleAddSuccess}
         handleCancel={handleAddCancel}
+        product={product}
       />
       <EditVariantModal
         title="Title"
+        variant={selectedVariant}
         visible={visibleEdit}
+        setVisible={setVisibleEdit}
+        handleSuccess={handleEditSuccess}
         handleCancel={handleEditCancel}
       />
 
