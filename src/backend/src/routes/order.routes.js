@@ -7,4 +7,6 @@ router.get('/:orderId', orderController.getOrder);
 router.post('/get', orderController.getListOrder);
 router.get('/count', orderController.getCountOrder);
 
+router.patch('/:orderId', orderController.updateState);
+
 export default router;
