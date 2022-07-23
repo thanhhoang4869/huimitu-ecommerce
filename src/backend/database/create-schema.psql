@@ -170,8 +170,8 @@ CREATE TABLE "voucher" (
   "percentage_discount" real NOT NULL,
   "minimum_price" bigint NOT NULL,
   "maximum_discount_price" bigint NOT NULL,
-  "start_date" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "end_date" timestamp NOT NULL
+  "start_date" date NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "end_date" date NOT NULL
 );
 
 CREATE TABLE "frequent_product" (
@@ -463,9 +463,9 @@ EXECUTE PROCEDURE copy_price_order();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'D:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'D:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'D:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123

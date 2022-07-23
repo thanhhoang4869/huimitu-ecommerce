@@ -4,7 +4,11 @@ export default {
     async getVoucherByCode(voucherCode) {
         const result = await db('voucher').where({
             'voucher_code': voucherCode
-        }).select(
+        }).where(
+            'start_date', '<=', 'now()'
+        ).where(
+            "end_date", ">=", 'now()'
+        ).select(
             "voucher_code",
             "percentage_discount",
             "minimum_price",
@@ -27,7 +31,11 @@ export default {
             }).select("v2.voucher_code")
         ).where({
             'voucher_code': voucherCode
-        }).select(
+        }).where(
+            'start_date', '<=', 'now()'
+        ).where(
+            "end_date", ">=", 'now()'
+        ).select(
             "voucher_code",
             "percentage_discount",
             "minimum_price",
@@ -48,6 +56,10 @@ export default {
             ).where({
                 "o.email": email
             }).select("v2.voucher_code")
+        ).where(
+            'start_date', '<=', 'now()'
+        ).where(
+            "end_date", ">=", 'now()'
         ).select(
             "voucher_code",
             "percentage_discount",
@@ -68,6 +80,7 @@ export default {
             startDate,
             endDate
         } = entity;
+        console.log(entity)
         const result = await db('voucher').insert({
             'voucher_code': voucherCode,
             'percentage_discount': percentageDiscount,
