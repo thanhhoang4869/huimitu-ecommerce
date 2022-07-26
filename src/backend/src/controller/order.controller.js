@@ -32,7 +32,6 @@ export default {
                 discount_price,
                 final_price,
                 shipping_price,
-                voucher_code,
                 receiver_name,
                 receiver_phone,
                 reviewed
@@ -68,7 +67,6 @@ export default {
                     discountPrice: discount_price,
                     shippingPrice: shipping_price,
                     finalPrice: final_price,
-                    voucherCode: voucher_code,
                     receiverName: receiver_name,
                     receiverPhone: receiver_phone,
                     reviewed: reviewed,
@@ -115,7 +113,6 @@ export default {
                     discountPrice: orderItem.discount_price,
                     shippingPrice: orderItem.shipping_price,
                     finalPrice: orderItem.final_price,
-                    voucherCode: orderItem.voucher_code,
                     receiverName: orderItem.receiver_name,
                     receiverPhone: orderItem.receiver_phone,
                     reviewed: orderItem.reviewed,
@@ -165,7 +162,6 @@ export default {
                 })
             }
 
-            console.log(order)
             let success = false;
             switch (state) {
                 case (config.orderState.SHIPPING): {

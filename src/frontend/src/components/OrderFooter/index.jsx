@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.css";
 import formatter from "utils/formatter";
-import { Button } from "antd";
+import { Button, Col, Row } from "antd";
 import config from "config/config";
 
 const buttonStyle = {
@@ -14,11 +14,21 @@ const OrderFooter = (props) => {
 
   return (
     <div className="order-footer">
-      <p className="pt-3 order-shipping-price">
-        Phí vận chuyển:{" "}
-        <span className="color-key">
-          {formatter.formatPrice(order.shippingPrice)}
-        </span>
+      <p className="pt-3 order-shipping-price text-right">
+        <Row>
+          <Col>
+            <div>Phí vận chuyển:</div>
+            <div>Giảm giá: </div>
+          </Col>
+          <Col className="ml-2">
+            <div className="color-key">
+              {formatter.formatPrice(order.shippingPrice)}
+            </div>
+            <div className="color-key">
+              -{formatter.formatPrice(order.discountPrice)}
+            </div>
+          </Col>
+        </Row>
       </p>
       <p className="order-total">
         Tổng tiền:{" "}

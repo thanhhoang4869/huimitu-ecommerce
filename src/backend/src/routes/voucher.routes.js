@@ -6,8 +6,10 @@ const router = express.Router();
 
 router.route('/')
     .get(voucher.getVoucher)
-    .post(verifyAdmin, voucher.addVoucher)
+    .post(voucher.addVoucher)
 
-router.get('/:voucherCode', voucher.getVoucherByCode);
+router.route('/:voucherCode')
+    .get(voucher.getVoucherByCode)
+    .delete(voucher.deleteVoucherByCode)
 
 export default router;

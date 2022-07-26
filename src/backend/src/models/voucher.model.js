@@ -1,33 +1,13 @@
 import db from '#src/utils/db'
 
 export default {
-    async getVoucherByCode(voucherCode) {
-        const result = await db('voucher').where({
-            'voucher_code': voucherCode
-        }).where(
-            'start_date', '<=', 'now()'
-        ).where(
-            "end_date", ">=", 'now()'
-        ).select(
-            "voucher_code",
-            "percentage_discount",
-            "minimum_price",
-            "maximum_discount_price",
-            "start_date",
-            "end_date"
-        )
-        return result[0] || null;
-    },
 
+    // For checkout only
     async getVoucherByCodeEmail(voucherCode, email) {
         const result = await db('voucher as v1').whereNotIn(
             'v1.voucher_code',
-            db('order as o').join(
-                'voucher as v2',
-                'o.voucher_code',
-                'v2.voucher_code'
-            ).where({
-                "o.email": email
+            db('voucher_user as v2').where({
+                "v2.email": email
             }).select("v2.voucher_code")
         ).where({
             'voucher_code': voucherCode
@@ -35,40 +15,35 @@ export default {
             'start_date', '<=', 'now()'
         ).where(
             "end_date", ">=", 'now()'
+        ).where(
+            "current_usage", "<", db.raw("maximum_usage")
         ).select(
             "voucher_code",
             "percentage_discount",
             "minimum_price",
             "maximum_discount_price",
             "start_date",
-            "end_date"
+            "end_date",
+            "maximum_usage",
+            "current_usage"
         )
         return result[0] || null;
     },
 
-    async getVoucherByEmail(email) {
-        const result = await db('voucher as v1').whereNotIn(
-            'v1.voucher_code',
-            db('order as o').join(
-                'voucher as v2',
-                'o.voucher_code',
-                'v2.voucher_code'
-            ).where({
-                "o.email": email
-            }).select("v2.voucher_code")
-        ).where(
-            'start_date', '<=', 'now()'
-        ).where(
-            "end_date", ">=", 'now()'
-        ).select(
+    async getVoucherByCode(voucherCode) {
+        const result = await db('voucher').where({
+            'voucher_code': voucherCode
+        }).select(
             "voucher_code",
             "percentage_discount",
             "minimum_price",
             "maximum_discount_price",
             "start_date",
-            "end_date"
+            "end_date",
+            "maximum_usage",
+            "current_usage"
         )
-        return result;
+        return result[0] || null;
     },
 
     async addVoucher(entity) {
@@ -78,17 +53,47 @@ export default {
             minimumPrice,
             maximumDiscountPrice,
             startDate,
-            endDate
+            endDate,
+            maximumUsage,
         } = entity;
-        console.log(entity)
         const result = await db('voucher').insert({
             'voucher_code': voucherCode,
             'percentage_discount': percentageDiscount,
             'minimum_price': minimumPrice,
             "maximum_discount_price": maximumDiscountPrice,
             "start_date": startDate,
-            'end_date': endDate
+            'end_date': endDate,
+            "maximum_usage": maximumUsage,
         })
+        return result;
+    },
+
+    async getAllVoucher() {
+        const result = await db('voucher').select(
+            "voucher_code",
+            "percentage_discount",
+            "minimum_price",
+            "maximum_discount_price",
+            "start_date",
+            "end_date",
+            "maximum_usage",
+            "current_usage"
+        )
+        return result || null;
+    },
+
+    async useVoucher(email, voucherCode) {
+        const result = await db('voucher_user').insert({
+            email: email,
+            voucher_code: voucherCode
+        })
+        return result;
+    },
+
+    async deleteVoucher(voucherCode) {
+        const result = await db('voucher').where({
+            voucher_code: voucherCode
+        }).delete()
         return result;
     }
 }

@@ -171,7 +171,6 @@ export default {
                 receiverPhone: receiverPhone,
                 paymentId: paymentId,
                 shippingAddressId: shippingAddressId,
-                voucherCode: voucherCode,
                 totalPrice: totalPrice,
                 finalPrice: finalPrice,
                 discountPrice: discountPrice,
@@ -180,6 +179,9 @@ export default {
             await orderModel.createOrder(email, orderId, basicInfo)
             await orderModel.insertListVariantToOrder(orderId, variants);
             await cartModel.deleteCartByEmail(email);
+            if (voucherCode) {
+                await voucherModel.useVoucher(email, voucherCode)
+            }
 
             // Change to pending without paying
             if (providerName === config.payment.COD) {

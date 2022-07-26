@@ -41,7 +41,6 @@ export default {
         ORDER BY sold_quantity DESC
         LIMIT (?)
         `, [config.orderState.SUCCESS, config.BEST_SELLER_LIMIT])
-        console.log(result.rows)
         return result.rows || null;
     },
 
