@@ -254,7 +254,7 @@ export default {
 
     async deleteProduct(req, res, next) {
         try {
-            const productId = req.params.productId;
+            const { productId } = req.params;
             const result = await productModel.deleteProduct(productId);
             if (result > 0) {
                 res.status(200).send({

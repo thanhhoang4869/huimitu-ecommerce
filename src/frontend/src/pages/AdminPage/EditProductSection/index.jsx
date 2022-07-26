@@ -16,7 +16,6 @@ import productService from "services/product";
 import variantService from "services/variant";
 import AddVariantModal from "../AddVariantModal";
 import EditVariantModal from "../EditVariantModal";
-import swal from "sweetalert2";
 
 const EditProductSection = () => {
   const { id } = useParams();
@@ -38,9 +37,37 @@ const EditProductSection = () => {
     setSelectedVariant(variant);
   };
 
+  const handleAddSuccess = async (values) => {
+    values = {
+      productId: product.id,
+      ...values
+    }
+    console.log("Success:", values);
+
+    const response = await variantService.createVariant(values);
+    console.log(response.data);
+
+    if (response.data.exitcode == 0) {
+      setVisibleAdd(false)
+    }
+    getVariants()
+  }
+
   const handleAddCancel = () => {
     setVisibleAdd(false);
   };
+
+  const handleEditSuccess = async (values) => {
+    console.log("Success:", values);
+
+    const response = await variantService.updateVariant(values);
+    console.log(response.data);
+
+    if (response.data.exitcode == 0) {
+      setVisibleEdit(false)
+      getVariants()
+    }
+  }
 
   const handleEditCancel = () => {
     setVisibleEdit(false);
@@ -54,7 +81,7 @@ const EditProductSection = () => {
     const response = await productService.getProductById(id);
     const { product } = response.data;
     setProduct(product);
-    setDescription(product.description);
+    setDescription(product.description ? product.description:"");
   };
 
   const getVariants = async () => {
@@ -85,11 +112,14 @@ const EditProductSection = () => {
       <AddVariantModal
         title="Title"
         visible={visibleAdd}
+        handleSuccess={handleAddSuccess}
         handleCancel={handleAddCancel}
       />
       <EditVariantModal
         title="Title"
+        variant={selectedVariant}
         visible={visibleEdit}
+        handleSuccess={handleEditSuccess}
         handleCancel={handleEditCancel}
       />
 
