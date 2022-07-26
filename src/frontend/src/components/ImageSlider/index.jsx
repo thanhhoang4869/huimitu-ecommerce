@@ -9,20 +9,13 @@ const contentStyle = {
   background: "#364d79",
 };
 
-const ImageSlider = () => (
+const ImageSlider = ({ children }) => (
   <Carousel autoplay>
-    <div>
-      <img
-        style={contentStyle}
-        src="https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg"
-      ></img>
-    </div>
-    <div>
-      <img
-        style={contentStyle}
-        src="https://play-lh.googleusercontent.com/IeNJWoKYx1waOhfWF6TiuSiWBLfqLb18lmZYXSgsH1fvb8v1IYiZr5aYWe0Gxu-pVZX3"
-      ></img>
-    </div>
+    {(children || []).map((item) => (
+      <div>
+        <img style={contentStyle} alt="img" src={item}></img>
+      </div>
+    ))}
   </Carousel>
 );
 

@@ -27,6 +27,15 @@ router.post(
     product.createProduct
 )
 
+router.post(
+    '/image', 
+    verifyLogin, 
+    verifyEmailVerified,
+    verifyAdmin, 
+    productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT), 
+    product.addImage
+)
+
 router.get('/related/:productId', product.relatedProduct);
 
 router.route('/:productId')

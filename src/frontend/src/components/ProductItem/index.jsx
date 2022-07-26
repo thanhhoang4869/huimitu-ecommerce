@@ -22,7 +22,7 @@ const ProductItem = ({ product, isResult }) => {
           <div
             className="featured__item__pic set-bg"
             style={{
-              backgroundImage: `url("https://5.imimg.com/data5/MS/HP/ON/SELLER-40186332/garden-planters-500x500.jpg")`,
+              backgroundImage: `url("${product.image}")`,
             }}
           ></div>
         </Link>

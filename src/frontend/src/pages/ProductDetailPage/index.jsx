@@ -138,7 +138,9 @@ const ProductDetailPage = () => {
               <div className="swiper-container zoom-top">
                 <div className="swiper-wrapper">
                   <div className="swiper-slide">
-                    <ImageSlider className="img-responsive m-auto" />
+                    <ImageSlider className="img-responsive m-auto">
+                      {(product.images || []).map((item) => item.path)}
+                    </ImageSlider>
                   </div>
                 </div>
               </div>
@@ -238,7 +240,11 @@ const ProductDetailPage = () => {
                       <Link
                         to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
                       >
-                        <input type="hidden" className="quantity" name="quantity" />
+                        <input
+                          type="hidden"
+                          className="quantity"
+                          name="quantity"
+                        />
                         <button className="buy-cart">
                           <span>Mua ngay</span>
                         </button>
