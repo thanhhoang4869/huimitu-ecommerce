@@ -7,7 +7,7 @@ import {
   generateToken,
 } from "#src/utils/crypto";
 import oauth2Client from "#src/utils/oauth2";
-import { getMailOption, createTransport } from "#src/utils/nodemailer";
+import { getVerifyEmail, createTransport } from "#src/utils/nodemailer";
 import moment from "moment";
 
 export default {
@@ -116,7 +116,7 @@ export default {
 
       // Send the time for each mail is different
       // This prevent the html being trimmed by Gmail
-      const mailOption = getMailOption(email, req.headers.origin, verifyToken);
+      const mailOption = getVerifyEmail(email, req.headers.origin, verifyToken);
       await createTransport().sendMail(mailOption);
 
       // Create entity to insert to DB
