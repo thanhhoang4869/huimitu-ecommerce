@@ -203,6 +203,29 @@ export default {
         }
     },
 
+    async addImage(req, res, next) {
+        try {
+            const {
+                productId,
+            } = req.body;
+
+            // Insert images
+            const { files } = req;
+            const listPath = files.map(item => ({
+                path: item.path,
+                filename: item.filename
+            }))
+            await productModel.insertImages(productId, listPath)
+
+            res.status(200).send({
+                exitcode: 0,
+                message: "Add images successfully",
+            })
+        } catch (err) {
+            next(err)
+        }
+    },
+
     async updateProduct(req, res, next) {
         try {
             const productId = req.params.productId;

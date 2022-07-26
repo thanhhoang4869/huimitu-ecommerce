@@ -138,7 +138,9 @@ const ProductDetailPage = () => {
               <div className="swiper-container zoom-top">
                 <div className="swiper-wrapper">
                   <div className="swiper-slide">
-                    <ImageSlider className="img-responsive m-auto" />
+                    <ImageSlider className="img-responsive m-auto">
+                      {(product.images || []).map((item) => item.path)}
+                    </ImageSlider>
                   </div>
                 </div>
               </div>
