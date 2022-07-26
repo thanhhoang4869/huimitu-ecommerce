@@ -15,6 +15,7 @@ import voucher from '#src/routes/voucher.routes'
 
 import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
+import verifyAdmin from '#src/middlewares/verifyAdmin.mdw'
 import express from 'express'
 
 const router = express.Router();
@@ -29,8 +30,8 @@ router.use('/cart', verifyLogin, verifyEmailVerified, cart)
 router.use('/review', review)
 router.use('/shippingAddress', verifyLogin, verifyEmailVerified, shippingAddress)
 router.use('/payment', payment)
-router.use('/order', verifyLogin, order)
+router.use('/order', verifyLogin, verifyEmailVerified, order)
 router.use('/search', search)
-router.use('/voucher', verifyLogin, voucher)
+router.use('/voucher', verifyLogin, verifyEmailVerified, verifyAdmin, voucher)
 
 export default router;

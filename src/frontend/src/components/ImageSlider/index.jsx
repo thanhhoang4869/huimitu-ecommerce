@@ -6,7 +6,6 @@ const contentStyle = {
   color: "#fff",
   lineHeight: "100%",
   textAlign: "center",
-  background: "#364d79",
 };
 
 const ImageSlider = ({ children }) => (

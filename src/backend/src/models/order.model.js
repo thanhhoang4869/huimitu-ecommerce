@@ -25,7 +25,6 @@ export default {
                 "shipping_price",
                 "final_price",
                 "shipping_price",
-                "voucher_code",
                 "receiver_name",
                 "receiver_phone",
                 "reviewed"
@@ -58,7 +57,6 @@ export default {
             "discount_price",
             "shipping_price",
             "final_price",
-            "voucher_code",
             "receiver_name",
             "receiver_phone",
             "reviewed"
@@ -91,7 +89,6 @@ export default {
         const {
             paymentId,
             shippingAddressId,
-            voucherCode,
             totalPrice,
             discountPrice,
             finalPrice,
@@ -104,7 +101,6 @@ export default {
             email: email,
             payment_id: paymentId,
             shipping_address_id: shippingAddressId,
-            voucher_code: voucherCode,
             total_price: totalPrice,
             discount_price: discountPrice,
             final_price: finalPrice,
