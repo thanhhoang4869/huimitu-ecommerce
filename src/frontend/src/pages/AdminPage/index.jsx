@@ -15,7 +15,12 @@ const AdminPage = () => {
         <div className="container">
           <div className="row">
             <SideBar />
-            <div className="col-lg-9">
+            <div
+              className="col-lg-9"
+              style={{
+                minHeight: "70vh",
+              }}
+            >
               <Routes>
                 <Route path="/viewProduct" element={<ViewProductSection />} />
                 <Route path="/addProduct" element={<AddProductSection />} />

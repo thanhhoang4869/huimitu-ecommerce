@@ -1,9 +1,8 @@
-import { ConsoleSqlOutlined, UploadOutlined } from "@ant-design/icons";
-import { Button, Upload, Select } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { Button, Select, Upload } from "antd";
 
 import { Form, Input } from "antd";
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -11,10 +10,9 @@ import VariantTable from "../VariantTable";
 
 import { useForm } from "antd/lib/form/Form";
 
-import "./style.css";
-import productService from "services/product";
-import variantService from "services/variant";
 import category from "services/category";
+import variantService from "services/variant";
+import "./style.css";
 
 import AddVariantModal from "../AddVariantModal";
 import EditVariantModal from "../EditVariantModal";
@@ -31,11 +29,11 @@ const AddProductSection = () => {
 
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
-  const [selectedParentCateId, setSelectedParentCateId] = useState(0)
+  const [selectedParentCateId, setSelectedParentCateId] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState({});
 
   const handleParentCateChange = (value) => {
-    setSelectedParentCateId(value)
+    setSelectedParentCateId(value);
   };
   const showAddModal = () => {
     setVisibleAdd(true);
@@ -76,15 +74,11 @@ const AddProductSection = () => {
     try {
       // const respone = await productService.createProduct(values)
       // const productId = respone.data.productId
-
       // const productRespone = await productService.getProductById(productId)
       // setProduct(productRespone.data.product)
-      
       // variants.map((variant) => createVariant(variant))
       // console.log(respone.data)
-    } catch(error) {
-
-    }
+    } catch (error) {}
   };
 
   const inputHandler = (event, editor) => {
@@ -105,8 +99,9 @@ const AddProductSection = () => {
     try {
       const respone = await category.getCategoryList();
       if (respone.data.exitcode == 0) {
-
-        const category = respone.data.categories.find(category => category.id == selectedParentCateId);
+        const category = respone.data.categories.find(
+          (category) => category.id == selectedParentCateId
+        );
         setChildCategories(category.children);
         console.log("Child Categories", childCategories);
       }
@@ -116,13 +111,13 @@ const AddProductSection = () => {
   const createVariant = async (variant) => {
     variant = {
       productId: product.id,
-      ...variant
-    }
+      ...variant,
+    };
     console.log("Success:", variant);
 
     const response = await variantService.createVariant(variant);
     console.log(response.data);
-  }
+  };
 
   useEffect(() => {
     form.resetFields();
@@ -244,7 +239,7 @@ const AddProductSection = () => {
             size="large"
             style={{ width: "100%" }}
           >
-            Cập nhật
+            Thêm sản phẩm
           </Button>
         </div>
       </Form>

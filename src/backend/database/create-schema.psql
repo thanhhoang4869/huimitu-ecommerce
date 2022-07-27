@@ -528,9 +528,9 @@ EXECUTE PROCEDURE update_current_usage_voucher();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'D:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'D:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'D:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123

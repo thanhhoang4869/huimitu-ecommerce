@@ -72,7 +72,7 @@ const AddVoucherSection = () => {
           ]}
         >
           <InputNumber
-          placeholder="Nhập giá"
+            placeholder="Nhập giá"
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -92,7 +92,7 @@ const AddVoucherSection = () => {
           ]}
         >
           <InputNumber
-          placeholder="Nhập giá"
+            placeholder="Nhập giá"
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -158,7 +158,12 @@ const AddVoucherSection = () => {
               textAlign: "end",
             }}
           >
-            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              style={{ width: "100%" }}
+            >
               Thêm
             </Button>
           </div>

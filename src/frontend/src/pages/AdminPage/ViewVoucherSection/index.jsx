@@ -4,6 +4,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import swal from "sweetalert2";
 
 import voucherService from "services/voucher";
+import formatter from "utils/formatter";
 
 const swalDeleteProps = {
   title: "Bạn chắc chắn muốn xóa voucher này?",
@@ -35,11 +36,17 @@ const ViewVoucherSection = () => {
     {
       title: "Giá tối thiểu",
       dataIndex: "minimumPrice",
+      render: (minimumPrice) => (
+        <div>{formatter.formatPrice(minimumPrice)}</div>
+      ),
       sorter: (a, b) => +a.minPrice - +b.minPrice,
     },
     {
       title: "Giá giảm tối đa",
       dataIndex: "maximumDiscountPrice",
+      render: (maximumDiscountPrice) => (
+        <div>{formatter.formatPrice(maximumDiscountPrice)}</div>
+      ),
       sorter: (a, b) => +a.stock - +b.stock,
     },
     {
