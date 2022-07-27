@@ -6,7 +6,8 @@ import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 
 const Header = () => {
-  const { logout, isLogin, cart, isAdmin } = useContext(AccountContext);
+  const { logout, isLogin, cart, isAdmin, account } =
+    useContext(AccountContext);
 
   return (
     <>
@@ -28,7 +29,7 @@ const Header = () => {
                   <div className="header__top__right__social">
                     <Link to="/account/userInformation">
                       <i className="fa fa-user"></i>
-                      <span className="ml-2">Cá nhân</span>
+                      <span className="ml-2">{account.fullname}</span>
                     </Link>
                   </div>
                   <div className="header__top__right__auth">
