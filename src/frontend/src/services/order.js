@@ -2,6 +2,11 @@ import api from "utils/api";
 
 const orderService = {
 
+    async getById(orderId) {
+        const response = await api.get(`/order/${orderId}`);
+        return response
+    },
+
     async updateState(orderId, state) {
         const response = await api.patch(`/order/${orderId}`, {
             state: state

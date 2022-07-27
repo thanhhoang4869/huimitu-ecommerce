@@ -28,7 +28,7 @@ const ProductList = ({ productList }) => {
             }
           />
           <span className="color-key">
-            {formatter.formatPrice(product.price*product.quantity)}
+            {formatter.formatPrice(product.variantPrice*product.quantity)}
           </span>
         </List.Item>
       )}

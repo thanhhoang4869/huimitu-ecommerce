@@ -15,6 +15,7 @@ const checkoutService = {
             receiverPhone,
             variantId,
             quantity,
+            orderId,
             paymentId,
             shippingAddressId,
             voucherCode
@@ -24,6 +25,7 @@ const checkoutService = {
             receiverPhone,
             variantId,
             quantity,
+            orderId,
             paymentId,
             shippingAddressId,
             voucherCode
@@ -32,11 +34,12 @@ const checkoutService = {
         return response
     },
 
-    async getPrice(shippingAddressId, voucherCode, variantId, quantity) {
+    async getPrice({ shippingAddressId, orderId, voucherCode, variantId, quantity }) {
         const requestBody = {
             shippingAddressId,
             variantId,
             quantity,
+            orderId,
             voucherCode
         }
         const response = await api.post('/checkout/price', requestBody)
