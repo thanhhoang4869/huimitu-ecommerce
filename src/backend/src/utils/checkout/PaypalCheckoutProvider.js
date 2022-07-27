@@ -39,10 +39,11 @@ class PaypalCheckoutProvider {
      * @returns {[String, String]} An array of 2 elements
      * Including the generated orderId of Paypal and the link to approve payment
      */
-    createLink = async (amount, userInfo, redirectUrl) => {
+    createLink = async (amount, userInfo, redirectHost, ipnHost) => {
         const currencyCode = "USD";
         const intent = "CAPTURE";
         const description = "Pay with paypal";
+        const redirectUrl = `${redirectHost}/checkout/notifyPaypal`
 
         const payer = {
             email_address: userInfo.email,
