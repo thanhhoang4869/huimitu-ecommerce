@@ -2,6 +2,7 @@ import productModel from '#src/models/product.model'
 import categoryModel from '#src/models/category.model'
 import { buildCategoryRoot, searchCategoryTree, toListCategory, getParentBranch } from '#src/utils/utils'
 import { cloudinary } from '#src/utils/cloudinary'
+import config from '#src/config/config'
 
 const getListCategoryId = async (categoryId) => {
     if (!categoryId) return [];
@@ -209,13 +210,40 @@ export default {
                 productId,
             } = req.body;
 
-            // Insert images
+            // Get inserting images
             const { files } = req;
             const listPath = files.map(item => ({
                 path: item.path,
                 filename: item.filename
             }))
-            await productModel.insertImages(productId, listPath)
+
+            // Get current image
+            const listImage = await productModel.getImageById(productId)
+            const images = listImage.map(item => ({
+                id: item.id,
+                path: item.path,
+                filename: item.filename
+            }))
+
+            // Reach limit then delete and cancel query
+            if (images.length + listPath.length >= config.PRODUCT_IMAGE_NUMBER_LIMIT) {
+                for (const idx in listPath) {
+                    const uploader = cloudinary.uploader;
+                    try {
+                        await uploader.destroy(listPath[idx].filename)
+                    } catch (err) {
+                        console.log("Cannot delete product image")
+                    }
+                }
+                return res.status(200).send({
+                    exitcode: 102,
+                    message: `Each product can only have ${config.PRODUCT_IMAGE_NUMBER_LIMIT} image`
+                })
+            }
+
+            if (listPath.length > 0) {
+                await productModel.insertImages(productId, listPath)
+            }
 
             res.status(200).send({
                 exitcode: 0,
@@ -229,12 +257,47 @@ export default {
     async updateProduct(req, res, next) {
         try {
             const productId = req.params.productId;
-            const { productName, categoryName, description } = req.body;
+            const { productName, categoryId, description } = req.body;
             const entity = {
                 productName,
-                categoryName,
+                categoryId,
                 description
             }
+
+            // Get append images
+            const { files } = req;
+            const listPath = files.map(item => ({
+                path: item.path,
+                filename: item.filename
+            }))
+
+            // Get current image
+            const listImage = await productModel.getImageById(productId)
+            const images = listImage.map(item => ({
+                id: item.id,
+                path: item.path,
+                filename: item.filename
+            }))
+
+            // Reach limit then delete and cancel query
+            if (images.length + listPath.length >= config.PRODUCT_IMAGE_NUMBER_LIMIT) {
+                for (const idx in listPath) {
+                    const uploader = cloudinary.uploader;
+                    try {
+                        await uploader.destroy(listPath[idx].filename)
+                    } catch (err) {
+                        console.log("Cannot delete product image")
+                    }
+                }
+                return res.status(200).send({
+                    exitcode: 102,
+                    message: `Each product can only have ${config.PRODUCT_IMAGE_NUMBER_LIMIT} image`
+                })
+            }
+            if (listPath.length > 0) {
+                await productModel.insertImages(productId, listPath)
+            }
+
             const result = await productModel.updateProduct(productId, entity);
             if (result > 0) {
                 res.status(200).send({
