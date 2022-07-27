@@ -3,7 +3,7 @@ import { Button, Upload } from "antd";
 
 import { Form, Input } from "antd";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
@@ -23,8 +23,6 @@ const EditProductSection = () => {
   const { id } = useParams();
   const [form] = useForm();
   const [product, setProduct] = useState({});
-  const [imageCount, setImageCount] = useState(0);
-  const [currentSelectedImageCount, setCurrentSelectedImageCount] = useState(0);
   const [description, setDescription] = useState("");
   const [variants, setVariants] = useState("[]");
 
@@ -32,7 +30,11 @@ const EditProductSection = () => {
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({});
   const [allowUpload, setAllowUpload] = useState(true);
+
+  const [selectedImages, setSelectedImages] = useState([]);
   const [images, setImages] = useState([]);
+
+  const navigate = useNavigate();
 
   const showAddModal = () => {
     setVisibleAdd(true);
@@ -77,13 +79,14 @@ const EditProductSection = () => {
   };
 
   const onFinish = async (values) => {
-    values.description = description;
-    values.productImg = images;
-    console.log("Success:", values);
-
     try {
-      const response = await productService.updateProduct(values);
-      if (response.data.exitcode === 0) {
+      const response = await productService.updateProduct(
+        values,
+        description,
+        selectedImages
+      );
+      const { exitcode } = response.data;
+      if (exitcode === 0) {
         swal.fire("Thành công", "Cập nhật phẩm thành công", "success");
       } else {
         swal.fire(
@@ -98,11 +101,14 @@ const EditProductSection = () => {
   };
 
   const getProductById = async () => {
-    const response = await productService.getProductById(id);
-    const { product } = response.data;
-    setProduct(product);
-    setImages(product.images);
-    setDescription(product.description ? product.description : "");
+    try {
+      const response = await productService.getProductById(id);
+      const { product } = response.data;
+      setProduct(product);
+      setDescription(product.description || "");
+    } catch (error) {
+      navigate("/error");
+    }
   };
 
   const getVariants = async () => {
@@ -117,43 +123,35 @@ const EditProductSection = () => {
 
   useEffect(() => {
     getProductById();
-  }, [id]); // eslint-disable-line
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     getVariants();
   }, [variants]); //eslint-disable-line
 
   useEffect(() => {
-    setImageCount(product?.images?.length);
-  }, [images]); //eslint-disable-line
-
-  useEffect(() => {
     form.resetFields();
+    setImages(product.images || []);
   }, [product]); //eslint-disable-line
-
-  console.log(imageCount);
 
   const uploadProps = {
     listType: "picture",
     multiple: true,
-    maxCount: 10 - imageCount,
+    maxCount: 10 - images.length,
     accept: "image/png, image/jpeg",
     showUploadList: true,
 
     onChange({ file, fileList }) {
       console.log("Length", fileList.length);
-      if (fileList.length >= 10 - imageCount) {
-        setAllowUpload(false);
-        setCurrentSelectedImageCount(fileList.length);
-      } else {
-        setAllowUpload(true);
-        setImages([...images, file]);
-        setCurrentSelectedImageCount(fileList.length);
-      }
+      // if () {
+      //   setAllowUpload(false);
+      // } else {
+      //   setAllowUpload(true);
+      // }
     },
 
     async beforeUpload(file) {
-      console.log("Max count:", 10 - imageCount);
+      console.log("Go");
       if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
         swal.fire({
           text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
@@ -162,6 +160,8 @@ const EditProductSection = () => {
         });
         return false;
       }
+      setSelectedImages([file, ...selectedImages]);
+
       return false;
     },
   };
@@ -232,19 +232,20 @@ const EditProductSection = () => {
         <div>
           <Form.Item
             label={`Upload thêm hình ảnh (Còn lại ${
-              10 - imageCount - currentSelectedImageCount
+              10 - images.length - selectedImages.length
             })`}
             valuePropName="fileList"
           >
             <div className="mb-2 text-primary text-md">
               Mỗi sản phẩm có tối đa 10 hình ảnh.
             </div>
-            <div className="mb-2">Số ảnh hiện tại: {imageCount}</div>
-            <div className="mb-2">
-              Số ảnh đã chọn: {currentSelectedImageCount}
-            </div>
+            <div className="mb-2">Số ảnh hiện tại: {images.length}</div>
+            <div className="mb-2">Số ảnh đã chọn: {selectedImages.length}</div>
             <Upload {...uploadProps}>
-              <Button disabled={!allowUpload} icon={<UploadOutlined />}>
+              <Button
+                disabled={!(selectedImages?.length + images?.length < 10)}
+                icon={<UploadOutlined />}
+              >
                 Chọn hình ảnh
               </Button>
             </Upload>
