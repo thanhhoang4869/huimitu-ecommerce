@@ -10,6 +10,8 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import VariantTable from "../VariantTable";
 
 import { useForm } from "antd/lib/form/Form";
+import { isImage, sizeLessMegaByte } from "utils/validator";
+import swal from "sweetalert2";
 
 import "./style.css";
 import productService from "services/product";
@@ -27,6 +29,8 @@ const EditProductSection = () => {
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({});
+  const [isUploading, setIsUploading] = useState(false);
+  const [images, setImages] = useState([]);
 
   const showAddModal = () => {
     setVisibleAdd(true);
@@ -40,18 +44,15 @@ const EditProductSection = () => {
   const handleAddSuccess = async (values) => {
     values = {
       productId: product.id,
-      ...values
-    }
-    console.log("Success:", values);
-
+      ...values,
+    };
     const response = await variantService.createVariant(values);
-    console.log(response.data);
 
-    if (response.data.exitcode == 0) {
-      setVisibleAdd(false)
+    if (response.data.exitcode === 0) {
+      setVisibleAdd(false);
     }
-    getVariants()
-  }
+    getVariants();
+  };
 
   const handleAddCancel = () => {
     setVisibleAdd(false);
@@ -63,31 +64,33 @@ const EditProductSection = () => {
     const response = await variantService.updateVariant(values);
     console.log(response.data);
 
-    if (response.data.exitcode == 0) {
-      setVisibleEdit(false)
-      getVariants()
+    if (response.data.exitcode === 0) {
+      setVisibleEdit(false);
+      getVariants();
     }
-  }
+  };
 
   const handleEditCancel = () => {
     setVisibleEdit(false);
   };
 
   const onFinish = (values) => {
+    values.description = description;
+    values.images = images;
     console.log("Success:", values);
   };
 
   const getProductById = async () => {
     const response = await productService.getProductById(id);
     const { product } = response.data;
+    console.log(product);
     setProduct(product);
-    setDescription(product.description ? product.description:"");
+    setDescription(product.description ? product.description : "");
   };
 
   const getVariants = async () => {
     const response = await variantService.getByProductId(id);
     const { variants } = response.data;
-    console.log(variants);
     setVariants(JSON.stringify(variants));
   };
 
@@ -97,15 +100,40 @@ const EditProductSection = () => {
 
   useEffect(() => {
     getProductById();
-  }, [id]);
+  }, [id]); // eslint-disable-line
 
   useEffect(() => {
     getVariants();
-  }, [variants]);
+  }, [variants]); //eslint-disable-line
 
   useEffect(() => {
     form.resetFields();
-  }, [product]);
+  }, [product]); //eslint-disable-line
+
+  const uploadProps = {
+    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+    listType: "picture",
+    multiple: true,
+    maxCount: 5,
+    accept: "image/png, image/jpeg",
+    showUploadList: true,
+
+    async beforeUpload(file) {
+      if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
+        swal.fire({
+          text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return false;
+      }
+
+      setIsUploading(true);
+      setImages([...images, file]);
+      setIsUploading(false);
+      return false;
+    },
+  };
 
   return (
     <>
@@ -173,12 +201,7 @@ const EditProductSection = () => {
 
         <div>
           <Form.Item label="Upload thêm hình ảnh" valuePropName="fileList">
-            <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              listType="picture"
-              maxCount={5}
-              multiple
-            >
+            <Upload {...uploadProps}>
               <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
             </Upload>
           </Form.Item>

@@ -24,7 +24,7 @@ const UpdateInformationPage = (props) => {
 
   useEffect(() => {
     fetchAccount();
-  }, [])
+  }, []);
 
   const handleChangeInformation = async (data) => {
     try {
@@ -87,7 +87,7 @@ const UpdateInformationPage = (props) => {
 
     if (!(newPassword && confirmPassword)) {
       return swal.fire({
-        text: "Vui lòng tất cả các trường",
+        text: "Vui lòng điền tất cả các trường",
         icon: "info",
         confirmButtonText: "OK",
       });
