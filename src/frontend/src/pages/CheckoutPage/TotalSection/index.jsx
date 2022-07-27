@@ -21,6 +21,7 @@ const TotalSection = (props) => {
   const finalPrice = props.finalPrice || 0;
 
   const handleCheckout = props.handleCheckout;
+  const loading = props.loading;
 
   return (
     <div className="col-md-5 order-md-2 mb-4">
@@ -92,6 +93,8 @@ const TotalSection = (props) => {
       {paymentId === 1 && (
         <div className="mt-4">
           <MyPaypalButton
+            loading={loading}
+            disabled={loading}
             shippingAddressId={shippingAddressId}
             receiverPhone={receiverPhone}
             receiverName={receiverName}
@@ -101,6 +104,8 @@ const TotalSection = (props) => {
       )}
       {paymentId === 2 && (
         <Button
+          loading={loading}
+          disabled={loading}
           type="primary"
           className="mt-4"
           onClick={handleCheckout}
@@ -112,6 +117,8 @@ const TotalSection = (props) => {
       )}
       {paymentId === 3 && (
         <Button
+          loading={loading}
+          disabled={loading}
           type="primary"
           className="mt-4"
           onClick={handleCheckout}

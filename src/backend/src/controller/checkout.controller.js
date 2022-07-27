@@ -10,6 +10,7 @@ import { MomoCheckoutProvider, PaypalCheckoutProvider, ShipCodCheckoutProvider }
 import orderModel from '#src/models/order.model'
 import { getRate } from '#src/utils/currencyConverter'
 import { getDistance } from "#src/utils/map"
+import { getOrderEmail, createTransport } from "#src/utils/nodemailer";
 
 export default {
     async getBreakDownPrice(req, res, next) {
@@ -33,8 +34,16 @@ export default {
                 const variantsResult = await variantModel.getByCartId(cart.id)
                 variants = variantsResult;
             }
+            variants = variants.map(item => ({
+                id: item.id,
+                variantName: item.variant_name,
+                price: item.price,
+                discountPrice: item.discount_price,
+                stock: item.stock,
+                quantity: item.quantity
+            }))
             totalPrice = variants.reduce((previous, current) => (
-                previous + (current.discount_price || current.price) * current.quantity
+                previous + (+current.discountPrice || +current.price) * current.quantity
             ), 0)
 
             // Calculate discount
@@ -187,6 +196,10 @@ export default {
             if (providerName === config.payment.COD) {
                 await orderModel.updateState(orderId, config.orderState.PENDING);
             }
+
+            const mailOption = getOrderEmail(email, orderId, variants, basicInfo);
+            await createTransport().sendMail(mailOption);
+            console.log(mailOption.html)
 
             // Response
             res.status(200).send({

@@ -18,15 +18,18 @@ const OrderFooter = (props) => {
         <Row>
           <Col>
             <div>Phí vận chuyển:</div>
-            <div>Giảm giá: </div>
+            {+order.discountPrice !== 0 && <div>Giảm giá: </div>}
           </Col>
           <Col className="ml-2">
             <div className="color-key">
               {formatter.formatPrice(order.shippingPrice)}
             </div>
-            <div className="color-key">
-              -{formatter.formatPrice(order.discountPrice)}
-            </div>
+
+            {+order.discountPrice !== 0 && (
+              <div className="color-key">
+                -{formatter.formatPrice(order.discountPrice)}
+              </div>
+            )}
           </Col>
         </Row>
       </p>

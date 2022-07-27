@@ -29,6 +29,8 @@ const CheckoutPage = () => {
   const [discountPrice, setDiscountPrice] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
 
+  const [loading, setLoading] = useState(false);
+
   const navigator = useNavigate();
 
   const fetchVariant = async () => {
@@ -61,11 +63,9 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     fetchPrice();
-    console.log(shippingAddressId);
   }, [listVariant, shippingAddressId, voucherCode]);
 
   const handleChangeShippingAddress = (value) => {
-    console.log(value);
     setShippingAddressId(value);
   };
 
@@ -94,6 +94,7 @@ const CheckoutPage = () => {
         });
         return;
       }
+      setLoading(true);
       const response = await checkoutService.checkout({
         receiverName,
         receiverPhone,
@@ -129,7 +130,11 @@ const CheckoutPage = () => {
         }
       }
       return null;
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchPrice = async () => {
@@ -190,6 +195,7 @@ const CheckoutPage = () => {
               handleChangeShippingAddress={handleChangeShippingAddress}
             />
             <TotalSection
+              loading={loading}
               receiverPhone={receiverPhone}
               variants={listVariant}
               receiverName={receiverName}
