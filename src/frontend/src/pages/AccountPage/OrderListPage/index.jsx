@@ -8,10 +8,15 @@ import swal from "sweetalert2";
 
 const OrderListPage = () => {
   const [orderList, setOrderList] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageLimit = 3;
 
   const fetchOrderList = async () => {
     try {
-      const response = await account.getOrderList();
+      const response = await account.getOrderList(
+        pageLimit,
+        pageLimit * (page - 1)
+      );
       const { orders } = response.data;
       setOrderList(orders);
     } catch (err) {
@@ -21,7 +26,7 @@ const OrderListPage = () => {
 
   useEffect(() => {
     fetchOrderList();
-  }, []);
+  }, [page]);
 
   const handleCancel = async (orderId) => {
     try {
@@ -78,11 +83,10 @@ const OrderListPage = () => {
         className="mb-5"
         dataSource={orderList}
         pagination={{
-          //TODO: Implement this
           onChange: (page) => {
-            console.log(page);
+            setPage(page);
           },
-          pageSize: 3,
+          pageSize: pageLimit,
         }}
         renderItem={(order) => (
           <OrderItem

@@ -105,28 +105,41 @@ const CheckoutPage = () => {
         voucherCode,
       });
       const { exitcode, orderId, redirectUrl } = response.data;
-      if (exitcode === 0) {
-        fetchCart();
 
-        // eslint-disable-next-line default-case
-        switch (paymentId) {
-          case 1: {
-            return orderId;
+      // eslint-disable-next-line default-case
+      switch (exitcode) {
+        case 0: {
+          fetchCart();
+          // eslint-disable-next-line default-case
+          switch (paymentId) {
+            case 1: {
+              return orderId;
+            }
+            case 2: {
+              window.location.assign(redirectUrl);
+              break;
+            }
+            case 3: {
+              await swal.fire({
+                title: "Đặt hàng thành công",
+                text: `Đơn hàng của bạn là: ${orderId}`,
+                icon: "info",
+                confirmButtonText: "OK",
+              });
+              navigator("/account/order");
+              break;
+            }
           }
-          case 2: {
-            window.location.assign(redirectUrl);
-            break;
-          }
-          case 3: {
-            await swal.fire({
-              title: "Đặt hàng thành công",
-              text: `Đơn hàng của bạn là: ${orderId}`,
-              icon: "info",
-              confirmButtonText: "OK",
-            });
-            navigator("/account/order");
-            break;
-          }
+        }
+
+        // eslint-disable-next-line no-fallthrough
+        case 103: {
+          swal.fire({
+            text: "Không đủ hàng để thanh toán",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          break;
         }
       }
       return null;
