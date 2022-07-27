@@ -149,15 +149,13 @@ export default {
     },
 
     async updateProduct(productId, entity) {
-        const { productName, categoryName, description } = entity
+        const { productName, categoryId, description } = entity
         const result = await db('product').where({
             id: productId
         }).update({
             product_name: productName,
             description: description,
-            category_id: (categoryName) ? (db('category').where({
-                category_name: categoryName
-            }).select('id')) : (undefined)
+            category_id: categoryId
         }).select('id')
         return result;
     },

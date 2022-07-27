@@ -19,20 +19,20 @@ router.post('/get', product.getProduct)
 router.post('/count', product.countProduct)
 
 router.post(
-    '/', 
-    verifyLogin, 
+    '/',
+    verifyLogin,
     verifyEmailVerified,
-    verifyAdmin, 
-    productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT), 
+    verifyAdmin,
+    productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT),
     product.createProduct
 )
 
 router.post(
-    '/image', 
-    verifyLogin, 
+    '/image',
+    verifyLogin,
     verifyEmailVerified,
-    verifyAdmin, 
-    productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT), 
+    verifyAdmin,
+    productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT),
     product.addImage
 )
 
@@ -40,8 +40,14 @@ router.get('/related/:productId', product.relatedProduct);
 
 router.route('/:productId')
     .get(product.getSingleProduct)
-    .patch(verifyLogin, verifyEmailVerified, verifyAdmin, product.updateProduct)
     .delete(verifyLogin, verifyEmailVerified, verifyAdmin, product.deleteProduct)
+    .patch(
+        verifyLogin,
+        verifyEmailVerified,
+        verifyAdmin,
+        productImageUploader.array('productImg', config.PRODUCT_IMAGE_NUMBER_LIMIT),
+        product.updateProduct
+    )
 
 router.route('/image/:productImageId')
     .delete(verifyLogin, verifyEmailVerified, verifyAdmin, product.deleteProductImage)
