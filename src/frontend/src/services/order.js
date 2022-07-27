@@ -9,6 +9,20 @@ const orderService = {
         return response;
     },
 
+    async getOrderList(limit, offset) {
+        const requestBody = {
+            limit: limit,
+            offset: offset
+        }
+        const response = await api.post("/order/", requestBody);
+        return response;
+    },
+
+    async getTotalOrder() {
+        const response = await api.get('/order/');
+        return response;
+    }
+
 };
 
 export default orderService;

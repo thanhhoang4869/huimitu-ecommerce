@@ -70,6 +70,7 @@ const ProductDetailPage = () => {
         }
 
         if (variantsData) {
+          console.log(variantsData);
           setSelectVariant(variantsData[0]);
           setVariants(variantsData);
         }
@@ -158,6 +159,9 @@ const ProductDetailPage = () => {
                     <li>
                       Đã bán: <p>{product.soldQuantity}</p>
                     </li>
+                    <li>
+                      Còn lại: <p>{selectVariant.stock}</p>
+                    </li>
                     <li>Tùy chọn</li>
                     <Radio.Group
                       value={selectVariant.id}
@@ -237,18 +241,20 @@ const ProductDetailPage = () => {
                     </span>
 
                     <span className="pro-details-cart">
-                      <Link
-                        to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
-                      >
-                        <input
-                          type="hidden"
-                          className="quantity"
-                          name="quantity"
-                        />
-                        <button className="buy-cart">
-                          <span>Mua ngay</span>
-                        </button>
-                      </Link>
+                      {selectVariant.stock >= quantity && (
+                        <Link
+                          to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
+                        >
+                          <input
+                            type="hidden"
+                            className="quantity"
+                            name="quantity"
+                          />
+                          <button className="buy-cart">
+                            <span>Mua ngay</span>
+                          </button>
+                        </Link>
+                      )}
                     </span>
                   </div>
                 </div>

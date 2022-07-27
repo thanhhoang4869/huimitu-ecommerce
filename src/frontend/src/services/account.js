@@ -39,10 +39,6 @@ const accountService = {
     const response = await api.patch('/account/avatar', form)
     return response;
   },
-  async getOrderList() {
-    const response = await api.post("/order/get");
-    return response;
-  }
 };
 
 export default accountService;

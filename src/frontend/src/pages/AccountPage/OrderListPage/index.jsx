@@ -1,17 +1,22 @@
-import { List, Table } from "antd";
+import { List } from "antd";
 import OrderItem from "components/OrderItem";
 import config from "config/config";
 import React, { useState, useEffect } from "react";
-import account from "services/account";
 import orderService from "services/order";
 import swal from "sweetalert2";
 
 const OrderListPage = () => {
   const [orderList, setOrderList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [totalItem, setTotalItem] = useState(0);
+  const pageLimit = 3;
 
   const fetchOrderList = async () => {
     try {
-      const response = await account.getOrderList();
+      const response = await orderService.getOrderList(
+        pageLimit,
+        pageLimit * (page - 1)
+      );
       const { orders } = response.data;
       setOrderList(orders);
     } catch (err) {
@@ -19,9 +24,25 @@ const OrderListPage = () => {
     }
   };
 
+  const fetchTotalItem = async () => {
+    try {
+      const response = await orderService.getTotalOrder();
+      const { exitcode, count } = response.data;
+      if (exitcode === 0) {
+        setTotalItem(count);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTotalItem();
+  }, []);
+
   useEffect(() => {
     fetchOrderList();
-  }, []);
+  }, [page]);
 
   const handleCancel = async (orderId) => {
     try {
@@ -78,11 +99,11 @@ const OrderListPage = () => {
         className="mb-5"
         dataSource={orderList}
         pagination={{
-          //TODO: Implement this
           onChange: (page) => {
-            console.log(page);
+            setPage(page);
           },
-          pageSize: 3,
+          pageSize: pageLimit,
+          total: totalItem,
         }}
         renderItem={(order) => (
           <OrderItem
