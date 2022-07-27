@@ -24,8 +24,8 @@ export default {
                 id,
                 created_time,
                 state,
-                payment_name,
                 provider,
+                province_name,
                 district_name,
                 ward_name,
                 total_price,
@@ -58,11 +58,11 @@ export default {
                     id: id,
                     createdTime: moment(created_time).format('DD/MM/YYYY HH:mm:ss'),
                     state: state,
-                    paymentName: payment_name,
-                    provinceName: provider,
+                    paymentName: provider,
+                    provinceName: province_name,
                     districtName: district_name,
                     wardName: ward_name,
-                    totalPrice: total,
+                    totalPrice: total_price,
                     totalPrice: total_price,
                     discountPrice: discount_price,
                     shippingPrice: shipping_price,
@@ -108,7 +108,6 @@ export default {
                     provinceName: orderItem.province_name,
                     districtName: orderItem.district_name,
                     wardName: orderItem.ward_name,
-                    totalPrice: orderItem.total,
                     totalPrice: orderItem.total_price,
                     discountPrice: orderItem.discount_price,
                     shippingPrice: orderItem.shipping_price,
@@ -164,6 +163,7 @@ export default {
 
             let success = false;
             switch (state) {
+                // Pending to shipping (admin only)
                 case (config.orderState.SHIPPING): {
                     if (role !== config.role.ADMIN) {
                         throw new ErrorHandler(403, "Only admin can do this operation")
@@ -174,17 +174,36 @@ export default {
                             message: "Order can only change to shipping during pending state"
                         })
                     }
+
+                    // Check for stock
+                    const variants = await variantModel.getByOrderId(orderId);
+                    const insufficientVariants = variants.filter(item => item.stock < item.quantity)
+                    if (insufficientVariants.length > 0) {
+                        return res.status(200).send({
+                            exitcode: 103,
+                            message: "Do not have enough stock"
+                        })
+                    }
+
+                    for (const idx in variants) {
+                        const variant = variants[idx]
+                        await variantModel.updateVariant(variant.id, {
+                            stock: variant.stock - variant.quantity
+                        });
+                    }
+
                     await orderModel.updateState(orderId, config.orderState.SHIPPING)
                     success = true;
                     break;
                 }
+                // Pending to cancel (owner only)
                 case (config.orderState.CANCEL): {
                     if (order.email !== email) {
                         throw new ErrorHandler(403, "Only order owner can do this operation")
                     }
                     if (order.state !== config.orderState.PENDING) {
                         return res.status(200).send({
-                            exitcode: 102,
+                            exitcode: 104,
                             message: "Order can only be cancelled during pending state"
                         })
                     }
@@ -192,13 +211,14 @@ export default {
                     success = true;
                     break;
                 }
+                // Shipping to success (owner only)
                 case (config.orderState.SUCCESS): {
                     if (order.email !== email) {
                         throw new ErrorHandler(403, "Only order owner can do this operation")
                     }
                     if (order.state !== config.orderState.SHIPPING) {
                         return res.status(200).send({
-                            exitcode: 103,
+                            exitcode: 105,
                             message: "Order can only be cancelled during pending state"
                         })
                     }

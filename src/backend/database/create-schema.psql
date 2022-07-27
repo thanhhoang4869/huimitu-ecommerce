@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS "cart" CASCADE;
 DROP TABLE IF EXISTS "cart_variant" CASCADE;
 DROP TABLE IF EXISTS "review" CASCADE;
 DROP TABLE IF EXISTS "voucher" CASCADE;
+DROP TABLE IF EXISTS "voucher_user" CASCADE;
 DROP TABLE IF EXISTS "frequent_product" CASCADE;
 
 ----------------------- CREATE TABLE -------------------------
