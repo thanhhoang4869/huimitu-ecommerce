@@ -44,7 +44,9 @@ export default {
                 return {
                     id: item.id,
                     variantName: item.variant_name,
-                    price: item.variant_price,
+                    discount_price: item.discount_price,
+                    price: item.price,
+                    variant_price: item.variant_price,
                     quantity: item.quantity,
                     image: imagePath
                 }
@@ -62,7 +64,6 @@ export default {
                     provinceName: province_name,
                     districtName: district_name,
                     wardName: ward_name,
-                    totalPrice: total_price,
                     totalPrice: total_price,
                     discountPrice: discount_price,
                     shippingPrice: shipping_price,
@@ -93,7 +94,9 @@ export default {
                     return {
                         id: variantItem.id,
                         variantName: variantItem.variant_name,
-                        price: variantItem.variant_price,
+                        variantPrice: variantItem.variant_price,
+                        discountPrice: variantItem.discount_price,
+                        price: variantItem.price,
                         quantity: variantItem.quantity,
                         image: imagePath
                     }

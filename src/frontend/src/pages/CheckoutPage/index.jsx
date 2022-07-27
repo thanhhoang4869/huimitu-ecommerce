@@ -8,6 +8,7 @@ import variantService from "services/variant";
 import swal from "sweetalert2";
 import checkoutService from "services/checkout";
 import { validatePhone } from "utils/validator";
+import orderService from "services/order";
 
 const CheckoutPage = () => {
   const { cart, account, fetchCart } = useContext(AccountContext);
@@ -15,6 +16,7 @@ const CheckoutPage = () => {
   const [searchParams] = useSearchParams();
   const variantId = searchParams.get("variantId");
   const quantity = searchParams.get("quantity");
+  const checkoutOrderId = searchParams.get("orderId");
 
   const [listVariant, setListVariant] = useState([]);
 
@@ -43,6 +45,18 @@ const CheckoutPage = () => {
     }
   };
 
+  const fetchOrder = async () => {
+    try {
+      const response = await orderService.getById(checkoutOrderId);
+      const { exitcode, order } = response.data;
+      if (exitcode === 0) {
+        setListVariant(order.variants);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     if (!account) return;
     setReceiverName(account.fullname);
@@ -53,15 +67,19 @@ const CheckoutPage = () => {
     if (variantId && quantity) {
       fetchVariant();
     }
+    if (checkoutOrderId) {
+      fetchOrder();
+    }
   }, []);
 
   useEffect(() => {
-    if (!(variantId && quantity)) {
+    if (!((variantId && quantity) || checkoutOrderId)) {
       setListVariant(cart.variants);
     }
   }, [cart]);
 
   useEffect(() => {
+    console.log(listVariant);
     fetchPrice();
   }, [listVariant, shippingAddressId, voucherCode]);
 
@@ -100,33 +118,48 @@ const CheckoutPage = () => {
         receiverPhone,
         variantId,
         quantity,
+        orderId: checkoutOrderId,
         paymentId,
         shippingAddressId,
         voucherCode,
       });
       const { exitcode, orderId, redirectUrl } = response.data;
-      if (exitcode === 0) {
-        fetchCart();
 
-        // eslint-disable-next-line default-case
-        switch (paymentId) {
-          case 1: {
-            return orderId;
+      // eslint-disable-next-line default-case
+      switch (exitcode) {
+        case 0: {
+          fetchCart();
+          // eslint-disable-next-line default-case
+          switch (paymentId) {
+            case 1: {
+              return orderId;
+            }
+            case 2: {
+              window.location.assign(redirectUrl);
+              break;
+            }
+            case 3: {
+              await swal.fire({
+                title: "Đặt hàng thành công",
+                text: `Đơn hàng của bạn là: ${orderId}`,
+                icon: "info",
+                confirmButtonText: "OK",
+              });
+              navigator("/account/order");
+              break;
+            }
           }
-          case 2: {
-            window.location.assign(redirectUrl);
-            break;
-          }
-          case 3: {
-            await swal.fire({
-              title: "Đặt hàng thành công",
-              text: `Đơn hàng của bạn là: ${orderId}`,
-              icon: "info",
-              confirmButtonText: "OK",
-            });
-            navigator("/account/order");
-            break;
-          }
+          break;
+        }
+
+        // eslint-disable-next-line no-fallthrough
+        case 103: {
+          swal.fire({
+            text: "Không đủ hàng để thanh toán",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          break;
         }
       }
       return null;
@@ -139,12 +172,13 @@ const CheckoutPage = () => {
 
   const fetchPrice = async () => {
     try {
-      const response = await checkoutService.getPrice(
+      const response = await checkoutService.getPrice({
         shippingAddressId,
         voucherCode,
+        orderId: checkoutOrderId,
         variantId,
-        quantity
-      );
+        quantity,
+      });
       const { exitcode, finalPrice, shippingPrice, totalPrice, discountPrice } =
         response.data;
 
@@ -176,7 +210,9 @@ const CheckoutPage = () => {
           break;
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err)
+    }
   };
 
   return (

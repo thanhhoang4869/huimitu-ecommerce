@@ -20,6 +20,7 @@ export default {
                 variantId,
                 quantity,
                 shippingAddressId,
+                orderId,
                 voucherCode
             } = req.body;
 
@@ -29,6 +30,9 @@ export default {
             if (variantId && quantity) {
                 const variant = await variantModel.getByVariantId(variantId)
                 variants.push({ ...variant, quantity })
+            } else if (orderId) {
+                const variantsResult = await variantModel.getByOrderId(orderId);
+                variants = variantsResult;
             } else {
                 const cart = await cartModel.getCartByEmail(email);
                 const variantsResult = await variantModel.getByCartId(cart.id)
@@ -125,9 +129,19 @@ export default {
                 variants
             } = req.body;
 
-            if (!shippingAddressId) {
+            // Check for stock 
+            const insufficientVariants = variants.filter(item => item.stock < item.quantity)
+            if (insufficientVariants.length > 0) {
                 return res.status(200).send({
                     exitcode: 103,
+                    message: "Do not have enough stock"
+                })
+            }
+
+            // Check valid shipping address
+            if (!shippingAddressId) {
+                return res.status(200).send({
+                    exitcode: 104,
                     message: "Invalid shipping address ID"
                 })
             }
@@ -145,7 +159,7 @@ export default {
             const payment = await paymentModel.getById(paymentId)
             if (payment === null) {
                 return res.status(200).send({
-                    exitcode: 104,
+                    exitcode: 105,
                     message: "Invalid payment ID"
                 })
             }

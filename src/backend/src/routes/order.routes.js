@@ -3,10 +3,12 @@ import express from 'express'
 
 const router = express.Router();
 
-router.get('/:orderId', orderController.getOrder);
-router.post('/get', orderController.getListOrder);
-router.get('/count', orderController.getCountOrder);
+router.route('/')
+    .post(orderController.getListOrder)
+    .get(orderController.getCountOrder)
 
-router.patch('/:orderId', orderController.updateState);
+router.route('/:orderId')
+    .get(orderController.getOrder)
+    .patch(orderController.updateState);
 
 export default router;
