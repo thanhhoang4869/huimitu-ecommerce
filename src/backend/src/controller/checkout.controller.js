@@ -184,7 +184,8 @@ export default {
             const [orderId, redirectUrl] = await checkoutProvider.createLink(
                 exchangedPrice,
                 userInfo,
-                `${req.headers.origin}/account/order`
+                `${req.headers.origin}`,
+                `${req.protocol}://${req.get('host')}`
             );
             console.debug(redirectUrl)
 
@@ -213,7 +214,6 @@ export default {
 
             const mailOption = getOrderEmail(email, orderId, variants, basicInfo);
             await createTransport().sendMail(mailOption);
-            console.log(mailOption.html)
 
             // Response
             res.status(200).send({
