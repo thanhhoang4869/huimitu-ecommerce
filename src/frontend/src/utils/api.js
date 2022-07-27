@@ -3,7 +3,7 @@ import config from "config/config";
 import storageService from "services/storage";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: config.SERVER_PATH,
 });
 
 api.interceptors.request.use(async (currentConfig) => {

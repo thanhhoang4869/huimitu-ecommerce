@@ -28,16 +28,19 @@ class MomoCheckoutProvider {
      *
      * @return {[String, String]} The orderId and the URL to pay for the request
      */
-    createLink = async (amount, userInfo, redirectUrl, extraData = "") => {
+    createLink = async (amount, userInfo, redirectHost, ipnHost, extraData = "") => {
         const partnerCode = config.MOMO_PARTNER_CODE
         const accessKey = config.MOMO_ACCESS_KEY
         const secretKey = config.MOMO_SECRET_KEY
+
+        console.log(redirectHost,ipnHost)
+        const redirectUrl = `${redirectHost}/account/order`
+        const ipnUrl = `${ipnHost}/checkout/notifyMomo`
 
         const orderId = generateOrderId();
         const orderInfo = `Pay for order ID ${orderId} with Momo`
         const requestId = partnerCode + new Date().getTime();
 
-        const ipnUrl = "https://6b6c-116-102-164-226.ap.ngrok.io/checkout/notifyMomo"
         const requestType = "captureWallet"
 
         const rawSignature = [
@@ -187,7 +190,6 @@ class MomoCheckoutProvider {
             )
 
             const { data } = response;
-            console.log(data)
         } catch (err) {
             console.error(err.response.data)
         }
