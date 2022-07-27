@@ -29,7 +29,6 @@ const EditProductSection = () => {
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({});
-  const [allowUpload, setAllowUpload] = useState(true);
 
   const [selectedImages, setSelectedImages] = useState([]);
   const [images, setImages] = useState([]);
