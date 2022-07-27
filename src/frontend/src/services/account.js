@@ -39,14 +39,6 @@ const accountService = {
     const response = await api.patch('/account/avatar', form)
     return response;
   },
-  async getOrderList(limit, offset) {
-    const requestBody = {
-      limit: limit,
-      offset: offset
-    }
-    const response = await api.post("/order/get", requestBody);
-    return response;
-  }
 };
 
 export default accountService;

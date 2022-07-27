@@ -130,6 +130,7 @@ const CheckoutPage = () => {
               break;
             }
           }
+          break;
         }
 
         // eslint-disable-next-line no-fallthrough
