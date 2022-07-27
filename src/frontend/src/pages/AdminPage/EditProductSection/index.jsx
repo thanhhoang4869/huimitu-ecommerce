@@ -23,13 +23,15 @@ const EditProductSection = () => {
   const { id } = useParams();
   const [form] = useForm();
   const [product, setProduct] = useState({});
+  const [imageCount, setImageCount] = useState(0);
+  const [currentSelectedImageCount, setCurrentSelectedImageCount] = useState(0);
   const [description, setDescription] = useState("");
   const [variants, setVariants] = useState("[]");
 
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({});
-  const [isUploading, setIsUploading] = useState(false);
+  const [allowUpload, setAllowUpload] = useState(true);
   const [images, setImages] = useState([]);
 
   const showAddModal = () => {
@@ -74,17 +76,32 @@ const EditProductSection = () => {
     setVisibleEdit(false);
   };
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     values.description = description;
-    values.images = images;
+    values.productImg = images;
     console.log("Success:", values);
+
+    try {
+      const response = await productService.updateProduct(values);
+      if (response.data.exitcode === 0) {
+        swal.fire("Thành công", "Cập nhật phẩm thành công", "success");
+      } else {
+        swal.fire(
+          "Thất bại",
+          "Cập nhật phẩm thất bại. Vui lòng thử lại sau",
+          "error"
+        );
+      }
+    } catch (error) {
+      swal.fire("Thất bại", error.message, "error");
+    }
   };
 
   const getProductById = async () => {
     const response = await productService.getProductById(id);
     const { product } = response.data;
-    console.log(product);
     setProduct(product);
+    setImages(product.images);
     setDescription(product.description ? product.description : "");
   };
 
@@ -107,18 +124,36 @@ const EditProductSection = () => {
   }, [variants]); //eslint-disable-line
 
   useEffect(() => {
+    setImageCount(product?.images?.length);
+  }, [images]); //eslint-disable-line
+
+  useEffect(() => {
     form.resetFields();
   }, [product]); //eslint-disable-line
 
+  console.log(imageCount);
+
   const uploadProps = {
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
     listType: "picture",
     multiple: true,
-    maxCount: 5,
+    maxCount: 10 - imageCount,
     accept: "image/png, image/jpeg",
     showUploadList: true,
 
+    onChange({ file, fileList }) {
+      console.log("Length", fileList.length);
+      if (fileList.length >= 10 - imageCount) {
+        setAllowUpload(false);
+        setCurrentSelectedImageCount(fileList.length);
+      } else {
+        setAllowUpload(true);
+        setImages([...images, file]);
+        setCurrentSelectedImageCount(fileList.length);
+      }
+    },
+
     async beforeUpload(file) {
+      console.log("Max count:", 10 - imageCount);
       if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
         swal.fire({
           text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
@@ -127,10 +162,6 @@ const EditProductSection = () => {
         });
         return false;
       }
-
-      setIsUploading(true);
-      setImages([...images, file]);
-      setIsUploading(false);
       return false;
     },
   };
@@ -198,11 +229,24 @@ const EditProductSection = () => {
             onChange={inputHandler}
           />
         </Form.Item>
-
         <div>
-          <Form.Item label="Upload thêm hình ảnh" valuePropName="fileList">
+          <Form.Item
+            label={`Upload thêm hình ảnh (Còn lại ${
+              10 - imageCount - currentSelectedImageCount
+            })`}
+            valuePropName="fileList"
+          >
+            <div className="mb-2 text-primary text-md">
+              Mỗi sản phẩm có tối đa 10 hình ảnh.
+            </div>
+            <div className="mb-2">Số ảnh hiện tại: {imageCount}</div>
+            <div className="mb-2">
+              Số ảnh đã chọn: {currentSelectedImageCount}
+            </div>
             <Upload {...uploadProps}>
-              <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+              <Button disabled={!allowUpload} icon={<UploadOutlined />}>
+                Chọn hình ảnh
+              </Button>
             </Upload>
           </Form.Item>
         </div>

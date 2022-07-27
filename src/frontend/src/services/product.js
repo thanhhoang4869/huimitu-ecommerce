@@ -49,7 +49,12 @@ const product = {
   async createProduct(data) {
     const response = await api.post("/product", data);
     return response;
-  }
+  },
+
+  async updateProduct(data) {
+    const response = await api.patch(`/product/${data.id}`, data);
+    return response;
+  },
 };
 
 export default product;

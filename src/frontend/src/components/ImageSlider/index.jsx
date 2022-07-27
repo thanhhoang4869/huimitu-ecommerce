@@ -1,5 +1,6 @@
 import { Carousel } from "antd";
 import React from "react";
+import "./style.scss";
 
 const contentStyle = {
   height: "100%",
@@ -9,7 +10,7 @@ const contentStyle = {
 };
 
 const ImageSlider = ({ children }) => (
-  <Carousel autoplay>
+  <Carousel autoplay dots={{ className: "slick-dots carousel-dot" }}>
     {(children || []).map((item) => (
       <div>
         <img style={contentStyle} alt="img" src={item}></img>
