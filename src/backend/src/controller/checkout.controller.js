@@ -20,6 +20,7 @@ export default {
                 variantId,
                 quantity,
                 shippingAddressId,
+                orderId,
                 voucherCode
             } = req.body;
 
@@ -29,6 +30,9 @@ export default {
             if (variantId && quantity) {
                 const variant = await variantModel.getByVariantId(variantId)
                 variants.push({ ...variant, quantity })
+            } else if (orderId) {
+                const variantsResult = await variantModel.getByOrderId(orderId);
+                variants = variantsResult;
             } else {
                 const cart = await cartModel.getCartByEmail(email);
                 const variantsResult = await variantModel.getByCartId(cart.id)

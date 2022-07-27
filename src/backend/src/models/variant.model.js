@@ -62,6 +62,8 @@ export default {
                 "product_variant.product_id",
                 "product_variant.variant_name",
                 "product_variant.stock",
+                "product_variant.price",
+                "product_variant.discount_price",
                 "order_variant.variant_price",
                 "order_variant.quantity"
             )
