@@ -4,6 +4,7 @@ import swal from "sweetalert2";
 import { useForm } from "antd/lib/form/Form";
 
 import voucherService from "services/voucher";
+import formatter from "utils/formatter";
 
 const AddVoucherSection = () => {
   const [form] = useForm();
@@ -11,6 +12,8 @@ const AddVoucherSection = () => {
   const onFinish = async (values) => {
     console.log(values);
     try {
+      values.startDate = formatter.formatDate(values.startDate);
+      values.endDate = formatter.formatDate(values.endDate);
       const res = await voucherService.createVoucher(values);
       console.log(res.data);
       if (res.data.exitcode === 0) {
@@ -117,6 +120,23 @@ const AddVoucherSection = () => {
             placeholder="Nhập phần trăm"
             formatter={(value) => `${value}%`}
             parser={(value) => value.replace("%", "")}
+            style={{ width: "100%" }}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Tổng số lượt dùng"
+          name="maximumUsage"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập tổng số lượt dùng!",
+            },
+          ]}
+        >
+          <InputNumber
+            min={0}
+            placeholder="Nhập tổng số lượt dùng"
             style={{ width: "100%" }}
           />
         </Form.Item>

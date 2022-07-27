@@ -29,7 +29,7 @@ const ViewVoucherSection = () => {
       align: "center",
     },
     {
-      title: "Phần trăm giảm",
+      title: "% giảm",
       dataIndex: "percentageDiscount",
       render: (percentageDiscount) => <div>{percentageDiscount}%</div>,
     },
@@ -42,12 +42,20 @@ const ViewVoucherSection = () => {
       sorter: (a, b) => +a.minPrice - +b.minPrice,
     },
     {
-      title: "Giá giảm tối đa",
+      title: "Giảm tối đa",
       dataIndex: "maximumDiscountPrice",
       render: (maximumDiscountPrice) => (
         <div>{formatter.formatPrice(maximumDiscountPrice)}</div>
       ),
       sorter: (a, b) => +a.stock - +b.stock,
+    },
+    {
+      title: "Lượt dùng",
+      render: (_, record) => (
+        <div>
+          {record.currentUsage} / {record.maximumUsage}
+        </div>
+      ),
     },
     {
       title: "Ngày bắt đầu",
@@ -62,22 +70,32 @@ const ViewVoucherSection = () => {
     },
   ];
 
-  const onDeleteVoucher = async (id) => {
-    try {
-      const result = await swal.fire(swalDeleteProps);
+  const onDeleteVoucher = async (voucherId) => {
+    swal.fire(swalDeleteProps).then(async (result) => {
       if (result.isConfirmed) {
-        swal.fire("Đã xóa voucher", "", "success");
+        try {
+          const result = await voucherService.deleteVoucher(voucherId);
+          if (result.data.exitcode === 0) {
+            swal.fire("Đã xóa voucher", "", "success");
+            getAllVouchers();
+          } else {
+            swal.fire("Có lỗi xảy ra", "", "error");
+          }
+        } catch (err) {
+          swal.fire("Có lỗi xảy ra", "", "error");
+        }
       }
-    } catch (err) {
-      console.error(err);
-    }
+    });
   };
 
   const data = vouchers.map((voucher) => {
     return {
       key: voucher.voucherCode,
       action: (
-        <div className="del" onClick={onDeleteVoucher}>
+        <div
+          className="del"
+          onClick={() => onDeleteVoucher(voucher.voucherCode)}
+        >
           <DeleteOutlined />
         </div>
       ),

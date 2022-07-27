@@ -64,21 +64,22 @@ const ViewProductSection = () => {
       sortDirections: ["descend"],
     },
     {
-      title: "Name",
+      title: "Tên sản phẩm",
       dataIndex: "productName",
     },
     {
-      title: "Price",
+      title: "Giá",
       dataIndex: "price",
+      width: "20%",
       sorter: (a, b) => +a.minPrice - +b.minPrice,
     },
     {
-      title: "Stock",
+      title: "SL",
       dataIndex: "stock",
       sorter: (a, b) => +a.stock - +b.stock,
     },
     {
-      title: "Category",
+      title: "Danh mục",
       dataIndex: "categoryName",
       width: "20%",
       filters: [
@@ -124,12 +125,7 @@ const ViewProductSection = () => {
 
   const data = products.map((product) => {
     return {
-      image: (
-        <img
-          src="https://images-na.ssl-images-amazon.com/images/I/71tvKFymISL.jpg"
-          alt="img"
-        />
-      ),
+      image: <img src={product?.image} alt="img" />,
       key: product.id,
       id: product.id,
       productName: (
