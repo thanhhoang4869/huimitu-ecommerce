@@ -141,15 +141,6 @@ const EditProductSection = () => {
     accept: "image/png, image/jpeg",
     showUploadList: true,
 
-    onChange({ file, fileList }) {
-      console.log("Length", fileList.length);
-      // if () {
-      //   setAllowUpload(false);
-      // } else {
-      //   setAllowUpload(true);
-      // }
-    },
-
     async beforeUpload(file) {
       console.log("Go");
       if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
