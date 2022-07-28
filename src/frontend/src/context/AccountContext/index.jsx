@@ -13,11 +13,7 @@ export const AccountProvider = ({ children }) => {
   const [account, setAccount] = useState({});
   const [isAdmin, setIsAdmin] = useState(account?.role === "admin");
   const [cart, setCart] = useState({});
-  const [shippingAddress, setShippingAddress] = useState([])
-
-  useEffect(() => {
-    setIsLogin(storageService.getAccessToken());
-  }, []);
+  const [shippingAddress, setShippingAddress] = useState([]);
 
   useEffect(() => {
     fetchCart();
@@ -43,7 +39,7 @@ export const AccountProvider = ({ children }) => {
 
   const fetchShippingAddress = async () => {
     if (!isLogin) return;
-    
+
     try {
       const response = await shippingAddressService.getListShippingAddress();
       const { exitcode, shippingAddresses } = response.data;
@@ -58,7 +54,7 @@ export const AccountProvider = ({ children }) => {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const fetchCart = async () => {
     if (!isLogin) return;
@@ -75,6 +71,9 @@ export const AccountProvider = ({ children }) => {
 
   const logout = () => {
     storageService.removeAccessToken();
+    setAccount({});
+    setCart({});
+    setIsAdmin(false);
     setIsLogin(false);
   };
 
