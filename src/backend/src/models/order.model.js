@@ -1,4 +1,5 @@
 import db from '#src/utils/db'
+import { removeUndefined } from '#src/utils/utils'
 
 export default {
     async getOrderById(orderId) {
@@ -19,7 +20,7 @@ export default {
                 "payment.provider",
                 "province_name",
                 "district_name",
-                "ward_name", 
+                "ward_name",
                 "total_price",
                 "discount_price",
                 "shipping_price",
@@ -29,23 +30,33 @@ export default {
                 "receiver_phone",
                 "reviewed"
             )
-            .orderBy('order_state.created_time','desc')
+            .orderBy('order_state.created_time', 'desc')
             .limit(1)
         return result[0] || null;
     },
 
-    async getCountOrder(email) {
-        const result = await db('order').where({
-            email: email
-        }).count();
-        try {
-            return result[0].count;
-        } catch (err) {
-            return null;
-        }
+    async getCountOrder({ email, orderState }) {
+        const query = removeUndefined({
+            'email': email,
+            'state': orderState
+        })
+        const orderWithState = db('order')
+            .join('order_state', 'order_state.order_id', 'order.id')
+            .select('email', 'id', 'state')
+            .distinctOn('email', 'id')
+            .orderBy(['id', 'email', 'order_state.created_time'].map((item) => ({
+                column: item,
+                order: 'desc'
+            }))).as('orderWithState')
+        const result = await db.from(orderWithState).where(query).count();
+        return result[0]?.count || null;
     },
 
-    async getListOrder(email, limit, offset) {
+    async getListOrder({ email, orderState, limit, offset }) {
+        const query = removeUndefined({
+            'order.email': email,
+            'order_state.state': orderState
+        })
         const distinctCols = [
             "order.created_time",
             "order.id",
@@ -65,9 +76,7 @@ export default {
             ...distinctCols,
             'order_state.state'
         ]
-        const result = await db('order').where({
-            'order.email': email
-        })
+        const result = await db('order')
             .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
             .join('province', 'shipping_address.province_id', 'province.id')
             .join('district', 'shipping_address.district_id', 'district.id')
@@ -76,10 +85,10 @@ export default {
             .join('order_state', 'order_state.order_id', 'order.id')
             .select(selectCols)
             .distinctOn(distinctCols)
-            .orderBy([...selectCols, 'order_state.created_time'].map((item) => ({
+            .orderBy([...distinctCols, 'order_state.created_time'].map((item) => ({
                 column: item,
                 order: 'desc'
-            })))
+            }))).where(query)
             .limit(limit).offset(offset)
         return result || null;
     },
