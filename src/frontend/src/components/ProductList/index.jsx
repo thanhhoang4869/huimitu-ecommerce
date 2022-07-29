@@ -1,5 +1,6 @@
 import { Avatar, List } from "antd";
 import React from "react";
+import { Link } from "react-router-dom";
 import formatter from "utils/formatter";
 
 import "./style.css";
@@ -19,7 +20,11 @@ const ProductList = ({ productList }) => {
                 src={product.image}
               />
             }
-            title={<a href="https://ant.design">{product.variantName}</a>}
+            title={
+              <Link to={`/product/detail/${product.productId}`}>
+                {product.variantName}
+              </Link>
+            }
             description={
               <>
                 <p className="product-description">{product.variantName}</p>
@@ -28,7 +33,7 @@ const ProductList = ({ productList }) => {
             }
           />
           <span className="color-key">
-            {formatter.formatPrice(product.variantPrice*product.quantity)}
+            {formatter.formatPrice(product.variantPrice * product.quantity)}
           </span>
         </List.Item>
       )}
