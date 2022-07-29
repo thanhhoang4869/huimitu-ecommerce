@@ -7,6 +7,7 @@ import AddProductSection from "./AddProductSection";
 import ViewVoucherSection from "./ViewVoucherSection";
 import AddVoucherSection from "./AddVoucherSection";
 import EditProductSection from "./EditProductSection";
+import ViewOrderSection from "./ViewOrderSection";
 
 const AdminPage = () => {
   return (
@@ -29,6 +30,10 @@ const AdminPage = () => {
                 <Route
                   path="/editProduct/:id"
                   element={<EditProductSection />}
+                />
+                <Route
+                  path="/viewOrder"
+                  element={<ViewOrderSection />}
                 />
               </Routes>
             </div>

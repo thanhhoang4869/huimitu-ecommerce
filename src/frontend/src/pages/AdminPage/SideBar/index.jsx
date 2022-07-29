@@ -1,4 +1,4 @@
-import { PercentageOutlined, ShopOutlined } from "@ant-design/icons";
+import { PercentageOutlined, ShopOutlined, BookOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,9 @@ const SideBar = () => {
     getItem("Voucher", "voucher", <PercentageOutlined />, [
       getItem("Xem và chỉnh sửa", "viewVoucher"),
       getItem("Thêm voucher", "addVoucher"),
+    ]),
+    getItem("Đơn hàng", "order", <BookOutlined />, [
+      getItem("Xem và duyệt đơn hàng", "viewOrder"),
     ]),
   ];
 
