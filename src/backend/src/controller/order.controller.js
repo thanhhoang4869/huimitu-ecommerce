@@ -123,6 +123,7 @@ export default {
 
                     return {
                         id: variantItem.id,
+                        productId: variantItem.product_id,
                         variantName: variantItem.variant_name,
                         variantPrice: variantItem.variant_price,
                         discountPrice: variantItem.discount_price,
