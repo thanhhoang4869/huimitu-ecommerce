@@ -9,9 +9,13 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import VariantTable from "../VariantTable";
 
 import { useForm } from "antd/lib/form/Form";
+import { isImage, sizeLessMegaByte } from "utils/validator";
+import swal from "sweetalert2";
 
 import category from "services/category";
 import variantService from "services/variant";
+import {default as productService} from "services/product";
+
 import "./style.css";
 
 import AddVariantModal from "../AddVariantModal";
@@ -29,6 +33,9 @@ const AddProductSection = () => {
 
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
+
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [images, setImages] = useState([]);
   const [selectedParentCateId, setSelectedParentCateId] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState({});
 
@@ -64,21 +71,25 @@ const AddProductSection = () => {
 
   const onFinish = async (values) => {
     //TODO
-    values = {
-      description,
-      files: [],
-      ...values,
-    };
-    console.log("Success:", values);
+    console.log("onFinish:", values, description, selectedImages);
 
     try {
-      // const respone = await productService.createProduct(values)
-      // const productId = respone.data.productId
-      // const productRespone = await productService.getProductById(productId)
-      // setProduct(productRespone.data.product)
-      // variants.map((variant) => createVariant(variant))
-      // console.log(respone.data)
+      const response = await productService.createProduct(values, description, selectedImages)
+      const productId = response.data.productId
+      console.log("Create product response" , response.data, productId)
+
+      variants.map((variant) => createVariant(productId, variant))
     } catch (error) {}
+  };
+
+  const createVariant = async (productId, variant) => {
+    variant = {
+      productId,
+      ...variant,
+    };
+
+    const response = await variantService.createVariant(variant);
+    console.log("Create variant: ", response.data);
   };
 
   const inputHandler = (event, editor) => {
@@ -108,17 +119,6 @@ const AddProductSection = () => {
     } catch (e) {}
   };
 
-  const createVariant = async (variant) => {
-    variant = {
-      productId: product.id,
-      ...variant,
-    };
-    console.log("Success:", variant);
-
-    const response = await variantService.createVariant(variant);
-    console.log(response.data);
-  };
-
   useEffect(() => {
     form.resetFields();
   }, [product]);
@@ -130,6 +130,29 @@ const AddProductSection = () => {
   useEffect(() => {
     fetchChildCategories();
   }, [selectedParentCateId]);
+
+  const uploadProps = {
+    listType: "picture",
+    multiple: true,
+    maxCount: 10 - images.length,
+    accept: "image/png, image/jpeg",
+    showUploadList: true,
+
+    async beforeUpload(file) {
+      console.log("Go");
+      if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
+        swal.fire({
+          text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return false;
+      }
+      setSelectedImages([file, ...selectedImages]);
+
+      return false;
+    },
+  };
 
   return (
     <>
@@ -215,14 +238,24 @@ const AddProductSection = () => {
         </Form.Item>
 
         <div>
-          <Form.Item label="Upload thêm hình ảnh" valuePropName="fileList">
-            <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              listType="picture"
-              maxCount={5}
-              multiple
-            >
-              <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+        <Form.Item
+            label={`Upload thêm hình ảnh (Còn lại ${
+              10 - images.length - selectedImages.length
+            })`}
+            valuePropName="fileList"
+          >
+            <div className="mb-2 text-primary text-md">
+              Mỗi sản phẩm có tối đa 10 hình ảnh.
+            </div>
+            <div className="mb-2">Số ảnh hiện tại: {images.length}</div>
+            <div className="mb-2">Số ảnh đã chọn: {selectedImages.length}</div>
+            <Upload {...uploadProps}>
+              <Button
+                disabled={!(selectedImages?.length + images?.length < 10)}
+                icon={<UploadOutlined />}
+              >
+                Chọn hình ảnh
+              </Button>
             </Upload>
           </Form.Item>
         </div>

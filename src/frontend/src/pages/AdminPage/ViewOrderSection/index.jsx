@@ -71,7 +71,7 @@ const ViewOrderSection = () => {
       try {
         const response = await orderService.updateState(
           orderId,
-          config.orderState.SUCCESS
+          config.orderState.SHIPPING
         );
         console.log("Handle success: ", response)
 

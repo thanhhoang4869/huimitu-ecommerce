@@ -27,13 +27,11 @@ const AdminPage = () => {
                 <Route path="/addProduct" element={<AddProductSection />} />
                 <Route path="/viewVoucher" element={<ViewVoucherSection />} />
                 <Route path="/addVoucher" element={<AddVoucherSection />} />
+                <Route path="/viewOrder" element={<ViewOrderSection />}/>
+
                 <Route
                   path="/editProduct/:id"
                   element={<EditProductSection />}
-                />
-                <Route
-                  path="/viewOrder"
-                  element={<ViewOrderSection />}
                 />
               </Routes>
             </div>
