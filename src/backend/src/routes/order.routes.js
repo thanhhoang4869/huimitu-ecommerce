@@ -3,9 +3,7 @@ import express from 'express'
 
 const router = express.Router();
 
-router.route('/')
-    .post(orderController.getListOrder)
-    .get(orderController.getCountOrder)
+router.get('/', orderController.getList)
 
 router.route('/:orderId')
     .get(orderController.getOrder)

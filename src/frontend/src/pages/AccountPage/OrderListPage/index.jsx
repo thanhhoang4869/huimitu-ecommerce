@@ -1,11 +1,13 @@
 import { List } from "antd";
 import OrderItem from "components/OrderItem";
 import config from "config/config";
-import React, { useState, useEffect } from "react";
+import { AccountContext } from "context/AccountContext";
+import React, { useState, useEffect, useContext } from "react";
 import orderService from "services/order";
 import swal from "sweetalert2";
 
 const OrderListPage = () => {
+  const { account } = useContext(AccountContext);
   const [orderList, setOrderList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
@@ -13,10 +15,11 @@ const OrderListPage = () => {
 
   const fetchOrderList = async () => {
     try {
-      const response = await orderService.getOrderList(
-        pageLimit,
-        pageLimit * (page - 1)
-      );
+      const response = await orderService.getOrderList({
+        limit: pageLimit,
+        offset: pageLimit * (page - 1),
+        email: account.email,
+      });
       const { orders } = response.data;
       setOrderList(orders);
     } catch (err) {
@@ -26,7 +29,9 @@ const OrderListPage = () => {
 
   const fetchTotalItem = async () => {
     try {
-      const response = await orderService.getTotalOrder();
+      const response = await orderService.getTotalOrder({
+        email: account.email,
+      });
       const { exitcode, count } = response.data;
       if (exitcode === 0) {
         setTotalItem(count);
@@ -38,11 +43,11 @@ const OrderListPage = () => {
 
   useEffect(() => {
     fetchTotalItem();
-  }, []);
+  }, [account]);
 
   useEffect(() => {
     fetchOrderList();
-  }, [page]);
+  }, [page, account]);
 
   const handleCancel = async (orderId) => {
     try {

@@ -81,10 +81,40 @@ export default {
 
     async getListOrder(req, res, next) {
         try {
-            const { email } = req.payload;
-            const { limit, offset } = req.body;
-            const orderResult = await orderModel.getListOrder(email, limit, offset);
+        } catch (err) {
+            next(err)
+        }
+    },
 
+    async getList(req, res, next) {
+        try {
+            const {
+                getTotal,
+                orderState,
+                limit,
+                offset
+            } = req.query;
+            const userEmail = req.payload.email;
+
+            let email = req.query.email;
+            const account = await accountModel.getByEmail(userEmail);
+            if (account?.role !== config.role.ADMIN) {
+                email = userEmail;
+            }
+
+            if (getTotal) {
+                const result = await orderModel.getCountOrder({
+                    orderState,
+                    email
+                });
+                return res.status(200).send({
+                    exitcode: 0,
+                    message: "Get count of orders successfully",
+                    count: result
+                })
+            }
+
+            const orderResult = await orderModel.getListOrder({ email, orderState, limit, offset });
             const ordersPromise = orderResult.map(async (orderItem) => {
 
                 const variantsResult = await variantModel.getByOrderId(orderItem.id);
@@ -127,20 +157,6 @@ export default {
                 exitcode: 0,
                 message: "Get list of order successfully",
                 orders: orders,
-            })
-        } catch (err) {
-            next(err)
-        }
-    },
-
-    async getCountOrder(req, res, next) {
-        try {
-            const { email } = req.payload;
-            const result = await orderModel.getCountOrder(email);
-            res.status(200).send({
-                exitcode: 0,
-                message: "Get count of orders successfully",
-                count: result
             })
         } catch (err) {
             next(err)
