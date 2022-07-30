@@ -52,7 +52,7 @@ const ViewOrderSection = () => {
           orderId,
           config.orderState.CANCEL
         );
-        const { exitcode } = response.data;
+        const { exitcode, message } = response.data;
         if (exitcode === 0) {
           swal.fire({
             title: "Cập nhật trạng thái đơn hàng",
@@ -61,6 +61,13 @@ const ViewOrderSection = () => {
             confirmButtonText: "OK",
           });
           fetchOrderList();
+        } else {
+          swal.fire({
+            title: "Cập nhật trạng thái đơn hàng thất bại",
+            text: message,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         }
       } catch (err) {
         console.error(err);
@@ -75,15 +82,22 @@ const ViewOrderSection = () => {
         );
         console.log("Handle success: ", response)
 
-        const { exitcode } = response.data;
+        const { exitcode, message } = response.data;
         if (exitcode === 0) {
           swal.fire({
             title: "Cập nhật trạng thái đơn hàng",
-            text: "Xác nhận đã nhận hàng thành công",
+            text: "Xác nhận hàng đã giao cho bên vận chuyển",
             icon: "info",
             confirmButtonText: "OK",
           });
           fetchOrderList();
+        } else {
+          swal.fire({
+            title: "Cập nhật trạng thái đơn hàng thất bại",
+            text: message,
+            icon: "error",
+            confirmButtonText: "OK",
+          });
         }
       } catch (err) {
         console.error(err);
