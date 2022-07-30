@@ -13,7 +13,6 @@ const columns = [
   {
     title: "Giá",
     dataIndex: "price",
-    sorter: (a, b) => a.price - b.price,
   },
   {
     title: "Giá giảm",
@@ -22,7 +21,6 @@ const columns = [
   {
     title: "Số lượng",
     dataIndex: "stock",
-    sorter: (a, b) => a.price - b.price,
   },
   {
     dataIndex: "edit",
