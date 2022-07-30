@@ -14,12 +14,13 @@ import swal from "sweetalert2";
 
 import category from "services/category";
 import variantService from "services/variant";
-import {default as productService} from "services/product";
+import { default as productService } from "services/product";
 
 import "./style.css";
 
 import AddVariantModal from "../AddVariantModal";
 import EditVariantModal from "../EditVariantModal";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const AddProductSection = () => {
@@ -39,6 +40,10 @@ const AddProductSection = () => {
   const [selectedParentCateId, setSelectedParentCateId] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState({});
 
+  const [loading, setLoading] = useState(false);
+
+  const navigator = useNavigate();
+
   const handleParentCateChange = (value) => {
     setSelectedParentCateId(value);
   };
@@ -52,7 +57,6 @@ const AddProductSection = () => {
   };
 
   const handleAddSuccess = async (values) => {
-    console.log("Success:", values);
     setVariants([values, ...variants]);
     setVisibleAdd(false);
   };
@@ -61,35 +65,64 @@ const AddProductSection = () => {
     setVisibleAdd(false);
   };
 
-  const handleEditSuccess = async (values) => {
-    console.log("Success:", values);
-  };
+  const handleEditSuccess = async (values) => {};
 
   const handleEditCancel = () => {
     setVisibleEdit(false);
   };
 
   const onFinish = async (values) => {
-    //TODO
-    console.log("onFinish:", values, description, selectedImages);
-
     try {
-      const response = await productService.createProduct(values, description, selectedImages)
-      const productId = response.data.productId
-      console.log("Create product response" , response.data, productId)
+      setLoading(true);
+      const responseProduct = await productService.createProduct(
+        values,
+        description,
+        selectedImages
+      );
 
-      variants.map((variant) => createVariant(productId, variant))
-    } catch (error) {}
-  };
+      const { exitcode, productId } = responseProduct.data;
+      let success = exitcode === 0;
 
-  const createVariant = async (productId, variant) => {
-    variant = {
-      productId,
-      ...variant,
-    };
-
-    const response = await variantService.createVariant(variant);
-    console.log("Create variant: ", response.data);
+      // eslint-disable-next-line default-case
+      switch (exitcode) {
+        case 0: {
+          variants.forEach(async (element) => {
+            const response = await variantService.createVariant({
+              productId: productId,
+              variantName: element.variantName,
+              price: element.price,
+              discountPrice: element.discountPrice,
+              stock: element.stock,
+            });
+            const { exitcode } = response;
+            success = success && exitcode === 0;
+          });
+          if (success) {
+            await swal.fire({
+              title: "Thêm sản phẩm",
+              text: "Thêm sản phẩm thành công",
+              icon: "success",
+              confirmButtonText: "OK",
+            });
+            navigator("/admin/viewProduct");
+          }
+          break;
+        }
+        case 101: {
+          await swal.fire({
+            title: "Thêm sản phẩm",
+            text: "Vui lòng thêm hình ảnh",
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+          break;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputHandler = (event, editor) => {
@@ -99,22 +132,24 @@ const AddProductSection = () => {
   const fetchCategories = async () => {
     try {
       const respone = await category.getCategoryList();
-      if (respone.data.exitcode == 0) {
+      const { exitcode } = respone.data;
+      if (exitcode === 0) {
         setParentCategories(respone.data.categories);
-        console.log("Categories", parentCategories);
       }
-    } catch (e) {}
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const fetchChildCategories = async () => {
     try {
-      const respone = await category.getCategoryList();
-      if (respone.data.exitcode == 0) {
-        const category = respone.data.categories.find(
+      const response = await category.getCategoryList();
+      const { exitcode, categories } = response.data;
+      if (exitcode == 0) {
+        const category = categories.find(
           (category) => category.id == selectedParentCateId
         );
         setChildCategories(category.children);
-        console.log("Child Categories", childCategories);
       }
     } catch (e) {}
   };
@@ -139,7 +174,6 @@ const AddProductSection = () => {
     showUploadList: true,
 
     async beforeUpload(file) {
-      console.log("Go");
       if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
         swal.fire({
           text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
@@ -176,7 +210,6 @@ const AddProductSection = () => {
         <div className="flex-container ">
           <div className="flex-item mr-5">
             <Form.Item
-              name="bigCategoryName"
               label="Danh mục cha"
               rules={[
                 {
@@ -194,7 +227,7 @@ const AddProductSection = () => {
           </div>
           <div className="flex-item">
             <Form.Item
-              name="categoryName"
+              name="categoryId"
               label="Danh mục"
               rules={[
                 {
@@ -238,7 +271,7 @@ const AddProductSection = () => {
         </Form.Item>
 
         <div>
-        <Form.Item
+          <Form.Item
             label={`Upload thêm hình ảnh (Còn lại ${
               10 - images.length - selectedImages.length
             })`}
@@ -267,6 +300,8 @@ const AddProductSection = () => {
           }}
         >
           <Button
+            loading={loading}
+            disabled={loading}
             type="primary"
             htmlType="submit"
             size="large"

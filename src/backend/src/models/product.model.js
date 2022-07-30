@@ -171,14 +171,12 @@ export default {
     },
 
     async createProduct(entity) {
-        const { productName, description, categoryName } = entity
+        const { productName, description, categoryId } = entity
 
         const result = await db('product').insert({
             product_name: productName,
             description: description,
-            category_id: db('category').where({
-                category_name: categoryName
-            }).select('id')
+            category_id: categoryId
         }).returning('id')
 
         try {
@@ -188,13 +186,13 @@ export default {
         }
     },
 
-    async insertImages(productId, listImage) {
-        const entities = listImage.map(item => ({
+    async insertImage(productId, image) {
+        const entity = {
             product_id: productId,
-            path: item.path,
-            filename: item.filename
-        }))
-        const result = await db('product_image').insert(entities)
+            path: image.path,
+            filename: image.filename
+        }
+        const result = await db('product_image').insert(entity)
         return result;
     },
 

@@ -46,10 +46,12 @@ const VariantTable = (props) => {
         return {
           key: variant.id,
           name: variant.variantName,
-          price: formatter.formatPrice(variant.price),
+          price: formatter.formatPrice(+variant.price),
           discountPrice:
-            +formatter.formatPrice(variant.discountPrice) || "Không có",
-          stock: variant.stock,
+            typeof variant.discountPrice !== "undefined"
+              ? formatter.formatPrice(+variant.discountPrice)
+              : "Không có",
+          stock: +variant.stock,
           edit: (
             <div
               className="text-key edit"
