@@ -204,7 +204,6 @@ const AddProductSection = () => {
         visible={visibleAdd}
         handleSuccess={handleAddSuccess}
         handleCancel={handleAddCancel}
-        product={product}
       />
       <EditVariantModal
         title="Title"
