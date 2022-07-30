@@ -27,7 +27,6 @@ const ProductDetailPage = () => {
   const [childCategory, setChildCategory] = useState({});
   const [isBigCategory, setIsBigCategory] = useState(false);
 
-  const [error, setError] = useState("");
   const { id } = useParams();
   const [selectVariant, setSelectVariant] = useState({});
 
@@ -38,47 +37,67 @@ const ProductDetailPage = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const productResponse = await productService.getProductById(id);
-        const reviewsResponse = await productService.getProductReviews(id);
-        const relatedResponse = await productService.getRelatedProducts(id);
-        const variantsResponse = await variantService.getByProductId(id);
-
-        const productData = productResponse.data.product;
-        const reviewsData = reviewsResponse.data.reviews;
-        const relatedData = relatedResponse.data.products;
-        const variantsData = variantsResponse.data.variants;
-
-        if (productData) {
-          setProduct(productData);
-          setCategory(productData.category);
-          setChildCategory(productData.category.children);
-          setIsBigCategory(!productData.category.children);
-        } else {
-          navigate("/error");
-        }
-
-        console.log(reviewsData);
-        if (reviewsData) {
-          setReviews(reviewsData);
-        }
-
-        if (relatedData) {
-          setRelatedProducts(relatedData);
-        }
-
-        if (variantsData) {
-          console.log(variantsData);
-          setSelectVariant(variantsData[0]);
-          setVariants(variantsData);
-        }
-      } catch (error) {
-        setError(error.message);
+  const fetchProduct = async () => {
+    try {
+      const productResponse = await productService.getProductById(id);
+      const productData = productResponse.data.product;
+      console.log(productData)
+      if (productData) {
+        setProduct(productData);
+        setCategory(productData.category);
+        setChildCategory(productData.category.children);
+        setIsBigCategory(!productData.category.children);
+      } else {
+        navigate("/error");
       }
-    };
-    getData();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const reviewsResponse = await productService.getProductReviews(id);
+      const reviewsData = reviewsResponse.data.reviews;
+      console.log(reviewsData)
+      if (reviewsData) {
+        setReviews(reviewsData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchRelatedProducts = async () => {
+    try {
+      const relatedResponse = await productService.getRelatedProducts(id);
+      const relatedData = relatedResponse.data.products;
+      if (relatedData) {
+        setRelatedProducts(relatedData);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchVariants = async () => {
+    try {
+      const variantsResponse = await variantService.getByProductId(id);
+      const variantsData = variantsResponse.data.variants;
+      if (variantsData) {
+        setSelectVariant(variantsData[0]);
+        setVariants(variantsData);      
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+    fetchReviews();
+    fetchRelatedProducts();
+    fetchVariants();
   }, []);
 
   const handleChangeSelectVariant = (e) => {
