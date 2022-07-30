@@ -42,9 +42,9 @@ const VariantTable = (props) => {
       pagination={false}
       columns={columns}
       onChange={onChange}
-      dataSource={variants.map((variant) => {
+      dataSource={variants.map((variant, index) => {
         return {
-          key: variant.id,
+          key: variant?.id ?? index,
           name: variant.variantName,
           price: formatter.formatPrice(+variant.price),
           discountPrice:

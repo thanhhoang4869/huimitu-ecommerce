@@ -59,6 +59,7 @@ const EditVariantModal = (props) => {
           ]}
         >
           <InputNumber
+            min={0}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -73,6 +74,7 @@ const EditVariantModal = (props) => {
           initialValue={props.variant.discountPrice}
         >
           <InputNumber
+            min={0}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -92,7 +94,14 @@ const EditVariantModal = (props) => {
             },
           ]}
         >
-          <Input />
+          <InputNumber
+            min={0}
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+            style={{ width: "100%" }}
+          />
         </Form.Item>
 
         <Form.Item>

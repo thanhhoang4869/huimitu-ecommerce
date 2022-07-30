@@ -1,4 +1,4 @@
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
 import { Button, Select, Upload } from "antd";
 
 import { Form, Input } from "antd";
@@ -65,7 +65,16 @@ const AddProductSection = () => {
     setVisibleAdd(false);
   };
 
-  const handleEditSuccess = async (values) => {};
+  const handleEditSuccess = async (values) => {
+    variants.some((variant, index) => {
+      if (variant === selectedVariant) {
+        variants[index] = values
+        return true
+      }
+    })
+    setVariants(variants);
+    setVisibleEdit(false);
+  };
 
   const handleEditCancel = () => {
     setVisibleEdit(false);
