@@ -4,6 +4,7 @@ import config from "config/config";
 import { AccountContext } from "context/AccountContext";
 import React, { useState, useEffect, useContext } from "react";
 import orderService from "services/order";
+import reviewService from "services/review";
 import swal from "sweetalert2";
 
 const OrderListPage = () => {
@@ -91,7 +92,28 @@ const OrderListPage = () => {
     }
   };
 
-  const handleReview = () => {};
+  const handleReview = async (orderId, variantId, rating, comment) => {
+    try {
+      const response = await reviewService.createReview({
+        orderId,
+        variantId,
+        rating,
+        comment,
+      });
+      const { exitcode } = response;
+      if (exitcode === 0) {
+        swal.fire({
+          title: "Đánh giá sản phẩm",
+          text: "Đánh giá sản phẩm thành công",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        fetchOrderList();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div

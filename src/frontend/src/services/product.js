@@ -11,11 +11,6 @@ const product = {
     return response;
   },
 
-  async getProductReviews(productId) {
-    const respone = await api.post("/review/getReview", { productId });
-    return respone;
-  },
-
   async getProducts(request) {
     const response = await api.post("/product/get", request);
     return response;

@@ -5,7 +5,8 @@ import verifyLogin from '#src/middlewares/verifyLogin.mdw'
 import verifyEmailVerified from '#src/middlewares/verifyEmailVerified.mdw'
 
 const router = express.Router();
-router.post("/createReview", verifyLogin, verifyEmailVerified, review.createReview)
-router.post("/getReview", review.getReview)
+router.route("/")
+    .get(review.getReview)
+    .post(verifyLogin, verifyEmailVerified, review.createReview)
 
 export default router;

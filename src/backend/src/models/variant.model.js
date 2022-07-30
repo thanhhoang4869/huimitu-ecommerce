@@ -65,6 +65,7 @@ export default {
                 "product_variant.price",
                 "product_variant.discount_price",
                 "order_variant.variant_price",
+                "order_variant.reviewed",
                 "order_variant.quantity"
             )
         return result || null;
