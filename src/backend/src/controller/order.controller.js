@@ -36,7 +36,7 @@ export default {
                 receiver_phone,
             } = result
 
-            const variantsResult = await variantModel.getByOrderId(orderId);
+            const variantsResult = await variantModel.getByOrderId({ orderId });
             const promises = variantsResult.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.product_id)
 
@@ -109,7 +109,7 @@ export default {
             const orderResult = await orderModel.getListOrder({ email, orderState, limit, offset });
             const ordersPromise = orderResult.map(async (orderItem) => {
 
-                const variantsResult = await variantModel.getByOrderId(orderItem.id);
+                const variantsResult = await variantModel.getByOrderId({ orderId: orderItem.id });
                 const promises = variantsResult.map(async (variantItem) => {
                     const imagePath = await productModel.getSingleImageById(variantItem.product_id)
 
@@ -188,7 +188,7 @@ export default {
                     }
 
                     // Check for stock
-                    const variants = await variantModel.getByOrderId(orderId);
+                    const variants = await variantModel.getByOrderId({orderId});
                     const insufficientVariants = variants.filter(item => item.stock < item.quantity)
                     if (insufficientVariants.length > 0) {
                         return res.status(200).send({
