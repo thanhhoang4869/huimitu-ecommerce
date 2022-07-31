@@ -1,4 +1,5 @@
 import { DatePicker, Form, Input, PageHeader, Radio, Button } from "antd";
+import { useForm } from "antd/lib/form/Form";
 import { AccountContext } from "context/AccountContext";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -17,14 +18,19 @@ const formItemLayout = {
   },
 };
 
-const UpdateInformationPage = (props) => {
+const UpdateInformationPage = () => {
   const { account, fetchAccount } = useContext(AccountContext);
   const navigator = useNavigate();
   const { logout } = useContext(AccountContext);
+  const [form] = useForm();
 
   useEffect(() => {
     fetchAccount();
   }, []);
+
+  useEffect(() => {
+    form.resetFields();
+  }, [account]);
 
   const handleChangeInformation = async (data) => {
     try {
@@ -32,6 +38,7 @@ const UpdateInformationPage = (props) => {
 
       if (!(fullname && gender && birthday && phone)) {
         return swal.fire({
+          title: "Đổi thông tin",
           text: "Vui lòng nhập tất cả thông tin",
           icon: "info",
           confirmButtonText: "OK",
@@ -40,7 +47,7 @@ const UpdateInformationPage = (props) => {
 
       if (!validatePhone(phone)) {
         return swal.fire({
-          title: "Error",
+          title: "Đổi thông tin",
           text: "Vui lòng nhập số điện thoại hợp lệ",
           icon: "error",
           confirmButtonText: "OK",
@@ -60,7 +67,7 @@ const UpdateInformationPage = (props) => {
       switch (exitcode) {
         case 0: {
           await swal.fire({
-            title: "Success",
+            title: "Đổi thông tin",
             text: "Đổi thông tin thành công",
             icon: "success",
             confirmButtonText: "OK",
@@ -70,6 +77,7 @@ const UpdateInformationPage = (props) => {
         }
         case 103: {
           swal.fire({
+            title: "Đổi thông tin",
             text: "Số điện thoại đã được sử dụng",
             icon: "error",
             confirmButtonText: "OK",
@@ -142,7 +150,7 @@ const UpdateInformationPage = (props) => {
   return (
     <div>
       <PageHeader title="Đổi thông tin cơ bản" />
-      <Form {...formItemLayout} onFinish={handleChangeInformation}>
+      <Form form={form} {...formItemLayout} onFinish={handleChangeInformation}>
         <Form.Item
           name="fullname"
           initialValue={account.fullname}
