@@ -197,6 +197,7 @@ export default {
                         })
                     }
 
+                    // Update quantity
                     for (const idx in variants) {
                         const variant = variants[idx]
                         await variantModel.updateVariant(variant.id, {
@@ -210,8 +211,8 @@ export default {
                 }
                 // Pending to cancel (owner only)
                 case (config.orderState.CANCEL): {
-                    if (order.email !== email) {
-                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    if (order.email !== email && role !== config.role.ADMIN) {
+                        throw new ErrorHandler(403, "Only order owner or admin can do this operation")
                     }
                     if (order.state !== config.orderState.PENDING) {
                         return res.status(200).send({

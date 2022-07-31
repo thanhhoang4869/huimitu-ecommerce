@@ -14,21 +14,21 @@ const orderService = {
         return response;
     },
 
-    async getOrderList({ email, orderState, limit, offset }) {
+    async getOrderList(query) {
         const params = {
-            email,
-            orderState,
-            limit,
-            offset
+            email: query?.email,
+            orderState: query?.orderState,
+            limit: query?.limit,
+            offset: query?.offset
         }
         const response = await api.get("/order", { params });
         return response;
     },
 
-    async getTotalOrder({ email, orderState }) {
+    async getTotalOrder(query) {
         const params = {
-            email,
-            orderState,
+            email: query?.email,
+            orderState: query?.orderState,
             getTotal: true
         }
         const response = await api.get('/order', { params });

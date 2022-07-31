@@ -1,4 +1,4 @@
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, VideoCameraAddOutlined } from "@ant-design/icons";
 import { Button, Select, Upload } from "antd";
 
 import { Form, Input } from "antd";
@@ -9,13 +9,18 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import VariantTable from "../VariantTable";
 
 import { useForm } from "antd/lib/form/Form";
+import { isImage, sizeLessMegaByte } from "utils/validator";
+import swal from "sweetalert2";
 
 import category from "services/category";
 import variantService from "services/variant";
+import { default as productService } from "services/product";
+
 import "./style.css";
 
 import AddVariantModal from "../AddVariantModal";
 import EditVariantModal from "../EditVariantModal";
+import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const AddProductSection = () => {
@@ -29,8 +34,15 @@ const AddProductSection = () => {
 
   const [visibleAdd, setVisibleAdd] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
+
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [images, setImages] = useState([]);
   const [selectedParentCateId, setSelectedParentCateId] = useState(0);
   const [selectedVariant, setSelectedVariant] = useState({});
+
+  const [loading, setLoading] = useState(false);
+
+  const navigator = useNavigate();
 
   const handleParentCateChange = (value) => {
     setSelectedParentCateId(value);
@@ -45,7 +57,6 @@ const AddProductSection = () => {
   };
 
   const handleAddSuccess = async (values) => {
-    console.log("Success:", values);
     setVariants([values, ...variants]);
     setVisibleAdd(false);
   };
@@ -55,7 +66,14 @@ const AddProductSection = () => {
   };
 
   const handleEditSuccess = async (values) => {
-    console.log("Success:", values);
+    variants.some((variant, index) => {
+      if (variant === selectedVariant) {
+        variants[index] = values
+        return true
+      }
+    })
+    setVariants(variants);
+    setVisibleEdit(false);
   };
 
   const handleEditCancel = () => {
@@ -63,22 +81,57 @@ const AddProductSection = () => {
   };
 
   const onFinish = async (values) => {
-    //TODO
-    values = {
-      description,
-      files: [],
-      ...values,
-    };
-    console.log("Success:", values);
-
     try {
-      // const respone = await productService.createProduct(values)
-      // const productId = respone.data.productId
-      // const productRespone = await productService.getProductById(productId)
-      // setProduct(productRespone.data.product)
-      // variants.map((variant) => createVariant(variant))
-      // console.log(respone.data)
-    } catch (error) {}
+      setLoading(true);
+      const responseProduct = await productService.createProduct(
+        values,
+        description,
+        selectedImages
+      );
+
+      const { exitcode, productId } = responseProduct.data;
+      let success = exitcode === 0;
+
+      // eslint-disable-next-line default-case
+      switch (exitcode) {
+        case 0: {
+          variants.forEach(async (element) => {
+            const response = await variantService.createVariant({
+              productId: productId,
+              variantName: element.variantName,
+              price: element.price,
+              discountPrice: element.discountPrice,
+              stock: element.stock,
+            });
+            const { exitcode } = response;
+            success = success && exitcode === 0;
+          });
+          if (success) {
+            await swal.fire({
+              title: "Thêm sản phẩm",
+              text: "Thêm sản phẩm thành công",
+              icon: "success",
+              confirmButtonText: "OK",
+            });
+            navigator("/admin/viewProduct");
+          }
+          break;
+        }
+        case 101: {
+          await swal.fire({
+            title: "Thêm sản phẩm",
+            text: "Vui lòng thêm hình ảnh",
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+          break;
+        }
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputHandler = (event, editor) => {
@@ -88,35 +141,26 @@ const AddProductSection = () => {
   const fetchCategories = async () => {
     try {
       const respone = await category.getCategoryList();
-      if (respone.data.exitcode == 0) {
+      const { exitcode } = respone.data;
+      if (exitcode === 0) {
         setParentCategories(respone.data.categories);
-        console.log("Categories", parentCategories);
       }
-    } catch (e) {}
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const fetchChildCategories = async () => {
     try {
-      const respone = await category.getCategoryList();
-      if (respone.data.exitcode == 0) {
-        const category = respone.data.categories.find(
+      const response = await category.getCategoryList();
+      const { exitcode, categories } = response.data;
+      if (exitcode == 0) {
+        const category = categories.find(
           (category) => category.id == selectedParentCateId
         );
         setChildCategories(category.children);
-        console.log("Child Categories", childCategories);
       }
     } catch (e) {}
-  };
-
-  const createVariant = async (variant) => {
-    variant = {
-      productId: product.id,
-      ...variant,
-    };
-    console.log("Success:", variant);
-
-    const response = await variantService.createVariant(variant);
-    console.log(response.data);
   };
 
   useEffect(() => {
@@ -131,6 +175,28 @@ const AddProductSection = () => {
     fetchChildCategories();
   }, [selectedParentCateId]);
 
+  const uploadProps = {
+    listType: "picture",
+    multiple: true,
+    maxCount: 10 - images.length,
+    accept: "image/png, image/jpeg",
+    showUploadList: true,
+
+    async beforeUpload(file) {
+      if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
+        swal.fire({
+          text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+        return false;
+      }
+      setSelectedImages([file, ...selectedImages]);
+
+      return false;
+    },
+  };
+
   return (
     <>
       <AddVariantModal
@@ -138,7 +204,6 @@ const AddProductSection = () => {
         visible={visibleAdd}
         handleSuccess={handleAddSuccess}
         handleCancel={handleAddCancel}
-        product={product}
       />
       <EditVariantModal
         title="Title"
@@ -153,7 +218,6 @@ const AddProductSection = () => {
         <div className="flex-container ">
           <div className="flex-item mr-5">
             <Form.Item
-              name="bigCategoryName"
               label="Danh mục cha"
               rules={[
                 {
@@ -171,7 +235,7 @@ const AddProductSection = () => {
           </div>
           <div className="flex-item">
             <Form.Item
-              name="categoryName"
+              name="categoryId"
               label="Danh mục"
               rules={[
                 {
@@ -215,14 +279,24 @@ const AddProductSection = () => {
         </Form.Item>
 
         <div>
-          <Form.Item label="Upload thêm hình ảnh" valuePropName="fileList">
-            <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              listType="picture"
-              maxCount={5}
-              multiple
-            >
-              <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+          <Form.Item
+            label={`Upload thêm hình ảnh (Còn lại ${
+              10 - images.length - selectedImages.length
+            })`}
+            valuePropName="fileList"
+          >
+            <div className="mb-2 text-primary text-md">
+              Mỗi sản phẩm có tối đa 10 hình ảnh.
+            </div>
+            <div className="mb-2">Số ảnh hiện tại: {images.length}</div>
+            <div className="mb-2">Số ảnh đã chọn: {selectedImages.length}</div>
+            <Upload {...uploadProps}>
+              <Button
+                disabled={!(selectedImages?.length + images?.length < 10)}
+                icon={<UploadOutlined />}
+              >
+                Chọn hình ảnh
+              </Button>
             </Upload>
           </Form.Item>
         </div>
@@ -234,6 +308,8 @@ const AddProductSection = () => {
           }}
         >
           <Button
+            loading={loading}
+            disabled={loading}
             type="primary"
             htmlType="submit"
             size="large"

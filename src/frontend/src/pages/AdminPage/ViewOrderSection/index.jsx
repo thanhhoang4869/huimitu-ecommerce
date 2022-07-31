@@ -1,14 +1,11 @@
 import { List } from "antd";
-import OrderItem from "components/OrderItem";
 import config from "config/config";
-import { AccountContext } from "context/AccountContext";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import orderService from "services/order";
-import reviewService from "services/review";
 import swal from "sweetalert2";
+import AdminOrderItem from "../AdminOrderItem";
 
-const OrderListPage = () => {
-  const { account } = useContext(AccountContext);
+const ViewOrderSection = () => {
   const [orderList, setOrderList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
@@ -19,10 +16,13 @@ const OrderListPage = () => {
       const response = await orderService.getOrderList({
         limit: pageLimit,
         offset: pageLimit * (page - 1),
-        email: account.email,
+        orderState: "pending",
       });
-      const { orders } = response.data;
-      setOrderList(orders);
+      const { orders, exitcode } = response.data;
+
+      if (exitcode === 0) {
+        setOrderList(orders);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -31,7 +31,7 @@ const OrderListPage = () => {
   const fetchTotalItem = async () => {
     try {
       const response = await orderService.getTotalOrder({
-        email: account.email,
+        orderState: "pending",
       });
       const { exitcode, count } = response.data;
       if (exitcode === 0) {
@@ -44,11 +44,11 @@ const OrderListPage = () => {
 
   useEffect(() => {
     fetchTotalItem();
-  }, [account]);
+  }, []);
 
   useEffect(() => {
     fetchOrderList();
-  }, [page, account]);
+  }, [page]);
 
   const handleCancel = async (orderId) => {
     try {
@@ -56,7 +56,7 @@ const OrderListPage = () => {
         orderId,
         config.orderState.CANCEL
       );
-      const { exitcode } = response.data;
+      const { exitcode, message } = response.data;
       if (exitcode === 0) {
         swal.fire({
           title: "Cập nhật trạng thái đơn hàng",
@@ -65,6 +65,13 @@ const OrderListPage = () => {
           confirmButtonText: "OK",
         });
         fetchOrderList();
+      } else {
+        swal.fire({
+          title: "Cập nhật trạng thái đơn hàng thất bại",
+          text: message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (err) {
       console.error(err);
@@ -75,44 +82,22 @@ const OrderListPage = () => {
     try {
       const response = await orderService.updateState(
         orderId,
-        config.orderState.SUCCESS
+        config.orderState.SHIPPING
       );
-      const { exitcode } = response.data;
-      if (exitcode === 0) {
-        swal.fire({
-          title: "Cập nhật trạng thái đơn hàng",
-          text: "Xác nhận đã nhận hàng thành công",
-          icon: "info",
-          confirmButtonText: "OK",
-        });
-        fetchOrderList();
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  const handleReview = async ({ orderId, variantId, rating, comment }) => {
-    try {
-      const response = await reviewService.createReview({
-        orderId,
-        variantId,
-        rating,
-        comment,
-      });
       const { exitcode, message } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          title: "Đánh giá sản phẩm",
-          text: "Đánh giá sản phẩm thành công",
-          icon: "success",
+          title: "Cập nhật trạng thái đơn hàng",
+          text: "Xác nhận hàng đã giao cho bên vận chuyển",
+          icon: "info",
           confirmButtonText: "OK",
         });
         fetchOrderList();
       } else {
         swal.fire({
-          title: "Đánh giá sản phẩm thất bại",
-          text: `Lỗi: ${message}`,
+          title: "Cập nhật trạng thái đơn hàng thất bại",
+          text: message,
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -131,18 +116,19 @@ const OrderListPage = () => {
     >
       <List
         className="mb-5"
-        dataSource={orderList}
+        dataSource={orderList || []}
         pagination={{
-          onChange: setPage,
+          onChange: (page) => {
+            setPage(page);
+          },
           pageSize: pageLimit,
           total: totalItem,
         }}
         renderItem={(order) => (
-          <OrderItem
+          <AdminOrderItem
             order={order}
             handleCancel={handleCancel}
             handleSuccess={handleSuccess}
-            handleReview={handleReview}
           />
         )}
       ></List>
@@ -150,4 +136,4 @@ const OrderListPage = () => {
   );
 };
 
-export default OrderListPage;
+export default ViewOrderSection;

@@ -15,8 +15,15 @@ const variantService = {
         return response
     },
 
-    async createVariant(data) {
-        const respone = await api.post('/variant', data)
+    async createVariant({ productId, variantName, price, discountPrice, stock }) {
+        const requestBody = {
+            productId,
+            variantName,
+            price,
+            discountPrice,
+            stock
+        }
+        const respone = await api.post('/variant', requestBody)
         return respone
     },
 

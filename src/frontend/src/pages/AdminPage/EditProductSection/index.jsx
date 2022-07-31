@@ -86,11 +86,12 @@ const EditProductSection = () => {
       );
       const { exitcode } = response.data;
       if (exitcode === 0) {
-        swal.fire("Thành công", "Cập nhật phẩm thành công", "success");
+        swal.fire("Thành công", "Cập nhật sản phẩm thành công", "success");
+        navigate("/admin/viewProduct");
       } else {
         swal.fire(
           "Thất bại",
-          "Cập nhật phẩm thất bại. Vui lòng thử lại sau",
+          "Cập nhật sản phẩm thất bại. Vui lòng thử lại sau",
           "error"
         );
       }

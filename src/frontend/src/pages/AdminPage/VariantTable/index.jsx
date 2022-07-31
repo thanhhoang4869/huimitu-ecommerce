@@ -13,7 +13,6 @@ const columns = [
   {
     title: "Giá",
     dataIndex: "price",
-    sorter: (a, b) => a.price - b.price,
   },
   {
     title: "Giá giảm",
@@ -22,7 +21,6 @@ const columns = [
   {
     title: "Số lượng",
     dataIndex: "stock",
-    sorter: (a, b) => a.price - b.price,
   },
   {
     dataIndex: "edit",
@@ -42,14 +40,16 @@ const VariantTable = (props) => {
       pagination={false}
       columns={columns}
       onChange={onChange}
-      dataSource={variants.map((variant) => {
+      dataSource={variants.map((variant, index) => {
         return {
-          key: variant.id,
+          key: variant?.id ?? index,
           name: variant.variantName,
-          price: formatter.formatPrice(variant.price),
+          price: formatter.formatPrice(+variant.price),
           discountPrice:
-            +formatter.formatPrice(variant.discountPrice) || "Không có",
-          stock: variant.stock,
+            typeof variant.discountPrice !== "undefined"
+              ? formatter.formatPrice(+variant.discountPrice)
+              : "Không có",
+          stock: +variant.stock,
           edit: (
             <div
               className="text-key edit"

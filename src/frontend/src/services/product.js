@@ -41,8 +41,18 @@ const product = {
     return response;
   },
 
-  async createProduct(data) {
-    const response = await api.post("/product", data);
+  async createProduct(data, description, selectedImages) {
+    const formData = new FormData();
+    for (const key in data) {
+      if (data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
+    }
+    formData.append("description", description);
+    selectedImages.forEach((img) => {
+      formData.append("productImg", img);
+    });
+    const response = await api.post("/product", formData);
     return response;
   },
 

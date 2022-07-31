@@ -74,14 +74,7 @@ export default {
         return result || null;
     },
 
-    async createVariant(entity) {
-        const {
-            productId,
-            variantName,
-            price,
-            discountPrice,
-            stock
-        } = entity
+    async createVariant({ productId, variantName, price, discountPrice, stock }) {
         const result = await db('product_variant').insert({
             product_id: productId,
             variant_name: variantName,
@@ -89,11 +82,7 @@ export default {
             discount_price: discountPrice,
             stock: stock
         }).returning('id')
-        try {
-            return result[0].id;
-        } catch (err) {
-            return null;
-        }
+        return result[0]?.id || null;
     },
 
     async updateVariant(variantId, entity) {
