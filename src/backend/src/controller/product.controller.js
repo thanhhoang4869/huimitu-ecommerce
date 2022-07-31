@@ -1,6 +1,5 @@
 import productModel from "#src/models/product.model";
 import categoryModel from "#src/models/category.model";
-import variantModel from "#src/models/variant.model";
 import {
   buildCategoryRoot,
   searchCategoryTree,
