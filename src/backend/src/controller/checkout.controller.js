@@ -31,7 +31,7 @@ export default {
                 const variant = await variantModel.getByVariantId(variantId)
                 variants.push({ ...variant, quantity })
             } else if (orderId) {
-                const variantsResult = await variantModel.getByOrderId(orderId);
+                const variantsResult = await variantModel.getByOrderId({orderId});
                 variants = variantsResult;
             } else {
                 const cart = await cartModel.getCartByEmail(email);

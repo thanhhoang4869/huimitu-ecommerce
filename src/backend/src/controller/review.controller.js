@@ -1,5 +1,7 @@
 import reviewModel from '#src/models/review.model'
 import orderModel from '#src/models/order.model'
+import variantModel from '#src/models/variant.model'
+import config from '#src/config/config'
 
 export default {
     async createReview(req, res, next) {
@@ -38,16 +40,16 @@ export default {
             }
 
             // Check exist variant in order
-            const review = await reviewModel.getReview({ orderId, variantId });
-            if (review?.length < 1 ) {
+            const variants = await variantModel.getByOrderId({ orderId, variantId });
+            if (variants?.length < 1) {
                 return res.status(200).send({
                     exitcode: 104,
                     message: "Item not in the order"
                 })
             }
-            
+
             // Check reviewed
-            if (review[0].reviewed) {
+            if (variants[0].reviewed) {
                 return res.status(200).send({
                     exitcode: 105,
                     message: "Item has been reviewed"
