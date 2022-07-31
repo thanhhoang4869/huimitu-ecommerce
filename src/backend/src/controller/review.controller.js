@@ -1,5 +1,6 @@
 import reviewModel from '#src/models/review.model'
 import orderModel from '#src/models/order.model'
+import config from '#src/config/config'
 
 export default {
     async createReview(req, res, next) {

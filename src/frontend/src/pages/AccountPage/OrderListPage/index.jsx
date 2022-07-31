@@ -92,7 +92,7 @@ const OrderListPage = () => {
     }
   };
 
-  const handleReview = async (orderId, variantId, rating, comment) => {
+  const handleReview = async ({orderId, variantId, rating, comment}) => {
     try {
       const response = await reviewService.createReview({
         orderId,
@@ -100,7 +100,7 @@ const OrderListPage = () => {
         rating,
         comment,
       });
-      const { exitcode } = response;
+      const { exitcode, message } = response.data;
       if (exitcode === 0) {
         swal.fire({
           title: "Đánh giá sản phẩm",
@@ -109,6 +109,13 @@ const OrderListPage = () => {
           confirmButtonText: "OK",
         });
         fetchOrderList();
+      } else {
+        swal.fire({
+          title: "Đánh giá sản phẩm thất bại",
+          text: `Lỗi: ${message}`,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (err) {
       console.error(err);
