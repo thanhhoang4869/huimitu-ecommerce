@@ -28,7 +28,6 @@ export default {
                 "shipping_price",
                 "receiver_name",
                 "receiver_phone",
-                "reviewed"
             )
             .orderBy('order_state.created_time', 'desc')
             .limit(1)
@@ -70,7 +69,6 @@ export default {
             "final_price",
             "receiver_name",
             "receiver_phone",
-            "reviewed"
         ]
         const selectCols = [
             ...distinctCols,

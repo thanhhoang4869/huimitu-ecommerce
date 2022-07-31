@@ -11,12 +11,15 @@ const OrderItem = (props) => {
     <div key={order.createdTime} className="my-3">
       <Divider orientation="left"></Divider>
       <OrderHeader order={order} />
-      <ProductList productList={order.variants} />
+      <ProductList
+        productList={order.variants}
+        order={order}
+        handleReview={handleReview}
+      />
       <OrderFooter
         order={order}
         handleCancel={handleCancel}
         handleSuccess={handleSuccess}
-        handleReview={handleReview}
       />
     </div>
   );

@@ -34,10 +34,9 @@ export default {
                 shipping_price,
                 receiver_name,
                 receiver_phone,
-                reviewed
             } = result
 
-            const variantsResult = await variantModel.getByOrderId(orderId);
+            const variantsResult = await variantModel.getByOrderId({ orderId });
             const promises = variantsResult.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.product_id)
 
@@ -48,6 +47,7 @@ export default {
                     price: item.price,
                     variant_price: item.variant_price,
                     quantity: item.quantity,
+                    reviewed: item.reviewed,
                     image: imagePath
                 }
             });
@@ -70,17 +70,9 @@ export default {
                     finalPrice: final_price,
                     receiverName: receiver_name,
                     receiverPhone: receiver_phone,
-                    reviewed: reviewed,
                     variants: variants
                 }
             })
-        } catch (err) {
-            next(err)
-        }
-    },
-
-    async getListOrder(req, res, next) {
-        try {
         } catch (err) {
             next(err)
         }
@@ -117,17 +109,19 @@ export default {
             const orderResult = await orderModel.getListOrder({ email, orderState, limit, offset });
             const ordersPromise = orderResult.map(async (orderItem) => {
 
-                const variantsResult = await variantModel.getByOrderId(orderItem.id);
+                const variantsResult = await variantModel.getByOrderId({ orderId: orderItem.id });
                 const promises = variantsResult.map(async (variantItem) => {
                     const imagePath = await productModel.getSingleImageById(variantItem.product_id)
 
                     return {
                         id: variantItem.id,
+                        productId: variantItem.product_id,
                         variantName: variantItem.variant_name,
                         variantPrice: variantItem.variant_price,
                         discountPrice: variantItem.discount_price,
                         price: variantItem.price,
                         quantity: variantItem.quantity,
+                        reviewed: variantItem.reviewed,
                         image: imagePath
                     }
                 });
@@ -147,7 +141,6 @@ export default {
                     finalPrice: orderItem.final_price,
                     receiverName: orderItem.receiver_name,
                     receiverPhone: orderItem.receiver_phone,
-                    reviewed: orderItem.reviewed,
                     variants: variants
                 }
             })
@@ -195,7 +188,7 @@ export default {
                     }
 
                     // Check for stock
-                    const variants = await variantModel.getByOrderId(orderId);
+                    const variants = await variantModel.getByOrderId({orderId});
                     const insufficientVariants = variants.filter(item => item.stock < item.quantity)
                     if (insufficientVariants.length > 0) {
                         return res.status(200).send({

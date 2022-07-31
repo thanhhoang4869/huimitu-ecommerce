@@ -1,10 +1,10 @@
 import db from '#src/utils/db'
+import { removeUndefined } from '#src/utils/utils'
 
 export default {
-    async createReview(entity) {
-        const { productId, orderId, rating, comment } = entity
+    async createReview({ variantId, orderId, rating, comment }) {
         const result = await db('review').insert({
-            product_id: productId,
+            variant_id: variantId,
             order_id: orderId,
             rating: rating,
             comment: comment
@@ -12,19 +12,22 @@ export default {
         return result
     },
 
-    async getReview(productId) {
+    async getReview({ productId, variantId, orderId }) {
+        const query = removeUndefined({
+            'product_id': productId,
+            'variant_id': variantId,
+            'order_id': orderId
+        })
         const result = await db('review')
-            .join('product_variant', 'review.product_variant_id', 'product_variant.id')
+            .join('product_variant', 'review.variant_id', 'product_variant.id')
             .join('order', 'order.id', 'review.order_id')
             .join('account', 'account.email', 'order.email')
-            .where({
-                "product_variant.product_id": productId,
-            })
+            .where(query)
             .select(
                 'account.email',
                 'account.fullname',
                 'account.avatar_path',
-                'review.product_variant_id',
+                'review.variant_id',
                 'review.order_id',
                 'review.rating',
                 'review.comment',

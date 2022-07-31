@@ -12,7 +12,7 @@ const contentStyle = {
 const ImageSlider = ({ children }) => (
   <Carousel autoplay dots={{ className: "slick-dots carousel-dot" }}>
     {(children || []).map((item) => (
-      <div>
+      <div key={item}>
         <img style={contentStyle} alt="img" src={item}></img>
       </div>
     ))}

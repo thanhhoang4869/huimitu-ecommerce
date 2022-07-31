@@ -18,6 +18,7 @@ import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 import cartService from "services/cart";
 import swal from "sweetalert2";
+import reviewService from "services/review";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
@@ -27,7 +28,7 @@ const ProductDetailPage = () => {
   const [childCategory, setChildCategory] = useState({});
   const [isBigCategory, setIsBigCategory] = useState(false);
 
-  const { id } = useParams();
+  const { productId } = useParams();
   const [selectVariant, setSelectVariant] = useState({});
 
   const [quantity, setQuantity] = useState(1);
@@ -35,61 +36,57 @@ const ProductDetailPage = () => {
 
   const { fetchCart } = useContext(AccountContext);
 
-  const navigate = useNavigate();
-
   const fetchProduct = async () => {
     try {
-      const productResponse = await productService.getProductById(id);
-      const productData = productResponse.data.product;
-      console.log(productData)
-      if (productData) {
-        setProduct(productData);
-        setCategory(productData.category);
-        setChildCategory(productData.category.children);
-        setIsBigCategory(!productData.category.children);
-      } else {
-        navigate("/error");
+      const response = await productService.getProductById(productId);
+      const { exitcode, product } = response.data;
+      if (exitcode === 0) {
+        setProduct(product);
+        setCategory(product.category);
+        setChildCategory(product.category.children);
+        setIsBigCategory(!product.category.children);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const fetchReviews = async () => {
     try {
-      const reviewsResponse = await productService.getProductReviews(id);
-      const reviewsData = reviewsResponse.data.reviews;
-      console.log(reviewsData)
-      if (reviewsData) {
-        setReviews(reviewsData);
+      const response = await reviewService.getReview({
+        productId: productId,
+      });
+      const { exitcode, reviews } = response.data;
+      if (exitcode === 0) {
+        setReviews(reviews);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const fetchRelatedProducts = async () => {
     try {
-      const relatedResponse = await productService.getRelatedProducts(id);
-      const relatedData = relatedResponse.data.products;
-      if (relatedData) {
-        setRelatedProducts(relatedData);
+      const response = await productService.getRelatedProducts(productId);
+      const { products, exitcode } = response.data;
+      if (exitcode === 0) {
+        setRelatedProducts(products);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   const fetchVariants = async () => {
     try {
-      const variantsResponse = await variantService.getByProductId(id);
-      const variantsData = variantsResponse.data.variants;
-      if (variantsData) {
-        setSelectVariant(variantsData[0]);
-        setVariants(variantsData);      
+      const response = await variantService.getByProductId(productId);
+      const { exitcode, variants } = response.data;
+      if (exitcode === 0) {
+        setSelectVariant(variants[0]);
+        setVariants(variants);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 

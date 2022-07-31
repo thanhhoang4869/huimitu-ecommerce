@@ -68,16 +68,6 @@ const OrderFooter = (props) => {
             Đã nhận được hàng
           </Button>
         )}
-        {order.state === config.orderState.SUCCESS && (
-          <Button
-            size="large"
-            type="primary"
-            style={{ ...buttonStyle }}
-            onClick={() => handleReview(order.id)}
-          >
-            Đánh giá
-          </Button>
-        )}
         <Button
           type="primary"
           size="large"

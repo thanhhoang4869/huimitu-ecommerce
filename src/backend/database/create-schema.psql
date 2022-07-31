@@ -128,12 +128,12 @@ CREATE TABLE "cart_variant" (
 );
 
 CREATE TABLE "review" (
-  "product_variant_id" int,
+  "variant_id" int,
   "order_id" varchar,
   "rating" int NOT NULL CHECK("rating">=1),
   "comment" varchar,
   "created_time" timestamp DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY ("product_variant_id", "order_id")
+  PRIMARY KEY ("variant_id", "order_id")
 );
 
 CREATE TABLE "order" (
@@ -147,12 +147,12 @@ CREATE TABLE "order" (
   "total_price" bigint NOT NULL DEFAULT 0,
   "discount_price" bigint NOT NULL DEFAULT 0,
   "shipping_price" bigint NOT NULL DEFAULT 0,
-  "final_price" bigint NOT NULL DEFAULT 0,
-  "reviewed" bool NOT NULL DEFAULT false
+  "final_price" bigint NOT NULL DEFAULT 0
 );
 
 CREATE TABLE "order_variant" (
   "order_id" varchar,
+  "reviewed" bool NOT NULL DEFAULT false,
   "variant_id" int,
   "quantity" int NOT NULL,
   "variant_price" bigint NOT NULL DEFAULT 0,
@@ -201,7 +201,12 @@ ALTER TABLE "shipping_address" ADD FOREIGN KEY("district_id") REFERENCES "distri
 ALTER TABLE "shipping_address" ADD FOREIGN KEY("ward_id") REFERENCES "ward"("id");
 ALTER TABLE "shipping_address" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
 
+ALTER TABLE "order" ADD FOREIGN KEY ("payment_id") REFERENCES "payment" ("id");
+ALTER TABLE "order" ADD FOREIGN KEY ("shipping_address_id") REFERENCES "shipping_address" ("id");
 ALTER TABLE "order" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
+ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "product_variant" ("id");
+ALTER TABLE "order_variant" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
+ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
 
 ALTER TABLE "category" ADD FOREIGN KEY ("parent_id") REFERENCES "category" ("id");
 
@@ -209,23 +214,15 @@ ALTER TABLE "product" ADD FOREIGN KEY ("category_id") REFERENCES "category" ("id
 ALTER TABLE "product_image" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 ALTER TABLE "product_variant" ADD FOREIGN KEY ("product_id") REFERENCES "product" ("id");
 
-ALTER TABLE "review" ADD FOREIGN KEY ("product_variant_id") REFERENCES "product_variant" ("id");
-ALTER TABLE "review" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
+ALTER TABLE "review" ADD FOREIGN KEY ("order_id","variant_id") REFERENCES "order_variant" ("order_id", "variant_id");
 
-ALTER TABLE "order_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "product_variant" ("id");
 ALTER TABLE "cart_variant" ADD FOREIGN KEY ("variant_id") REFERENCES "product_variant" ("id");
-
-ALTER TABLE "order" ADD FOREIGN KEY ("payment_id") REFERENCES "payment" ("id");
-ALTER TABLE "order" ADD FOREIGN KEY ("shipping_address_id") REFERENCES "shipping_address" ("id");
 
 ALTER TABLE "voucher_user" ADD FOREIGN KEY ("voucher_code") REFERENCES "voucher" ("voucher_code") ON DELETE CASCADE;
 ALTER TABLE "voucher_user" ADD FOREIGN KEY ("email") REFERENCES "account" ("email") ON DELETE CASCADE;
 
-ALTER TABLE "order_variant" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
-ALTER TABLE "order_state" ADD FOREIGN KEY ("order_id") REFERENCES "order" ("id");
-
-ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email") ON DELETE CASCADE;
-ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id")  ON DELETE CASCADE;
+ALTER TABLE "cart" ADD FOREIGN KEY ("email") REFERENCES "account" ("email");
+ALTER TABLE "cart_variant" ADD FOREIGN KEY ("cart_id") REFERENCES "cart" ("id");
 
 ALTER TABLE "frequent_product" ADD FOREIGN KEY("product_id") REFERENCES "product"("id");
 ALTER TABLE "frequent_product" ADD FOREIGN KEY("consequence_id") REFERENCES "product"("id");
@@ -295,18 +292,18 @@ BEGIN
   SET ("avg_rating", "count_rating") = (
     SELECT cast(sum(r.rating) AS DECIMAL) / count(*), count(*)
     FROM "review" AS r JOIN "product_variant" AS pv 
-    ON pv.id = COALESCE(NEW.product_variant_id, OLD.product_variant_id)
+    ON pv.id = COALESCE(NEW.variant_id, OLD.variant_id)
     WHERE pv.product_id = p.id
   )
   WHERE p.id = (
     SELECT pv.product_id FROM product_variant AS pv
-    WHERE pv.id = COALESCE(NEW.product_variant_id, OLD.product_variant_id)
+    WHERE pv.id = COALESCE(NEW.variant_id, OLD.variant_id)
   );
 
   --- Update order review state
-  UPDATE "order" AS o
+  UPDATE "order_variant" AS ov
   SET "reviewed" = true
-  WHERE o.id = NEW.order_id;
+  WHERE ov.order_id = NEW.order_id AND ov.variant_id = NEW.variant_id;
 
   RETURN NULL;
 END;
@@ -528,9 +525,9 @@ EXECUTE PROCEDURE update_current_usage_voucher();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'D:/projects/huimitu/src/backend/database/data/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'D:/projects/huimitu/src/backend/database/data/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'D:/projects/huimitu/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'D:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123
@@ -667,9 +664,9 @@ INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maxi
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'113 Đường Nguyễn Văn Cừ',106.62077984266271, 10.724669221658448);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('phuc16102001@gmail.com',79,774,27301,'227 Nguyễn Văn Cừ',106.62077984266271, 10.724669221658448);
 
-INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price", "reviewed") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 15000, true);
-INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price", "reviewed") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 10000, false);
-INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price", "reviewed") VALUES(3, 'nhkduy201@gmail.com', 1, 1, 200000, 5000, false);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 15000);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 10000);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price") VALUES(3, 'nhkduy201@gmail.com', 1, 1, 200000, 5000);
 
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 1, 3);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 3, 2);
@@ -682,18 +679,21 @@ INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 4, 1);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 5, 2);
 INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 9, 3);
 
+--- Success order
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'pending');
 SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'shipping');
 SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
 
+--- Payment fail order
 INSERT INTO "order_state"("order_id","state") VALUES(2, 'cancel');
 
+--- Approved order
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'pending');
 SELECT pg_sleep(1);
 INSERT INTO "order_state"("order_id","state") VALUES(3, 'shipping');
 
-INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
-INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,2,1,'This is the second comment!');
-INSERT INTO "review"("product_variant_id","order_id","rating","comment") VALUES(1,3,3,'This is the third comment!');
+INSERT INTO "review"("variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
+INSERT INTO "review"("variant_id","order_id","rating","comment") VALUES(2,2,4,'This is the second comment!');
+INSERT INTO "review"("variant_id","order_id","rating","comment") VALUES(2,3,3,'This is the third comment!');
