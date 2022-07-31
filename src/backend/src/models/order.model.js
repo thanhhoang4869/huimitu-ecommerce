@@ -53,12 +53,13 @@ export default {
 
     async getListOrder({ email, orderState, limit, offset }) {
         const query = removeUndefined({
-            'order.email': email,
-            'order_state.state': orderState
+            'email': email,
+            'state': orderState
         })
         const distinctCols = [
             "order.created_time",
             "order.id",
+            "order.email",
             "payment.provider",
             "province_name",
             "district_name",
@@ -74,7 +75,7 @@ export default {
             ...distinctCols,
             'order_state.state'
         ]
-        const result = await db('order')
+        const orderWithState = db('order')
             .join('shipping_address', 'order.shipping_address_id', 'shipping_address.id')
             .join('province', 'shipping_address.province_id', 'province.id')
             .join('district', 'shipping_address.district_id', 'district.id')
@@ -86,8 +87,8 @@ export default {
             .orderBy([...distinctCols, 'order_state.created_time'].map((item) => ({
                 column: item,
                 order: 'desc'
-            }))).where(query)
-            .limit(limit).offset(offset)
+            }))).as('orderWithState')
+        const result = await db.from(orderWithState).where(query).limit(limit).offset(offset)
         return result || null;
     },
 

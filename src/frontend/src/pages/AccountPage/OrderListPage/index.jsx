@@ -92,7 +92,7 @@ const OrderListPage = () => {
     }
   };
 
-  const handleReview = async ({orderId, variantId, rating, comment}) => {
+  const handleReview = async ({ orderId, variantId, rating, comment }) => {
     try {
       const response = await reviewService.createReview({
         orderId,
@@ -133,9 +133,7 @@ const OrderListPage = () => {
         className="mb-5"
         dataSource={orderList}
         pagination={{
-          onChange: (page) => {
-            setPage(page);
-          },
+          onChange: setPage,
           pageSize: pageLimit,
           total: totalItem,
         }}
