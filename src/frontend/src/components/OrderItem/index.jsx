@@ -11,7 +11,7 @@ const OrderItem = (props) => {
     <div key={order.createdTime} className="my-3">
       <Divider orientation="left"></Divider>
       <OrderHeader order={order} />
-      <ProductList productList={order.variants} />
+      <ProductList productList={order.variants} order={order}/>
       <OrderFooter
         order={order}
         handleCancel={handleCancel}

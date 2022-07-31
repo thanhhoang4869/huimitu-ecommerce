@@ -34,7 +34,6 @@ export default {
                 shipping_price,
                 receiver_name,
                 receiver_phone,
-                reviewed
             } = result
 
             const variantsResult = await variantModel.getByOrderId(orderId);
@@ -48,6 +47,7 @@ export default {
                     price: item.price,
                     variant_price: item.variant_price,
                     quantity: item.quantity,
+                    reviewed: item.reviewed,
                     image: imagePath
                 }
             });
@@ -70,17 +70,9 @@ export default {
                     finalPrice: final_price,
                     receiverName: receiver_name,
                     receiverPhone: receiver_phone,
-                    reviewed: reviewed,
                     variants: variants
                 }
             })
-        } catch (err) {
-            next(err)
-        }
-    },
-
-    async getListOrder(req, res, next) {
-        try {
         } catch (err) {
             next(err)
         }
@@ -129,6 +121,7 @@ export default {
                         discountPrice: variantItem.discount_price,
                         price: variantItem.price,
                         quantity: variantItem.quantity,
+                        reviewed: variantItem.reviewed,
                         image: imagePath
                     }
                 });
@@ -148,7 +141,6 @@ export default {
                     finalPrice: orderItem.final_price,
                     receiverName: orderItem.receiver_name,
                     receiverPhone: orderItem.receiver_phone,
-                    reviewed: orderItem.reviewed,
                     variants: variants
                 }
             })

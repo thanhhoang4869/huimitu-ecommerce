@@ -1,11 +1,12 @@
-import { Avatar, List } from "antd";
+import { Avatar, Button, List } from "antd";
 import React from "react";
 import { Link } from "react-router-dom";
 import formatter from "utils/formatter";
+import config from "config/config";
 
 import "./style.css";
 
-const ProductList = ({ productList }) => {
+const ProductList = ({ productList, order }) => {
   return (
     <List
       dataSource={productList}
@@ -32,9 +33,17 @@ const ProductList = ({ productList }) => {
               </>
             }
           />
-          <span className="color-key">
-            {formatter.formatPrice(product.variantPrice * product.quantity)}
-          </span>
+          <div className="color-key text-right">
+            <div className="py-2">
+              {formatter.formatPrice(product.variantPrice * product.quantity)}
+            </div>
+
+            {!product.reviewed && order.state === config.orderState.SUCCESS && (
+              <div>
+                <Button type="primary">Đánh giá</Button>
+              </div>
+            )}
+          </div>
         </List.Item>
       )}
     ></List>

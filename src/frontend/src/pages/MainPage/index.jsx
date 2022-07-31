@@ -94,7 +94,7 @@ const MainPage = () => {
           />
           <Route
             exact
-            path="/product/detail/:id"
+            path="/product/detail/:productId"
             element={<ProductDetailPage />}
           />
           <Route exact path="/error" element={<ServerErrorPage />} />

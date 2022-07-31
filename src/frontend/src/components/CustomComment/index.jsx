@@ -1,7 +1,7 @@
 import React from "react";
 import { UserOutlined } from "@ant-design/icons";
 
-import { Avatar, Comment, Tooltip } from "antd";
+import { Avatar, Comment } from "antd";
 import StarRatings from "react-star-ratings";
 import moment from "moment";
 
@@ -12,8 +12,7 @@ const CustomComment = ({ review }) => {
     <div className="comment">
       <div className="comment-content">
         <Comment
-          // actions={actions}
-          author={<a>{review.fullName}</a>}
+          author={review.fullName}
           avatar={
             <Avatar
               src={review.avatarPath}

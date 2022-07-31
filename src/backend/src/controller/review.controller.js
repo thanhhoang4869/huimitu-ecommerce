@@ -1,34 +1,66 @@
 import reviewModel from '#src/models/review.model'
+import orderModel from '#src/models/order.model'
 
 export default {
     async createReview(req, res, next) {
         try {
             const {
-                productId,
+                variantId,
                 orderId,
                 rating,
                 comment
             } = req.body;
-            const entity = {
-                productId: productId,
-                orderId: orderId,
-                rating: rating,
-                comment: comment,
-            }
+            const { email } = req.payload;
+
+            // Check order exist
             const order = await orderModel.getOrderById(orderId);
-            if (order===null){
+            if (order === null) {
                 return res.status(200).send({
                     exitcode: 101,
                     message: "Order not found"
                 })
             }
-            if (order.reviewed) {
+
+            // Check for owner
+            if (order.email !== email) {
                 return res.status(200).send({
-                    exitcode: 102, 
-                    message: "Order has been reviewed"
+                    exitcode: 102,
+                    message: "Only order owner can review"
                 })
             }
-            const result = await reviewModel.createReview(entity);
+
+            // Check for order state (must be success)
+            if (order.state !== config.orderState.SUCCESS) {
+                return res.status(200).send({
+                    exitcode: 103,
+                    message: "Order not in success state"
+                })
+            }
+
+            // Check exist variant in order
+            const review = await reviewModel.getReview({ orderId, variantId });
+            if (review?.length < 1 ) {
+                return res.status(200).send({
+                    exitcode: 104,
+                    message: "Item not in the order"
+                })
+            }
+            
+            // Check reviewed
+            if (review[0].reviewed) {
+                return res.status(200).send({
+                    exitcode: 105,
+                    message: "Item has been reviewed"
+                })
+            }
+
+            // Create review
+            await reviewModel.createReview({
+                variantId: variantId,
+                orderId: orderId,
+                rating: rating,
+                comment: comment,
+            });
             res.status(200).send({
                 exitcode: 0,
                 message: "Create product review successfully"
@@ -40,13 +72,14 @@ export default {
 
     async getReview(req, res, next) {
         try {
-            const { productId } = req.body;
-            const result = await reviewModel.getReview(productId);
+            const { productId, orderId, variantId } = req.query;
+
+            const result = await reviewModel.getReview({ productId, orderId, variantId });
             const reviews = result.map(review => ({
                 email: review.email,
                 fullName: review.fullname,
-                avatarPath: review.avatar_path, 
-                productVariantId: review.product_variant_id,
+                avatarPath: review.avatar_path,
+                variantId: review.variant_id,
                 orderId: review.order_id,
                 rating: review.rating,
                 comment: review.comment,
