@@ -79,7 +79,6 @@ const CheckoutPage = () => {
   }, [cart]);
 
   useEffect(() => {
-    console.log(listVariant);
     fetchPrice();
   }, [listVariant, shippingAddressId, voucherCode]);
 
@@ -189,6 +188,9 @@ const CheckoutPage = () => {
           setShippingPrice(shippingPrice);
           setTotalPrice(totalPrice);
           setDiscountPrice(discountPrice);
+          if (totalPrice===0) {
+            navigator('/account/cart')
+          }
           break;
         }
         case 101: {
