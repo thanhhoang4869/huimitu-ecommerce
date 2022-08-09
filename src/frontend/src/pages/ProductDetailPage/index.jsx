@@ -12,7 +12,7 @@ import ProductDetailTitle from "components/ProductDetailTitle";
 
 import "./style.css";
 import formatter from "utils/formatter";
-import { Radio, Space } from "antd";
+import { Button, Radio, Space } from "antd";
 import variantService from "services/variant";
 import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
@@ -35,6 +35,8 @@ const ProductDetailPage = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
 
   const { fetchCart } = useContext(AccountContext);
+
+  const navigator = useNavigate();
 
   const fetchProduct = async () => {
     try {
@@ -251,26 +253,31 @@ const ProductDetailPage = () => {
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">
-                      <button className="add-cart" onClick={addToCartOnSubmit}>
-                        <span>Thêm vào giỏ hàng</span>
-                      </button>
+                      <Button
+                        type="primary"
+                        size="large"
+                        className="add-cart"
+                        onClick={addToCartOnSubmit}
+                        disabled={selectVariant.stock < quantity}
+                      >
+                        Thêm vào giỏ hàng
+                      </Button>
                     </span>
 
                     <span className="pro-details-cart">
-                      {selectVariant.stock >= quantity && (
-                        <Link
-                          to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
-                        >
-                          <input
-                            type="hidden"
-                            className="quantity"
-                            name="quantity"
-                          />
-                          <button className="buy-cart">
-                            <span>Mua ngay</span>
-                          </button>
-                        </Link>
-                      )}
+                      <Button
+                        size="large"
+                        type="primary"
+                        className="buy-cart"
+                        disabled={selectVariant.stock < quantity}
+                        onClick={() =>
+                          navigator(
+                            `/checkout?variantId=${selectVariant.id}&quantity=${quantity}`
+                          )
+                        }
+                      >
+                        <span>Mua ngay</span>
+                      </Button>
                     </span>
                   </div>
                 </div>
