@@ -188,8 +188,8 @@ const CheckoutPage = () => {
           setShippingPrice(shippingPrice);
           setTotalPrice(totalPrice);
           setDiscountPrice(discountPrice);
-          if (totalPrice===0) {
-            navigator('/account/cart')
+          if (totalPrice === 0) {
+            navigator("/account/cart");
           }
           break;
         }
@@ -213,7 +213,7 @@ const CheckoutPage = () => {
         }
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   };
 
