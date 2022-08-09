@@ -8,6 +8,7 @@ const MyPaypalButton = (props) => {
   const shippingAddressId = props.shippingAddressId;
   const receiverName = props.receiverName;
   const receiverPhone = props.receiverPhone;
+  const voucherCode = props.voucherCode;
   const handleCheckout = props.handleCheckout;
   const navigator = useNavigate();
 
@@ -51,7 +52,7 @@ const MyPaypalButton = (props) => {
     <div>
       <PayPalButtons
         createOrder={createOrder}
-        forceReRender={[shippingAddressId, receiverName, receiverPhone]}
+        forceReRender={[shippingAddressId, receiverName, receiverPhone, voucherCode]}
         onApprove={notifyPaypal}
         onCancel={notifyPaypal}
         style={{ layout: "horizontal", tagline: false }}

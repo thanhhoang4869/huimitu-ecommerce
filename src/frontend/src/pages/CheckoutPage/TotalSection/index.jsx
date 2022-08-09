@@ -97,6 +97,7 @@ const TotalSection = (props) => {
             disabled={loading}
             shippingAddressId={shippingAddressId}
             receiverPhone={receiverPhone}
+            voucherCode={voucherCode}
             receiverName={receiverName}
             handleCheckout={handleCheckout}
           />
