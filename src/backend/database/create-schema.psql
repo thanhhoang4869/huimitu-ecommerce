@@ -292,8 +292,8 @@ BEGIN
   SET ("avg_rating", "count_rating") = (
     SELECT cast(sum(r.rating) AS DECIMAL) / count(*), count(*)
     FROM "review" AS r JOIN "product_variant" AS pv 
-    ON pv.id = COALESCE(NEW.variant_id, OLD.variant_id)
-    WHERE pv.product_id = p.id
+    ON r.variant_id = pv.id
+    WHERE p.id = pv.product_id 
   )
   WHERE p.id = (
     SELECT pv.product_id FROM product_variant AS pv
