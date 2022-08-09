@@ -525,9 +525,9 @@ EXECUTE PROCEDURE update_current_usage_voucher();
 
 ----------------------- INSERT DATA -------------------------
 
-COPY "province" FROM E'/tmp/province.csv' CSV DELIMITER ',';
-COPY "district" FROM E'/tmp/district.csv' CSV DELIMITER ',';
-COPY "ward" FROM E'/tmp/ward.csv' CSV DELIMITER ',';
+COPY "province" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
 
 --- Admin password: admin123
 --- User password: user123
@@ -665,7 +665,6 @@ INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","ad
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('phuc16102001@gmail.com',79,774,27301,'227 Nguyễn Văn Cừ',10.724669,106.62078);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nnhatdu@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
-INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nnhatdu@gmail.com',1,1,1,'227 Nguyen Van Cu',21.047932,105.84745);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10,106);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,761,26764,'227 Nguyễn Văn Cừ',10,106);
