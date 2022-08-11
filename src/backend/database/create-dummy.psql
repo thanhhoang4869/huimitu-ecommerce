@@ -1,0 +1,247 @@
+----------------------- INSERT DATA -------------------------
+
+COPY "province" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/province.csv' CSV DELIMITER ',';
+COPY "district" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/district.csv' CSV DELIMITER ',';
+COPY "ward" FROM E'd:/git/huimitu-ecommerce/src/backend/database/data/ward.csv' CSV DELIMITER ',';
+
+--- Admin password: admin123
+--- User password: user123
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('phuc16102001@gmail.com','MzkwNyY5ODhlOTFhNTM1MGMwN2E4NGViMThhOTljNzhjN2Q2Mzg3OTE3YzJmNzRiODU4MDU1Y2ZiMjE5YmE0NTA4NWU2','0707953475','Đỗ Vương Phúc','2001-10-16','male','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('thanhhoang4869@gmail.com','NTgzMyYzNGQ3NWIzY2UwMTM4MDFjNmFiYjQ5ZjM0YzU5NDYwZGFjN2U4ZDc3MTU0ODNjZWMwZWI0ZjIyNzE1YmNmY2Zj','0933442607','Hoàng Như Thanh','2001-07-26','female','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('nnhatdu@gmail.com','YTIwZCYyYWUyZmMxYmIyZDUwYzFlNDhkMzRkZjk5ZTZmYzg4YjM4ZDAwYzliNTU0MGViMWRiNWU4OTg4YjdmZjA4ZTE0','0987654321','Ngô Nhật Du',NULL,'female','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('longmydu@gmail.com','ZDYxYyZhZjY5YmNhMGQ2YjkzMzZhNjZhYzk4MDBhMTcwZTE0OGQ5ZDRlYmRkMjA0NDE2ODc1MmIyOTAyN2NlNGU5OWM0','0987654322','Long Mỹ Du',NULL,'female','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('nhkduy201@gmail.com','OThiNCYyZGQyNTA0N2Y0YmRhZTYwN2I2ZTc3YjA5OTAzZWJkY2QyZDdkOTE3ZDUxOTYxNTU4ODlhYjRiNDllNTZmNjE2','0987654323','Nguyễn Huỳnh Khánh Duy',NULL,'male','admin',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user1@gmail.com','MGU0ZCZkMTljZWM3ZDRlNGRlZGQxYTRkYTdkYThmM2YzNWU2YTE1OTlkZmUyN2JhM2EyYjI5MzNkZWVjMzQ3OWRlYjVm','0987654324','User 1',NULL,'female','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user2@gmail.com','OTgwMiZkYjhjMWQwZGFhOGJhNjBiMDJhOWUyZTVkOWI1MTkwMWI2N2MxZGYyYzJhMDE0ZjQ5MTVjMjczMWIxMjFlYTQ3','0987654325','User 2',NULL,'male','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user3@gmail.com','OWQ3MiY5NjcxODhlNGU4Njk3YzkxMjc1ZmY0YTgwYTcxYmQzM2VjNDMzNGUzYTE2MGM5NzVjZDYyMWFhNTQ2YWMzNGM2','0987654326','User 3',NULL,'female','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user4@gmail.com','NjM2NyZiM2FiYTI5OWFiN2RjN2IzNjVlMjIyNWI3ZjZkMDhmOTg5ZjY5M2ZhZDgyMDkyMGEyNWZkODRmMTI1OTg2OTI3','0987654327','User 4',NULL,'male','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user5@gmail.com','NGI5MCZkZjQxYzY5YzE4ZjJhOGY4MDExOTU1NTI3MzNhY2Y3MzliYzc3Yjg5Y2Q2NDBhOWJmMjBmYWFiNDY3Y2Y2YWMw','0987654328','User 5',NULL,'female','user',true);
+
+INSERT INTO "payment"("provider") VALUES('paypal');
+INSERT INTO "payment"("provider") VALUES('momo');
+INSERT INTO "payment"("provider") VALUES('cod');
+INSERT INTO "payment"("provider") VALUES('nowpayment');
+
+INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ trang trí',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ làm bánh',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Túi và đầu chiết',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Giấy nến',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Dụng cụ trang trí bánh kem',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Khuôn bánh',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('1','Dụng cụ trang trí bánh quy',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khay nướng',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khuôn bánh muffin',NULL);
+INSERT INTO "category"("parent_id","category_name","description") VALUES('2','Khuôn tạo hình',NULL);
+
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí (10 cái) ','3','<div><h5 >ỨNG DỤNG:</h5><ul><li> Bắt bông kem trang trí.</li><li> Chịu được nhiệt độ cao, có thể dùng để nung chảy kẹo và chocolate trực tiếp để tạo hình trang trí.</li></ul><h5 >CHI TIẾT:</h5><ul><li> 16" ~ 40,64 cm.</li><li> 10 túi.</li><li> 3 màu: đen, trắng và xanh.</li><li> Phù hợp với nhiều đầu bắt bông kem.</li><li> Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu bắt bông kem hình ngôi sao','3','<div><h5 >ỨNG DỤNG:</h5><ul><li> Bắt bông kem trang trí, tạo hình ngôi sao chuyên nghiệp.</li></ul><h5 >CHI TIẾT:</h5><ul><li> Đầu dáng 1M. </li><li> Phù hợp với tất cả túi bắt bông kem và các ron nối.</li><li> Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Túi trang trí có thể tái sử dụng (10 cái)','3','<div><h5 >ỨNG DỤNG:</h5><ul><li>Bắt bông kem trang trí (có thể tái sử dụng).</li></ul><h5 >CHI TIẾT:</h5><ul><li>Tái sử dụng được. </li><li>1 túi</li><li>12" ~ 30,48cm</li><li>Phù hợp với tất cả đầu bắt bông kem và các ron nối.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Đầu bắt bông kem hình bông hoa','3','<div><h5 >ỨNG DỤNG:</h5><ul><li>Bắt bông kem trang trí, tạo hình hoa chuyên nghiệp.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Đầu dáng 2D.</li><li>Phù hợp với tất cả đầu bắt bông kem và các ron nối.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bộ đầu bắt bông kem trang trí Wilton','3','<div><h5 >ỨNG DỤNG:</h5><ul><li>Bắt bông kem trang trí, tạo nhiều hình hoa chuyên nghiệp.</li></ul><h5 >CHI TIẾT:</h5><ul><li>4 cái.</li><li>4 size (225, 129, 109, 190).</li><li>Phù hợp với tất cả túi bắt bông kem và các ron nối.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến lót cupcake (36 miếng)','4','<div><h5 >ỨNG DỤNG:</h5><ul><li>Lót bánh nướng.</li><li>Chống dầu, chống khét khuôn.</li></ul><h5 >CHI TIẾT:</h5><ul><li>36 cái.</li><li>4 màu (cam, đen, vàng, trắng).</li><li>1.97" x 1.18" ~ 5cm x 2.99cm.</li><li>Chịu được nhiệt độ cao lên đến 200 độ C.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến lót cupcake chấm bi (36 miếng)','4','<div><h5 >ỨNG DỤNG:</h5><ul><li>Lót bánh nướng.</li><li>Chống dầu, chống khét khuôn.</li></ul><h5 >CHI TIẾT:</h5><ul><li>36 cái.</li><li>4 màu (hồng, đỏ, xanh dương, xanh lá).</li><li>1.97" x 1.18" ~ 5cm x 2.99cm.</li><li>Chịu được nhiệt độ cao lên đến 200 độ C.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Giấy nến lót cupcake họa tiết thánh giá (300 miếng)','4','<div><h5 >ỨNG DỤNG:</h5><ul><li>Lót bánh nướng.</li><li>Chống dầu, chống khét khuôn.</li></ul><h5 >CHI TIẾT:</h5><ul><li>300 cái.</li><li>1.97" x 1.18" ~ 5cm x 2.99cm.</li><li>Chịu được nhiệt độ cao lên đến 200 độ C.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dụng cụ là phẳng bề mặt kem','5','<div><h5 >ỨNG DỤNG:</h5><ul><li>Làm đều và phẳng bề mặt kem.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Lưỡi dao làm từ thép không rỉ.</li><li>9" x 3" ~ 22.8cm x 7.6cm.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dụng cụ cắt đều bánh theo từng cấp độ','5','<div><h5 >ỨNG DỤNG:</h5><ul><li>Làm đều và phẳng bề mặt bánh.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Lưỡi dao làm từ thép không rỉ.</li><li>Chiều rộng: 10" ~ 25.4 cm.</li><li>9 cấp bậc cắt bánh.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Thanh tre cố định bánh (230 cái)','5','<div><h5 >ỨNG DỤNG:</h5><ul><li>Cố định các loại bánh cao hoặc khi chồng bánh lên nhau.</li><li>Hỗ trợ cho bánh cứng cáp, dễ trang trí hơn.</li></ul><h5 >CHI TIẾT:</h5><ul><li>230 cái.</li><li>Làm từ tre, dễ cắt đến chiều dài theo nhu cầu.</li><li>12" x 0.25" ~ 30.4cm x 6.3mm.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Bay 9"','5','<div><h5 >ỨNG DỤNG:</h5><ul><li>Làm phẳng và đều bề mặt bánh.</li><li>Cắt và nhấc bánh theo nhu cầu.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Lưỡi bay làm từ thép không rỉ.</li><li>9" ~ 22.86 cm.</li><li>An toàn khi rửa bằng máy rửa chén.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Dụng cụ lưỡi dao chia đều bột và bánh','5','<div><h5 >ỨNG DỤNG:</h5><ul><li>Hỗ trợ dễ dàng chia đều bột và bánh theo thước đo trên dao.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Lưỡi dao làm từ thép không rỉ.</li><li>6.8" x 3.38" ~ 17.272cm x 8.585cm.</li><li>Có thước đo trên lưỡi dao.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh tròn','8','<div><h5 >ỨNG DỤNG:</h5><ul><li>Nướng các bánh hình tròn.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Khuôn làm từ thép không rỉ.</li><li>Có 3 size:</li><ul><li>6" x 2" ~ 15.24 x 5.08cm.</li><li>12" x 2" ~ 30.48 x 5.08cm.</li><li>16" x 2" ~ 40.64 x 5.08cm.</li></ul><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh chống dính hình trái tim','10','<div><h5 >ỨNG DỤNG:</h5><ul><li>Nướng các bánh hình trái tim.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Khuôn làm từ thép không rỉ.</li><li>9" x 9" x 2" ~ 22.9cm x 22.9cm x 5cm.</li><li>Chống dính.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+INSERT INTO "product"("product_name","category_id","description","avg_rating","count_rating") VALUES('Khuôn bánh dẹt chống dính','9','<div><h5 >ỨNG DỤNG:</h5><ul><li>Nướng các bánh xốp cuộn.</li><li>Nướng các loại rau củ.</li></ul><h5 >CHI TIẾT:</h5><ul><li>1 cái.</li><li>Khuôn làm từ thép không rỉ.</li><li>14.8" x 10.6" x 0.7:" ~ 37.5cm x 26.9cm x 1.7cm.</li><li>Chống dính.</li><li>Bao gồm HDSD.</li></ul></div>','0','0');
+
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(1,'https://res.cloudinary.com/phuc16102001/image/upload/v1658811997/huimitu/product/ovvxrgiyj7ioxcv8pjxq.webp','huimitu/product/ovvxrgiyj7ioxcv8pjxq');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(1,'https://res.cloudinary.com/phuc16102001/image/upload/v1658811997/huimitu/product/opekkwjpy4gotsnryg4g.jpg','huimitu/product/opekkwjpy4gotsnryg4g');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(2,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812916/huimitu/product/nojwq2qlo6j79ujr7kdk.webp','huimitu/product/nojwq2qlo6j79ujr7kdk');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(2,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812916/huimitu/product/cg3bpxdebihgomklu4hp.webp','huimitu/product/cg3bpxdebihgomklu4hp');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(3,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812940/huimitu/product/k0qhoegab3hsgbubix9a.webp','huimitu/product/k0qhoegab3hsgbubix9a');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(3,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812939/huimitu/product/jiitpvpw4js5vku19q1c.webp','huimitu/product/jiitpvpw4js5vku19q1c');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(4,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812951/huimitu/product/bobx4r9i1adwctzc94p3.webp','huimitu/product/bobx4r9i1adwctzc94p3');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(4,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812951/huimitu/product/xkfgtlpannb9eyhy8ymb.webp','huimitu/product/xkfgtlpannb9eyhy8ymb');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(5,'https://res.cloudinary.com/phuc16102001/image/upload/v1658812961/huimitu/product/nh4wx4x8tpwzgqhrifwv.webp','huimitu/product/nh4wx4x8tpwzgqhrifwv');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813036/huimitu/product/lbz3lim0dihml6ibiddl.webp','huimitu/product/lbz3lim0dihml6ibiddl');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813036/huimitu/product/qnchwo3pba77banhhyya.webp','huimitu/product/qnchwo3pba77banhhyya');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813036/huimitu/product/drvse3psaxs9vt09v0jw.webp','huimitu/product/drvse3psaxs9vt09v0jw');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813036/huimitu/product/lnb0pfunslecqkplyve4.jpg','huimitu/product/lnb0pfunslecqkplyve4');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813036/huimitu/product/yys5yd6hbfeihsbusfgg.webp','huimitu/product/yys5yd6hbfeihsbusfgg');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813035/huimitu/product/jxjo4y2xaiylx0rhiflz.webp','huimitu/product/jxjo4y2xaiylx0rhiflz');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813036/huimitu/product/ob5z6jd3xkvlfgejlhmj.webp','huimitu/product/ob5z6jd3xkvlfgejlhmj');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(6,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813035/huimitu/product/jct8gcxsj1g5xlqztmod.webp','huimitu/product/jct8gcxsj1g5xlqztmod');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813139/huimitu/product/elypbm1drzcv7n66gdxl.webp','huimitu/product/elypbm1drzcv7n66gdxl');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813139/huimitu/product/hkumu3muubwszyikzqw7.webp','huimitu/product/hkumu3muubwszyikzqw7');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813140/huimitu/product/muw2pcxax3fln54dzi7t.webp','huimitu/product/muw2pcxax3fln54dzi7t');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813140/huimitu/product/nx5dgljojros7tbaybdo.jpg','huimitu/product/nx5dgljojros7tbaybdo');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813139/huimitu/product/pc6inagf5i3iqpnfw5my.webp','huimitu/product/pc6inagf5i3iqpnfw5my');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813139/huimitu/product/rnzfpuqbit2ansjfb0jy.jpg','huimitu/product/rnzfpuqbit2ansjfb0jy');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813140/huimitu/product/zpij5samek6lfcctb8a7.webp','huimitu/product/zpij5samek6lfcctb8a7');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(7,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813139/huimitu/product/lyl2l6jlt9mppeezdy0l.jpg','huimitu/product/lyl2l6jlt9mppeezdy0l');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(8,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813154/huimitu/product/ctrpsie2jehpj6gcmgry.webp','huimitu/product/ctrpsie2jehpj6gcmgry');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(9,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813165/huimitu/product/dyi9gv8unclimvntxwud.webp','huimitu/product/dyi9gv8unclimvntxwud');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(9,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813165/huimitu/product/x9be1o8viypbu831imji.webp','huimitu/product/x9be1o8viypbu831imji');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(9,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813165/huimitu/product/i3ubbiszcvovs5sw8plz.webp','huimitu/product/i3ubbiszcvovs5sw8plz');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(10,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813176/huimitu/product/zxqgozucbaqhmvpwcs4t.webp','huimitu/product/zxqgozucbaqhmvpwcs4t');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(10,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813176/huimitu/product/tmqffzlynteciavegmsl.webp','huimitu/product/tmqffzlynteciavegmsl');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(10,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813176/huimitu/product/dcwqqnnxz2dziahtmzmz.webp','huimitu/product/dcwqqnnxz2dziahtmzmz');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(10,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813177/huimitu/product/js3mtjbfslfvvbrlbicr.webp','huimitu/product/js3mtjbfslfvvbrlbicr');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(11,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813187/huimitu/product/yovu7hwvetfxrj3tizlb.webp','huimitu/product/yovu7hwvetfxrj3tizlb');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(11,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813187/huimitu/product/jdjhjlifcwchrabf4gsd.webp','huimitu/product/jdjhjlifcwchrabf4gsd');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(11,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813187/huimitu/product/cqi6zqairjtnb7hbao91.webp','huimitu/product/cqi6zqairjtnb7hbao91');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(12,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813201/huimitu/product/vn9koh75prpvjske08ae.webp','huimitu/product/vn9koh75prpvjske08ae');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(12,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813201/huimitu/product/z1vk5or1fxtgtxexdcc7.webp','huimitu/product/z1vk5or1fxtgtxexdcc7');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(13,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813211/huimitu/product/xiosvh2jnjjdnnaxtaz2.webp','huimitu/product/xiosvh2jnjjdnnaxtaz2');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(13,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813211/huimitu/product/gyxmumv9ohadhedthdmr.webp','huimitu/product/gyxmumv9ohadhedthdmr');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(13,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813211/huimitu/product/blpjsq5s1vkwdswz9v6h.webp','huimitu/product/blpjsq5s1vkwdswz9v6h');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(14,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813221/huimitu/product/q20kyu15apwolovbdaq6.webp','huimitu/product/q20kyu15apwolovbdaq6');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(14,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813221/huimitu/product/ncq6yv3km3mdwhbzjl1z.webp','huimitu/product/ncq6yv3km3mdwhbzjl1z');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(14,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813221/huimitu/product/a36spdexfn66y5cs7x5d.webp','huimitu/product/a36spdexfn66y5cs7x5d');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(14,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813221/huimitu/product/emzhcca33tdyccael0sy.webp','huimitu/product/emzhcca33tdyccael0sy');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(15,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813232/huimitu/product/uegt43y6o2ttaxtubw9q.webp','huimitu/product/uegt43y6o2ttaxtubw9q');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(15,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813232/huimitu/product/cheqppegsf1w0szwe9j1.webp','huimitu/product/cheqppegsf1w0szwe9j1');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(15,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813232/huimitu/product/tas3q86w9aiuiwjxv7at.webp','huimitu/product/tas3q86w9aiuiwjxv7at');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(16,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813243/huimitu/product/zp6d71e6rvypqhyfr0vb.webp','huimitu/product/zp6d71e6rvypqhyfr0vb');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(16,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813243/huimitu/product/revg2p4f2t1fndugie4m.webp','huimitu/product/revg2p4f2t1fndugie4m');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(16,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813243/huimitu/product/m2vntdewkjjqmexrzeu7.webp','huimitu/product/m2vntdewkjjqmexrzeu7');
+INSERT INTO "product_image"("product_id", "path", "filename") VALUES(16,'https://res.cloudinary.com/phuc16102001/image/upload/v1658813243/huimitu/product/au5nnrulwe40cotcxbcx.webp','huimitu/product/au5nnrulwe40cotcxbcx');
+
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) đen','20000',NULL,'3');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) trắng','25000',NULL,'5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('1','Túi trang trí (10 cái) xanh','23000',NULL,'2');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('2','Đầu bắt bông kem hình ngôi sao','35000',NULL,'10');
+
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('3','Túi trang trí có thể tái sử dụng (10 cái)','32000',NULL,'20');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('4','Đầu bắt bông kem hình bông hoa','15000',NULL,'15');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('5','Bộ đầu bắt bông kem trang trí Wilton','260000',NULL,'30');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('6','Giấy nến lót cupcake cam (36 miếng)','80000','70000','5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('6','Giấy nến lót cupcake đen (36 miếng)','80000','70000','4');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('6','Giấy nến lót cupcake vàng (36 miếng)','80000','70000','3');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('6','Giấy nến lót cupcake trắng (36 miếng)','80000','70000','1');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('7','Giấy nến lót cupcake chấm bi hồng (36 miếng)','85000',NULL,'5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('7','Giấy nến lót cupcake chấm bi đỏ (36 miếng)','85000',NULL,'8');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('7','Giấy nến lót cupcake chấm bi xanh dương (36 miếng)','85000',NULL,'7');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('7','Giấy nến lót cupcake chấm bi xanh lá (36 miếng)','85000',NULL,'8');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('8','Giấy nến lót cupcake họa tiết thánh giá (300 miếng)','400000','390000','50');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('9','Dụng cụ là phẳng bề mặt kem','270000','250000','20');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('10','Dụng cụ cắt đều bánh theo từng cấp độ','280000',NULL,'15');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('11','Thanh tre cố định bánh (230 cái)','77000','70000','3');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('12','Bay 9"','220000','180000','5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('13','Dụng cụ lưỡi dao chia đều bột và bánh','20000',NULL,'19');
+
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('14','Khuôn bánh tròn 6" x 2"','180000','110000','10');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('14','Khuôn bánh tròn 12" x 2"','350000','160000','5');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('14','Khuôn bánh tròn 16" x 2"','270000','100000','4');
+
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('15','Khuôn bánh chống dính hình trái tim','230000',NULL,'41');
+INSERT INTO "product_variant"("product_id","variant_name","price","discount_price","stock") VALUES('16','Khuôn bánh dẹt chống dính','120000','100000','29');
+
+INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('TET30',10,100000,15000,'2023-01-01');
+INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('DEAL77',15,50000,10000,'2023-01-01');
+
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10.724669,106.62078);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('phuc16102001@gmail.com',79,774,27301,'227 Nguyễn Văn Cừ',10.724669,106.62078);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nnhatdu@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,761,26764,'227 Nguyễn Văn Cừ',10,106);
+
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price") VALUES(1, 'nhkduy201@gmail.com', 1, 1, 100000, 15000);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price") VALUES(2, 'nhkduy201@gmail.com', 1, 1, 150000, 10000);
+INSERT INTO "order"("id","email","payment_id","shipping_address_id","final_price","shipping_price") VALUES(3, 'nhkduy201@gmail.com', 1, 1, 200000, 5000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-537140-5339','longmydu@gmail.com','Long Mỹ Du','0987654322','2022-08-06 12:35:58.767138',3,3,480000,0,30000,510000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-525433-5324','nnhatdu@gmail.com','Ngô Nhật Du','0987654321','2022-08-06 21:52:46.772498',3,4,40000,0,30000,70000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-520432-9125','nhkduy201@gmail.com','Nguyễn Huỳnh Khánh Duy','0987654323','2022-08-06 22:09:29.322242',3,6,135000,0,30000,165000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-520048-1145','longmydu@gmail.com','Long Mỹ Du','0987654322','2022-08-06 22:14:10.118866',3,7,430000,0,30000,460000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-520225-3337','nhkduy201@gmail.com','Nguyễn Huỳnh Khánh Duy','0987654323','2022-08-06 22:16:37.667895',3,1,210000,0,30000,240000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-522683-9446','longmydu@gmail.com','Long Mỹ Du','0987654322','2022-08-06 22:20:06.3563',3,7,444000,0,30000,474000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-522630-2660','longmydu@gmail.com','Long Mỹ Du','0987654322','2022-08-06 22:21:08.92396',3,7,444000,0,30000,474000);
+INSERT INTO "order"("id","email","receiver_name","receiver_phone","created_time","payment_id","shipping_address_id","total_price","discount_price","shipping_price","final_price") VALUES('1342-522623-7206','longmydu@gmail.com','Long Mỹ Du','0987654322','2022-08-06 22:21:36.499487',3,7,444000,15000,30000,459000);
+
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 1, 3);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 3, 2);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 4, 4);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(1, 5, 5);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(2, 2, 1);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(2, 6, 1);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 2, 4);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 4, 1);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 5, 2);
+INSERT INTO "order_variant"("order_id","variant_id","quantity") VALUES(3, 9, 3);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-537140-5339','t',4,4,35000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-537140-5339','t',12,4,85000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-525433-5324','f',1,2,20000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-520432-9125','t',6,2,15000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-520432-9125','t',4,3,35000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-520048-1145','t',7,1,260000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-520048-1145','t',15,2,85000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-520225-3337','t',19,3,70000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522683-9446','f',5,2,32000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522683-9446','f',13,1,85000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522683-9446','f',4,1,35000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522683-9446','f',7,1,260000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522630-2660','f',5,2,32000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522630-2660','f',13,1,85000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522630-2660','f',4,1,35000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522630-2660','f',7,1,260000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522623-7206','f',5,2,32000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522623-7206','f',4,1,35000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522623-7206','f',7,1,260000);
+INSERT INTO "order_variant"("order_id","reviewed","variant_id","quantity","variant_price") VALUES('1342-522623-7206','t',13,1,85000);
+
+
+--- Success order
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'pending');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'shipping');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(1, 'success');
+
+--- Payment fail order
+INSERT INTO "order_state"("order_id","state") VALUES(2, 'cancel');
+
+--- Approved order
+INSERT INTO "order_state"("order_id","state") VALUES(3, 'pending');
+SELECT pg_sleep(1);
+INSERT INTO "order_state"("order_id","state") VALUES(3, 'shipping');
+
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-537140-5339','init','2022-08-06 12:35:58.768833');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-537140-5339','pending','2022-08-06 12:35:59.611267');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-537140-5339','shipping','2022-08-06 12:38:41.351869');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-537140-5339','success','2022-08-06 12:38:53.601149');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-525433-5324','init','2022-08-06 21:52:46.800625');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-525433-5324','pending','2022-08-06 21:52:46.849906');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-525433-5324','shipping','2022-08-06 21:53:21.351239');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520432-9125','init','2022-08-06 22:09:29.326489');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520432-9125','pending','2022-08-06 22:09:29.362962');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520432-9125','shipping','2022-08-06 22:09:47.402186');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520432-9125','success','2022-08-06 22:09:59.997351');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520048-1145','init','2022-08-06 22:14:10.123502');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520048-1145','pending','2022-08-06 22:14:10.154793');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520048-1145','shipping','2022-08-06 22:14:29.870229');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520048-1145','success','2022-08-06 22:14:40.60423');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520225-3337','init','2022-08-06 22:16:37.672502');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520225-3337','pending','2022-08-06 22:16:37.70054');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520225-3337','shipping','2022-08-06 22:16:52.039262');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-520225-3337','success','2022-08-06 22:16:56.032845');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522683-9446','init','2022-08-06 22:20:06.358559');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522683-9446','pending','2022-08-06 22:20:06.387986');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522630-2660','init','2022-08-06 22:21:08.928882');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522630-2660','pending','2022-08-06 22:21:08.959581');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522630-2660','cancel','2022-08-06 22:21:18.747359');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522623-7206','init','2022-08-06 22:21:36.5001');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522623-7206','pending','2022-08-06 22:21:36.534447');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522623-7206','shipping','2022-08-06 22:22:18.752095');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522683-9446','shipping','2022-08-06 22:22:22.638633');
+INSERT INTO "order_state"("order_id","state","created_time") VALUES('1342-522623-7206','success','2022-08-06 22:22:30.824707');
+
+
+INSERT INTO "review"("variant_id","order_id","rating","comment") VALUES(1,1,5,'This is the first comment!');
+INSERT INTO "review"("variant_id","order_id","rating","comment") VALUES(2,2,4,'This is the second comment!');
+INSERT INTO "review"("variant_id","order_id","rating","comment") VALUES(2,3,3,'This is the third comment!');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(4,'1342-537140-5339',5,'Good good!','2022-08-06 12:39:10.027813');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(12,'1342-537140-5339',5,'Goooddddddd~','2022-08-06 12:39:23.368633');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(6,'1342-520432-9125',5,'Sản phẩm tốt quá!','2022-08-06 22:10:41.525498');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(4,'1342-520432-9125',5,'Mua đi mọi người!','2022-08-06 22:10:51.627296');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(7,'1342-520048-1145',3,'Sản phẩm xài tạm','2022-08-06 22:15:06.748436');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(15,'1342-520048-1145',5,'Lần sau phải mua nhiều hơn','2022-08-06 22:15:33.707063');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(19,'1342-520225-3337',4,'Thanh tre khá tốt, mua được nha mọi người','2022-08-06 22:18:28.74133');
+INSERT INTO "review"("variant_id","order_id","rating","comment","created_time") VALUES(13,'1342-522623-7206',5,'Giấy rẻ mà chất lượng cao nhe mọi người','2022-08-06 22:23:23.180616');
