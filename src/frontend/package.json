@@ -30,7 +30,8 @@
     "sass": "^1.53.0",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.4.23",
-    "text-mask-addons": "^3.8.0"
+    "text-mask-addons": "^3.8.0",
+    "webpack": "^5.74.0"
   },
   "scripts": {
     "start": "craco start",
