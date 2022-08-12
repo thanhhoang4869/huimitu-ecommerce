@@ -84,6 +84,15 @@ const ProductDetailPage = () => {
       const response = await variantService.getByProductId(productId);
       const { exitcode, variants } = response.data;
       if (exitcode === 0) {
+        if (variants.length < 1) {
+          swal.fire({
+            title: "Xem chi tiết sản phẩm",
+            text: "Sản phẩm chưa có các biến thể",
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+          navigator("/");
+        }
         setSelectVariant(variants[0]);
         setVariants(variants);
       }

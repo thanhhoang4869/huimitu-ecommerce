@@ -74,7 +74,7 @@ const ViewProductSection = () => {
       sorter: (a, b) => +a.minPrice - +b.minPrice,
     },
     {
-      title: "SL",
+      title: "Số lượng",
       dataIndex: "stock",
       sorter: (a, b) => +a.stock - +b.stock,
     },
@@ -89,7 +89,7 @@ const ViewProductSection = () => {
         },
         {
           text: "Giấy nến",
-          value: "Giay nen",
+          value: "Giấy nến",
         },
         {
           text: "Dụng cụ trang trí bánh kem",
@@ -116,7 +116,7 @@ const ViewProductSection = () => {
           value: "Khuôn tạo hình",
         },
       ],
-      onFilter: (value, record) => record.categoryName.indexOf(value) === 0,
+      onFilter: (value, record) => record.categoryName === value,
     },
     {
       dataIndex: "action",
@@ -149,10 +149,6 @@ const ViewProductSection = () => {
     };
   });
 
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
-
   return (
     <>
       <Table
@@ -162,7 +158,6 @@ const ViewProductSection = () => {
         }}
         columns={columns}
         dataSource={data}
-        onChange={onChange}
       />
     </>
   );
