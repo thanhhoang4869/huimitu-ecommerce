@@ -68,10 +68,10 @@ const AddProductSection = () => {
   const handleEditSuccess = async (values) => {
     variants.some((variant, index) => {
       if (variant === selectedVariant) {
-        variants[index] = values
-        return true
+        variants[index] = values;
+        return true;
       }
-    })
+    });
     setVariants(variants);
     setVisibleEdit(false);
   };
@@ -182,18 +182,28 @@ const AddProductSection = () => {
     accept: "image/png, image/jpeg",
     showUploadList: true,
 
-    async beforeUpload(file) {
-      if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
+    async beforeUpload(file, fileList) {
+      const filteredFileList = fileList.filter(
+        (file) => isImage(file.type) && sizeLessMegaByte(file.size, 5)
+      );
+      if (fileList.length > filteredFileList.length) {
         swal.fire({
-          text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
+          title: "Thêm sản phẩm",
+          text: "Hình phải có kích thước nhỏ hơn 5MB",
           icon: "error",
           confirmButtonText: "OK",
         });
-        return false;
       }
-      setSelectedImages([file, ...selectedImages]);
+      setSelectedImages([...filteredFileList, ...selectedImages]);
 
       return false;
+    },
+
+    onRemove: (file) => {
+      const index = selectedImages.indexOf(file);
+      const newFileList = selectedImages.slice();
+      newFileList.splice(index, 1);
+      setSelectedImages(newFileList);
     },
   };
 
