@@ -13,6 +13,7 @@ import FilterSection from "components/FilterSection";
 import { default as productService } from "services/product";
 import swal from "sweetalert2";
 import { cleanObj } from "utils/objectUtils";
+import { min } from "moment";
 
 const ProductResult = () => {
   const [searchParams] = useSearchParams();
@@ -56,16 +57,23 @@ const ProductResult = () => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
+    console.log(minPrice, minPrice == null);
+
     const newQuery = {
-      page: page,
       sortType: sortType,
       searchQuery: searchQuery,
       categoryId: categoryId,
-      minPrice: minPrice,
-      maxPrice: maxPrice,
+      page: page,
+      minPrice: minPrice == null ? undefined : +minPrice,
+      maxPrice: minPrice == null ? undefined : +maxPrice,
+    };
+    const newRequest = {
+      ...newQuery,
+      limit: 6,
+      offset: +(page - 1) * 6,
     };
     setQuery(newQuery);
-    search(newQuery);
+    search(newRequest);
   }, [location]); // eslint-disable-line
 
   const search = (data) => {
@@ -80,104 +88,66 @@ const ProductResult = () => {
   };
 
   const getCategory = (categoryId) => {
-    if (!categoryId) {
-      setIsBigCategory(false);
-      return;
-    }
+    try {
+      if (!categoryId) {
+        setIsBigCategory(false);
+        return;
+      }
 
-    for (let category in categoryList) {
-      if (+categoryList[category].id === +categoryId) {
-        setIsBigCategory(true);
-        setCategory(categoryList[category]);
-      } else {
-        const children = categoryList[category].children;
-        for (let index in children) {
-          if (+children[index].id === +categoryId) {
-            setIsBigCategory(false);
-            setCategory(categoryList[category]);
-            setChildCategory(children[index]);
-            break;
+      for (let category in categoryList) {
+        if (+categoryList[category].id === +categoryId) {
+          setIsBigCategory(true);
+          setCategory(categoryList[category]);
+        } else {
+          const children = categoryList[category].children;
+          for (let index in children) {
+            if (+children[index].id === +categoryId) {
+              setIsBigCategory(false);
+              setCategory(categoryList[category]);
+              setChildCategory(children[index]);
+              break;
+            }
           }
         }
       }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getProductsBySearch = async (data) => {
+  const getProductsBySearch = async (query) => {
     try {
-      const request = {
-        searchQuery: data.searchQuery,
-        limit: 6,
-        offset: +(data.page - 1) * 6,
-        minPrice: data.minPrice,
-        maxPrice: data.maxPrice,
-        sortType: data.sortType,
-      };
-      const response = await productService.getProductsBySearchQuery(request);
+      const response = await productService.getProductsBySearchQuery(query);
       setProducts(response.data.products);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getTotalProductsBySearch = async (data) => {
+  const getTotalProductsBySearch = async (query) => {
     try {
-      const request = {
-        searchQuery: data.searchQuery,
-        minPrice: data.minPrice,
-        maxPrice: data.maxPrice,
-      };
-      const response = await productService.countBysearchQuery(request);
+      const response = await productService.countBysearchQuery(query);
       setTotal(response.data.count);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getProducts = async (data) => {
+  const getProducts = async (query) => {
     try {
-      const request = {
-        categoryId: +data.categoryId,
-        limit: 6,
-        offset: +(data.page - 1) * 6,
-        minPrice: +data.minPrice,
-        maxPrice: +data.maxPrice,
-        sortType: data.sortType,
-      };
-      const response = await productService.getProducts(request);
+      const response = await productService.getProducts(query);
       setProducts(response.data.products);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getTotalProducts = async (data) => {
+  const getTotalProducts = async (query) => {
     try {
-      const request = {
-        categoryId: +data.categoryId,
-        minPrice: +data.minPrice,
-        maxPrice: +data.maxPrice,
-      };
-      const response = await productService.countProducts(request);
+      const response = await productService.countProducts(query);
       setTotal(response.data.count);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
