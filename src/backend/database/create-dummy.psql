@@ -136,11 +136,11 @@ INSERT INTO "product_variant"("product_id","variant_name","price","discount_pric
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('TET30',10,100000,15000,'2023-01-01');
 INSERT INTO "voucher"("voucher_code","percentage_discount","minimum_price","maximum_discount_price","end_date") VALUES('DEAL77',15,50000,10000,'2023-01-01');
 
-INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10.724669,106.62078);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10.724669,106.62078);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('phuc16102001@gmail.com',79,774,27301,'227 Nguyễn Văn Cừ',10.724669,106.62078);
-INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
-INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nnhatdu@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
-INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',1,1,1,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nnhatdu@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10,106);
+INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('nhkduy201@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10,106);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,760,26734,'227 Nguyễn Văn Cừ',10,106);
 INSERT INTO "shipping_address"("email","province_id","district_id","ward_id","address", "long", "lat") VALUES('longmydu@gmail.com',79,761,26764,'227 Nguyễn Văn Cừ',10,106);
 
