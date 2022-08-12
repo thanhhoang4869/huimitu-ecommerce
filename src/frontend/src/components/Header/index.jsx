@@ -1,5 +1,5 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
 import { useContext } from "react";
@@ -8,6 +8,8 @@ import { AccountContext } from "context/AccountContext";
 const Header = () => {
   const { logout, isLogin, cart, isAdmin, account } =
     useContext(AccountContext);
+  const location = useLocation();
+  const { pathname } = location;
 
   return (
     <>
@@ -63,28 +65,34 @@ const Header = () => {
             <div className="col-lg-6">
               <nav className="header__menu">
                 <ul>
-                  <li className="active">
+                  <li className={pathname === "/" ? "active" : ""}>
                     <Link to="/">Trang chủ</Link>
                   </li>
-                  <li>
+                  <li
+                    className={pathname.startsWith("/product") ? "active" : ""}
+                  >
                     <Link to="/product?page=1">Sản phẩm</Link>
                   </li>
-                  <li>
-                    <Link to="#">Chính sách</Link>
+                  <li
+                    className={pathname.startsWith("/policy") ? "active" : ""}
+                  >
+                    <Link to="/policy">Chính sách</Link>
                     <ul className="header__menu__dropdown">
                       <li>
-                        <Link to="#">Giao hàng</Link>
+                        <Link to="/policy/shipping">Giao hàng</Link>
                       </li>
                       <li>
-                        <Link to="#">Đổi trả</Link>
+                        <Link to="/policy/refund">Đổi trả</Link>
                       </li>
                       <li>
-                        <Link to="#">Coupons</Link>
+                        <Link to="/policy/coupon">Coupons</Link>
                       </li>
                     </ul>
                   </li>
                   {isAdmin && (
-                    <li>
+                    <li
+                      className={pathname.startsWith("/admin") ? "active" : ""}
+                    >
                       <Link to="/admin/viewProduct">Quản trị</Link>
                     </li>
                   )}
