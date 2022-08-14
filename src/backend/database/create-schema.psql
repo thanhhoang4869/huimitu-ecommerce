@@ -338,16 +338,6 @@ END;
 $$
 LANGUAGE 'plpgsql';
 
---- Create pending state for order
-CREATE OR REPLACE FUNCTION create_order_pending_state() RETURNS trigger AS
-$$
-BEGIN
-  INSERT INTO "order_state"("order_id","state") VALUES(NEW.id, 'init');
-  RETURN NULL;
-END;
-$$
-LANGUAGE 'plpgsql';
-
 --- Update the FTS data on product table on change of product data and variant data
 CREATE OR REPLACE FUNCTION update_product_fts_column() RETURNS trigger AS
 $$
@@ -477,13 +467,6 @@ AFTER INSERT OR UPDATE OR DELETE
 ON "cart_variant"
 FOR EACH ROW 
 EXECUTE PROCEDURE update_total_count_cart();
-
---- Create status for order
-CREATE TRIGGER create_order
-AFTER INSERT
-ON "order"
-FOR EACH ROW
-EXECUTE PROCEDURE create_order_pending_state();
 
 --- Update product FTS data after insert or update product
 CREATE TRIGGER update_product_fts

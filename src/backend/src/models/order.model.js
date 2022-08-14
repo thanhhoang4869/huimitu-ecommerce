@@ -1,5 +1,6 @@
 import db from '#src/utils/db'
 import { removeUndefined } from '#src/utils/utils'
+import config from '#src/config/config';
 
 export default {
     async getOrderById(orderId) {
@@ -50,7 +51,7 @@ export default {
         const result = await db.from(orderWithState).where(query).count();
         return result[0]?.count || null;
     },
-
+    
     async getListOrder({ email, orderState, limit, offset }) {
         const query = removeUndefined({
             'email': email,
@@ -117,12 +118,14 @@ export default {
             receiver_phone: receiverPhone
         }
         const order = await db('order').insert(insertOrder).returning('id')
+        const returnOrderId = order[0]?.id;
 
-        try {
-            return order[0].id;
-        } catch (err) {
-            return null;
-        }
+        await db('order_state').insert({
+            'order_id': returnOrderId,
+            'state': config.orderState.INIT
+        })
+
+        return returnOrderId || null;
     },
 
     async updateState(orderId, orderState) {

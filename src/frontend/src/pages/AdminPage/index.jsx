@@ -8,6 +8,7 @@ import ViewVoucherSection from "./ViewVoucherSection";
 import AddVoucherSection from "./AddVoucherSection";
 import EditProductSection from "./EditProductSection";
 import ViewOrderSection from "./ViewOrderSection";
+import StatisticSection from "pages/StatisticSection";
 
 const AdminPage = () => {
   return (
@@ -23,6 +24,7 @@ const AdminPage = () => {
               }}
             >
               <Routes>
+                <Route path="/statistic" element={<StatisticSection />} />
                 <Route path="/viewProduct" element={<ViewProductSection />} />
                 <Route path="/addProduct" element={<AddProductSection />} />
                 <Route path="/viewVoucher" element={<ViewVoucherSection />} />
