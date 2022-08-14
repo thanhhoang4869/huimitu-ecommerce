@@ -1,4 +1,9 @@
-import { PercentageOutlined, ShopOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  PercentageOutlined,
+  ShopOutlined,
+  BookOutlined,
+  LineChartOutlined,
+} from "@ant-design/icons";
 import { Menu } from "antd";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +22,7 @@ const SideBar = () => {
   }
 
   const items = [
+    getItem("Thống kê", "statistic", <LineChartOutlined />),
     getItem("Sản phẩm", "prod", <ShopOutlined />, [
       getItem("Xem và chỉnh sửa", "viewProduct"),
       getItem("Thêm sản phẩm", "addProduct"),
@@ -33,7 +39,7 @@ const SideBar = () => {
   const rootSubmenuKeys = ["prod", "voucher"];
 
   const [openKeys, setOpenKeys] = useState(["prod"]);
-  const [current, setCurrent] = useState("viewProduct");
+  const [current, setCurrent] = useState("statistic");
 
   const onOpenChange = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
