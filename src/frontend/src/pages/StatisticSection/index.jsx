@@ -5,7 +5,7 @@ const StatisticSection = () => {
     try {
       const containerDiv = document.getElementById("vizContainer");
       const url =
-        "https://public.tableau.com/app/profile/phuc16102001/viz/Huimitustatistic/Dashboard";
+        "https://public.tableau.com/views/Huimitustatistic/Dashboard?:language=en-US&:display_count=n&:origin=viz_share_link";
 
       new window.tableau.Viz(containerDiv, url);
     } catch (err) {

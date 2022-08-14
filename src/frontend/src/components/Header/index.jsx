@@ -93,7 +93,7 @@ const Header = () => {
                     <li
                       className={pathname.startsWith("/admin") ? "active" : ""}
                     >
-                      <Link to="/admin/viewProduct">Quản trị</Link>
+                      <Link to="/admin/statistic">Quản trị</Link>
                     </li>
                   )}
                 </ul>
