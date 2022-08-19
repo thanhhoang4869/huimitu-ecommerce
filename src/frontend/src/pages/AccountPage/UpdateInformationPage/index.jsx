@@ -9,6 +9,9 @@ import accountService from "services/account";
 import swal from "sweetalert2";
 import { validateMinLength, validatePhone } from "utils/validator";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const formItemLayout = {
   labelCol: {
     span: 6,
@@ -24,7 +27,10 @@ const UpdateInformationPage = () => {
   const { logout } = useContext(AccountContext);
   const [form] = useForm();
 
+  const { t } = useTranslation();
   useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+
     fetchAccount();
   }, []);
 
@@ -67,8 +73,8 @@ const UpdateInformationPage = () => {
       switch (exitcode) {
         case 0: {
           await swal.fire({
-            title: "Đổi thông tin",
-            text: "Đổi thông tin thành công",
+            title: t("userInformation.changeTitle"),
+            text: t("userInformation.changeInfoSuccess"),
             icon: "success",
             confirmButtonText: "OK",
           });
@@ -77,8 +83,8 @@ const UpdateInformationPage = () => {
         }
         case 103: {
           swal.fire({
-            title: "Đổi thông tin",
-            text: "Số điện thoại đã được sử dụng",
+            title: t("userInformation.changeTitle"),
+            text: t("userInformation.usedPhoneNumber"),
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -95,7 +101,7 @@ const UpdateInformationPage = () => {
 
     if (!(newPassword && confirmPassword)) {
       return swal.fire({
-        text: "Vui lòng điền tất cả các trường",
+        text: t("userInformation.pleaseEnterAll"),
         icon: "info",
         confirmButtonText: "OK",
       });
@@ -103,7 +109,7 @@ const UpdateInformationPage = () => {
 
     if (!validateMinLength(password, 6) || !validateMinLength(newPassword, 6)) {
       return swal.fire({
-        text: "Mật khẩu phải từ 6 kí tự trở lên",
+        text: t("userInformation.moreThan6Letters"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -111,7 +117,7 @@ const UpdateInformationPage = () => {
 
     if (newPassword !== confirmPassword) {
       return swal.fire({
-        text: "Mật khẩu xác nhận không khớp",
+        text: t("userInformation.notMatchingPass"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -129,7 +135,7 @@ const UpdateInformationPage = () => {
       case 0: {
         await swal.fire({
           title: "Success",
-          text: "Đổi mật khẩu thành công, vui lòng đăng nhập lại",
+          text: t("userInformation.changePassSuccess"),
           icon: "success",
           confirmButtonText: "OK",
         });
@@ -138,7 +144,7 @@ const UpdateInformationPage = () => {
       }
       case 101: {
         swal.fire({
-          text: "Mật khẩu cũ không đúng",
+          text: t("userInformation.wrongPass"),
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -149,32 +155,32 @@ const UpdateInformationPage = () => {
 
   return (
     <div>
-      <PageHeader title="Đổi thông tin cơ bản" />
+      <PageHeader title={t("userInformation.changeTitle")} />
       <Form form={form} {...formItemLayout} onFinish={handleChangeInformation}>
         <Form.Item
           name="fullname"
           initialValue={account.fullname}
-          label="Họ tên"
+          label={t("userInformation.fullname")}
         >
-          <Input size="large" placeholder="Nhập họ tên" />
+          <Input size="large" placeholder={t("userInformation.fullname")} />
         </Form.Item>
         <Form.Item
           name="phone"
           initialValue={account.phone}
-          label="Số điện thoại"
+          label={t("userInformation.phoneNumber")}
         >
-          <Input size="large" placeholder="Nhập số điện thoại" />
+          <Input size="large" placeholder={t("userInformation.enterPhoneNumber")} />
         </Form.Item>
         <Form.Item
           wrapperCol={{ span: 4 }}
           labelCol={{ span: 6 }}
           name="birthday"
           initialValue={moment(account.birthday || new Date(), "DD/MM/YYYY")}
-          label="Ngày sinh"
+          label={t("userInformation.dob")}
         >
           <DatePicker
             style={{ width: "100%" }}
-            placeholder="Chọn ngày"
+            placeholder={t("userInformation.chooseDay")}
             size="large"
             allowClear={false}
             format="DD/MM/YYYY"
@@ -186,40 +192,40 @@ const UpdateInformationPage = () => {
           wrapperCol={{ span: 8 }}
           labelCol={{ span: 6 }}
           name="gender"
-          label="Giới tính"
+          label={t("userInformation.gender")}
         >
           <Radio.Group style={{ width: "100%" }} size="large">
-            <Radio value="male">Nam</Radio>
-            <Radio value="female">Nữ</Radio>
+            <Radio value="male">{t("userInformation.male")}</Radio>
+            <Radio value="female">{t("userInformation.female")}</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item>
           <div className="d-flex justify-content-center">
             <Button size="large" type="primary" htmlType="submit">
-              Cập nhật
+            {t("userInformation.update")}
             </Button>
           </div>
         </Form.Item>
       </Form>
-      <PageHeader title="Đổi mật khẩu" />
+      <PageHeader title={t("userInformation.changePass")} />
       <Form {...formItemLayout} onFinish={handleChangePassword}>
-        <Form.Item label="Mật khẩu hiện tại" name="password">
-          <Input.Password size="large" placeholder="Nhập mật khẩu" />
+        <Form.Item label={t("userInformation.curPass")} name="password">
+          <Input.Password size="large" placeholder={t("userInformation.enterPass")} />
         </Form.Item>
-        <Form.Item label="Mật khẩu mới" name="newPassword">
-          <Input.Password size="large" placeholder="Nhập mật khẩu mới" />
+        <Form.Item label={t("userInformation.newPass")} name="newPassword">
+          <Input.Password size="large" placeholder={t("userInformation.enterNewPass")} />
         </Form.Item>
-        <Form.Item label="Nhập lại mật khẩu mới" name="confirmPassword">
+        <Form.Item label={t("userInformation.confirmNewPass")} name="confirmPassword">
           <Input.Password
             password
             size="large"
-            placeholder="Nhập lại mật khẩu mới"
+            placeholder={t("userInformation.enterNewPass")}
           />
         </Form.Item>
         <Form.Item>
           <div className="d-flex justify-content-center">
             <Button size="large" type="primary" htmlType="submit">
-              Thay đổi
+            {t("userInformation.change")}
             </Button>
           </div>
         </Form.Item>

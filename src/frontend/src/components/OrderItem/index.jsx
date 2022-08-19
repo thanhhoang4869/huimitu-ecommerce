@@ -13,7 +13,7 @@ const OrderItem = (props) => {
       <OrderHeader order={order} />
       <OrderVariantList order={order} handleReview={handleReview} />
       <OrderFooter
-        order={order}
+        order={order}  
         handleCancel={handleCancel}
         handleSuccess={handleSuccess}
       />

@@ -1,15 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./style.css";
 import logo from "images/logo.png";
 import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const Header = () => {
   const { logout, isLogin, cart, isAdmin, account } =
     useContext(AccountContext);
   const location = useLocation();
   const { pathname } = location;
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   return (
     <>
@@ -38,12 +47,12 @@ const Header = () => {
                     {isLogin ? (
                       <Link to="/login" onClick={logout}>
                         <i className="fa fa-sign-out mr-2"></i>
-                        Đăng xuất
+                        {t("loginPage.logout")}
                       </Link>
                     ) : (
                       <Link to="/login">
                         <i className="fa fa-sign-in mr-2"></i>
-                        Đăng nhập
+                        {t("loginPage.login")}
                       </Link>
                     )}
                   </div>
@@ -66,26 +75,26 @@ const Header = () => {
               <nav className="header__menu">
                 <ul>
                   <li className={pathname === "/" ? "active" : ""}>
-                    <Link to="/">Trang chủ</Link>
+                    <Link to="/">{t("navigation.home")}</Link>
                   </li>
                   <li
                     className={pathname.startsWith("/product") ? "active" : ""}
                   >
-                    <Link to="/product?page=1">Sản phẩm</Link>
+                    <Link to="/product?page=1">{t("navigation.product")}</Link>
                   </li>
                   <li
                     className={pathname.startsWith("/policy") ? "active" : ""}
                   >
-                    <Link to="/policy">Chính sách</Link>
+                    <Link to="/policy">{t("navigation.policy")}</Link>
                     <ul className="header__menu__dropdown">
                       <li>
-                        <Link to="/policy/shipping">Giao hàng</Link>
+                        <Link to="/policy/shipping">{t("navigation.shipping")}</Link>
                       </li>
                       <li>
-                        <Link to="/policy/refund">Đổi trả</Link>
+                        <Link to="/policy/refund">{t("navigation.refund")}</Link>
                       </li>
                       <li>
-                        <Link to="/policy/coupon">Coupons</Link>
+                        <Link to="/policy/coupon">{t("navigation.coupons")}</Link>
                       </li>
                     </ul>
                   </li>
@@ -93,7 +102,7 @@ const Header = () => {
                     <li
                       className={pathname.startsWith("/admin") ? "active" : ""}
                     >
-                      <Link to="/admin/statistic">Quản trị</Link>
+                      <Link to="/admin/statistic">{t("navigation.admin")}</Link>
                     </li>
                   )}
                 </ul>

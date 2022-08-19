@@ -6,6 +6,7 @@ import SearchBar from "../SearchBar";
 import { useLocation } from "react-router-dom";
 
 const LandingTop = (props) => {
+  
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 

@@ -15,6 +15,9 @@ import { Link } from "react-router-dom";
 import shippingAddressService from "services/shippingAddress";
 import swal from "sweetalert2";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import {
   MapContainer,
   TileLayer,
@@ -50,6 +53,8 @@ const LocationFinderDummy = ({ onClick }) => {
 };
 
 const ShippingAddressPage = () => {
+  const { t } = useTranslation();
+
   const [lat, setLat] = useState(10);
   const [long, setLong] = useState(106);
 
@@ -63,6 +68,11 @@ const ShippingAddressPage = () => {
   const [address, setAddress] = useState("");
 
   const { shippingAddress, fetchShippingAddress } = useContext(AccountContext);
+
+  
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   const handleQueryCoordinate = async () => {
     try {
@@ -195,22 +205,22 @@ const ShippingAddressPage = () => {
 
   const columns = [
     {
-      title: "Địa chỉ",
+      title: t("shippingAddressPage.address"),
       dataIndex: "address",
       key: "address",
     },
     {
-      title: "Phường",
+      title: t("shippingAddressPage.ward"),
       dataIndex: "wardName",
       key: "wardName",
     },
     {
-      title: "Quận",
+      title: t("shippingAddressPage.district"),
       dataIndex: "districtName",
       key: "districtName",
     },
     {
-      title: "Thành phố",
+      title: t("shippingAddressPage.city"),
       dataIndex: "provinceName",
       key: "provinceName",
     },
@@ -228,13 +238,13 @@ const ShippingAddressPage = () => {
 
   return (
     <div>
-      <PageHeader title="Thêm địa chỉ giao hàng" />
+      <PageHeader title={t("shippingAddressPage.title")}/>
       <Form wrapperCol={{ span: 14 }} labelCol={{ span: 10 }}>
         <Row>
           <Col span={12}>
-            <Form.Item label="Tỉnh thành">
+            <Form.Item label={t("shippingAddressPage.city")}>
               <Select
-                placeholder="Chọn tỉnh thành"
+                placeholder={t("shippingAddressPage.chooseCity")}
                 size="large"
                 value={selectProvinceId}
                 onSelect={(value) => {
@@ -250,9 +260,9 @@ const ShippingAddressPage = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Quận huyện">
+            <Form.Item label={t("shippingAddressPage.district")}>
               <Select
-                placeholder="Chọn quận huyện"
+                placeholder={t("shippingAddressPage.chooseDistrict")}
                 size="large"
                 value={selectDistrictId}
                 onChange={(value) => {
@@ -270,13 +280,13 @@ const ShippingAddressPage = () => {
         </Row>
         <Row>
           <Col span={12}>
-            <Form.Item label="Phường xã">
+            <Form.Item label={t("shippingAddressPage.ward")}>
               <Select
                 value={selectWardId}
                 onChange={(value) => {
                   setSelectWardId(value);
                 }}
-                placeholder="Chọn phường xã"
+                placeholder={t("shippingAddressPage.chooseWard")}
                 size="large"
               >
                 {listWard.map((item) => (
@@ -288,12 +298,12 @@ const ShippingAddressPage = () => {
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item label="Địa chỉ" name="address">
+            <Form.Item label={t("shippingAddressPage.address")} name="address">
               <Input
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 size="large"
-                placeholder="Nhập địa chỉ"
+                placeholder={t("shippingAddressPage.enterAddress")}
               ></Input>
             </Form.Item>
           </Col>
@@ -324,7 +334,7 @@ const ShippingAddressPage = () => {
             type="ghost"
             size="large"
           >
-            Tra cứu
+            {t("shippingAddressPage.search")}
           </Button>
           <Button
             className="mx-2"
@@ -332,11 +342,11 @@ const ShippingAddressPage = () => {
             type="primary"
             size="large"
           >
-            Thêm
+            {t("shippingAddressPage.add")}
           </Button>
         </div>
       </Form>
-      <PageHeader title="Địa chỉ giao hàng" />
+      <PageHeader title={t("shippingAddressPage.shippingAddress")} />
       <Table
         columns={columns}
         pagination={false}

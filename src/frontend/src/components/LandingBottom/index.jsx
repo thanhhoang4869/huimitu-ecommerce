@@ -3,14 +3,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ItemHorizonList from "components/ItemHorizonList";
 import productService from "services/product";
-
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 const LandingBottom = () => {
+  const { t } = useTranslation();
+
   const [newArrivals, setNewArrivals] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+
     getBestSellers();
     getNewArrivals();
   }, []);
@@ -49,7 +54,7 @@ const LandingBottom = () => {
         <div className="container">
           <div className="row">
             <div className="section-title">
-              <h2>Bán chạy</h2>
+              <h2>{t("landingBottom.bestSeller")}</h2>
             </div>
           </div>
           {bestSellers && <ItemHorizonList products={bestSellers} />}
@@ -60,7 +65,7 @@ const LandingBottom = () => {
         <div className="container">
           <div className="row">
             <div className="section-title">
-              <h2>Hàng mới</h2>
+              <h2>{t("landingBottom.newArrival")}</h2>
             </div>
           </div>
           {newArrivals && <ItemHorizonList products={newArrivals} />}

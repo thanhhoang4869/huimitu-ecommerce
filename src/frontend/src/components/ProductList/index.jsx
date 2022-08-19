@@ -1,15 +1,24 @@
 import { Avatar, Button, List } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import formatter from "utils/formatter";
 import config from "config/config";
 import ReviewModal from "components/ReviewModal";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 import "./style.css";
 
 const OrderVariantList = ({ order, handleReview }) => {
   const [visibleReview, setVisibleReview] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState({});
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   const showReviewModal = (variant) => {
     setVisibleReview(true);
@@ -33,7 +42,7 @@ const OrderVariantList = ({ order, handleReview }) => {
   return (
     <>
       <ReviewModal
-        title="Đánh giá"
+        title={t("orderVariantList.rate")}
         visible={visibleReview}
         handleSuccess={handleReviewSuccess}
         handleCancel={handleReviewCancel}
@@ -76,7 +85,7 @@ const OrderVariantList = ({ order, handleReview }) => {
                       type="primary"
                       onClick={() => showReviewModal(variant)}
                     >
-                      Đánh giá
+                    {t("orderVariantList.rate")}
                     </Button>
                   </div>
                 )}
