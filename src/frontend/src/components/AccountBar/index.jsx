@@ -6,21 +6,6 @@ import { useNavigate } from "react-router-dom";
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
 
-const items_vi = [
-  { key: "userInformation", label: "Thông tin người dùng" },
-  { key: "changeInformation", label: "Đổi thông tin" },
-  { key: "shippingAddress", label: "Địa chỉ giao hàng" },
-  { key: "cart", label: "Giỏ hàng" },
-  { key: "order", label: "Đơn hàng" },
-];
-
-const items_en = [
-  { key: "userInformation", label: "User information" },
-  { key: "changeInformation", label: "Change information" },
-  { key: "shippingAddress", label: "Shipping address" },
-  { key: "cart", label: "Cart" },
-  { key: "order", label: "Order" },
-];
 
 const AccountBar = () => {
   let navigate = useNavigate();
@@ -29,6 +14,14 @@ const AccountBar = () => {
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem("language"));
   }, []);
+
+  const items = [
+    { key: "userInformation", label: t("accountBar.userInformation") },
+    { key: "changeInformation", label: t("accountBar.changeInformation") },
+    { key: "shippingAddress", label: t("accountBar.shippingAddress") },
+    { key: "cart", label: t("accountBar.cart") },
+    { key: "order", label: t("accountBar.order") },
+  ];
 
   const onClick = (e) => {
     navigate({
@@ -49,7 +42,7 @@ const AccountBar = () => {
           defaultSelectedKeys={["userInformation"]}
           style={{ border: "1px solid #e8e8e8" }}
           mode="inline"
-          items={items_vi}
+          items={items}
         />
       </div>
     </>

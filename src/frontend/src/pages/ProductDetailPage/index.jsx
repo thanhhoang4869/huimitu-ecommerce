@@ -140,7 +140,7 @@ const ProductDetailPage = () => {
       switch (exitcode) {
         case 0: {
           swal.fire({
-            text: t("productDetailPage.addSucess"),
+            text: t("productDetailPage.addSuccess"),
             icon: "success",
             confirmButtonText: "OK",
           });

@@ -6,6 +6,8 @@ import React, { useState, useEffect, useContext } from "react";
 import orderService from "services/order";
 import reviewService from "services/review";
 import swal from "sweetalert2";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const OrderListPage = () => {
   const { account } = useContext(AccountContext);
@@ -13,7 +15,12 @@ const OrderListPage = () => {
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const pageLimit = 3;
+  const { t } = useTranslation();
 
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+  
   const fetchOrderList = async () => {
     try {
       const response = await orderService.getOrderList({
@@ -59,8 +66,8 @@ const OrderListPage = () => {
       const { exitcode } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          title: "Cập nhật trạng thái đơn hàng",
-          text: "Hủy đơn thành công",
+          title: t("orderListPage.updateOrder"),
+          text: t("orderListPage.cancelOrderSucess"),
           icon: "info",
           confirmButtonText: "OK",
         });
@@ -80,8 +87,8 @@ const OrderListPage = () => {
       const { exitcode } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          title: "Cập nhật trạng thái đơn hàng",
-          text: "Xác nhận đã nhận hàng thành công",
+          title: t("orderListPage.updateOrder"),
+          text: t("orderListPage.receivedOrderSucess"),
           icon: "info",
           confirmButtonText: "OK",
         });
@@ -103,15 +110,15 @@ const OrderListPage = () => {
       const { exitcode, message } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          title: "Đánh giá sản phẩm",
-          text: "Đánh giá sản phẩm thành công",
+          title: t("orderListPage.rate"),
+          text: t("orderListPage.rateSuccess"),
           icon: "success",
           confirmButtonText: "OK",
         });
         fetchOrderList();
       } else {
         swal.fire({
-          title: "Đánh giá sản phẩm thất bại",
+          title: t("orderListPage.rateFail"),
           text: `Lỗi: ${message}`,
           icon: "error",
           confirmButtonText: "OK",

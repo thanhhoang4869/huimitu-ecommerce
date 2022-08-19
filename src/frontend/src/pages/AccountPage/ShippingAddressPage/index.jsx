@@ -88,7 +88,7 @@ const ShippingAddressPage = () => {
     } catch (err) {
       console.error(err);
       swal.fire({
-        text: "Tra cứu thất bại",
+        text: t("shippingAddressPage.searchFail"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -108,7 +108,7 @@ const ShippingAddressPage = () => {
       const { exitcode } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          text: "Thêm địa chỉ thành công",
+          text: t("shippingAddressPage.addSuccess"),
           icon: "success",
           confirmButtonText: "OK",
         });
@@ -192,7 +192,7 @@ const ShippingAddressPage = () => {
       const { exitcode } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          text: "Xoá địa điểm giao hàng thành công",
+          text: t("shippingAddressPage.deleteSuccess"),
           icon: "success",
           confirmButtonText: "OK",
         });

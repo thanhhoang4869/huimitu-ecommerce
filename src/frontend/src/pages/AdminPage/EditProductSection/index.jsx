@@ -13,6 +13,9 @@ import { useForm } from "antd/lib/form/Form";
 import { isImage, sizeLessMegaByte } from "utils/validator";
 import swal from "sweetalert2";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import "./style.css";
 import productService from "services/product";
 import variantService from "services/variant";
@@ -20,6 +23,12 @@ import AddVariantModal from "../AddVariantModal";
 import EditVariantModal from "../EditVariantModal";
 
 const EditProductSection = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const { id } = useParams();
   const [form] = useForm();
   const [product, setProduct] = useState({});
@@ -86,17 +95,17 @@ const EditProductSection = () => {
       );
       const { exitcode } = response.data;
       if (exitcode === 0) {
-        swal.fire("Thành công", "Cập nhật sản phẩm thành công", "success");
+        swal.fire(t("editProductSection.success"), t("editProductSection.updateProductSuccess"), "success");
         navigate("/admin/viewProduct");
       } else {
         swal.fire(
-          "Thất bại",
-          "Cập nhật sản phẩm thất bại. Vui lòng thử lại sau",
+          t("editProductSection.fail"),
+          t("editProductSection.updateProductFail"),
           "error"
         );
       }
     } catch (error) {
-      swal.fire("Thất bại", error.message, "error");
+      swal.fire(t("editProductSection.fail"), error.message, "error");
     }
   };
 
@@ -145,7 +154,7 @@ const EditProductSection = () => {
       console.log("Go");
       if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
         swal.fire({
-          text: "Bạn chỉ có thể upload file hình (png, jpg) không quá 5MB",
+          text: t("editProductSection.uploadImageSizeWarning"),
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -174,7 +183,7 @@ const EditProductSection = () => {
       />
 
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item initialValue={id} name="id" label="ID sản phẩm">
+        <Form.Item initialValue={id} name="id" label={t("editProductSection.productID")}>
           <Input disabled />
         </Form.Item>
         <div className="flex-container ">
@@ -182,7 +191,7 @@ const EditProductSection = () => {
             <Form.Item
               initialValue={product?.category?.categoryName}
               name="bigCategoryName"
-              label="Danh mục cha"
+              label={t("editProductSection.parentCategory")}
             >
               <Input disabled />
             </Form.Item>
@@ -191,7 +200,7 @@ const EditProductSection = () => {
             <Form.Item
               initialValue={product?.category?.children?.categoryName}
               name="categoryName"
-              label="Danh mục"
+              label={t("editProductSection.category")}
             >
               <Input disabled />
             </Form.Item>
@@ -200,20 +209,20 @@ const EditProductSection = () => {
         <Form.Item
           initialValue={product?.productName}
           name="productName"
-          label="Tên sản phẩm"
+          label={t("editProductSection.productName")}
         >
           <Input />
         </Form.Item>
-        <Form.Item label="Danh sách biến thể">
+        <Form.Item label={t("editProductSection.variantList")}>
           <div className="text-key mb-2 addVar" onClick={showAddModal}>
-            Thêm biến thể
+            {t("editProductSection.addVariant")}
           </div>
           <VariantTable
             variants={JSON.parse(variants)}
             handleEdit={showEditModal}
           />
         </Form.Item>
-        <Form.Item label="Mô tả sản phẩm">
+        <Form.Item label={t("editProductSection.productDescription")}>
           <CKEditor
             editor={ClassicEditor}
             data={description}
@@ -222,22 +231,22 @@ const EditProductSection = () => {
         </Form.Item>
         <div>
           <Form.Item
-            label={`Upload thêm hình ảnh (Còn lại ${
-              10 - images.length - selectedImages.length
-            })`}
+            label={`Upload ${t("editProductSection.moreImage")} (${t("editProductSection.remain", 
+              {remaining: 10 - images.length - selectedImages.length}
+            )})`}
             valuePropName="fileList"
           >
             <div className="mb-2 text-primary text-md">
-              Mỗi sản phẩm có tối đa 10 hình ảnh.
+              {t("editProductSection.productImageRule")}.
             </div>
-            <div className="mb-2">Số ảnh hiện tại: {images.length}</div>
-            <div className="mb-2">Số ảnh đã chọn: {selectedImages.length}</div>
+            <div className="mb-2">{t("editProductSection.currentNoImage")}: {images.length}</div>
+            <div className="mb-2">{t("editProductSection.noImageSelected")}: {selectedImages.length}</div>
             <Upload {...uploadProps}>
               <Button
                 disabled={!(selectedImages?.length + images?.length < 10)}
                 icon={<UploadOutlined />}
               >
-                Chọn hình ảnh
+                {t("editProductSection.selectImage")}
               </Button>
             </Upload>
           </Form.Item>
@@ -255,7 +264,7 @@ const EditProductSection = () => {
             size="large"
             style={{ width: "100%" }}
           >
-            Cập nhật
+            {t("editProductSection.update")}
           </Button>
         </div>
       </Form>

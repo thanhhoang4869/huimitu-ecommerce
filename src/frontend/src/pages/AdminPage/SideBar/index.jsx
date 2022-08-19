@@ -5,11 +5,18 @@ import {
   LineChartOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const SideBar = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   function getItem(label, key, icon, children, type) {
     return {
@@ -22,17 +29,17 @@ const SideBar = () => {
   }
 
   const items = [
-    getItem("Thống kê", "statistic", <LineChartOutlined />),
-    getItem("Sản phẩm", "prod", <ShopOutlined />, [
-      getItem("Xem và chỉnh sửa", "viewProduct"),
-      getItem("Thêm sản phẩm", "addProduct"),
+    getItem(t("sideBar.statistic"), "statistic", <LineChartOutlined />),
+    getItem(t("sideBar.product"), "prod", <ShopOutlined />, [
+      getItem(t("sideBar.viewProduct"), "viewProduct"),
+      getItem(t("sideBar.addProduct"), "addProduct"),
     ]),
-    getItem("Voucher", "voucher", <PercentageOutlined />, [
-      getItem("Xem và chỉnh sửa", "viewVoucher"),
-      getItem("Thêm voucher", "addVoucher"),
+    getItem(t("sideBar.voucher"), "voucher", <PercentageOutlined />, [
+      getItem(t("sideBar.viewVoucher"), "viewVoucher"),
+      getItem(t("sideBar.addVoucher"), "addVoucher"),
     ]),
-    getItem("Đơn hàng", "order", <BookOutlined />, [
-      getItem("Xem và duyệt đơn hàng", "viewOrder"),
+    getItem(t("sideBar.order"), "order", <BookOutlined />, [
+      getItem(t("sideBar.viewOrder"), "viewOrder"),
     ]),
   ];
 
@@ -55,7 +62,7 @@ const SideBar = () => {
       <div className="col-lg-3">
         <div className="hero__categories__all">
           <i className="fa fa-bars"></i>
-          <span>Quản lý</span>
+          <span>{t("sideBar.admin")}</span>
         </div>
 
         <Menu

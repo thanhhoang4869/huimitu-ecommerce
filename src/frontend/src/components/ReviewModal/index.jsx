@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input, Rate } from "antd";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const { TextArea } = Input;
 
 const ReviewModal = (props) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   const [ratingValue, setRatingValue] = useState(5);
 
@@ -23,7 +31,7 @@ const ReviewModal = (props) => {
 
   return (
     <Modal
-      title="Thêm đánh giá"
+      title={t("rating.addRating")}
       destroyOnClose={true}
       visible={props.visible}
       onOk={props.handleOk}
@@ -41,12 +49,12 @@ const ReviewModal = (props) => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="Đánh giá"
+          label={t("rating.rating")}
           name="rating"
           rules={[
             {
               required: true,
-              message: "Vui lòng đánh giá!",
+              message: t("rating.pleaseRating"),
             }
           ]}
         >
@@ -55,7 +63,7 @@ const ReviewModal = (props) => {
         </Form.Item>
 
         <Form.Item
-          label="Bình luận"
+          label={t("rating.comment")}
           name="comment"
         >
           <TextArea rows={10} />
@@ -71,10 +79,10 @@ const ReviewModal = (props) => {
               className="mr-3"
               onClick={props.handleCancel}
             >
-              Hủy
+              {t("rating.cancel")}
             </Button>
             <Button type="primary" htmlType="submit">
-              Thêm
+              {t("rating.add")}
             </Button>
           </div>
         </Form.Item>
