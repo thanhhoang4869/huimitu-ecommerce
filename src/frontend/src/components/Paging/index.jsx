@@ -1,9 +1,18 @@
 import { Pagination } from "antd";
-import React from "react";
+import React, {useEffect} from "react";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
-const showTotal = (total) => `Tổng cộng: ${total}`;
 
 const Paging = (props) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
+  const showTotal = (total) => `${t("totalSection.total")}: ${total}`;
+
   console.log(props);
   return (
     <>

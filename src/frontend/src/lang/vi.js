@@ -75,6 +75,8 @@ export default {
 
         pleaseEnterAll: "Vui lòng điền tất cả các trường",
         pleaseEnterValidPhoneNumber: "Vui lòng nhập số điện thoại hợp lệ",
+        enterValidEmail: "Vui lòng nhập email hợp lệ",
+        
         changeInfoSucess: "Đổi thông tin thành công",
         usedPhoneNumber: "Số điện thoại đã được sử dụng",
         moreThan6Letters: "Mật khẩu phải từ 6 kí tự trở lên",
@@ -173,22 +175,44 @@ export default {
         or: "hoặc",
         noAccount: "Chưa có tài khoản?",
         signup: "Đăng ký",
-        hadAccount: "Đã có tài khoản"
+        hadAccount: "Đã có tài khoản",
+        pleaseEnterEmail: "Vui lòng nhập email",
+        pleaseEnterPass: "Vui lòng nhập mật khẩu",
+        enterValidEmail: "Vui lòng nhập email hợp lệ",
+        wrongEmailPass: "Email hoặc mật khẩu không chính xác",
+        unverifiedEmail: "Email chưa được xác thực",
     },
-
+    signupPage: {
+        checkEmail: "Vui lòng kiểm tra email và xác nhận tài khoản",
+    },
     productDetailPage: {
-        sold: "Đã bán: <p>{{product.soldQuantity}}</p>",
-        left: "Còn lại: <p>{{selectVariant.stock}}</p>",
+        sold: "Đã bán",
+        left: "Còn lại",
         option: "Tuỳ chọn",
         addToCart: "Thêm vào giỏ hàng",
         buyNow: "Mua ngay",
-        describe: "Mô tả",
+        description: "Mô tả",
         relatedProduct: "Sản phẩm liên quan",
-        review: "Đánh giá"
+        review: "Đánh giá",
+        productNotFound: "Không tìm thấy sản phẩm",
+        addSuccess: "Thêm sản phẩm thành công",
     },
-
-
-
-
+    serverErrorPage: {
+        subtitle: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+    },
+    notFoundPage: {
+        subtitle: "Trang bạn tìm kiếm không tồn tại."
+    },
+    footer: {
+        phoneNumber: "SĐT",
+        adderss: "Địa chỉ",
+        ref: "Tham khảo",
+        refundPolicy: "Chính sách đổi trả",
+        shippingPolicy: "Chính sách giao hàng",
+        couponsPolicy: "Coupons",
+        trackOrder: "Theo dõi đơn hàng",
+        map: "Bản đồ",
+        contact: "Liên hệ"
+    }
   };
   

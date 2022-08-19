@@ -1,7 +1,15 @@
-import React from "react";
+import React, {useEffect} from "react";
 import logo from "../../images/logo.png";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   return (
     <>
       {/* <div className="banner pb-5">
@@ -32,39 +40,39 @@ const Footer = () => {
                   </a>
                 </div>
                 <ul>
-                  <li>Địa chỉ: 227 Nguyen Van Cu, HCMC</li>
-                  <li>SĐT: (028) 3 5120 730</li>
+                  <li>{t("footer.address")}: 227 Nguyen Van Cu, HCMC</li>
+                  <li>{t("footer.phoneNumber")}: (028) 3 5120 730</li>
                   <li>Email: huitimu@gmail.com</li>
                 </ul>
               </div>
             </div>
             <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
               <div className="footer__widget">
-                <h6>Tham khảo</h6>
+                <h6>{t("footer.ref")}</h6>
                 <ul>
                   <li>
-                    <a href="#">Chính sách đổi trả</a>
+                    <a href="#">{t("footer.refundPolicy")}</a>
                   </li>
                   <li>
-                    <a href="#">Chính sách giao hàng</a>
+                    <a href="#">{t("footer.shippingPolicy")}</a>
                   </li>
                   <li>
-                    <a href="#">Coupons</a>
+                    <a href="#">{t("footer.couponsPolicy")}</a>
                   </li>
                 </ul>
                 <ul>
                   <li>
-                    <a href="#">Theo dõi đơn hàng</a>
+                    <a href="#">{t("footer.trackOrder")}</a>
                   </li>
                   <li>
-                    <a href="#">Bản đồ</a>
+                    <a href="#">{t("footer.map")}</a>
                   </li>
                 </ul>
               </div>
             </div>
             <div className="col-lg-4 col-md-12">
               <div className="footer__widget">
-                <h6>Liên hệ</h6>
+                <h6>{t("footer.contact")}</h6>
                 <div className="footer__widget__social">
                   <a href="/">
                     <i className="fa fa-facebook"></i>

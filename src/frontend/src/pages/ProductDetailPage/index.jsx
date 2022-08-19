@@ -4,6 +4,9 @@ import ItemHorizonList from "components/ItemHorizonList";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import { default as productService } from "services/product";
 
 import CustomComment from "components/CustomComment";
@@ -37,6 +40,12 @@ const ProductDetailPage = () => {
   const { fetchCart } = useContext(AccountContext);
 
   const navigator = useNavigate();
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   const fetchProduct = async () => {
     try {
@@ -131,7 +140,7 @@ const ProductDetailPage = () => {
       switch (exitcode) {
         case 0: {
           swal.fire({
-            text: "Thêm sản phẩm thành công",
+            text: t("productDetailPage.addSucess"),
             icon: "success",
             confirmButtonText: "OK",
           });
@@ -140,7 +149,7 @@ const ProductDetailPage = () => {
         }
         case 101: {
           swal.fire({
-            text: "Không tìm thấy sản phẩm",
+            text: t("productDetailPage.productNotFound"),
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -184,12 +193,12 @@ const ProductDetailPage = () => {
                 <div className="product-infor">
                   <ul>
                     <li>
-                      Đã bán: <p>{product.soldQuantity}</p>
+                      {t("productDetailPage.sold")}: <p>{product.soldQuantity}</p>
                     </li>
                     <li>
-                      Còn lại: <p>{selectVariant.stock}</p>
+                      {t("productDetailPage.left")}: <p>{selectVariant.stock}</p>
                     </li>
-                    <li>Tùy chọn</li>
+                    <li>{t("productDetailPage.option")}</li>
                     <Radio.Group
                       value={selectVariant.id}
                       onChange={handleChangeSelectVariant}
@@ -269,7 +278,7 @@ const ProductDetailPage = () => {
                         onClick={addToCartOnSubmit}
                         disabled={selectVariant.stock < quantity}
                       >
-                        Thêm vào giỏ hàng
+                        {t("productDetailPage.addToCart")}
                       </Button>
                     </span>
 
@@ -285,7 +294,7 @@ const ProductDetailPage = () => {
                           )
                         }
                       >
-                        <span>Mua ngay</span>
+                        <span>{t("productDetailPage.buyNow")}</span>
                       </Button>
                     </span>
                   </div>
@@ -296,7 +305,7 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container mt-5 mb-5">
-          <ProductDetailTitle title="Mô tả" />
+          <ProductDetailTitle title={t("productDetailPage.description")} />
           <div className="product-description-text">
             <div
               className="pl-3"
@@ -308,13 +317,13 @@ const ProductDetailPage = () => {
         {/* {{!-- Related Product --}} */}
         {relatedProducts.length > 0 && (
           <div className="container">
-            <ProductDetailTitle title="Sản phẩm liên quan" />
+            <ProductDetailTitle title={t("productDetailPage.relatedProduct")} />
             <ItemHorizonList products={relatedProducts} />
           </div>
         )}
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTitle title="Đánh giá" />
+          <ProductDetailTitle title={t("productDetailPage.review")}/>
 
           {reviews.map((review, index) => (
             <CustomComment key={index} review={review} />

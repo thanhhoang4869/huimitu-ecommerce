@@ -75,6 +75,8 @@ export default {
 
         pleaseEnterAll: "Please enter all fields",
         pleaseEnterValidPhoneNumber: "Please enter a valid phone number",
+        enterValidEmail: "Please enter a valid email",
+
         changeInfoSucess: "Change information success",
         usedPhoneNumber: "Phone number is used",
         moreThan6Letters: "Password must contains more than 6 letters",
@@ -173,7 +175,44 @@ export default {
         or: "or",
         noAccount: "No account?",
         signup: "Sign up",
-        hadAccount: "Already have an account?"
+        hadAccount: "Already have an account?",
+        pleaseEnterEmail: "Please enter email",
+        pleaseEnterPass: "Please enter password",
+        enterValidEmail: "Please enter valid email",
+        wrongEmailPass: "Wrong email or password",
+        unverifiedEmail: "Email is not verified",
     },
+    signupPage: {
+        checkEmail: "Please check your email and confirm your account",
+    },
+    productDetailPage: {
+        sold: "Sold",
+        left: "Stock",
+        option: "Options",
+        addToCart: "Add to cart",
+        buyNow: "Buy now",
+        description: "Description",
+        relatedProduct: "Related products",
+        review: "Reviews",
+        productNotFound: "Product not found",
+        addSuccess: "Add product to cart success",
+    },
+    serverErrorPage: {
+        subtitle: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+    },
+    notFoundPage: {
+        subtitle: "Trang bạn tìm kiếm không tồn tại."
+    },
+    footer: {
+        phoneNumber: "Phone number",
+        adderss: "Address",
+        ref: "Reference",
+        refundPolicy: "Refund policy",
+        shippingPolicy: "Shipping policy",
+        couponsPolicy: "Coupons",
+        trackOrder: "Tracking order",
+        map: "Map",
+        contact: "Contacts"
+    }
     
 };
