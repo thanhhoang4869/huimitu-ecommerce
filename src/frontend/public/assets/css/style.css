@@ -108,6 +108,7 @@ a:focus {
 
 ul,
 ol {
+  list-style: inside;
   padding: 0;
   margin: 0;
 }

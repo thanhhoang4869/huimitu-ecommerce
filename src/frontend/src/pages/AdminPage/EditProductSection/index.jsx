@@ -256,10 +256,9 @@ const EditProductSection = () => {
         </Form.Item>
         <div>
           <Form.Item
-            label={`Upload ${t("editProductSection.moreImage")} (${t(
-              "editProductSection.remain",
-              { remaining: 10 - images.length - selectedImages.length }
-            )})`}
+            label={`Upload ${t("editProductSection.moreImage")} (${
+              10 - images.length - selectedImages.length
+            } ${t("editProductSection.remain")})`}
             valuePropName="fileList"
           >
             <div className="mb-2 text-primary text-md">

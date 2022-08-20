@@ -18,6 +18,7 @@ import { AccountContext } from "context/AccountContext";
 import GuardRoute from "components/GuardRoute";
 import CheckoutPage from "pages/CheckoutPage";
 import AdminPage from "pages/AdminPage";
+import PolicyPage from "pages/PolicyPage";
 
 const MainPage = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -48,6 +49,7 @@ const MainPage = () => {
             path="/product/*"
             element={<CommercePage categoryList={categoryList} />}
           />
+          <Route path="/policy/*" element={<PolicyPage />} />
           <Route
             exact
             path="/account/*"
@@ -100,8 +102,8 @@ const MainPage = () => {
           <Route exact path="/error" element={<ServerErrorPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
-      <Footer />
     </div>
   );
 };
