@@ -11,8 +11,6 @@ import product from "services/product";
 import formatter from "utils/formatter";
 import "./style.css";
 
-
-
 const ViewProductSection = () => {
   const { t } = useTranslation();
 

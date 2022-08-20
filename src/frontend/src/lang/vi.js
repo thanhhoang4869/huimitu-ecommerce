@@ -132,6 +132,7 @@ export default {
         shipping: "Đang vận chuyển",
         success: "Hoàn thành",
         cancel: "Đã hủy",
+        refund: "Hoàn trả",
         id: "Mã đơn hàng",
         paymentMethod: "Hình thức",
     },

@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS "frequent_product" CASCADE;
 
 CREATE TYPE role_type AS ENUM('user','admin');
 CREATE TYPE gender_type AS ENUM('male','female');
-CREATE TYPE state_type AS ENUM('init', 'pending','shipping','cancel','success');
+CREATE TYPE state_type AS ENUM('init', 'pending','shipping','cancel','success', 'refund');
 
 CREATE TABLE "account" (
   "email" varchar PRIMARY KEY,

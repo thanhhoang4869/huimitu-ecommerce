@@ -35,6 +35,7 @@ const config = {
     SHIPPING: 'shipping',
     CANCEL: 'cancel',
     SUCCESS: 'success',
+    REFUND: 'refund',
   },
 
   COULDINARY_CONFIG: {

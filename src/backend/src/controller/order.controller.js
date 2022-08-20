@@ -239,6 +239,21 @@ export default {
                     success = true;
                     break;
                 }
+                // Shipping to refunding (owner only)
+                case (config.orderState.REFUND): {
+                    if (order.email !== email) {
+                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    }
+                    if (order.state !== config.orderState.SHIPPING) {
+                        return res.status(200).send({
+                            exitcode: 105,
+                            message: "Order can only be refunded during shipping state"
+                        })
+                    }
+                    await orderModel.updateState(orderId, config.orderState.REFUND)
+                    success = true;
+                    break;
+                }
             }
 
             if (success) {

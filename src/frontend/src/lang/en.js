@@ -133,6 +133,7 @@ export default {
         shipping: "Shipping",
         success: "Success",
         cancel: "Cancel",
+        refund: "Refund",
         id: "Order id",
         paymentMethod: "Method",
     },

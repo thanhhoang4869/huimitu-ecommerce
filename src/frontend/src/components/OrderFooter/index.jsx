@@ -66,16 +66,18 @@ const OrderFooter = (props) => {
           </Button>
         )}
         {order.state === config.orderState.SHIPPING && (
-          <Button
-            size="large"
-            style={{
-              ...buttonStyle,
-            }}
-            type="primary"
-            onClick={() => handleSuccess(order.id)}
-          >
-            {t("totalSection.received")}
-          </Button>
+          <div>
+            <Button
+              size="large"
+              style={{
+                ...buttonStyle,
+              }}
+              type="primary"
+              onClick={() => handleSuccess(order.id)}
+            >
+              {t("totalSection.received")}
+            </Button>
+          </div>
         )}
         <Button
           type="primary"
