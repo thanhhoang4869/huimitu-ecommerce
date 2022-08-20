@@ -1,10 +1,19 @@
 import { Col, Row } from "antd";
 import config from "config/config";
-import React from "react";
+import React, { useEffect } from "react";
 import "./style.css";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const OrderHeader = (props) => {
   const order = props.order;
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   return (
     <div className="order-header">
       <p className="order-date-created">{order.createdTime}</p>
@@ -15,7 +24,7 @@ const OrderHeader = (props) => {
               color: "#EBA134",
             }}
           >
-            Chờ duyệt
+            {t("orderHeader.pending")}
           </div>
         )}
         {order.state === "shipping" && (
@@ -24,7 +33,7 @@ const OrderHeader = (props) => {
               color: "#3464EB",
             }}
           >
-            Đang vận chuyển
+            {t("orderHeader.shipping")}
           </div>
         )}
         {order.state === "success" && (
@@ -33,7 +42,7 @@ const OrderHeader = (props) => {
               color: "#2BC24B",
             }}
           >
-            Hoàn thành
+            {t("orderHeader.success")}
           </div>
         )}
         {order.state === "cancel" && (
@@ -42,7 +51,7 @@ const OrderHeader = (props) => {
               color: "#F00",
             }}
           >
-            Đã hủy
+            {t("orderHeader.cancel")}
           </div>
         )}
       </p>
@@ -50,27 +59,27 @@ const OrderHeader = (props) => {
         <Row>
           <Col span={12}>
             <p className="my-2">
-              <b>Mã đơn hàng: </b>
+              <b>{t("orderHeader.id")}: </b>
               {order.id}
             </p>
             <p className="my-2">
-              <b>Hình thức: </b>
+              <b>{t("orderHeader.paymentMethod")}: </b>
               {order.paymentName === config.payment.PAYPAL && (
                 <span>Paypal</span>
               )}
               {order.paymentName === config.payment.MOMO && <span>Momo</span>}
               {order.paymentName === config.payment.COD && (
-                <span>Thanh toán khi nhận hàng</span>
+                <span>{t("informationSection.cod")}</span>
               )}
             </p>
           </Col>
           <Col span={12}>
             <p className="my-2">
-              <b>Tên người nhận: </b>
+              <b>{t("informationSection.receiverName")}: </b>
               {order.receiverName}
             </p>
             <p className="my-2">
-              <b>Số điện thoại: </b>
+              <b>{t("informationSection.receiverPhone")}: </b>
               {order.receiverPhone}
             </p>
           </Col>

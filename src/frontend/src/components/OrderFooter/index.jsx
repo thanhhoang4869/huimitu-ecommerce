@@ -1,9 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./style.css";
 import formatter from "utils/formatter";
 import { Button, Col, Row } from "antd";
 import config from "config/config";
 import { useNavigate } from "react-router-dom";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const buttonStyle = {
   width: "192px",
@@ -15,13 +18,19 @@ const OrderFooter = (props) => {
   const { order, handleCancel, handleSuccess, handleReview } = props;
   const navigator = useNavigate();
 
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   return (
     <div className="order-footer">
       <p className="pt-3 order-shipping-price text-right">
         <Row>
           <Col>
-            <div>Phí vận chuyển:</div>
-            {+order.discountPrice !== 0 && <div>Giảm giá: </div>}
+            <div>{t("totalSection.shippingPrice")}</div>
+            {+order.discountPrice !== 0 && <div>{t("totalSection.discount")}: </div>}
           </Col>
           <Col className="ml-2">
             <div className="color-key">
@@ -37,7 +46,7 @@ const OrderFooter = (props) => {
         </Row>
       </p>
       <p className="order-total">
-        Tổng tiền:{" "}
+        {t("totalSection.totalPrice")}:{" "}
         <span className="order-total-number color-key">
           {formatter.formatPrice(order.finalPrice)}
         </span>
@@ -53,7 +62,7 @@ const OrderFooter = (props) => {
             }}
             onClick={() => handleCancel(order.id)}
           >
-            Hủy
+            {t("totalSection.cancel")}
           </Button>
         )}
         {order.state === config.orderState.SHIPPING && (
@@ -65,7 +74,7 @@ const OrderFooter = (props) => {
             type="primary"
             onClick={() => handleSuccess(order.id)}
           >
-            Đã nhận được hàng
+            {t("totalSection.received")}
           </Button>
         )}
         <Button
@@ -78,7 +87,7 @@ const OrderFooter = (props) => {
           }}
           onClick={() => navigator(`/checkout?orderId=${order.id}`)}
         >
-          Mua lại
+          {t("totalSection.rebuy")}
         </Button>
       </div>
     </div>

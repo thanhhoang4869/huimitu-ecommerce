@@ -15,7 +15,16 @@ import swal from "sweetalert2";
 import { cleanObj } from "utils/objectUtils";
 import { min } from "moment";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const ProductResult = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const [searchParams] = useSearchParams();
 
   const [category, setCategory] = useState({});
@@ -163,14 +172,14 @@ const ProductResult = () => {
     if (!minPrice && !maxPrice) {
       return swal.fire({
         title: "Error",
-        text: "Vui lòng nhập khoảng giá!",
+        text: t("productResult.pleaseEnterPrice"),
         icon: "error",
         confirmButtonText: "OK",
       });
     } else if (minPrice >= maxPrice) {
       return swal.fire({
         title: "Error",
-        text: "Vui lòng nhập khoảng giá hợp lệ!",
+        text: t("productResult.pleaseEnterValidPrice"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -211,7 +220,7 @@ const ProductResult = () => {
       )}
       {query.searchQuery && (
         <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
-          <h5 className="text-key">Từ khóa: {query.searchQuery}</h5>
+          <h5 className="text-key">{t("productResult.keyword") + ": "} {query.searchQuery}</h5>
         </div>
       )}
 
@@ -241,7 +250,7 @@ const ProductResult = () => {
             </>
           ) : (
             <>
-              <div style={{ height: "50vh" }}>Không có sản phẩm.</div>
+              <div style={{ height: "50vh" }}>{t("productResult.notFound")}</div>
             </>
           )}
         </div>

@@ -7,6 +7,7 @@ import ShippingAddressPage from "./ShippingAddressPage";
 import UpdateInformationPage from "./UpdateInformationPage";
 import UserInformationPage from "./UserInformationPage";
 
+
 const AccountPage = () => {
   return (
     <section className="hero">

@@ -4,12 +4,20 @@ import React, { useState, useEffect } from "react";
 import orderService from "services/order";
 import swal from "sweetalert2";
 import AdminOrderItem from "../AdminOrderItem";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const ViewOrderSection = () => {
   const [orderList, setOrderList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const pageLimit = 3;
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   const fetchOrderList = async () => {
     try {
@@ -59,15 +67,15 @@ const ViewOrderSection = () => {
       const { exitcode, message } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          title: "Cập nhật trạng thái đơn hàng",
-          text: "Hủy đơn thành công",
+          title: t("orderListPage.updateOrder"),
+          text: t("orderListPage.cancelOrderSucess"),
           icon: "info",
           confirmButtonText: "OK",
         });
         fetchOrderList();
       } else {
         swal.fire({
-          title: "Cập nhật trạng thái đơn hàng thất bại",
+          title: t("viewOrderSection.updateOrderFail"),
           text: message,
           icon: "error",
           confirmButtonText: "OK",
@@ -88,15 +96,15 @@ const ViewOrderSection = () => {
       const { exitcode, message } = response.data;
       if (exitcode === 0) {
         swal.fire({
-          title: "Cập nhật trạng thái đơn hàng",
-          text: "Xác nhận hàng đã giao cho bên vận chuyển",
+          title: t("orderListPage.updateOrder"),
+          text: t("orderListPage.shippingProviderReceivedOrderConfirm"),
           icon: "info",
           confirmButtonText: "OK",
         });
         fetchOrderList();
       } else {
         swal.fire({
-          title: "Cập nhật trạng thái đơn hàng thất bại",
+          title: t("viewOrderSection.updateOrderFail"),
           text: message,
           icon: "error",
           confirmButtonText: "OK",

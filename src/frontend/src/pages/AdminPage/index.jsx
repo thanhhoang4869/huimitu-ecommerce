@@ -11,6 +11,7 @@ import ViewOrderSection from "./ViewOrderSection";
 import StatisticSection from "pages/StatisticSection";
 
 const AdminPage = () => {
+  
   return (
     <div>
       <section className="hero">

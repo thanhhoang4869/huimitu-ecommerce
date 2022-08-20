@@ -12,6 +12,9 @@ import { useForm } from "antd/lib/form/Form";
 import { isImage, sizeLessMegaByte } from "utils/validator";
 import swal from "sweetalert2";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import category from "services/category";
 import variantService from "services/variant";
 import { default as productService } from "services/product";
@@ -24,6 +27,12 @@ import { useNavigate } from "react-router-dom";
 const { Option } = Select;
 
 const AddProductSection = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const [form] = useForm();
   const [parentCategories, setParentCategories] = useState([]);
   const [childCategories, setChildCategories] = useState([]);
@@ -108,8 +117,8 @@ const AddProductSection = () => {
           });
           if (success) {
             await swal.fire({
-              title: "Thêm sản phẩm",
-              text: "Thêm sản phẩm thành công",
+              title: t("addProductSection.addProduct"),
+              text: t("addProductSection.addProductSuccessfully"),
               icon: "success",
               confirmButtonText: "OK",
             });
@@ -119,8 +128,8 @@ const AddProductSection = () => {
         }
         case 101: {
           await swal.fire({
-            title: "Thêm sản phẩm",
-            text: "Vui lòng thêm hình ảnh",
+            title: t("addProductSection.addProduct"),
+            text: t("addProductSection.addImageWarning"),
             icon: "info",
             confirmButtonText: "OK",
           });
@@ -188,8 +197,8 @@ const AddProductSection = () => {
       );
       if (fileList.length > filteredFileList.length) {
         swal.fire({
-          title: "Thêm sản phẩm",
-          text: "Hình phải có kích thước nhỏ hơn 5MB",
+          title: t("addProductSection.addProduct"),
+          text: t("addProductSection.uploadImageSizeWarning"),
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -228,11 +237,11 @@ const AddProductSection = () => {
         <div className="flex-container ">
           <div className="flex-item mr-5">
             <Form.Item
-              label="Danh mục cha"
+              label={t("addProductSection.parentCategory")}
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng chọn danh mục cha!",
+                  message: `${t("addProductSection.parentCategorySelectWarning")}!`,
                 },
               ]}
             >
@@ -246,11 +255,11 @@ const AddProductSection = () => {
           <div className="flex-item">
             <Form.Item
               name="categoryId"
-              label="Danh mục"
+              label={t("addProductSection.category")}
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng chọn danh mục!",
+                  message: `${t("addProductSection.categorySelectWarning")}!`,
                 },
               ]}
             >
@@ -264,23 +273,23 @@ const AddProductSection = () => {
         </div>
         <Form.Item
           name="productName"
-          label="Tên sản phẩm"
+          label={t("addProductSection.productName")}
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập tên!",
+              message: `${t("addProductSection.productNameEnterWarning")}!`,
             },
           ]}
         >
           <Input />
         </Form.Item>
-        <Form.Item label="Danh sách biến thể">
+        <Form.Item label={t("addProductSection.variantList")}>
           <div className="text-key mb-2 addVar" onClick={showAddModal}>
-            Thêm biến thể
+            {t("addProductSection.addVariant")}
           </div>
           <VariantTable variants={variants} handleEdit={showEditModal} />
         </Form.Item>
-        <Form.Item label="Mô tả sản phẩm">
+        <Form.Item label={t("addProductSection.productDescription")}>
           <CKEditor
             editor={ClassicEditor}
             data={description}
@@ -290,22 +299,22 @@ const AddProductSection = () => {
 
         <div>
           <Form.Item
-            label={`Upload thêm hình ảnh (Còn lại ${
-              10 - images.length - selectedImages.length
-            })`}
+            label={`Upload ${t("editProductSection.moreImage")} (${t("editProductSection.remain", 
+            {remaining: 10 - images.length - selectedImages.length}
+          )})`}
             valuePropName="fileList"
           >
             <div className="mb-2 text-primary text-md">
-              Mỗi sản phẩm có tối đa 10 hình ảnh.
+              {t("editProductSection.productImageRule")}
             </div>
-            <div className="mb-2">Số ảnh hiện tại: {images.length}</div>
-            <div className="mb-2">Số ảnh đã chọn: {selectedImages.length}</div>
+            <div className="mb-2">{t("editProductSection.currentNoImage")}: {images.length}</div>
+            <div className="mb-2">{t("editProductSection.noImageSelected")}: {selectedImages.length}</div>
             <Upload {...uploadProps}>
               <Button
                 disabled={!(selectedImages?.length + images?.length < 10)}
                 icon={<UploadOutlined />}
               >
-                Chọn hình ảnh
+                {t("editProductSection.selectImage")}
               </Button>
             </Upload>
           </Form.Item>
@@ -325,7 +334,7 @@ const AddProductSection = () => {
             size="large"
             style={{ width: "100%" }}
           >
-            Thêm sản phẩm
+            {t("addProductSection.addProduct")}
           </Button>
         </div>
       </Form>

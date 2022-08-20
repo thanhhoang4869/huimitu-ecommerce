@@ -1,12 +1,21 @@
-import React from "react";
+import React, { useEffect }from "react";
 import { Button, Form, Input, InputNumber, DatePicker } from "antd";
 import swal from "sweetalert2";
 import { useForm } from "antd/lib/form/Form";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 import voucherService from "services/voucher";
 import formatter from "utils/formatter";
 
 const AddVoucherSection = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const [form] = useForm();
 
   const onFinish = async (values) => {
@@ -17,18 +26,18 @@ const AddVoucherSection = () => {
       const res = await voucherService.createVoucher(values);
       console.log(res.data);
       if (res.data.exitcode === 0) {
-        swal.fire("Thêm voucher thành công", "", "success");
+        swal.fire(t("voucher.addSuccess"), "", "success");
         form.resetFields();
       } else {
         swal.fire({
-          title: "Thêm voucher thất bại",
+          title: t("voucher.addFail"),
           text: `Lỗi: ${res.data.message}`,
           icon: "error",
         });
       }
     } catch (error) {
       swal.fire({
-        title: "Thêm voucher thất bại",
+        title: t("voucher.addFail"),
         text: `Lỗi: ${error}`,
         icon: "error",
       });
@@ -52,30 +61,30 @@ const AddVoucherSection = () => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="Mã voucher"
+          label={t("voucher.voucherCode")}
           name="voucherCode"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập mã voucher!",
+              message: t("voucher.pleaseEnterCode"),
             },
           ]}
         >
-          <Input placeholder="Nhập mã" />
+          <Input placeholder={t("voucher.enterCode")}/>
         </Form.Item>
 
         <Form.Item
-          label="Giá tối thiểu"
+          label={t("voucher.minimumPrice")}
           name="minimumPrice"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập giá tối thiểu!",
+              message: t("voucher.pleaseEnterMinimumPrice"),
             },
           ]}
         >
           <InputNumber
-            placeholder="Nhập giá"
+            placeholder={t("voucher.enterPrice")}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -85,17 +94,17 @@ const AddVoucherSection = () => {
         </Form.Item>
 
         <Form.Item
-          label="Giá giảm tối đa"
+          label={t("voucher.maximumDiscountPrice")}
           name="maximumDiscountPrice"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập giá giảm tối đa!",
+              message: t("voucher.pleaseMaximumDiscountPrice"),
             },
           ]}
         >
           <InputNumber
-            placeholder="Nhập giá"
+            placeholder={t("voucher.enterPrice")}
             formatter={(value) =>
               `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }
@@ -105,19 +114,19 @@ const AddVoucherSection = () => {
         </Form.Item>
 
         <Form.Item
-          label="Phần trăm giảm (%)"
+          label={t("voucher.percentDiscount")}
           name="percentageDiscount"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập % giảm!",
+              message: t("voucher.pleasePercentDiscount"),
             },
           ]}
         >
           <InputNumber
             min={0}
             max={100}
-            placeholder="Nhập phần trăm"
+            placeholder={t("voucher.enterPercentDiscount")}
             formatter={(value) => `${value}%`}
             parser={(value) => value.replace("%", "")}
             style={{ width: "100%" }}
@@ -125,18 +134,18 @@ const AddVoucherSection = () => {
         </Form.Item>
 
         <Form.Item
-          label="Tổng số lượt dùng"
+          label={t("voucher.maximumUsage")}
           name="maximumUsage"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập tổng số lượt dùng!",
+              message: t("voucher.pleaseMaximumUsage"),
             },
           ]}
         >
           <InputNumber
             min={0}
-            placeholder="Nhập tổng số lượt dùng"
+            placeholder={t("voucher.enterMaximumUsage")}
             style={{ width: "100%" }}
           />
         </Form.Item>
@@ -144,30 +153,30 @@ const AddVoucherSection = () => {
         <div className="flex-container ">
           <div className="flex-item mr-5">
             <Form.Item
-              label="Ngày bắt đầu"
+              label={t("voucher.startDate")}
               name="startDate"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập ngày bắt đầu!",
+                  message: t("voucher.pleaseStartDate"),
                 },
               ]}
             >
-              <DatePicker placeholder="Chọn ngày" style={{ width: "100%" }} />
+              <DatePicker placeholder={t("voucher.enterDate")} style={{ width: "100%" }} />
             </Form.Item>
           </div>
           <div className="flex-item">
             <Form.Item
-              label="Ngày kết thúc"
+              label={t("voucher.endDate")}
               name="endDate"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập ngày kết thúc!",
+                  message: t("voucher.pleaseEndDate"),
                 },
               ]}
             >
-              <DatePicker placeholder="Chọn ngày" style={{ width: "100%" }} />
+              <DatePicker placeholder={t("voucher.enterDate")} style={{ width: "100%" }} />
             </Form.Item>
           </div>
         </div>
@@ -184,7 +193,7 @@ const AddVoucherSection = () => {
               size="large"
               style={{ width: "100%" }}
             >
-              Thêm
+              {t("voucher.add")}
             </Button>
           </div>
         </Form.Item>

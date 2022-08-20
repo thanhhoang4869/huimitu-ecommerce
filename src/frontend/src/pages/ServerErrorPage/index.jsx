@@ -1,14 +1,22 @@
 import { Button, Result } from "antd";
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, {useEffect} from "react";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const NotFoundPage = () => {
   const navigation = useNavigate();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
   return (
     <Result
       status="500"
       title="500"
-      subTitle="Đã có lỗi xảy ra. Vui lòng thử lại sau."
+      subTitle={t("serverErrorPage.subtitle")}
       extra={
         <Button
           type="primary"
@@ -16,7 +24,7 @@ const NotFoundPage = () => {
             navigation("/");
           }}
         >
-          Trang chủ
+          {t("navigation.home")}
         </Button>
       }
     />

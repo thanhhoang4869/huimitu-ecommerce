@@ -1,7 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const Banner = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
   return (
     <>
       <div
@@ -9,18 +17,18 @@ const Banner = () => {
         style={{ backgroundImage: "url(assets/img/hero/banner.jpg)" }}
       >
         <div className="hero__text">
-          <span>Làm bánh và Trang trí</span>
+          <span>{t("banner.header")}</span>
           <h2>
-            Đa dạng <br />
-            Giá tốt
+            {t("banner.various")} <br />
+            {t("banner.affordable")}
           </h2>
-          <p>Đồng hành cùng bạn trong bếp bánh!</p>
+          <p>{t("banner.slogan")}</p>
           <Link
             to="/product?page=1"
             className="primary-btn"
             style={{ borderRadius: "5px" }}
           >
-            MUA NGAY
+            {t("banner.buyNow")}
           </Link>
         </div>
       </div>

@@ -1,7 +1,16 @@
+import { useEffect } from "react";
 import { InputNumber, Modal } from "antd";
 import { Button, Form, Input } from "antd";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const AddVariantModal = (props) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const onFinish = async (values) => {
     props.handleSuccess(values)
   };
@@ -12,7 +21,7 @@ const AddVariantModal = (props) => {
 
   return (
     <Modal
-      title="Thêm biến thể"
+      title={t("variant.addVariant")}
       destroyOnClose={true}
       visible={props.visible}
       onOk={props.handleOk}
@@ -30,12 +39,12 @@ const AddVariantModal = (props) => {
         onFinishFailed={onFinishFailed}
       >
         <Form.Item
-          label="Tên biến thể"
+          label={t("variant.variantName")}
           name="variantName"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập tên!",
+              message: t("variant.pleaseName"),
             },
           ]}
         >
@@ -43,12 +52,12 @@ const AddVariantModal = (props) => {
         </Form.Item>
 
         <Form.Item
-          label="Giá"
+          label={t("variant.price")}
           name="price"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập giá!",
+              message: t("variant.pleasePrice"),
             },
           ]}
         >
@@ -62,7 +71,7 @@ const AddVariantModal = (props) => {
           />
         </Form.Item>
 
-        <Form.Item label="Giá giảm" name="discountPrice">
+        <Form.Item label={t("variant.discountPrice")} name="discountPrice">
           <InputNumber
             min={0}
             formatter={(value) =>
@@ -74,12 +83,12 @@ const AddVariantModal = (props) => {
         </Form.Item>
 
         <Form.Item
-          label="Số lượng"
+          label={t("variant.stock")}
           name="stock"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập số lượng!",
+              message: t("variant.pleaseStock"),
             },
           ]}
         >
@@ -104,10 +113,10 @@ const AddVariantModal = (props) => {
               className="mr-3"
               onClick={props.handleCancel}
             >
-              Hủy
+              {t("variant.cancel")}
             </Button>
             <Button type="primary" htmlType="submit">
-              Thêm
+              {t("variant.add")}
             </Button>
           </div>
         </Form.Item>

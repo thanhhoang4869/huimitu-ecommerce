@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
 import authService from "services/auth";
@@ -14,7 +14,16 @@ import {
 } from "utils/validator";
 import { Button } from "antd";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const SignupPage = (props) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const { login } = useContext(AccountContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +40,7 @@ const SignupPage = (props) => {
     if (password !== passwordConfirm) {
       swal.fire({
         title: "Error",
-        text: "Mật khẩu và mật khẩu xác nhận không trùng khớp",
+        text: t("userInformation.notMatchingPass"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -40,7 +49,7 @@ const SignupPage = (props) => {
     if (!validateEmail(email)) {
       swal.fire({
         title: "Error",
-        text: "Vui lòng nhập email hợp lệ",
+        text: t("userInformation.enterValidEmail"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -49,7 +58,7 @@ const SignupPage = (props) => {
     if (!validateMinLength(password, 6)) {
       swal.fire({
         title: "Error",
-        text: "Mật khẩu phải có ít nhất 6 ký tự",
+        text: t("userInformation.moreThan6Letters"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -59,7 +68,7 @@ const SignupPage = (props) => {
     if (!validatePhone(phone)) {
       swal.fire({
         title: "Error",
-        text: "Vui lòng nhập số điện thoại hợp lệ",
+        text: t("userInformation.pleaseEnterValidPhoneNumber"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -91,7 +100,7 @@ const SignupPage = (props) => {
         if (exitcode === 0) {
           swal.fire({
             title: "Success",
-            text: "Vui lòng kiểm tra email để xác nhận tài khoản!",
+            text: t("signupPage.checkEmail"),
             icon: "success",
             confirmButtonText: "OK",
           });
@@ -101,7 +110,7 @@ const SignupPage = (props) => {
         }
       } else {
         swal.fire({
-          text: "Vui lòng nhập tất cả thông tin",
+          text: t("userInformation.pleaseEnterAll"),
           icon: "info",
           confirmButtonText: "OK",
         });
@@ -132,7 +141,7 @@ const SignupPage = (props) => {
     <div className="d-flex container flex-column justify-content-center my-4">
       {error && <p className="text-danger">{error}</p>}
       <form className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row">
-        <h2 className="mb-4 color-key">Đăng ký</h2>
+        <h2 className="mb-4 color-key">{t("loginPage.signup")}</h2>
 
         <div className="signup-input d-flex align-items-center input-group mb-3 p-2">
           <i className="ml-2 fa fa-envelope"></i>
@@ -150,7 +159,7 @@ const SignupPage = (props) => {
             name="password"
             type="password"
             autoComplete="on"
-            placeholder="Mật khẩu"
+            placeholder={t("userInformation.enterPass")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -161,7 +170,7 @@ const SignupPage = (props) => {
             name="passwordConfirm"
             type="password"
             autoComplete="on"
-            placeholder="Nhập lại mật khẩu"
+            placeholder={t("userInformation.enterPass")}
             value={passwordConfirm}
             onChange={(e) => setPasswordConfirm(e.target.value)}
           />
@@ -170,7 +179,7 @@ const SignupPage = (props) => {
           <i className="ml-2 fa fa-user"></i>
           <input
             name="fullname"
-            placeholder="Họ tên"
+            placeholder={t("userInformation.fullname")}
             value={fullname}
             onChange={(e) => setFullname(e.target.value)}
           />
@@ -179,7 +188,7 @@ const SignupPage = (props) => {
           <i className="ml-2 fa fa-phone"></i>
           <input
             name="phone"
-            placeholder="SĐT"
+            placeholder={t("userInformation.phoneNumber")}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
@@ -192,20 +201,20 @@ const SignupPage = (props) => {
           isLoading={isLoading}
           disabled={isLoading}
         >
-          Đăng ký
+          {t("loginPage.signup")}
         </Button>
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
-        <p>hoặc</p>
+        <p>{t("loginPage.or")}</p>
         <GoogleLoginButton
           onError={handleGoogleError}
           onSuccess={handleGoogleSuccess}
         />
 
         <p className="mt-3">
-          Đã có tài khoản?
+          {t("loginPage.hadAccount")}
           <Link to="/login" className="text-key pointer pl-1">
-            Đăng nhập
+            {t("loginPage.login")}
           </Link>
         </p>
       </div>
