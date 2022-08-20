@@ -95,7 +95,11 @@ const EditProductSection = () => {
       );
       const { exitcode } = response.data;
       if (exitcode === 0) {
-        swal.fire(t("editProductSection.success"), t("editProductSection.updateProductSuccess"), "success");
+        swal.fire(
+          t("editProductSection.success"),
+          t("editProductSection.updateProductSuccess"),
+          "success"
+        );
         navigate("/admin/viewProduct");
       } else {
         swal.fire(
@@ -149,20 +153,37 @@ const EditProductSection = () => {
     maxCount: 10 - images.length,
     accept: "image/png, image/jpeg",
     showUploadList: true,
+    fileList: selectedImages,
 
-    async beforeUpload(file) {
-      console.log("Go");
-      if (!(isImage(file.type) && sizeLessMegaByte(file.size, 5))) {
+    async beforeUpload(file, fileList) {
+      const filteredFileList = fileList.filter(
+        (file) => isImage(file.type) && sizeLessMegaByte(file.size, 5)
+      );
+      if (fileList.length > filteredFileList.length) {
         swal.fire({
-          text: t("editProductSection.uploadImageSizeWarning"),
+          title: t("addProductSection.addProduct"),
+          text: t("addProductSection.uploadImageSizeWarning"),
           icon: "error",
           confirmButtonText: "OK",
         });
-        return false;
       }
-      setSelectedImages([file, ...selectedImages]);
+      filteredFileList.forEach((item) => {
+        let reader = new window.FileReader();
+        reader.onloadend = () => {
+          item.thumbUrl = reader.result;
+        };
+        reader.readAsDataURL(item);
+      });
+      setSelectedImages([...filteredFileList, ...selectedImages]);
 
       return false;
+    },
+
+    onRemove: (file) => {
+      const index = selectedImages.indexOf(file);
+      const newFileList = selectedImages.slice();
+      newFileList.splice(index, 1);
+      setSelectedImages(newFileList);
     },
   };
 
@@ -183,7 +204,11 @@ const EditProductSection = () => {
       />
 
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item initialValue={id} name="id" label={t("editProductSection.productID")}>
+        <Form.Item
+          initialValue={id}
+          name="id"
+          label={t("editProductSection.productID")}
+        >
           <Input disabled />
         </Form.Item>
         <div className="flex-container ">
@@ -231,16 +256,21 @@ const EditProductSection = () => {
         </Form.Item>
         <div>
           <Form.Item
-            label={`Upload ${t("editProductSection.moreImage")} (${t("editProductSection.remain", 
-              {remaining: 10 - images.length - selectedImages.length}
+            label={`Upload ${t("editProductSection.moreImage")} (${t(
+              "editProductSection.remain",
+              { remaining: 10 - images.length - selectedImages.length }
             )})`}
             valuePropName="fileList"
           >
             <div className="mb-2 text-primary text-md">
               {t("editProductSection.productImageRule")}.
             </div>
-            <div className="mb-2">{t("editProductSection.currentNoImage")}: {images.length}</div>
-            <div className="mb-2">{t("editProductSection.noImageSelected")}: {selectedImages.length}</div>
+            <div className="mb-2">
+              {t("editProductSection.currentNoImage")}: {images.length}
+            </div>
+            <div className="mb-2">
+              {t("editProductSection.noImageSelected")}: {selectedImages.length}
+            </div>
             <Upload {...uploadProps}>
               <Button
                 disabled={!(selectedImages?.length + images?.length < 10)}
