@@ -343,6 +343,10 @@ export default {
         editVariant: "Chỉnh sửa biến thể",
         save: "Lưu"
 
+    },
+    lang: {
+        en: "Tiếng Anh",
+        vi: "Tiếng Việt"
     }
   };
   

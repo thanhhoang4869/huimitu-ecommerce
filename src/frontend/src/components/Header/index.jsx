@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Dropdown, Menu, Space } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+
 import "./style.css";
 import logo from "images/logo.png";
 import { useContext } from "react";
@@ -15,6 +18,27 @@ const Header = () => {
   const { pathname } = location;
 
   const { t } = useTranslation();
+
+  const handleMenuClick = (e) => {
+    localStorage.setItem("language", e.key);
+    i18n.changeLanguage(localStorage.getItem("language"));
+  };
+
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={[
+        {
+          label: t("lang.vi"),
+          key: "vi",
+        },
+        {
+          label: t("lang.en"),
+          key: "en",
+        },
+      ]}
+    />
+  );
 
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem("language"));
@@ -42,6 +66,18 @@ const Header = () => {
                       <i className="fa fa-user"></i>
                       <span className="ml-2">{account.fullname}</span>
                     </Link>
+                  </div>
+                  <div className="header__top__right__social">
+                    <Dropdown overlay={menu}>
+                      <Link to="" className="header__top__right_lang">
+                        <span>
+                          {localStorage.getItem("language") === "vi"
+                            ? "Tiếng Việt"
+                            : "English"}{" "}
+                        </span>
+                        <i class="fa fa-solid fa-caret-down"></i>
+                      </Link>
+                    </Dropdown>
                   </div>
                   <div className="header__top__right__auth">
                     {isLogin ? (
@@ -88,13 +124,19 @@ const Header = () => {
                     <Link to="/policy">{t("navigation.policy")}</Link>
                     <ul className="header__menu__dropdown">
                       <li>
-                        <Link to="/policy/shipping">{t("navigation.shipping")}</Link>
+                        <Link to="/policy/shipping">
+                          {t("navigation.shipping")}
+                        </Link>
                       </li>
                       <li>
-                        <Link to="/policy/refund">{t("navigation.refund")}</Link>
+                        <Link to="/policy/refund">
+                          {t("navigation.refund")}
+                        </Link>
                       </li>
                       <li>
-                        <Link to="/policy/coupon">{t("navigation.coupons")}</Link>
+                        <Link to="/policy/coupon">
+                          {t("navigation.coupons")}
+                        </Link>
                       </li>
                     </ul>
                   </li>

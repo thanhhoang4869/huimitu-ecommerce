@@ -344,5 +344,9 @@ export default {
 
         editVariant: "Edit variant",
         save: "Save"
+    },
+    lang: {
+        en: "English",
+        vi: "Vietnamese"
     }
 };

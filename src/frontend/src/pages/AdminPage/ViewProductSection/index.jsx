@@ -32,6 +32,7 @@ const ViewProductSection = () => {
     };
     const res = await product.getProducts(request);
     setProducts(res.data.products);
+    console.log(products);
   };
 
   const onDeleteProduct = async (id) => {
@@ -39,6 +40,7 @@ const ViewProductSection = () => {
       const result = await swal.fire(swalDeleteProps);
       if (result.isConfirmed) {
         swal.fire(t("viewProductSection.deleted"), "", "success");
+        product.deleteProduct(id);
       }
     } catch (err) {
       console.error(err);
@@ -153,7 +155,7 @@ const ViewProductSection = () => {
       stock: product.stock,
       categoryName: product.categoryName,
       action: (
-        <div className="del" onClick={onDeleteProduct}>
+        <div className="del" onClick={() => onDeleteProduct(product.id)}>
           <DeleteOutlined />
         </div>
       ),

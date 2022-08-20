@@ -11,6 +11,11 @@ const product = {
     return response;
   },
 
+  async deleteProduct(productId) {
+    const response = await api.delete(`/product/${productId}`);
+    return response;
+  },
+
   async getProducts(request) {
     const response = await api.post("/product/get", request);
     return response;
@@ -71,6 +76,8 @@ const product = {
     const response = await api.patch(`/product/${data.id}`, formData);
     return response;
   },
+
+  
 };
 
 export default product;
