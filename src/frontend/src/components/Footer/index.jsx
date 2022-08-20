@@ -1,7 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import logo from "../../images/logo.png";
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -12,23 +13,6 @@ const Footer = () => {
 
   return (
     <>
-      {/* <div className="banner pb-5">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-6 col-md-6 col-sm-6">
-              <div className="banner__pic">
-                <img src="/assets/img/banner/banner-1.jpg" alt="" />
-              </div>
-            </div>
-            <div className="col-lg-6 col-md-6 col-sm-6">
-              <div className="banner__pic">
-                <img src="/assets/img/banner/banner-2.jpg" alt="" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <footer className="footer spad border">
         <div className="container">
           <div className="row">
@@ -46,26 +30,23 @@ const Footer = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+            <div className="col-lg-3 col-md-6 col-sm-6 offset-lg-1">
               <div className="footer__widget">
                 <h6>{t("footer.ref")}</h6>
                 <ul>
                   <li>
-                    <a href="#">{t("footer.refundPolicy")}</a>
+                    <Link to="/policy/refund">{t("footer.refundPolicy")}</Link>
                   </li>
                   <li>
-                    <a href="#">{t("footer.shippingPolicy")}</a>
+                    <Link to="/policy/shipping">
+                      {t("footer.shippingPolicy")}
+                    </Link>
                   </li>
                   <li>
-                    <a href="#">{t("footer.couponsPolicy")}</a>
-                  </li>
-                </ul>
-                <ul>
-                  <li>
-                    <a href="#">{t("footer.trackOrder")}</a>
+                    <Link to="/policy/coupons">{t("footer.couponsPolicy")}</Link>
                   </li>
                   <li>
-                    <a href="#">{t("footer.map")}</a>
+                    <Link to="/account/order">{t("footer.trackOrder")}</Link>
                   </li>
                 </ul>
               </div>
@@ -74,17 +55,8 @@ const Footer = () => {
               <div className="footer__widget">
                 <h6>{t("footer.contact")}</h6>
                 <div className="footer__widget__social">
-                  <a href="/">
+                  <a href="https://www.facebook.com/huimitu">
                     <i className="fa fa-facebook"></i>
-                  </a>
-                  <a href="/">
-                    <i className="fa fa-instagram"></i>
-                  </a>
-                  <a href="/">
-                    <i className="fa fa-twitter"></i>
-                  </a>
-                  <a href="/">
-                    <i className="fa fa-pinterest"></i>
                   </a>
                 </div>
               </div>

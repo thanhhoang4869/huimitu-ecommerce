@@ -95,8 +95,8 @@ const ProductDetailPage = () => {
       if (exitcode === 0) {
         if (variants.length < 1) {
           swal.fire({
-            title: "Xem chi tiết sản phẩm",
-            text: "Sản phẩm chưa có các biến thể",
+            title: t("productDetailPage.addSuccess"),
+            text: t("productDetailPage.variantNotFound"),
             icon: "info",
             confirmButtonText: "OK",
           });
