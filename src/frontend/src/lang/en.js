@@ -208,10 +208,10 @@ export default {
         addSuccess: "Add product to cart success",
     },
     serverErrorPage: {
-        subtitle: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+        subtitle: "Something went wrong! Please try again later",
     },
     notFoundPage: {
-        subtitle: "Trang bạn tìm kiếm không tồn tại."
+        subtitle: "Page not found",
     },
     footer: {
         phoneNumber: "Phone number",
