@@ -1,4 +1,4 @@
-export default {
+const engLang = {
     header: {
         title: "Huimitu Bakeware",
     },
@@ -212,6 +212,8 @@ export default {
         review: "Reviews",
         productNotFound: "Product not found",
         addSuccess: "Add product to cart success",
+        variantNotFound: "Product's variants not found",
+        viewProduct: "View product"
     },
     serverErrorPage: {
         subtitle: "Something went wrong! Please try again later",
@@ -253,7 +255,7 @@ export default {
         cancelDelete: "Cancel",
         confirmDelete: "Delete",
         deleted: "Product deleted",
-       
+
     },
     editProductSection: {
         success: "Success",
@@ -269,7 +271,7 @@ export default {
         addVariant: "Add variant",
         productDescription: "Product description",
         moreImage: "add image",
-        remain: "{{remaining}} remainings",
+        remain: "remainings",
         productImageRule: "Each product has a maximum of 10 images",
         currentNoImage: "Current number of images",
         noImageSelected: "Number of images selected",
@@ -290,7 +292,7 @@ export default {
         variantList: "Variant list",
         addVariant: "Add variant",
         productDescription: "Product description",
-        remain: "{{remaining}} remainings",
+        remain: "remainings",
         productImageRule: "Each product has a maximum of 10 images",
         currentNoImage: "Current number of images",
         noImageSelected: "Number of images selected",
@@ -360,3 +362,6 @@ export default {
         vi: "Tiếng Việt"
     }
 };
+
+
+export default engLang;

@@ -24,6 +24,7 @@ import "./style.css";
 import AddVariantModal from "../AddVariantModal";
 import EditVariantModal from "../EditVariantModal";
 import { useNavigate } from "react-router-dom";
+import { getBase64 } from "utils/objectUtils";
 const { Option } = Select;
 
 const AddProductSection = () => {
@@ -190,6 +191,8 @@ const AddProductSection = () => {
     maxCount: 10 - images.length,
     accept: "image/png, image/jpeg",
     showUploadList: true,
+    defaultFileList: [...selectedImages],
+    fileList: [...selectedImages],
 
     async beforeUpload(file, fileList) {
       const filteredFileList = fileList.filter(
@@ -203,6 +206,14 @@ const AddProductSection = () => {
           confirmButtonText: "OK",
         });
       }
+      filteredFileList.forEach((item) => {
+        let reader = new window.FileReader();
+        reader.onloadend = () => {
+          item.thumbUrl = reader.result;
+        };
+        reader.readAsDataURL(item);
+      });
+
       setSelectedImages([...filteredFileList, ...selectedImages]);
 
       return false;
@@ -241,7 +252,9 @@ const AddProductSection = () => {
               rules={[
                 {
                   required: true,
-                  message: `${t("addProductSection.parentCategorySelectWarning")}!`,
+                  message: `${t(
+                    "addProductSection.parentCategorySelectWarning"
+                  )}!`,
                 },
               ]}
             >
@@ -299,16 +312,20 @@ const AddProductSection = () => {
 
         <div>
           <Form.Item
-            label={`Upload ${t("editProductSection.moreImage")} (${t("editProductSection.remain", 
-            {remaining: 10 - images.length - selectedImages.length}
-          )})`}
+            label={`Upload ${t("editProductSection.moreImage")} (${
+              10 - images.length - selectedImages.length
+            } ${t("editProductSection.remain")})`}
             valuePropName="fileList"
           >
             <div className="mb-2 text-primary text-md">
               {t("editProductSection.productImageRule")}
             </div>
-            <div className="mb-2">{t("editProductSection.currentNoImage")}: {images.length}</div>
-            <div className="mb-2">{t("editProductSection.noImageSelected")}: {selectedImages.length}</div>
+            <div className="mb-2">
+              {t("editProductSection.currentNoImage")}: {images.length}
+            </div>
+            <div className="mb-2">
+              {t("editProductSection.noImageSelected")}: {selectedImages.length}
+            </div>
             <Upload {...uploadProps}>
               <Button
                 disabled={!(selectedImages?.length + images?.length < 10)}

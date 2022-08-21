@@ -1,4 +1,4 @@
-export default {
+const viLang = {
     header: {
         title: "Dụng cụ làm bánh Huimitu",
     },
@@ -80,7 +80,7 @@ export default {
         pleaseEnterAll: "Vui lòng điền tất cả các trường",
         pleaseEnterValidPhoneNumber: "Vui lòng nhập số điện thoại hợp lệ",
         enterValidEmail: "Vui lòng nhập email hợp lệ",
-        
+
         changeInfoSucess: "Đổi thông tin thành công",
         usedPhoneNumber: "Số điện thoại đã được sử dụng",
         moreThan6Letters: "Mật khẩu phải từ 6 kí tự trở lên",
@@ -130,7 +130,7 @@ export default {
         failTitle: "Lỗi",
         fail: "Có lỗi xảy ra. Vui lòng thử lại sau",
         cancel: "Huỷ",
-      },
+    },
     orderHeader: {
         pending: "Chờ duyệt",
         shipping: "Đang vận chuyển",
@@ -211,6 +211,8 @@ export default {
         review: "Đánh giá",
         productNotFound: "Không tìm thấy sản phẩm",
         addSuccess: "Thêm sản phẩm thành công",
+        variantNotFound: "Không tìm thấy các biến thể",
+        viewProduct: "Xem sản phẩm"
     },
     serverErrorPage: {
         subtitle: "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
@@ -224,7 +226,7 @@ export default {
         ref: "Tham khảo",
         refundPolicy: "Chính sách đổi trả",
         shippingPolicy: "Chính sách giao hàng",
-        couponsPolicy: "Coupons",
+        couponPolicy: "Coupon",
         trackOrder: "Theo dõi đơn hàng",
         map: "Bản đồ",
         contact: "Liên hệ"
@@ -251,7 +253,7 @@ export default {
         cancelDelete: "Hủy",
         confirmDelete: "Xóa",
         deleted: "Đã xóa sản phẩm",
-       
+
     },
     editProductSection: {
         success: "Thành công",
@@ -267,7 +269,7 @@ export default {
         addVariant: "Thêm biến thể",
         productDescription: "Mô tả sản phẩm",
         moreImage: "thêm hình ảnh",
-        remain: "Còn lại {{remaining}}",
+        remain: "Còn lại",
         productImageRule: "Mỗi sản phẩm có tối đa 10 hình ảnh",
         currentNoImage: "Số ảnh hiện tại",
         noImageSelected: "Số ảnh đã chọn",
@@ -288,7 +290,7 @@ export default {
         variantList: "Danh sách biến thể",
         addVariant: "Thêm biến thể",
         productDescription: "Mô tả sản phẩm",
-        remain: "Còn lại {{remaining}}",
+        remain: "Còn lại",
         productImageRule: "Mỗi sản phẩm có tối đa 10 hình ảnh",
         currentNoImage: "Số ảnh hiện tại",
         noImageSelected: "Số ảnh đã chọn",
@@ -308,8 +310,8 @@ export default {
         deletedVoucher: "Đã xóa voucher",
         haveError: "Có lỗi xảy ra",
         voucher: "voucher",
-        
-        
+
+
         addSuccess: "Thêm voucher thành công",
         addFail: "Thêm voucher thất bại",
         pleaseEnterCode: "Vui lòng nhập mã voucher!",
@@ -358,5 +360,6 @@ export default {
         en: "English",
         vi: "Tiếng Việt"
     }
-  };
-  
+};
+
+export default viLang
