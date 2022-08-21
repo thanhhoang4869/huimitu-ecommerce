@@ -5,7 +5,8 @@ import { Divider } from "antd";
 import AdminOrderFooter from "./AdminOrderFooter";
 
 const AdminOrderItem = (props) => {
-  const { order, handleCancel, handleSuccess } = props;
+  const { order, handleCancelOrder, handleAcceptOrder, handleConfirmRefund } =
+    props;
   return (
     <div key={order.id} className="my-3">
       <Divider orientation="left"></Divider>
@@ -13,8 +14,9 @@ const AdminOrderItem = (props) => {
       <OrderVariantList order={order} />
       <AdminOrderFooter
         order={order}
-        handleCancel={handleCancel}
-        handleSuccess={handleSuccess}
+        handleCancelOrder={handleCancelOrder}
+        handleAcceptOrder={handleAcceptOrder}
+        handleConfirmRefund={handleConfirmRefund}
       />
     </div>
   );

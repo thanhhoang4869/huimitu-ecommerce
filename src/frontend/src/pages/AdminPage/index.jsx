@@ -11,7 +11,6 @@ import ViewOrderSection from "./ViewOrderSection";
 import StatisticSection from "pages/StatisticSection";
 
 const AdminPage = () => {
-  
   return (
     <div>
       <section className="hero">
@@ -30,8 +29,7 @@ const AdminPage = () => {
                 <Route path="/addProduct" element={<AddProductSection />} />
                 <Route path="/viewVoucher" element={<ViewVoucherSection />} />
                 <Route path="/addVoucher" element={<AddVoucherSection />} />
-                <Route path="/viewOrder" element={<ViewOrderSection />}/>
-
+                <Route path="/viewOrder" element={<ViewOrderSection />} />
                 <Route
                   path="/editProduct/:id"
                   element={<EditProductSection />}

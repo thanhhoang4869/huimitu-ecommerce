@@ -54,6 +54,24 @@ const OrderHeader = (props) => {
             {t("orderHeader.cancel")}
           </div>
         )}
+        {order.state === config.orderState.REFUNDING && (
+          <div
+            style={{
+              color: "#EBA134",
+            }}
+          >
+            {t("orderHeader.refunding")}
+          </div>
+        )}
+        {order.state === config.orderState.REFUNDED && (
+          <div
+            style={{
+              color: "#2BC24B",
+            }}
+          >
+            {t("orderHeader.refunded")}
+          </div>
+        )}
       </p>
       <div>
         <Row>

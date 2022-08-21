@@ -121,17 +121,26 @@ const viLang = {
     },
     orderListPage: {
         updateOrder: "Cập nhật trạng thái đơn hàng",
-        cancelOrderSucess: "Hủy đơn thành công",
-        receivedOrderSucess: "Xác nhận đã nhận hàng thành công",
+        cancelOrderSuccess: "Hủy đơn thành công",
+        receivedOrderSuccess: "Xác nhận đã nhận hàng thành công",
         rate: "Đánh giá sản phẩm",
         rateSuccess: "Đánh giá sản phẩm thành công",
-        rateFail: "Đánh giá sản phẩm thất bại",
+        refundConfirm: "Xác nhận trả hàng hoàn tiền?",
+        refundSuccess: "Yêu cầu đã được ghi nhận. Chúng tôi sẽ liên lạc lại bạn trong vòng 24h",
+        failTitle: "Lỗi",
+        fail: "Có lỗi xảy ra. Vui lòng thử lại sau",
+        cancel: "Huỷ",
+        rateFail: "Đánh giá thất bại",
+        shippingProviderReceivedOrderConfirm: "Xác nhận đơn hàng thành công, đã giao cho shipper",
+        confirmRefund: "Xác nhận hoàn trả"
     },
     orderHeader: {
         pending: "Chờ duyệt",
         shipping: "Đang vận chuyển",
         success: "Hoàn thành",
         cancel: "Đã hủy",
+        refunding: "Đang hoàn trả",
+        refunded: "Đã hoàn trả",
         id: "Mã đơn hàng",
         paymentMethod: "Hình thức",
     },
@@ -173,6 +182,8 @@ const viLang = {
         order: "Đặt hàng",
         cancel: "Huỷ",
         received: "Đã nhận được hàng",
+        refund: "Trả hàng hoàn tiền",
+        confirmRefund: "Xác nhận hoàn trả",
         rebuy: "Mua lại",
         confirm: "Xác nhận",
     },
@@ -234,7 +245,12 @@ const viLang = {
         viewVoucher: "Xem và chỉnh sửa",
         addVoucher: "Thêm voucher",
         order: "Đơn hàng",
-        viewOrder: "Xem và duyệt đơn hàng",
+        pendingOrder: "Đơn hàng chờ duyệt",
+        successOrder: "Đơn hàng thành công",
+        refundingOrder: "Đơn đang hoàn trả",
+        refundedOrder: "Đơn đã hoàn trả",
+        shippingOrder: "Đơn hàng đang vận chuyển",
+        cancelOrder: "Đơn hàng bị huỷ",
         admin: "Quản lý"
     },
     viewProductSection: {
@@ -300,8 +316,6 @@ const viLang = {
         deletedVoucher: "Đã xóa voucher",
         haveError: "Có lỗi xảy ra",
         voucher: "voucher",
-
-
         addSuccess: "Thêm voucher thành công",
         addFail: "Thêm voucher thất bại",
         pleaseEnterCode: "Vui lòng nhập mã voucher!",
@@ -347,7 +361,7 @@ const viLang = {
 
     },
     lang: {
-        en: "Tiếng Anh",
+        en: "English",
         vi: "Tiếng Việt"
     }
 };

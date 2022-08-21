@@ -5,7 +5,7 @@ import OrderFooter from "components/OrderFooter";
 import { Divider } from "antd";
 
 const OrderItem = (props) => {
-  const { order, handleCancel, handleSuccess, handleReview } = props;
+  const { order, handleCancel, handleSuccess, handleReview, handleRefund } = props;
 
   return (
     <div key={order.id} className="my-3">
@@ -16,6 +16,7 @@ const OrderItem = (props) => {
         order={order}  
         handleCancel={handleCancel}
         handleSuccess={handleSuccess}
+        handleRefund={handleRefund}
       />
     </div>
   );

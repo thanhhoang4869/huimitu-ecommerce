@@ -239,6 +239,47 @@ export default {
                     success = true;
                     break;
                 }
+                // Shipping to refunding (owner only)
+                case (config.orderState.REFUNDING): {
+                    if (order.email !== email) {
+                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    }
+                    if (order.state !== config.orderState.SHIPPING) {
+                        return res.status(200).send({
+                            exitcode: 105,
+                            message: "Order can only be refunded during shipping state"
+                        })
+                    }
+                    await orderModel.updateState(orderId, config.orderState.REFUNDING)
+                    success = true;
+                    break;
+                }
+                // Refunding to refunded (admin only)
+                case (config.orderState.REFUNDED): {
+                    if (role !== config.role.ADMIN) {
+                        throw new ErrorHandler(403, "Only admin can do this operation")
+                    }
+                    if (order.state !== config.orderState.REFUNDING) {
+                        return res.status(200).send({
+                            exitcode: 106,
+                            message: "Order can only be refunded during refunding state"
+                        })
+                    }
+
+                    // Update quantity
+                    const variants = await variantModel.getByOrderId({orderId});
+                    for (const idx in variants) {
+                        const variant = variants[idx]
+                        await variantModel.updateVariant(variant.id, {
+                            stock: variant.stock + variant.quantity
+                        });
+                    }
+
+                    // Update order state
+                    await orderModel.updateState(orderId, config.orderState.REFUNDED)
+                    success = true;
+                    break;
+                }
             }
 
             if (success) {

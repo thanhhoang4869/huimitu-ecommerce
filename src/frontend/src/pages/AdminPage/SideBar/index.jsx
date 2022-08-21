@@ -9,6 +9,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
+import config from "config/config";
 
 const SideBar = () => {
   const navigate = useNavigate();
@@ -39,13 +40,18 @@ const SideBar = () => {
       getItem(t("sideBar.addVoucher"), "addVoucher"),
     ]),
     getItem(t("sideBar.order"), "order", <BookOutlined />, [
-      getItem(t("sideBar.viewOrder"), "viewOrder"),
+      getItem(t("sideBar.pendingOrder"), config.orderState.PENDING),
+      getItem(t("sideBar.successOrder"), config.orderState.SUCCESS),
+      getItem(t("sideBar.shippingOrder"), config.orderState.SHIPPING),
+      getItem(t("sideBar.cancelOrder"), config.orderState.CANCEL),
+      getItem(t("sideBar.refundingOrder"), config.orderState.REFUNDING),
+      getItem(t("sideBar.refundedOrder"), config.orderState.REFUNDED),
     ]),
   ];
 
   const rootSubmenuKeys = ["prod", "voucher"];
 
-  const [openKeys, setOpenKeys] = useState(["prod"]);
+  const [openKeys, setOpenKeys] = useState(["statistic"]);
   const [current, setCurrent] = useState("statistic");
 
   const onOpenChange = (keys) => {
@@ -74,7 +80,11 @@ const SideBar = () => {
           items={items}
           onClick={(e) => {
             setCurrent(e.key);
-            navigate(`/admin/${e.key}`);
+            if (Object.keys(config.orderState).includes(e.key.toUpperCase())) {
+              navigate(`/admin/viewOrder?orderState=${e.key}`);
+            } else {
+              navigate(`/admin/${e.key}`);
+            }
           }}
         />
       </div>

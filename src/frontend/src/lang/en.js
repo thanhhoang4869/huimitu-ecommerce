@@ -122,17 +122,26 @@ const engLang = {
     },
     orderListPage: {
         updateOrder: "Update order status",
-        cancelOrderSucess: "Cancel order successfully",
-        receivedOrderSucess: "Confirm recieved order successfully",
+        cancelOrderSuccess: "Cancel order successfully",
+        receivedOrderSuccess: "Confirm recieved order successfully",
         rate: "Product review",
+        refundConfirm: "Confirm refund?",
         rateSuccess: "Review product successfully",
-        rateFail: "Product review failed",
+        rateFail: "Review product failed",
+        refundSuccess: "The request has been recorded. We will be in touch within 24 hours",
+        failTitle: "Error",
+        fail: "Something went wrong. Please try again later",
+        cancel: "Cancel",
+        shippingProviderReceivedOrderConfirm: "Confirm order successfully, delivered to shipper",
+        confirmRefund: "Confirm refund"
     },
     orderHeader: {
         pending: "Pending",
         shipping: "Shipping",
         success: "Success",
         cancel: "Cancel",
+        refunding: "Refunding",
+        refunded: "Refunded",
         id: "Order id",
         paymentMethod: "Method",
     },
@@ -140,13 +149,13 @@ const engLang = {
         rate: "Rate",
     },
     checkoutPage: {
-        pleaseEnterAll: "Vui Lòng điền đầy đủ các thông tin",
-        invalidPhoneNumber: "Số điện thoại không hợp lệ",
-        orderSuccess: "Đặt hàng thành công",
-        yourOrder: "Đơn hàng của bạn là",
-        outStock: "Không đủ hàng để thanh toán",
-        voucherNotFound: "Không tìm thấy voucher",
-        notEligible: "Đơn của bạn chưa đủ điều kiện để áp dụng",
+        pleaseEnterAll: "Please fill-in all required information",
+        invalidPhoneNumber: "Invalid phone number",
+        orderSuccess: "Order successfully",
+        yourOrder: "Your order ID is",
+        outStock: "Insufficient item to checkout",
+        voucherNotFound: "Voucher not found",
+        notEligible: "Your order is not reach the voucher requirement",
     },
     informationSection: {
         receiverInfo: "Reveiver information",
@@ -174,6 +183,8 @@ const engLang = {
         order: "Place order",
         cancel: "Cancel",
         received: "Received order",
+        refund: "Refund",
+        confirmRefund: "Confirm refund",
         rebuy: "Rebuy",
         confirm: "Approve",
     },
@@ -235,7 +246,12 @@ const engLang = {
         viewVoucher: "View voucher",
         addVoucher: "Add voucher",
         order: "Order",
-        viewOrder: "View and approve order",
+        pendingOrder: "Pending order",
+        refundingOrder: "Refunding order",
+        refundedOrder: "Refunded order",
+        successOrder: "Success order",
+        shippingOrder: "Shipping order",
+        cancelOrder: "Cancel order",
         admin: "Admin"
     },
 
@@ -349,7 +365,7 @@ const engLang = {
     },
     lang: {
         en: "English",
-        vi: "Vietnamese"
+        vi: "Tiếng Việt"
     }
 };
 
