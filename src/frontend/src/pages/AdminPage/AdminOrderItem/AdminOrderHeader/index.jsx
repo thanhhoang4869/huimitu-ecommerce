@@ -1,4 +1,4 @@
-import { Col, Row } from "antd";
+import { Col, ConfigProvider, Row } from "antd";
 import config from "config/config";
 import React, { useEffect } from "react";
 import "./style.css";
@@ -18,7 +18,7 @@ const AdminOrderHeader = (props) => {
       <div className="order-header">
         <p className="order-date-created">{order.createdTime}</p>
         <p className="order-status">
-          {order.state === "pending" && (
+          {order.state === config.orderState.PENDING && (
             <div
               style={{
                 color: "#EBA134",
@@ -27,7 +27,7 @@ const AdminOrderHeader = (props) => {
               {t("orderHeader.pending")}
             </div>
           )}
-          {order.state === "shipping" && (
+          {order.state === config.orderState.SHIPPING && (
             <div
               style={{
                 color: "#3464EB",
@@ -36,7 +36,7 @@ const AdminOrderHeader = (props) => {
               {t("orderHeader.shipping")}
             </div>
           )}
-          {order.state === "success" && (
+          {order.state === config.orderState.SUCCESS && (
             <div
               style={{
                 color: "#2BC24B",
@@ -45,13 +45,22 @@ const AdminOrderHeader = (props) => {
               {t("orderHeader.success")}
             </div>
           )}
-          {order.state === "cancel" && (
+          {order.state === config.orderState.CANCEL && (
             <div
               style={{
                 color: "#F00",
               }}
             >
               {t("orderHeader.cancel")}
+            </div>
+          )}
+          {order.state === config.orderState.REFUND && (
+            <div
+              style={{
+                color: "#F00",
+              }}
+            >
+              {t("orderHeader.refund")}
             </div>
           )}
         </p>

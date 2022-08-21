@@ -17,6 +17,7 @@ const config = {
       SHIPPING: 'shipping',
       CANCEL: 'cancel',
       SUCCESS: 'success',
+      REFUND: 'refund',
     },
 }
 export default config

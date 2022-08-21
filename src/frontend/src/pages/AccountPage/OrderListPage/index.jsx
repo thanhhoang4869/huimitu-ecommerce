@@ -20,7 +20,7 @@ const OrderListPage = () => {
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem("language"));
   }, []);
-  
+
   const fetchOrderList = async () => {
     try {
       const response = await orderService.getOrderList({
@@ -93,6 +93,13 @@ const OrderListPage = () => {
           confirmButtonText: "OK",
         });
         fetchOrderList();
+      } else {
+        swal.fire({
+          title: t("orderListPage.failTitle"),
+          text: t("orderListPage.fail"),
+          icon: "error",
+          confirmButtonText: "OK",
+        });
       }
     } catch (err) {
       console.error(err);
@@ -118,11 +125,58 @@ const OrderListPage = () => {
         fetchOrderList();
       } else {
         swal.fire({
-          title: t("orderListPage.rateFail"),
-          text: `Lỗi: ${message}`,
+          title: t("orderListPage.failTitle"),
+          text: t("orderListPage.fail"),
           icon: "error",
           confirmButtonText: "OK",
         });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleRefund = async (orderId) => {
+    try {
+      const result = await swal.fire({
+        title: t("orderListPage.updateOrder"),
+        text: t("orderListPage.refundConfirm"),
+        icon: "info",
+        showCancelButton: true,
+        cancelButtonText: t("orderListPage.cancel"),
+        confirmButtonText: "OK",
+        customClass: {
+          cancelButton: "order-1",
+          confirmButton: "order-2",
+        },
+      });
+
+      if (result.isConfirmed) {
+        try {
+          const response = await orderService.updateState(
+            orderId,
+            config.orderState.REFUND
+          );
+          const { exitcode } = response.data;
+          if (exitcode === 0) {
+            swal.fire({
+              title: t("orderListPage.updateOrder"),
+              text: t("orderListPage.refundSuccess"),
+              icon: "info",
+              confirmButtonText: "OK",
+            });
+            fetchOrderList();
+          } else {
+            swal.fire({
+              title: t("orderListPage.failTitle"),
+              text: t("orderListPage.fail"),
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+          }
+        } catch (err) {
+          console.error(err);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -150,6 +204,7 @@ const OrderListPage = () => {
             handleCancel={handleCancel}
             handleSuccess={handleSuccess}
             handleReview={handleReview}
+            handleRefund={handleRefund}
           />
         )}
       ></List>

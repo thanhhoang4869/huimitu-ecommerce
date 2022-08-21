@@ -125,7 +125,11 @@ export default {
         receivedOrderSucess: "Xác nhận đã nhận hàng thành công",
         rate: "Đánh giá sản phẩm",
         rateSuccess: "Đánh giá sản phẩm thành công",
-        rateFail: "Đánh giá sản phẩm thất bại",
+        refundConfirm: "Xác nhận trả hàng hoàn tiền?",
+        refundSuccess: "Yêu cầu đã được ghi nhận. Chúng tôi sẽ liên lạc lại bạn trong vòng 24h",
+        failTitle: "Lỗi",
+        fail: "Có lỗi xảy ra. Vui lòng thử lại sau",
+        cancel: "Huỷ",
       },
     orderHeader: {
         pending: "Chờ duyệt",
@@ -174,6 +178,7 @@ export default {
         order: "Đặt hàng",
         cancel: "Huỷ",
         received: "Đã nhận được hàng",
+        refund: "Trả hàng hoàn tiền",
         rebuy: "Mua lại",
         confirm: "Xác nhận",
     },
@@ -233,7 +238,11 @@ export default {
         viewVoucher: "Xem và chỉnh sửa",
         addVoucher: "Thêm voucher",
         order: "Đơn hàng",
-        viewOrder: "Xem và duyệt đơn hàng",
+        pendingOrder: "Duyệt đơn hàng",
+        refundOrder: "Đơn hàng hoàn trả",
+        successOrder: "Đơn hàng thành công",
+        shippingOrder: "Đơn hàng đang vận chuyển",
+        cancelOrder: "Đơn hàng bị huỷ",
         admin: "Quản lý"
     },
     viewProductSection: {
@@ -346,7 +355,7 @@ export default {
 
     },
     lang: {
-        en: "Tiếng Anh",
+        en: "English",
         vi: "Tiếng Việt"
     }
   };

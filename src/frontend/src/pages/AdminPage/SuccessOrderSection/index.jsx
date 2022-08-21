@@ -7,7 +7,7 @@ import AdminOrderItem from "../AdminOrderItem";
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
 
-const PendingOrderSection = () => {
+const SuccessOrderSection = () => {
   const [orderList, setOrderList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
@@ -24,7 +24,7 @@ const PendingOrderSection = () => {
       const response = await orderService.getOrderList({
         limit: pageLimit,
         offset: pageLimit * (page - 1),
-        orderState: config.orderState.PENDING,
+        orderState: config.orderState.SUCCESS,
       });
       const { orders, exitcode } = response.data;
 
@@ -39,7 +39,7 @@ const PendingOrderSection = () => {
   const fetchTotalItem = async () => {
     try {
       const response = await orderService.getTotalOrder({
-        orderState: config.orderState.PENDING,
+        orderState: config.orderState.SUCCESS,
       });
       const { exitcode, count } = response.data;
       if (exitcode === 0) {
@@ -144,4 +144,4 @@ const PendingOrderSection = () => {
   );
 };
 
-export default PendingOrderSection;
+export default SuccessOrderSection;

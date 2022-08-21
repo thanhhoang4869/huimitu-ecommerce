@@ -54,13 +54,13 @@ const OrderHeader = (props) => {
             {t("orderHeader.cancel")}
           </div>
         )}
-        {order.state === "refunding" && (
+        {order.state === "refund" && (
           <div
             style={{
-              color: "#3464EB",
+              color: "#F00",
             }}
           >
-            {t("orderHeader.refunding")}
+            {t("orderHeader.refund")}
           </div>
         )}
       </p>

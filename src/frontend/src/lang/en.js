@@ -125,8 +125,12 @@ export default {
         cancelOrderSucess: "Cancel order successfully",
         receivedOrderSucess: "Confirm recieved order successfully",
         rate: "Product review",
+        refundConfirm: "Confirm refund?",
         rateSuccess: "Review product successfully",
-        rateFail: "Product review failed",
+        refundSuccess: "The request has been recorded. We will be in touch within 24 hours",
+        failTitle: "Error",
+        fail: "Something went wrong. Please try again later",
+        cancel: "Cancel",
     },
     orderHeader: {
         pending: "Pending",
@@ -175,6 +179,7 @@ export default {
         order: "Place order",
         cancel: "Cancel",
         received: "Received order",
+        refund: "Refund",
         rebuy: "Rebuy",
         confirm: "Approve",
     },
@@ -234,7 +239,11 @@ export default {
         viewVoucher: "View voucher",
         addVoucher: "Add voucher",
         order: "Order",
-        viewOrder: "View and approve order",
+        pendingOrder: "Approve order",
+        refundOrder: "Refund order",
+        successOrder: "Success order",
+        shippingOrder: "Shipping order",
+        cancelOrder: "Cancel order",
         admin: "Admin"
     },
 
@@ -348,6 +357,6 @@ export default {
     },
     lang: {
         en: "English",
-        vi: "Vietnamese"
+        vi: "Tiếng Việt"
     }
 };

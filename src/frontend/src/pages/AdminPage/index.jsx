@@ -7,7 +7,12 @@ import AddProductSection from "./AddProductSection";
 import ViewVoucherSection from "./ViewVoucherSection";
 import AddVoucherSection from "./AddVoucherSection";
 import EditProductSection from "./EditProductSection";
-import ViewOrderSection from "./ViewOrderSection";
+import PendingOrderSection from "./ViewOrderSection";
+import RefundOrderSection from "./RefundOrderSection";
+import SuccessOrderSection from "./SuccessOrderSection";
+import ShippingOrderSection from "./ShippingOrderSection";
+import CancelOrderSection from "./CancelOrderSection";
+
 import StatisticSection from "pages/StatisticSection";
 
 const AdminPage = () => {
@@ -30,7 +35,11 @@ const AdminPage = () => {
                 <Route path="/addProduct" element={<AddProductSection />} />
                 <Route path="/viewVoucher" element={<ViewVoucherSection />} />
                 <Route path="/addVoucher" element={<AddVoucherSection />} />
-                <Route path="/viewOrder" element={<ViewOrderSection />}/>
+                <Route path="/pendingOrder" element={<PendingOrderSection />}/>
+                <Route path="/refundOrder" element={<RefundOrderSection />}/>
+                <Route path="/successOrder" element={<SuccessOrderSection />}/>
+                <Route path="/shippingOrder" element={<ShippingOrderSection />}/>
+                <Route path="/cancelOrder" element={<CancelOrderSection />}/>
 
                 <Route
                   path="/editProduct/:id"

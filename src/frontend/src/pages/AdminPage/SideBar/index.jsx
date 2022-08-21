@@ -39,7 +39,11 @@ const SideBar = () => {
       getItem(t("sideBar.addVoucher"), "addVoucher"),
     ]),
     getItem(t("sideBar.order"), "order", <BookOutlined />, [
-      getItem(t("sideBar.viewOrder"), "viewOrder"),
+      getItem(t("sideBar.pendingOrder"), "pendingOrder"),
+      getItem(t("sideBar.refundOrder"), "refundOrder"),
+      getItem(t("sideBar.successOrder"), "successOrder"),
+      getItem(t("sideBar.shippingOrder"), "shippingOrder"),
+      getItem(t("sideBar.cancelOrder"), "cancelOrder"),
     ]),
   ];
 

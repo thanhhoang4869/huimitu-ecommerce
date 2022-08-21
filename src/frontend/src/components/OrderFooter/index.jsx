@@ -15,7 +15,7 @@ const buttonStyle = {
 };
 
 const OrderFooter = (props) => {
-  const { order, handleCancel, handleSuccess, handleReview } = props;
+  const { order, handleCancel, handleSuccess, handleRefund } = props;
   const navigator = useNavigate();
 
   const { t } = useTranslation();
@@ -66,7 +66,7 @@ const OrderFooter = (props) => {
           </Button>
         )}
         {order.state === config.orderState.SHIPPING && (
-          <div>
+          <>
             <Button
               size="large"
               style={{
@@ -77,7 +77,19 @@ const OrderFooter = (props) => {
             >
               {t("totalSection.received")}
             </Button>
-          </div>
+            <Button
+              size="large"
+              style={{
+                backgroundColor: "#F00",
+                borderColor: "#F00",
+                ...buttonStyle,
+              }}
+              type="primary"
+              onClick={() => handleRefund(order.id)}
+            >
+              {t("totalSection.refund")}
+            </Button>
+          </>
         )}
         <Button
           type="primary"
