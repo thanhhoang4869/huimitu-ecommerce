@@ -67,7 +67,7 @@ const OrderListPage = () => {
       if (exitcode === 0) {
         swal.fire({
           title: t("orderListPage.updateOrder"),
-          text: t("orderListPage.cancelOrderSucess"),
+          text: t("orderListPage.cancelOrderSuccess"),
           icon: "info",
           confirmButtonText: "OK",
         });
@@ -88,7 +88,7 @@ const OrderListPage = () => {
       if (exitcode === 0) {
         swal.fire({
           title: t("orderListPage.updateOrder"),
-          text: t("orderListPage.receivedOrderSucess"),
+          text: t("orderListPage.receivedOrderSuccess"),
           icon: "info",
           confirmButtonText: "OK",
         });
@@ -114,7 +114,7 @@ const OrderListPage = () => {
         rating,
         comment,
       });
-      const { exitcode, message } = response.data;
+      const { exitcode } = response.data;
       if (exitcode === 0) {
         swal.fire({
           title: t("orderListPage.rate"),
@@ -155,7 +155,7 @@ const OrderListPage = () => {
         try {
           const response = await orderService.updateState(
             orderId,
-            config.orderState.REFUND
+            config.orderState.REFUNDING
           );
           const { exitcode } = response.data;
           if (exitcode === 0) {

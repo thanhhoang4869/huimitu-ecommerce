@@ -6,12 +6,15 @@ import swal from "sweetalert2";
 import AdminOrderItem from "../AdminOrderItem";
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
 
-const PendingOrderSection = () => {
+const ViewOrderSection = () => {
   const [orderList, setOrderList] = useState([]);
   const [page, setPage] = useState(1);
   const [totalItem, setTotalItem] = useState(0);
   const pageLimit = 3;
+  const [searchParams] = useSearchParams();
+  const orderState = searchParams.get("orderState");
 
   const { t } = useTranslation();
 
@@ -24,7 +27,7 @@ const PendingOrderSection = () => {
       const response = await orderService.getOrderList({
         limit: pageLimit,
         offset: pageLimit * (page - 1),
-        orderState: config.orderState.PENDING,
+        orderState: orderState,
       });
       const { orders, exitcode } = response.data;
 
@@ -52,13 +55,13 @@ const PendingOrderSection = () => {
 
   useEffect(() => {
     fetchTotalItem();
-  }, []);
+  }, [orderState]);
 
   useEffect(() => {
     fetchOrderList();
-  }, [page]);
+  }, [page, orderState]);
 
-  const handleCancel = async (orderId) => {
+  const handleCancelOrder = async (orderId) => {
     try {
       const response = await orderService.updateState(
         orderId,
@@ -69,7 +72,7 @@ const PendingOrderSection = () => {
         swal.fire({
           title: t("orderListPage.updateOrder"),
           text: t("orderListPage.cancelOrderSucess"),
-          icon: "info",
+          icon: "success",
           confirmButtonText: "OK",
         });
         fetchOrderList();
@@ -86,7 +89,7 @@ const PendingOrderSection = () => {
     }
   };
 
-  const handleSuccess = async (orderId) => {
+  const handleAcceptOrder = async (orderId) => {
     try {
       const response = await orderService.updateState(
         orderId,
@@ -98,7 +101,35 @@ const PendingOrderSection = () => {
         swal.fire({
           title: t("orderListPage.updateOrder"),
           text: t("orderListPage.shippingProviderReceivedOrderConfirm"),
-          icon: "info",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+        fetchOrderList();
+      } else {
+        swal.fire({
+          title: t("viewOrderSection.updateOrderFail"),
+          text: message,
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleConfirmRefund = async (orderId) => {
+    try {
+      const response = await orderService.updateState(
+        orderId,
+        config.orderState.REFUNDED
+      );
+      const { exitcode, message } = response.data;
+      if (exitcode === 0) {
+        swal.fire({
+          title: t("orderListPage.updateOrder"),
+          text: t("orderListPage.confirmRefund"),
+          icon: "success",
           confirmButtonText: "OK",
         });
         fetchOrderList();
@@ -135,8 +166,9 @@ const PendingOrderSection = () => {
         renderItem={(order) => (
           <AdminOrderItem
             order={order}
-            handleCancel={handleCancel}
-            handleSuccess={handleSuccess}
+            handleCancelOrder={handleCancelOrder}
+            handleAcceptOrder={handleAcceptOrder}
+            handleConfirmRefund={handleConfirmRefund}
           />
         )}
       ></List>
@@ -144,4 +176,4 @@ const PendingOrderSection = () => {
   );
 };
 
-export default PendingOrderSection;
+export default ViewOrderSection;

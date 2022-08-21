@@ -1,9 +1,8 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import "./style.css";
 import formatter from "utils/formatter";
 import { Button, Col, Row } from "antd";
 import config from "config/config";
-import { useNavigate } from "react-router-dom";
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
 
@@ -14,7 +13,8 @@ const buttonStyle = {
 };
 
 const AdminOrderFooter = (props) => {
-  const { order, handleCancel, handleSuccess } = props;
+  const { order, handleAcceptOrder, handleCancelOrder, handleConfirmRefund } =
+    props;
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -58,21 +58,29 @@ const AdminOrderFooter = (props) => {
                 color: "white",
                 ...buttonStyle,
               }}
-              onClick={() => handleCancel(order.id)}
+              onClick={() => handleCancelOrder(order.id)}
             >
               {t("totalSection.cancel")}
             </Button>
             <Button
               type="primary"
               size="large"
-              style={{
-                backgroundColor: "#ff8303",
-                borderColor: "#ff8303",
-                ...buttonStyle,
-              }}
-              onClick={() => handleSuccess(order.id)}
+              style={buttonStyle}
+              onClick={() => handleAcceptOrder(order.id)}
             >
               {t("totalSection.confirm")}
+            </Button>
+          </>
+        )}
+        {order.state === config.orderState.REFUNDING && (
+          <>
+            <Button
+              size="large"
+              style={buttonStyle}
+              type="primary"
+              onClick={() => handleConfirmRefund(order.id)}
+            >
+              {t("totalSection.confirmRefund")}
             </Button>
           </>
         )}
