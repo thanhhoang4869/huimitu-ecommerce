@@ -310,8 +310,6 @@ const viLang = {
         deletedVoucher: "Đã xóa voucher",
         haveError: "Có lỗi xảy ra",
         voucher: "voucher",
-
-
         addSuccess: "Thêm voucher thành công",
         addFail: "Thêm voucher thất bại",
         pleaseEnterCode: "Vui lòng nhập mã voucher!",

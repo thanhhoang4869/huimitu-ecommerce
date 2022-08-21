@@ -127,6 +127,7 @@ const engLang = {
         rate: "Product review",
         refundConfirm: "Confirm refund?",
         rateSuccess: "Review product successfully",
+        rateFail: "Review product failed",
         refundSuccess: "The request has been recorded. We will be in touch within 24 hours",
         failTitle: "Error",
         fail: "Something went wrong. Please try again later",
