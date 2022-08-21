@@ -231,7 +231,7 @@ const viLang = {
         ref: "Tham khảo",
         refundPolicy: "Chính sách đổi trả",
         shippingPolicy: "Chính sách giao hàng",
-        couponPolicy: "Coupon",
+        couponsPolicy: "Coupons",
         trackOrder: "Theo dõi đơn hàng",
         map: "Bản đồ",
         contact: "Liên hệ"

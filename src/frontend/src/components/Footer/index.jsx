@@ -30,7 +30,7 @@ const Footer = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-lg-3 col-md-6 col-sm-6 offset-lg-1">
+            <div className="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
               <div className="footer__widget">
                 <h6>{t("footer.ref")}</h6>
                 <ul>
