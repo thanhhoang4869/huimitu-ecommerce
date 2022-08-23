@@ -8,7 +8,11 @@
   flex-direction: row nowrap;
   justify-content: center;
   align-items: center;
+  color: #18aeac;
+}
 
+.header__top__right_lang:hover {
+  cursor: pointer;
 }
 
 .header__top__right_lang > span {

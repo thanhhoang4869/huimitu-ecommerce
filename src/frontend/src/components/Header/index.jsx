@@ -75,14 +75,14 @@ const Header = () => {
                         />
                       }
                     >
-                      <Link to="" className="header__top__right_lang">
+                      <div className="header__top__right_lang">
                         <span>
                           {localStorage.getItem("language") === "vi"
                             ? "Tiếng Việt"
                             : "English"}{" "}
                         </span>
                         <i class="fa fa-solid fa-caret-down"></i>
-                      </Link>
+                      </div>
                     </Dropdown>
                   </div>
                   <div className="header__top__right__auth">
