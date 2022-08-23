@@ -12,12 +12,12 @@ import {
   validateMinLength,
   validatePhone,
 } from "utils/validator";
-import { Button } from "antd";
+import { Button, Checkbox } from "antd";
 
 import i18n from "lang/i18n";
 import { useTranslation } from "react-i18next";
 
-const SignupPage = (props) => {
+const SignupPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -31,12 +31,19 @@ const SignupPage = (props) => {
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const navigator = useNavigate();
 
-  const validateFields = (password, passwordConfirm, email, phone) => {
+  const validateFields = (
+    password,
+    passwordConfirm,
+    email,
+    phone,
+    acceptTerms
+  ) => {
     if (password !== passwordConfirm) {
       swal.fire({
         title: "Error",
@@ -75,13 +82,26 @@ const SignupPage = (props) => {
       return;
     }
 
+    console.log(acceptTerms);
+    if (!acceptTerms) {
+      swal.fire({
+        title: "Error",
+        text: t("userInformation.pleaseAcceptTerms"),
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+
     return true;
   };
 
   const onSubmit = async (e) => {
     try {
       if (email && password && passwordConfirm && fullname && phone) {
-        if (!validateFields(password, passwordConfirm, email, phone)) {
+        if (
+          !validateFields(password, passwordConfirm, email, phone, acceptTerms)
+        ) {
           return;
         }
         const entity = {
@@ -192,6 +212,20 @@ const SignupPage = (props) => {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
+        </div>
+        <div className="align-items-left mb-3 p-2" style={{ width: "100%" }}>
+          <Checkbox
+            value={acceptTerms}
+            onChange={(event) => {
+              setAcceptTerms(event.target.checked);
+            }}
+          >
+            {t("signupPage.hasAgreed")}{" "}
+            <Link to="/policy/terms">{t("signupPage.termsPolicy")}</Link>{" "}
+            {t("signupPage.and")}{" "}
+            <Link to="/policy/privacy">{t("signupPage.privacyPolicy")}</Link>{" "}
+            {t("signupPage.ofHuimitu")}
+          </Checkbox>
         </div>
         <Button
           className="primary-btn bg-key signup-btn col-6"

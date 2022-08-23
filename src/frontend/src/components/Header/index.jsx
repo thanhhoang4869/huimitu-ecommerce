@@ -130,18 +130,18 @@ const Header = () => {
                     <Link to="/policy/shipping">{t("navigation.policy")}</Link>
                     <ul className="header__menu__dropdown">
                       <li>
+                        <Link to="/policy/privacy">
+                          {t("navigation.privacy")}
+                        </Link>
+                      </li>
+                      <li>
                         <Link to="/policy/shipping">
                           {t("navigation.shipping")}
                         </Link>
                       </li>
                       <li>
-                        <Link to="/policy/refund">
-                          {t("navigation.refund")}
-                        </Link>
-                      </li>
-                      <li>
-                        <Link to="/policy/coupons">
-                          {t("navigation.coupons")}
+                        <Link to="/policy/warranty">
+                          {t("navigation.warranty")}
                         </Link>
                       </li>
                     </ul>

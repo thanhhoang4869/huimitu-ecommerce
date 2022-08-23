@@ -35,7 +35,9 @@ const Footer = () => {
                 <h6>{t("footer.ref")}</h6>
                 <ul>
                   <li>
-                    <Link to="/policy/refund">{t("footer.refundPolicy")}</Link>
+                    <Link to="/policy/warranty">
+                      {t("footer.warrantyPolicy")}
+                    </Link>
                   </li>
                   <li>
                     <Link to="/policy/shipping">
@@ -43,7 +45,19 @@ const Footer = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/policy/coupons">{t("footer.couponsPolicy")}</Link>
+                    <Link to="/policy/terms">{t("footer.termsPolicy")}</Link>
+                  </li>
+                </ul>
+                <ul>
+                  <li>
+                    <Link to="/policy/disclaimer">
+                      {t("footer.disclaimerPolicy")}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/policy/privacy">
+                      {t("footer.privacyPolicy")}
+                    </Link>
                   </li>
                   <li>
                     <Link to="/account/order">{t("footer.trackOrder")}</Link>
