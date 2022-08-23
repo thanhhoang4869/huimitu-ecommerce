@@ -24,21 +24,19 @@ const Header = () => {
     i18n.changeLanguage(localStorage.getItem("language"));
   };
 
-  const menu = (
-    <Menu
-      onClick={handleMenuClick}
-      items={[
-        {
-          label: t("lang.vi"),
-          key: "vi",
-        },
-        {
-          label: t("lang.en"),
-          key: "en",
-        },
-      ]}
-    />
-  );
+  function getItem(label, key, icon, children, type) {
+    return {
+      key,
+      icon,
+      children,
+      label,
+      type,
+    };
+  }
+
+  const langItems = [getItem(t("lang.vi"), "vi"), getItem(t("lang.en"), "en")];
+
+  const headerItems = [];
 
   useEffect(() => {
     i18n.changeLanguage(localStorage.getItem("language"));
@@ -54,7 +52,7 @@ const Header = () => {
                 <div className="header__top__left">
                   <ul>
                     <li>
-                      <i className="fa fa-envelope"></i> huimitu@gmail.com
+                      <i className="fa fa-envelope"></i> huimitu01@gmail.com
                     </li>
                   </ul>
                 </div>
@@ -68,7 +66,15 @@ const Header = () => {
                     </Link>
                   </div>
                   <div className="header__top__right__social">
-                    <Dropdown overlay={menu}>
+                    <Dropdown
+                      overlay={
+                        <Menu
+                          mode=""
+                          onClick={handleMenuClick}
+                          items={langItems}
+                        />
+                      }
+                    >
                       <Link to="" className="header__top__right_lang">
                         <span>
                           {localStorage.getItem("language") === "vi"
@@ -103,7 +109,7 @@ const Header = () => {
             <div className="col-lg-3" style={{ paddingLeft: "0px" }}>
               <div className="header__logo logo">
                 <Link to="/">
-                  <img src={logo} style={{ width: "50%" }} alt="humitu" />
+                  <img src={logo} style={{ width: "100%" }} alt="humitu" />
                 </Link>
               </div>
             </div>
@@ -150,23 +156,23 @@ const Header = () => {
                 </ul>
               </nav>
             </div>
-            <div
-              className="col-lg-3 right-corner-header"
-              style={{ paddingRight: "0px" }}
-            >
-              <div className="header__cart">
-                <ul>
-                  <li>
-                    {isLogin && (
+            {isLogin && (
+              <div
+                className="col-lg-3 right-corner-header"
+                style={{ paddingRight: "0px" }}
+              >
+                <div className="header__cart">
+                  <ul>
+                    <li>
                       <Link to="/account/cart">
                         <i className="fa fa-shopping-bag"></i>{" "}
                         <span>{cart.count}</span>
                       </Link>
-                    )}
-                  </li>
-                </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </header>

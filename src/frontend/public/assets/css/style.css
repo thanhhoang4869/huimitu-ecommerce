@@ -117,9 +117,15 @@ ol {
   Helper CSS
 -----------------------*/
 
-.order-1 { order: 1; }
-.order-2 { order: 2; }
-.order-3 { order: 3; }
+.order-1 {
+  order: 1;
+}
+.order-2 {
+  order: 2;
+}
+.order-3 {
+  order: 3;
+}
 
 .text-key,
 .color-key {
@@ -130,7 +136,7 @@ ol {
   background-color: #18aeac;
 }
 
-.bg-momo{
+.bg-momo {
   background-color: #a50064;
 }
 
@@ -479,6 +485,7 @@ ol {
 }
 
 .header__logo {
+  width: 100%;
   padding: 15px 0;
 }
 
@@ -490,14 +497,20 @@ ol {
   padding: 24px 0;
 }
 
+.header__menu ul {
+  display: flex;
+  justify-content: space-around;
+}
+
 .header__menu ul li {
   list-style: none;
   display: inline-block;
-  margin-right: 50px;
+  /* margin-right: 50px; */
   position: relative;
 }
 
 .header__menu ul li .header__menu__dropdown {
+  display: block;
   position: absolute;
   left: 0;
   top: 50px;
@@ -3266,10 +3279,20 @@ ol {
     visibility: visible;
   }
   .header__top {
+    /* display: none; */
+  }
+
+  .header__logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .header__top__left {
     display: none;
   }
   .header__menu {
-    display: none;
+    /* display: block; */
   }
   .header__cart {
     text-align: center;
@@ -3523,11 +3546,23 @@ ol {
   .humberger__menu__overlay.active {
     visibility: visible;
   }
+
   .header__top {
+    /* display: none; */
+  }
+
+  .header__logo {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .header__top__left {
     display: none;
   }
+
   .header__menu {
-    display: none;
+    /* display: none; */
   }
   .header__cart {
     text-align: center;
@@ -3586,7 +3621,8 @@ ol {
     font-size: 24px;
   }
 }
-.logo {
+.header__logo a {
+  width: 50%;
   color: #000;
   font-size: 32px;
   font-weight: 500;

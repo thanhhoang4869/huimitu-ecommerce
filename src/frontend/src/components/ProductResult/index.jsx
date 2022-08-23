@@ -66,8 +66,6 @@ const ProductResult = () => {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
 
-    console.log(minPrice, minPrice == null);
-
     const newQuery = {
       sortType: sortType,
       searchQuery: searchQuery,
