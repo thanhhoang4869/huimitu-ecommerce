@@ -127,7 +127,7 @@ const Header = () => {
                   <li
                     className={pathname.startsWith("/policy") ? "active" : ""}
                   >
-                    <Link to="/policy/shipping">{t("navigation.policy")}</Link>
+                    <Link to="/policy/privacy">{t("navigation.policy")}</Link>
                     <ul className="header__menu__dropdown">
                       <li>
                         <Link to="/policy/privacy">
