@@ -142,9 +142,9 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <a href="/#" className="text-key mb-3 align-self-end">
+        {/* <a href="/#" className="text-key mb-3 align-self-end">
           {t("loginPage.forgotPass")}
-        </a>
+        </a> */}
         <button className="primary-btn bg-key login-btn col-6" type="submit">
           {t("loginPage.login")}
         </button>

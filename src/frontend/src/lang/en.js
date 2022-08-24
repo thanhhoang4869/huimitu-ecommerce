@@ -261,7 +261,7 @@ const engLang = {
         refundedOrder: "Refunded order",
         successOrder: "Success order",
         shippingOrder: "Shipping order",
-        cancelOrder: "Cancel order",
+        cancelledOrder: "Cancelled order",
         admin: "Admin"
     },
 
@@ -271,7 +271,6 @@ const engLang = {
         cancelDelete: "Cancel",
         confirmDelete: "Delete",
         deleted: "Product deleted",
-
     },
     editProductSection: {
         success: "Success",

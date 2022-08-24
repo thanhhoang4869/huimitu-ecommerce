@@ -43,7 +43,7 @@ const SideBar = () => {
       getItem(t("sideBar.pendingOrder"), config.orderState.PENDING),
       getItem(t("sideBar.successOrder"), config.orderState.SUCCESS),
       getItem(t("sideBar.shippingOrder"), config.orderState.SHIPPING),
-      getItem(t("sideBar.cancelOrder"), config.orderState.CANCEL),
+      getItem(t("sideBar.cancelledOrder"), config.orderState.CANCEL),
       getItem(t("sideBar.refundingOrder"), config.orderState.REFUNDING),
       getItem(t("sideBar.refundedOrder"), config.orderState.REFUNDED),
     ]),

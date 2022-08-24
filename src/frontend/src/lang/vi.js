@@ -260,7 +260,7 @@ const viLang = {
         refundingOrder: "Đơn đang hoàn trả",
         refundedOrder: "Đơn đã hoàn trả",
         shippingOrder: "Đơn hàng đang vận chuyển",
-        cancelOrder: "Đơn hàng bị huỷ",
+        cancelledOrder: "Đơn hàng đã huỷ",
         admin: "Quản lý"
     },
     viewProductSection: {
