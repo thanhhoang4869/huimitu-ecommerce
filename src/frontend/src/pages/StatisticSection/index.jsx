@@ -1,11 +1,11 @@
+import config from "config/config";
 import React, { useEffect } from "react";
 
 const StatisticSection = () => {
   const initViz = () => {
     try {
       const containerDiv = document.getElementById("vizContainer");
-      const url =
-        "https://public.tableau.com/views/Huimitustatistic/Dashboard?:language=en-US&:display_count=n&:origin=viz_share_link";
+      const url = config.STATISTIC_PATH;
 
       new window.tableau.Viz(containerDiv, url);
     } catch (err) {
