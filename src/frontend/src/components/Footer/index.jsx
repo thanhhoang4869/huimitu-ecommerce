@@ -83,7 +83,7 @@ const Footer = () => {
                   <p>Copyright &copy;2022 All rights reserved</p>
                 </div>
                 <div className="footer__copyright__payment">
-                  <img src="/assets/img/payment-item.png" alt="" />
+                  <img height={32} src="/assets/img/payment-item.png" alt="" />
                 </div>
               </div>
             </div>
