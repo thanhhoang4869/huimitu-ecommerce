@@ -16,6 +16,8 @@ INSERT INTO "account"("email","password","phone","fullname","birthday","gender",
 INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user3@gmail.com','OWQ3MiY5NjcxODhlNGU4Njk3YzkxMjc1ZmY0YTgwYTcxYmQzM2VjNDMzNGUzYTE2MGM5NzVjZDYyMWFhNTQ2YWMzNGM2','0987654326','User 3',NULL,'female','user',true);
 INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user4@gmail.com','NjM2NyZiM2FiYTI5OWFiN2RjN2IzNjVlMjIyNWI3ZjZkMDhmOTg5ZjY5M2ZhZDgyMDkyMGEyNWZkODRmMTI1OTg2OTI3','0987654327','User 4',NULL,'male','user',true);
 INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('user5@gmail.com','NGI5MCZkZjQxYzY5YzE4ZjJhOGY4MDExOTU1NTI3MzNhY2Y3MzliYzc3Yjg5Y2Q2NDBhOWJmMjBmYWFiNDY3Y2Y2YWMw','0987654328','User 5',NULL,'female','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('huimitu01.user@gmail.com','ZjRhYiY1YTMxMmUzMGIyZGM4YTNiODNiNTk4ODY4ZGY2YmQ2ZDkyMjA3MDJlY2Y5MTM1NTg5NGQ2N2NjYTM0NzQ2M2Fk','0707953477','Huimitu user',NULL,'female','user',true);
+INSERT INTO "account"("email","password","phone","fullname","birthday","gender","role","verified") VALUES('huimitu01.ad@gmail.com','MzU1MyZiZjhiNTEyNWE0NDdmYjM5MTM3NTU2ZjczZjVkMmI5NThhODI0YTk4YzIyODdiODY3NjE2YTg0NDMwMTEwZjZl','0933442602','Huimitu admin',NULL,'female','admin',true);
 
 INSERT INTO "payment"("provider") VALUES('paypal');
 INSERT INTO "payment"("provider") VALUES('momo');
