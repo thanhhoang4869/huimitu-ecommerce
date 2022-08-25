@@ -13,7 +13,9 @@ An Ecommerce website to sell bakery accessories with B2B model. Because of being
 </p>
 
 ## Features
+
 The website statisfied all the basic features of an Ecommerce website including:
+
 - Sign up account
 - Login account
 - Login account with Google
@@ -27,6 +29,7 @@ The website statisfied all the basic features of an Ecommerce website including:
 - Rating product after buying
 
 Futhermore, we also implements advanced features:
+
 - Admin features
 - Upload user avatar
 - Statistic using Tableau
@@ -35,6 +38,7 @@ Futhermore, we also implements advanced features:
 - Facebook Messenger chatbot
 
 ## Gallery
+
 <p align="center">
   <img width="50%" src="./res/landing-page.png" alt="pern"/>
 </p>
@@ -49,6 +53,11 @@ Futhermore, we also implements advanced features:
   Product detail
 </p>
 
+## Video demo
+
+<div align="center">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/chOa7hNwW34" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 ## Tech stack
 
 <div align="center">
