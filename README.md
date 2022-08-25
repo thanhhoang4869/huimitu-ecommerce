@@ -1,7 +1,7 @@
 # Huimitu
 
 <p align="center">
-<img src="./res/logo.png" width="10%">
+<img src="./res/logo.png" width="20%">
 </p>
 
 ## Introduction
