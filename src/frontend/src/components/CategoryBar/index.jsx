@@ -1,10 +1,17 @@
 import { AppstoreOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
-import React, { useState } from "react";
+import i18n from "lang/i18n";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 const CategoryBar = (props) => {
   let navigate = useNavigate();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
   const onClick = (e) => {
     setCurrent(e.key);
@@ -64,7 +71,7 @@ const CategoryBar = (props) => {
       <div className="col-lg-3">
         <div className="hero__categories__all">
           <i className="fa fa-bars"></i>
-          <span>Danh mục</span>
+          <span>{t("categoryBar")}</span>
         </div>
 
         <Menu

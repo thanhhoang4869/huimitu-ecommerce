@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert2";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const SearchBar = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
@@ -17,7 +26,7 @@ const SearchBar = () => {
     } else {
       swal.fire({
         title: "Info",
-        text: "Vui lòng nhập từ khóa",
+        text: t("searchBar.enterKeyword"),
         icon: "info",
         confirmButtonText: "OK",
       });
@@ -31,7 +40,7 @@ const SearchBar = () => {
           <form onSubmit={handleSearch}>
             <input
               type="text"
-              placeholder="Tìm theo tên, tìm theo danh mục..."
+              placeholder={t("searchBar.enterKeyword")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -43,7 +52,7 @@ const SearchBar = () => {
                 borderBottomRightRadius: "5px",
               }}
             >
-              Tìm kiếm
+              {t("searchBar.search")}
             </button>
           </form>
         </div>
@@ -54,7 +63,7 @@ const SearchBar = () => {
           </div>
           <div className="hero__search__phone__text">
             <h6>0933443839</h6>
-            <span>Phục vụ 24/7</span>
+            <span>{t("searchBar.service")}</span>
           </div>
         </div>
       </div>

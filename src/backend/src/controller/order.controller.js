@@ -34,10 +34,9 @@ export default {
                 shipping_price,
                 receiver_name,
                 receiver_phone,
-                reviewed
             } = result
 
-            const variantsResult = await variantModel.getByOrderId(orderId);
+            const variantsResult = await variantModel.getByOrderId({ orderId });
             const promises = variantsResult.map(async (item) => {
                 const imagePath = await productModel.getSingleImageById(item.product_id)
 
@@ -48,6 +47,7 @@ export default {
                     price: item.price,
                     variant_price: item.variant_price,
                     quantity: item.quantity,
+                    reviewed: item.reviewed,
                     image: imagePath
                 }
             });
@@ -70,7 +70,6 @@ export default {
                     finalPrice: final_price,
                     receiverName: receiver_name,
                     receiverPhone: receiver_phone,
-                    reviewed: reviewed,
                     variants: variants
                 }
             })
@@ -79,25 +78,50 @@ export default {
         }
     },
 
-    async getListOrder(req, res, next) {
+    async getList(req, res, next) {
         try {
-            const { email } = req.payload;
-            const { limit, offset } = req.body;
-            const orderResult = await orderModel.getListOrder(email, limit, offset);
+            const {
+                getTotal,
+                orderState,
+                limit,
+                offset
+            } = req.query;
+            const userEmail = req.payload.email;
 
+            let email = req.query.email;
+            const account = await accountModel.getByEmail(userEmail);
+            if (account?.role !== config.role.ADMIN) {
+                email = userEmail;
+            }
+
+            if (getTotal) {
+                const result = await orderModel.getCountOrder({
+                    orderState,
+                    email
+                });
+                return res.status(200).send({
+                    exitcode: 0,
+                    message: "Get count of orders successfully",
+                    count: result
+                })
+            }
+
+            const orderResult = await orderModel.getListOrder({ email, orderState, limit, offset });
             const ordersPromise = orderResult.map(async (orderItem) => {
 
-                const variantsResult = await variantModel.getByOrderId(orderItem.id);
+                const variantsResult = await variantModel.getByOrderId({ orderId: orderItem.id });
                 const promises = variantsResult.map(async (variantItem) => {
                     const imagePath = await productModel.getSingleImageById(variantItem.product_id)
 
                     return {
                         id: variantItem.id,
+                        productId: variantItem.product_id,
                         variantName: variantItem.variant_name,
                         variantPrice: variantItem.variant_price,
                         discountPrice: variantItem.discount_price,
                         price: variantItem.price,
                         quantity: variantItem.quantity,
+                        reviewed: variantItem.reviewed,
                         image: imagePath
                     }
                 });
@@ -117,7 +141,6 @@ export default {
                     finalPrice: orderItem.final_price,
                     receiverName: orderItem.receiver_name,
                     receiverPhone: orderItem.receiver_phone,
-                    reviewed: orderItem.reviewed,
                     variants: variants
                 }
             })
@@ -127,20 +150,6 @@ export default {
                 exitcode: 0,
                 message: "Get list of order successfully",
                 orders: orders,
-            })
-        } catch (err) {
-            next(err)
-        }
-    },
-
-    async getCountOrder(req, res, next) {
-        try {
-            const { email } = req.payload;
-            const result = await orderModel.getCountOrder(email);
-            res.status(200).send({
-                exitcode: 0,
-                message: "Get count of orders successfully",
-                count: result
             })
         } catch (err) {
             next(err)
@@ -179,7 +188,7 @@ export default {
                     }
 
                     // Check for stock
-                    const variants = await variantModel.getByOrderId(orderId);
+                    const variants = await variantModel.getByOrderId({orderId});
                     const insufficientVariants = variants.filter(item => item.stock < item.quantity)
                     if (insufficientVariants.length > 0) {
                         return res.status(200).send({
@@ -188,6 +197,7 @@ export default {
                         })
                     }
 
+                    // Update quantity
                     for (const idx in variants) {
                         const variant = variants[idx]
                         await variantModel.updateVariant(variant.id, {
@@ -201,8 +211,8 @@ export default {
                 }
                 // Pending to cancel (owner only)
                 case (config.orderState.CANCEL): {
-                    if (order.email !== email) {
-                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    if (order.email !== email && role !== config.role.ADMIN) {
+                        throw new ErrorHandler(403, "Only order owner or admin can do this operation")
                     }
                     if (order.state !== config.orderState.PENDING) {
                         return res.status(200).send({
@@ -226,6 +236,47 @@ export default {
                         })
                     }
                     await orderModel.updateState(orderId, config.orderState.SUCCESS)
+                    success = true;
+                    break;
+                }
+                // Shipping to refunding (owner only)
+                case (config.orderState.REFUNDING): {
+                    if (order.email !== email) {
+                        throw new ErrorHandler(403, "Only order owner can do this operation")
+                    }
+                    if (order.state !== config.orderState.SHIPPING) {
+                        return res.status(200).send({
+                            exitcode: 105,
+                            message: "Order can only be refunded during shipping state"
+                        })
+                    }
+                    await orderModel.updateState(orderId, config.orderState.REFUNDING)
+                    success = true;
+                    break;
+                }
+                // Refunding to refunded (admin only)
+                case (config.orderState.REFUNDED): {
+                    if (role !== config.role.ADMIN) {
+                        throw new ErrorHandler(403, "Only admin can do this operation")
+                    }
+                    if (order.state !== config.orderState.REFUNDING) {
+                        return res.status(200).send({
+                            exitcode: 106,
+                            message: "Order can only be refunded during refunding state"
+                        })
+                    }
+
+                    // Update quantity
+                    const variants = await variantModel.getByOrderId({orderId});
+                    for (const idx in variants) {
+                        const variant = variants[idx]
+                        await variantModel.updateVariant(variant.id, {
+                            stock: variant.stock + variant.quantity
+                        });
+                    }
+
+                    // Update order state
+                    await orderModel.updateState(orderId, config.orderState.REFUNDED)
                     success = true;
                     break;
                 }

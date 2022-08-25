@@ -1,22 +1,22 @@
 import React from "react";
-import ProductList from "components/ProductList";
+import OrderVariantList from "components/ProductList";
 import OrderHeader from "components/OrderHeader";
 import OrderFooter from "components/OrderFooter";
 import { Divider } from "antd";
 
 const OrderItem = (props) => {
-  const { order, handleCancel, handleSuccess, handleReview } = props;
+  const { order, handleCancel, handleSuccess, handleReview, handleRefund } = props;
 
   return (
-    <div key={order.createdTime} className="my-3">
+    <div key={order.id} className="my-3">
       <Divider orientation="left"></Divider>
       <OrderHeader order={order} />
-      <ProductList productList={order.variants} />
+      <OrderVariantList order={order} handleReview={handleReview} />
       <OrderFooter
-        order={order}
+        order={order}  
         handleCancel={handleCancel}
         handleSuccess={handleSuccess}
-        handleReview={handleReview}
+        handleRefund={handleRefund}
       />
     </div>
   );

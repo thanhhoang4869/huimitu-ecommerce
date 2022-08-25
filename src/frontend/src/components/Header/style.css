@@ -3,6 +3,22 @@
   color: #18aeac;
 }
 
+.header__top__right_lang {
+  display: flex;
+  flex-direction: row nowrap;
+  justify-content: center;
+  align-items: center;
+  color: #18aeac;
+}
+
+.header__top__right_lang:hover {
+  cursor: pointer;
+}
+
+.header__top__right_lang > span {
+  margin-right: 0.5em;
+}
+
 .header__top__right__auth > a:hover,
 .header__top__right__social > a:hover {
   color: #ff8303;
@@ -10,7 +26,4 @@
 
 .container {
   align-items: center;
-}
-
-.fa-shopping-bag {
 }

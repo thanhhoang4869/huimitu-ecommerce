@@ -4,3 +4,29 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.price-filter {
+  width: 100px !important;
+}
+
+@media (max-width: 771px) {
+  .filter-container {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .price-filter {
+    width: 75px !important;
+  }
+}
+
+@media only screen and (max-width: 479px) {
+  .filter-container {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .price-filter {
+    width: 75px !important;
+  }
+}

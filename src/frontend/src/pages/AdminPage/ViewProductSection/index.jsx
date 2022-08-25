@@ -4,24 +4,20 @@ import { Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import swal from "sweetalert2";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import product from "services/product";
 import formatter from "utils/formatter";
 import "./style.css";
 
-const swalDeleteProps = {
-  title: "Bạn chắc chắn muốn xóa sản phẩm này?",
-  text: "Sản phẩm đã xóa sẽ không thể khôi phục!",
-  icon: "warning",
-  showCancelButton: true,
-  cancelButtonText: "Hủy",
-  confirmButtonText: "Xóa",
-  customClass: {
-    cancelButton: "order-1",
-    confirmButton: "order-2",
-  },
-};
-
 const ViewProductSection = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const location = useLocation();
   const [products, setProducts] = useState([]);
 
@@ -34,13 +30,15 @@ const ViewProductSection = () => {
     };
     const res = await product.getProducts(request);
     setProducts(res.data.products);
+    console.log(products);
   };
 
   const onDeleteProduct = async (id) => {
     try {
       const result = await swal.fire(swalDeleteProps);
       if (result.isConfirmed) {
-        swal.fire("Đã xóa sản phẩm", "", "success");
+        swal.fire(t("viewProductSection.deleted"), "", "success");
+        product.deleteProduct(id);
       }
     } catch (err) {
       console.error(err);
@@ -50,6 +48,19 @@ const ViewProductSection = () => {
   useEffect(() => {
     getAllProducts();
   }, [location]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const swalDeleteProps = {
+    title: t("viewProductSection.sureDelete"),
+    text: t("viewProductSection.warningDelete"),
+    icon: "warning",
+    showCancelButton: true,
+    cancelButtonText: t("viewProductSection.cancelDelete"),
+    confirmButtonText: t("viewProductSection.confirmDelete"),
+    customClass: {
+      cancelButton: "order-1",
+      confirmButton: "order-2",
+    },
+  };
 
   const columns = [
     {
@@ -64,21 +75,22 @@ const ViewProductSection = () => {
       sortDirections: ["descend"],
     },
     {
-      title: "Name",
+      title: t("cartPage.productName"),
       dataIndex: "productName",
     },
     {
-      title: "Price",
+      title: t("cartPage.price"),
       dataIndex: "price",
+      width: "20%",
       sorter: (a, b) => +a.minPrice - +b.minPrice,
     },
     {
-      title: "Stock",
+      title: t("cartPage.quantity"),
       dataIndex: "stock",
       sorter: (a, b) => +a.stock - +b.stock,
     },
     {
-      title: "Category",
+      title: t("cartPage.category"),
       dataIndex: "categoryName",
       width: "20%",
       filters: [
@@ -88,7 +100,7 @@ const ViewProductSection = () => {
         },
         {
           text: "Giấy nến",
-          value: "Giay nen",
+          value: "Giấy nến",
         },
         {
           text: "Dụng cụ trang trí bánh kem",
@@ -115,7 +127,7 @@ const ViewProductSection = () => {
           value: "Khuôn tạo hình",
         },
       ],
-      onFilter: (value, record) => record.categoryName.indexOf(value) === 0,
+      onFilter: (value, record) => record.categoryName === value,
     },
     {
       dataIndex: "action",
@@ -124,12 +136,7 @@ const ViewProductSection = () => {
 
   const data = products.map((product) => {
     return {
-      image: (
-        <img
-          src="https://images-na.ssl-images-amazon.com/images/I/71tvKFymISL.jpg"
-          alt="img"
-        />
-      ),
+      image: <img src={product?.image} alt="img" />,
       key: product.id,
       id: product.id,
       productName: (
@@ -146,27 +153,22 @@ const ViewProductSection = () => {
       stock: product.stock,
       categoryName: product.categoryName,
       action: (
-        <div className="del" onClick={onDeleteProduct}>
+        <div className="del" onClick={() => onDeleteProduct(product.id)}>
           <DeleteOutlined />
         </div>
       ),
     };
   });
 
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log("params", pagination, filters, sorter, extra);
-  };
-
   return (
     <>
       <Table
         pagination={{
           pageSize: 5,
-          showTotal: (total) => `${total} sản phẩm`,
+          showTotal: (total) => `${total} ${t("cartPage.product", {count: total})}`,
         }}
         columns={columns}
         dataSource={data}
-        onChange={onChange}
       />
     </>
   );

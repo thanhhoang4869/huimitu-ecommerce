@@ -3,38 +3,46 @@ import { Table } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import swal from "sweetalert2";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import voucherService from "services/voucher";
 import formatter from "utils/formatter";
 
-const swalDeleteProps = {
-  title: "Bạn chắc chắn muốn xóa voucher này?",
-  text: "Voucher đã xóa sẽ không thể khôi phục!",
-  icon: "warning",
-  showCancelButton: true,
-  cancelButtonText: "Hủy",
-  confirmButtonText: "Xóa",
-  customClass: {
-    cancelButton: "order-1",
-    confirmButton: "order-2",
-  },
-};
-
 const ViewVoucherSection = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const [vouchers, setVouchers] = useState([]);
 
+  const swalDeleteProps = {
+    title: t("voucher.sureDelete"),
+    text: t("voucher.warningDelete"),
+    icon: "warning",
+    showCancelButton: true,
+    cancelButtonText: "Hủy",
+    confirmButtonText: "Xóa",
+    customClass: {
+      cancelButton: "order-1",
+      confirmButton: "order-2",
+    },
+  };
   const columns = [
     {
-      title: "Mã",
+      title: t("voucher.voucherCode"),
       dataIndex: "voucherCode",
       align: "center",
     },
     {
-      title: "Phần trăm giảm",
+      title: t("voucher.percentDiscount"),
       dataIndex: "percentageDiscount",
       render: (percentageDiscount) => <div>{percentageDiscount}%</div>,
     },
     {
-      title: "Giá tối thiểu",
+      title: t("voucher.minimumPrice"),
       dataIndex: "minimumPrice",
       render: (minimumPrice) => (
         <div>{formatter.formatPrice(minimumPrice)}</div>
@@ -42,7 +50,7 @@ const ViewVoucherSection = () => {
       sorter: (a, b) => +a.minPrice - +b.minPrice,
     },
     {
-      title: "Giá giảm tối đa",
+      title: t("voucher.maximumDiscountPrice"),
       dataIndex: "maximumDiscountPrice",
       render: (maximumDiscountPrice) => (
         <div>{formatter.formatPrice(maximumDiscountPrice)}</div>
@@ -50,11 +58,19 @@ const ViewVoucherSection = () => {
       sorter: (a, b) => +a.stock - +b.stock,
     },
     {
-      title: "Ngày bắt đầu",
+      title: t("voucher.usage"),
+      render: (_, record) => (
+        <div>
+          {record.currentUsage} / {record.maximumUsage}
+        </div>
+      ),
+    },
+    {
+      title: t("voucher.startDate"),
       dataIndex: "startDate",
     },
     {
-      title: "Ngày kết thúc",
+      title: t("voucher.endDate"),
       dataIndex: "endDate",
     },
     {
@@ -62,22 +78,32 @@ const ViewVoucherSection = () => {
     },
   ];
 
-  const onDeleteVoucher = async (id) => {
-    try {
-      const result = await swal.fire(swalDeleteProps);
+  const onDeleteVoucher = async (voucherId) => {
+    swal.fire(swalDeleteProps).then(async (result) => {
       if (result.isConfirmed) {
-        swal.fire("Đã xóa voucher", "", "success");
+        try {
+          const result = await voucherService.deleteVoucher(voucherId);
+          if (result.data.exitcode === 0) {
+            swal.fire(t("voucher.deletedVoucher"), "", "success");
+            getAllVouchers();
+          } else {
+            swal.fire(t("voucher.haveError"), "", "error");
+          }
+        } catch (err) {
+          swal.fire(t("voucher.haveError"), "", "error");
+        }
       }
-    } catch (err) {
-      console.error(err);
-    }
+    });
   };
 
   const data = vouchers.map((voucher) => {
     return {
       key: voucher.voucherCode,
       action: (
-        <div className="del" onClick={onDeleteVoucher}>
+        <div
+          className="del"
+          onClick={() => onDeleteVoucher(voucher.voucherCode)}
+        >
           <DeleteOutlined />
         </div>
       ),
@@ -100,7 +126,7 @@ const ViewVoucherSection = () => {
       <Table
         pagination={{
           pageSize: 5,
-          showTotal: (total) => `${total} voucher`,
+          showTotal: (total) => `${total} ${t("voucher.voucher", {count: total})}`,
         }}
         columns={columns}
         dataSource={data}

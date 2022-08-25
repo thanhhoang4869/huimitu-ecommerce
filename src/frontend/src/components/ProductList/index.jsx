@@ -1,39 +1,100 @@
-import { Avatar, List } from "antd";
-import React from "react";
+import { Avatar, Button, List } from "antd";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import formatter from "utils/formatter";
+import config from "config/config";
+import ReviewModal from "components/ReviewModal";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 import "./style.css";
 
-const ProductList = ({ productList }) => {
+const OrderVariantList = ({ order, handleReview }) => {
+  const [visibleReview, setVisibleReview] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState({});
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
+  const showReviewModal = (variant) => {
+    setVisibleReview(true);
+    setSelectedVariant(variant);
+  };
+
+  const handleReviewSuccess = async (values) => {
+    const data = {
+      orderId: order.id,
+      variantId: selectedVariant.id,
+      ...values,
+    };
+    handleReview(data);
+    setVisibleReview(false);
+  };
+
+  const handleReviewCancel = () => {
+    setVisibleReview(false);
+  };
+
   return (
-    <List
-      dataSource={productList}
-      renderItem={(product) => (
-        <List.Item key={product.id}>
-          <List.Item.Meta
-            avatar={
-              <Avatar
-                className="product-img"
-                shape="square"
-                size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
-                src={product.image}
-              />
-            }
-            title={<a href="https://ant.design">{product.variantName}</a>}
-            description={
-              <>
-                <p className="product-description">{product.variantName}</p>
-                <span className="product-quantity">{`x${product.quantity}`}</span>
-              </>
-            }
-          />
-          <span className="color-key">
-            {formatter.formatPrice(product.variantPrice*product.quantity)}
-          </span>
-        </List.Item>
-      )}
-    ></List>
+    <>
+      <ReviewModal
+        title={t("orderVariantList.rate")}
+        visible={visibleReview}
+        handleSuccess={handleReviewSuccess}
+        handleCancel={handleReviewCancel}
+      />
+      <List
+        dataSource={order?.variants || []}
+        renderItem={(variant) => (
+          <List.Item key={variant.id}>
+            <List.Item.Meta
+              avatar={
+                <Avatar
+                  className="product-img"
+                  shape="square"
+                  size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
+                  src={variant.image}
+                />
+              }
+              title={
+                <Link to={`/product/detail/${variant.productId}`}>
+                  {variant.variantName}
+                </Link>
+              }
+              description={
+                <>
+                  <p className="product-description">{variant.variantName}</p>
+                  <span className="product-quantity">{`x${variant.quantity}`}</span>
+                </>
+              }
+            />
+            <div className="color-key text-right">
+              <div className="py-2">
+                {formatter.formatPrice(variant.variantPrice * variant.quantity)}
+              </div>
+
+              {!variant.reviewed &&
+                order.state === config.orderState.SUCCESS &&
+                handleReview && (
+                  <div>
+                    <Button
+                      type="primary"
+                      onClick={() => showReviewModal(variant)}
+                    >
+                    {t("orderVariantList.rate")}
+                    </Button>
+                  </div>
+                )}
+            </div>
+          </List.Item>
+        )}
+      ></List>
+    </>
   );
 };
 
-export default ProductList;
+export default OrderVariantList;

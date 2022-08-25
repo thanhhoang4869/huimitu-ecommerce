@@ -35,6 +35,8 @@ const config = {
     SHIPPING: 'shipping',
     CANCEL: 'cancel',
     SUCCESS: 'success',
+    REFUNDING: 'refunding',
+    REFUNDED: 'refunded',
   },
 
   COULDINARY_CONFIG: {
@@ -46,7 +48,7 @@ const config = {
   CLOUDINARY_PRODUCT_PATH: "huimitu/product/",
   CLOUDINARY_AVATAR_PATH: "huimitu/avatar/",
 
-  JWT_EXP_TIME: 60 * 60 * 10,
+  JWT_EXP_TIME: 60 * 60,
   JWT_SECRET: process.env.JWT_SECRET,
   NUMBER_BYTE_VERIFY_TOKEN: 256 / 8,
   NUMBER_BYTE_SALT: 16 / 8,

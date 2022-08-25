@@ -1,9 +1,10 @@
 import axios from "axios";
 import config from "config/config";
 import storageService from "services/storage";
+import swal from "sweetalert2";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: config.SERVER_PATH,
 });
 
 api.interceptors.request.use(async (currentConfig) => {
@@ -29,6 +30,13 @@ api.interceptors.response.use(
     const originalConfig = err.config;
     if (originalConfig.url !== "/auth/login" && originalConfig.url !== "/auth/loginGoogle" && err.response) {
       if (err.response.status === 401) {
+        await swal.fire({
+          title: "Thông báo",
+          text: "Phiên đăng nhập của bạn đã hết, vui lòng đăng nhập lại",
+          icon: "info",
+          confirmButtonText: "OK"
+
+        })
         localStorage.removeItem(config.storageKeys.ACCESS_KEY);
         window.location.assign(`/login`);
       }

@@ -4,6 +4,9 @@ import ItemHorizonList from "components/ItemHorizonList";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 import { default as productService } from "services/product";
 
 import CustomComment from "components/CustomComment";
@@ -12,12 +15,13 @@ import ProductDetailTitle from "components/ProductDetailTitle";
 
 import "./style.css";
 import formatter from "utils/formatter";
-import { Radio, Space } from "antd";
+import { Button, Radio, Space } from "antd";
 import variantService from "services/variant";
 import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 import cartService from "services/cart";
 import swal from "sweetalert2";
+import reviewService from "services/review";
 
 const ProductDetailPage = () => {
   const [product, setProduct] = useState({});
@@ -27,8 +31,7 @@ const ProductDetailPage = () => {
   const [childCategory, setChildCategory] = useState({});
   const [isBigCategory, setIsBigCategory] = useState(false);
 
-  const [error, setError] = useState("");
-  const { id } = useParams();
+  const { productId } = useParams();
   const [selectVariant, setSelectVariant] = useState({});
 
   const [quantity, setQuantity] = useState(1);
@@ -36,49 +39,82 @@ const ProductDetailPage = () => {
 
   const { fetchCart } = useContext(AccountContext);
 
-  const navigate = useNavigate();
+  const navigator = useNavigate();
+
+  const { t } = useTranslation();
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const productResponse = await productService.getProductById(id);
-        const reviewsResponse = await productService.getProductReviews(id);
-        const relatedResponse = await productService.getRelatedProducts(id);
-        const variantsResponse = await variantService.getByProductId(id);
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
 
-        const productData = productResponse.data.product;
-        const reviewsData = reviewsResponse.data.reviews;
-        const relatedData = relatedResponse.data.products;
-        const variantsData = variantsResponse.data.variants;
-
-        if (productData) {
-          setProduct(productData);
-          setCategory(productData.category);
-          setChildCategory(productData.category.children);
-          setIsBigCategory(!productData.category.children);
-        } else {
-          navigate("/error");
-        }
-
-        console.log(reviewsData);
-        if (reviewsData) {
-          setReviews(reviewsData);
-        }
-
-        if (relatedData) {
-          setRelatedProducts(relatedData);
-        }
-
-        if (variantsData) {
-          console.log(variantsData);
-          setSelectVariant(variantsData[0]);
-          setVariants(variantsData);
-        }
-      } catch (error) {
-        setError(error.message);
+  const fetchProduct = async () => {
+    try {
+      const response = await productService.getProductById(productId);
+      const { exitcode, product } = response.data;
+      if (exitcode === 0) {
+        setProduct(product);
+        setCategory(product.category);
+        setChildCategory(product.category.children);
+        setIsBigCategory(!product.category.children);
       }
-    };
-    getData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await reviewService.getReview({
+        productId: productId,
+      });
+      const { exitcode, reviews } = response.data;
+      if (exitcode === 0) {
+        setReviews(reviews);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchRelatedProducts = async () => {
+    try {
+      const response = await productService.getRelatedProducts(productId);
+      const { products, exitcode } = response.data;
+      if (exitcode === 0) {
+        setRelatedProducts(products);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchVariants = async () => {
+    try {
+      const response = await variantService.getByProductId(productId);
+      const { exitcode, variants } = response.data;
+      if (exitcode === 0) {
+        if (variants.length < 1) {
+          swal.fire({
+            title: t("productDetailPage.addSuccess"),
+            text: t("productDetailPage.variantNotFound"),
+            icon: "info",
+            confirmButtonText: "OK",
+          });
+          navigator("/");
+        }
+        setSelectVariant(variants[0]);
+        setVariants(variants);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+    fetchReviews();
+    fetchRelatedProducts();
+    fetchVariants();
   }, []);
 
   const handleChangeSelectVariant = (e) => {
@@ -104,7 +140,7 @@ const ProductDetailPage = () => {
       switch (exitcode) {
         case 0: {
           swal.fire({
-            text: "Thêm sản phẩm thành công",
+            text: t("productDetailPage.addSuccess"),
             icon: "success",
             confirmButtonText: "OK",
           });
@@ -113,7 +149,7 @@ const ProductDetailPage = () => {
         }
         case 101: {
           swal.fire({
-            text: "Không tìm thấy sản phẩm",
+            text: t("productDetailPage.productNotFound"),
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -157,12 +193,12 @@ const ProductDetailPage = () => {
                 <div className="product-infor">
                   <ul>
                     <li>
-                      Đã bán: <p>{product.soldQuantity}</p>
+                      {t("productDetailPage.sold")}: <p>{product.soldQuantity}</p>
                     </li>
                     <li>
-                      Còn lại: <p>{selectVariant.stock}</p>
+                      {t("productDetailPage.left")}: <p>{selectVariant.stock}</p>
                     </li>
-                    <li>Tùy chọn</li>
+                    <li>{t("productDetailPage.option")}</li>
                     <Radio.Group
                       value={selectVariant.id}
                       onChange={handleChangeSelectVariant}
@@ -235,26 +271,31 @@ const ProductDetailPage = () => {
                   </div>
                   <div className="d-flex mt-4">
                     <span className="pro-details-cart">
-                      <button className="add-cart" onClick={addToCartOnSubmit}>
-                        <span>Thêm vào giỏ hàng</span>
-                      </button>
+                      <Button
+                        type="primary"
+                        size="large"
+                        className="add-cart"
+                        onClick={addToCartOnSubmit}
+                        disabled={selectVariant.stock < quantity}
+                      >
+                        {t("productDetailPage.addToCart")}
+                      </Button>
                     </span>
 
                     <span className="pro-details-cart">
-                      {selectVariant.stock >= quantity && (
-                        <Link
-                          to={`/checkout?variantId=${selectVariant.id}&quantity=${quantity}`}
-                        >
-                          <input
-                            type="hidden"
-                            className="quantity"
-                            name="quantity"
-                          />
-                          <button className="buy-cart">
-                            <span>Mua ngay</span>
-                          </button>
-                        </Link>
-                      )}
+                      <Button
+                        size="large"
+                        type="primary"
+                        className="buy-cart"
+                        disabled={selectVariant.stock < quantity}
+                        onClick={() =>
+                          navigator(
+                            `/checkout?variantId=${selectVariant.id}&quantity=${quantity}`
+                          )
+                        }
+                      >
+                        <span>{t("productDetailPage.buyNow")}</span>
+                      </Button>
                     </span>
                   </div>
                 </div>
@@ -264,7 +305,7 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="container mt-5 mb-5">
-          <ProductDetailTitle title="Mô tả" />
+          <ProductDetailTitle title={t("productDetailPage.description")} />
           <div className="product-description-text">
             <div
               className="pl-3"
@@ -276,13 +317,13 @@ const ProductDetailPage = () => {
         {/* {{!-- Related Product --}} */}
         {relatedProducts.length > 0 && (
           <div className="container">
-            <ProductDetailTitle title="Sản phẩm liên quan" />
+            <ProductDetailTitle title={t("productDetailPage.relatedProduct")} />
             <ItemHorizonList products={relatedProducts} />
           </div>
         )}
 
         <div className="container section-50 mt-5 mb-5">
-          <ProductDetailTitle title="Đánh giá" />
+          <ProductDetailTitle title={t("productDetailPage.review")}/>
 
           {reviews.map((review, index) => (
             <CustomComment key={index} review={review} />

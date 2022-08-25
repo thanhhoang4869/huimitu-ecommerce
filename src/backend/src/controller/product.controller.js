@@ -340,23 +340,33 @@ export default {
 
   async createProduct(req, res, next) {
     try {
-      const { productName, description, categoryName } = req.body;
+      const { productName, description, categoryId } = req.body;
+      const { files } = req;
+
+      // Missing image
+      if (!files || files.length < 1) {
+        return res.status(200).send({
+          exitcode: 101,
+          message: "Missing product image"
+        })
+      }
 
       // Create entity to insert to database
       const entity = {
         productName: productName,
         description: description,
-        categoryName: categoryName,
+        categoryId: categoryId,
       };
       const productId = await productModel.createProduct(entity);
 
       // Insert images
-      const { files } = req;
       const listPath = files.map((item) => ({
         path: item.path,
         filename: item.filename,
       }));
-      await productModel.insertImages(productId, listPath);
+      listPath.forEach(async (element) => {
+        await productModel.insertImage(productId, element);
+      });
 
       res.status(200).send({
         exitcode: 0,

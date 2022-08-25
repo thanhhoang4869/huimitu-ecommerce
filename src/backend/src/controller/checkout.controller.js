@@ -31,7 +31,7 @@ export default {
                 const variant = await variantModel.getByVariantId(variantId)
                 variants.push({ ...variant, quantity })
             } else if (orderId) {
-                const variantsResult = await variantModel.getByOrderId(orderId);
+                const variantsResult = await variantModel.getByOrderId({ orderId });
                 variants = variantsResult;
             } else {
                 const cart = await cartModel.getCartByEmail(email);
@@ -71,7 +71,7 @@ export default {
             }
             const percentageDiscount = voucher?.percentage_discount || 0
             const maxDiscountPrice = voucher?.maximum_discount_price || 0
-            const discountPrice = Math.min(maxDiscountPrice, totalPrice * percentageDiscount)
+            const discountPrice = Math.min(+maxDiscountPrice, totalPrice * (percentageDiscount / 100))
 
             // Calculate shipping fee
             const shippingAddress = (shippingAddressId) ? await shippingAddressModel.getShippingAddressById(shippingAddressId) : null;
@@ -184,7 +184,8 @@ export default {
             const [orderId, redirectUrl] = await checkoutProvider.createLink(
                 exchangedPrice,
                 userInfo,
-                `${req.headers.origin}/account/order`
+                `${req.headers.origin}`,
+                `${req.protocol}://${req.get('host')}`
             );
             console.debug(redirectUrl)
 
@@ -213,7 +214,6 @@ export default {
 
             const mailOption = getOrderEmail(email, orderId, variants, basicInfo);
             await createTransport().sendMail(mailOption);
-            console.log(mailOption.html)
 
             // Response
             res.status(200).send({

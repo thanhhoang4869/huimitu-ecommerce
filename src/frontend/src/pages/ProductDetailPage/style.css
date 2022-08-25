@@ -208,62 +208,68 @@ ul {
 }
 
 .add-cart {
-  position: relative;
-  padding: 0 34px;
-  height: 50px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  border-radius: 5px;
-  box-shadow: none;
-  text-transform: uppercase;
-  background: #18aeac;
-  color: #fff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  letter-spacing: 2px;
-  overflow: hidden;
+  position: relative !important;
+  padding: 0 34px !important;
+  height: 50px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 5px !important;
+  box-shadow: none !important;
+  text-transform: uppercase !important;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  letter-spacing: 2px !important;
+  overflow: hidden !important;
+}
+
+.add-cart:not(:disabled) {
+  background: #18aeac !important;
+  color: #fff !important;
 }
 
 .add-cart span {
   z-index: 3;
 }
 
-.add-cart:hover {
-  background-color: #169492;
+.add-cart:not(:disabled):hover {
+  background-color: #169492 !important;
 }
 
 .buy-cart {
-  position: relative;
-  padding: 0 34px;
-  height: 50px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  border-radius: 5px;
-  box-shadow: none;
+  position: relative !important;
+  padding: 0 34px !important;
+  height: 50px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 5px !important;
+  box-shadow: none !important;
   text-transform: uppercase;
-  background: #ff8303;
-  color: #fff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
   align-items: center;
   letter-spacing: 2px;
   margin-left: 20px;
   overflow: hidden;
 }
 
+.buy-cart:not(:disabled) {
+  background: #ff8303 !important;
+  color: #fff !important;
+}
+
 .buy-cart span {
   z-index: 3;
 }
 
-.buy-cart:hover {
-  background-color: #de6f00;
+.buy-cart:not(:disabled):hover {
+  background-color: #de6f00 !important;
 }

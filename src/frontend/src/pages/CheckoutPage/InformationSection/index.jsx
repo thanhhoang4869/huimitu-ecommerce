@@ -1,12 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Radio, Space, Select } from "antd";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 import "./style.css";
 import { AccountContext } from "context/AccountContext";
 const { Option } = Select;
 
 const InformationSection = (props) => {
+  const { t } = useTranslation();
   const paymentId = props.paymentId;
   const setPaymentId = props.setPaymentId;
 
@@ -27,21 +31,25 @@ const InformationSection = (props) => {
     setPaymentId(e.target.value);
   };
 
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   return (
     <div className="col-md-7 order-md-1 p-3">
       <div className="mb-5">
-        <h4 className="mb-3 medium semi-thick">Thông tin người nhận</h4>
+        <h4 className="mb-3 medium semi-thick">{t("informationSection.receiverInfo")}</h4>
         <div>
-          <div className="label required">Tên người nhận</div>
+          <div className="label required">{t("informationSection.receiverName")}</div>
           <Input
-            placeholder="Nhập tên người nhận"
+            placeholder={t("informationSection.enterName")}
             value={receiverName}
             onChange={(e) => setReceiverName(e.target.value)}
             className="mb-3"
           />
-          <div className="label required">SĐT người nhận</div>
+          <div className="label required">{t("informationSection.receiverPhone")}</div>
           <Input
-            placeholder="SĐT người nhận"
+            placeholder={t("informationSection.enterPhone")}
             value={receiverPhone}
             onChange={(e) => setReceiverPhone(e.target.value)}
           />
@@ -49,11 +57,11 @@ const InformationSection = (props) => {
       </div>
 
       <div className="mb-4">
-        <h4 className="mb-3 medium semi-thick">Địa chỉ giao hàng</h4>
+        <h4 className="mb-3 medium semi-thick">{t("informationSection.receiverAddress")}</h4>
         <div>
           <Select
             value={shippingAddressId}
-            placeholder="Chọn địa điểm giao hàng"
+            placeholder={t("informationSection.chooseAddress")}
             onChange={handleChangeShippingAddress}
             style={{
               width: "100%",
@@ -70,19 +78,19 @@ const InformationSection = (props) => {
             onClick={() => navigate("/account/shippingAddress")}
             style={{ textAlign: "end" }}
           >
-            Thêm mới
+            {t("informationSection.addNew")}
           </div>
         </div>
       </div>
 
       <div className="mb-5">
-        <h4 className="mb-3 medium semi-thick">Thông tin thanh toán</h4>
+        <h4 className="mb-3 medium semi-thick">{t("informationSection.paymentInfo")}</h4>
         <div>
           <Radio.Group onChange={handlePaymentChange} value={paymentId}>
             <Space direction="vertical">
-              <Radio value={1}>Thanh toán Paypal</Radio>
-              <Radio value={2}>Thanh toán Momo</Radio>
-              <Radio value={3}>Thanh toán khi nhận hàng</Radio>
+              <Radio value={1}>{t("informationSection.paypal")}</Radio>
+              <Radio value={2}>{t("informationSection.momo")}</Radio>
+              <Radio value={3}>{t("informationSection.cod")}</Radio>
             </Space>
           </Radio.Group>
         </div>

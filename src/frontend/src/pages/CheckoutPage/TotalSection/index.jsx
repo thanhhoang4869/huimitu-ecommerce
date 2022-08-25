@@ -1,8 +1,13 @@
+import React, { useEffect } from "react";
 import { Input, Button } from "antd";
 import MyPaypalButton from "components/MyPaypalButton";
 import "./style.css";
 import formatter from "utils/formatter";
 import { Link } from "react-router-dom";
+
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const { Search } = Input;
 
@@ -23,11 +28,17 @@ const TotalSection = (props) => {
   const handleCheckout = props.handleCheckout;
   const loading = props.loading;
 
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   return (
     <div className="col-md-5 order-md-2 mb-4">
       <div className="cart p-3">
         <div className="d-flex medium semi-thick justify-content-between align-items-center mb-3">
-          <span>Đơn hàng</span>
+          <span>{t("totalSection.order")}</span>
         </div>
         <ul className="list-group mb-3">
           {variants.map((item) => (
@@ -49,7 +60,7 @@ const TotalSection = (props) => {
           {voucherCode && (
             <li className="list-group-item d-flex justify-content-between">
               <div>
-                <div className="my-0 text-key">Mã voucher</div>
+                <div className="my-0 text-key">{t("totalSection.voucher")}</div>
                 <small className="text-orange semi-thick">{voucherCode}</small>
               </div>
               <span className="text-orange semi-thick">
@@ -60,21 +71,21 @@ const TotalSection = (props) => {
 
           <li className="list-group-item">
             <li className="text-muted mb-2 d-flex justify-content-between">
-              <span>Tổng tiền sản phẩm</span>
+              <span>{t("totalSection.totalPrice")}</span>
               <span>{formatter.formatPrice(totalPrice)}</span>
             </li>
             <li className="text-muted mb-2 d-flex justify-content-between">
-              <span>Phí ship</span>
+              <span>{t("totalSection.shippingPrice")}</span>
               <span>{formatter.formatPrice(shippingPrice)}</span>
             </li>
             {discountPrice > 0 && (
               <li className="text-muted mb-2 d-flex justify-content-between">
-                <span>Giảm giá</span>
+                <span>{t("totalSection.discount")}</span>
                 <span>-{formatter.formatPrice(discountPrice)}</span>
               </li>
             )}
             <li className="d-flex justify-content-between">
-              <span className="medium text-key semi-thick">Tổng cộng</span>
+              <span className="medium text-key semi-thick">{t("totalSection.total")}</span>
               <strong className="medium text-key">
                 {formatter.formatPrice(finalPrice)}
               </strong>
@@ -83,9 +94,9 @@ const TotalSection = (props) => {
         </ul>
 
         <Search
-          placeholder="Nhập mã voucher"
+          placeholder={t("totalSection.enterVoucher")}
           allowClear
-          enterButton="Sử dụng"
+          enterButton={t("totalSection.use")}
           size="large"
           onSearch={handleApplyVoucherCode}
         />
@@ -97,6 +108,7 @@ const TotalSection = (props) => {
             disabled={loading}
             shippingAddressId={shippingAddressId}
             receiverPhone={receiverPhone}
+            voucherCode={voucherCode}
             receiverName={receiverName}
             handleCheckout={handleCheckout}
           />
@@ -112,7 +124,7 @@ const TotalSection = (props) => {
           size="large"
           style={{ width: "100%", backgroundColor: "#a50064" }}
         >
-          Thanh toán với MOMO
+          {t("totalSection.momo")}
         </Button>
       )}
       {paymentId === 3 && (
@@ -125,7 +137,7 @@ const TotalSection = (props) => {
           size="large"
           style={{ width: "100%" }}
         >
-          Đặt hàng
+          {t("totalSection.order")}
         </Button>
       )}
     </div>

@@ -13,8 +13,18 @@ import FilterSection from "components/FilterSection";
 import { default as productService } from "services/product";
 import swal from "sweetalert2";
 import { cleanObj } from "utils/objectUtils";
+import { min } from "moment";
+
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
 
 const ProductResult = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const [searchParams] = useSearchParams();
 
   const [category, setCategory] = useState({});
@@ -57,15 +67,20 @@ const ProductResult = () => {
     const maxPrice = searchParams.get("maxPrice");
 
     const newQuery = {
-      page: page,
       sortType: sortType,
       searchQuery: searchQuery,
       categoryId: categoryId,
-      minPrice: minPrice,
-      maxPrice: maxPrice,
+      page: page,
+      minPrice: minPrice == null ? undefined : +minPrice,
+      maxPrice: minPrice == null ? undefined : +maxPrice,
+    };
+    const newRequest = {
+      ...newQuery,
+      limit: 6,
+      offset: +(page - 1) * 6,
     };
     setQuery(newQuery);
-    search(newQuery);
+    search(newRequest);
   }, [location]); // eslint-disable-line
 
   const search = (data) => {
@@ -80,104 +95,66 @@ const ProductResult = () => {
   };
 
   const getCategory = (categoryId) => {
-    if (!categoryId) {
-      setIsBigCategory(false);
-      return;
-    }
+    try {
+      if (!categoryId) {
+        setIsBigCategory(false);
+        return;
+      }
 
-    for (let category in categoryList) {
-      if (+categoryList[category].id === +categoryId) {
-        setIsBigCategory(true);
-        setCategory(categoryList[category]);
-      } else {
-        const children = categoryList[category].children;
-        for (let index in children) {
-          if (+children[index].id === +categoryId) {
-            setIsBigCategory(false);
-            setCategory(categoryList[category]);
-            setChildCategory(children[index]);
-            break;
+      for (let category in categoryList) {
+        if (+categoryList[category].id === +categoryId) {
+          setIsBigCategory(true);
+          setCategory(categoryList[category]);
+        } else {
+          const children = categoryList[category].children;
+          for (let index in children) {
+            if (+children[index].id === +categoryId) {
+              setIsBigCategory(false);
+              setCategory(categoryList[category]);
+              setChildCategory(children[index]);
+              break;
+            }
           }
         }
       }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getProductsBySearch = async (data) => {
+  const getProductsBySearch = async (query) => {
     try {
-      const request = {
-        searchQuery: data.searchQuery,
-        limit: 6,
-        offset: +(data.page - 1) * 6,
-        minPrice: data.minPrice,
-        maxPrice: data.maxPrice,
-        sortType: data.sortType,
-      };
-      const response = await productService.getProductsBySearchQuery(request);
+      const response = await productService.getProductsBySearchQuery(query);
       setProducts(response.data.products);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getTotalProductsBySearch = async (data) => {
+  const getTotalProductsBySearch = async (query) => {
     try {
-      const request = {
-        searchQuery: data.searchQuery,
-        minPrice: data.minPrice,
-        maxPrice: data.maxPrice,
-      };
-      const response = await productService.countBysearchQuery(request);
+      const response = await productService.countBysearchQuery(query);
       setTotal(response.data.count);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getProducts = async (data) => {
+  const getProducts = async (query) => {
     try {
-      const request = {
-        categoryId: +data.categoryId,
-        limit: 6,
-        offset: +(data.page - 1) * 6,
-        minPrice: +data.minPrice,
-        maxPrice: +data.maxPrice,
-        sortType: data.sortType,
-      };
-      const response = await productService.getProducts(request);
+      const response = await productService.getProducts(query);
       setProducts(response.data.products);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const getTotalProducts = async (data) => {
+  const getTotalProducts = async (query) => {
     try {
-      const request = {
-        categoryId: +data.categoryId,
-        minPrice: +data.minPrice,
-        maxPrice: +data.maxPrice,
-      };
-      const response = await productService.countProducts(request);
+      const response = await productService.countProducts(query);
       setTotal(response.data.count);
-    } catch (error) {
-      if (error.response.status === 500) {
-        navigate("/error");
-      } else {
-        navigate("/404");
-      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -193,14 +170,14 @@ const ProductResult = () => {
     if (!minPrice && !maxPrice) {
       return swal.fire({
         title: "Error",
-        text: "Vui lòng nhập khoảng giá!",
+        text: t("productResult.pleaseEnterPrice"),
         icon: "error",
         confirmButtonText: "OK",
       });
     } else if (minPrice >= maxPrice) {
       return swal.fire({
         title: "Error",
-        text: "Vui lòng nhập khoảng giá hợp lệ!",
+        text: t("productResult.pleaseEnterValidPrice"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -241,7 +218,7 @@ const ProductResult = () => {
       )}
       {query.searchQuery && (
         <div className="mt-4 mb-4" style={{ marginLeft: "15px" }}>
-          <h5 className="text-key">Từ khóa: {query.searchQuery}</h5>
+          <h5 className="text-key">{t("productResult.keyword") + ": "} {query.searchQuery}</h5>
         </div>
       )}
 
@@ -271,7 +248,7 @@ const ProductResult = () => {
             </>
           ) : (
             <>
-              <div style={{ height: "50vh" }}>Không có sản phẩm.</div>
+              <div style={{ height: "50vh" }}>{t("productResult.notFound")}</div>
             </>
           )}
         </div>

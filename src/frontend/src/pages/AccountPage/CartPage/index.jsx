@@ -8,6 +8,9 @@ import { Link } from "react-router-dom";
 import cartService from "services/cart";
 import swal from "sweetalert2";
 import { DeleteOutlined } from "@ant-design/icons";
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 
 const swalDeleteProps = {
   text: "Bạn có chắc muốn xóa sản phẩm?",
@@ -22,6 +25,7 @@ const swalDeleteProps = {
 };
 
 const CartPage = () => {
+  const { t } = useTranslation();
   const { cart, fetchCart } = useContext(AccountContext);
   const navigate = useNavigate();
 
@@ -72,6 +76,7 @@ const CartPage = () => {
   };
 
   useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
     try {
       fetchCart();
     } catch (err) {
@@ -86,7 +91,7 @@ const CartPage = () => {
       render: (image) => <Image height="64px" src={image} />,
     },
     {
-      title: "Tên sản phẩm",
+      title: t("cartPage.productName"),
       dataIndex: "variantName",
       key: "variantName",
       render: (variantName, record) => (
@@ -96,7 +101,7 @@ const CartPage = () => {
       ),
     },
     {
-      title: "Số lượng",
+      title: t("cartPage.quantity"),
       dataIndex: "quantity",
       key: "quantity",
       render: (quantity, record) => (
@@ -130,7 +135,7 @@ const CartPage = () => {
       ),
     },
     {
-      title: "Giá",
+      title: t("cartPage.price"),
       dataIndex: ["price", "discountPrice"],
       key: "price",
       render: (_, record) => {
@@ -148,15 +153,15 @@ const CartPage = () => {
       },
     },
     {
-      title: "Trạng thái",
+      title: t("cartPage.status"),
       dataIndex: "stock",
       key: ["stock", "quantity"],
       render: (_, record) => {
         const { stock, quantity } = record;
         return stock >= quantity ? (
-          <Tag color="success">Còn hàng</Tag>
+          <Tag color="success">{t("cartPage.inStock")}</Tag>
         ) : (
-          <Tag color="warning">Không đủ hàng</Tag>
+          <Tag color="warning">{t("cartPage.outStock")}</Tag>
         );
       },
     },
@@ -189,11 +194,11 @@ const CartPage = () => {
       <div className="d-flex justify-content-between align-items-end">
         <div>
           <p className="my-2">
-            <b>Tổng số lượng: </b>
-            {formatter.formatPrice(cart.count)} sản phẩm
+            <b>{t("cartPage.totalProduct") + ": "} </b>
+            {formatter.formatPrice(cart.count)} {t("cartPage.product", {count: cart.count} )}
           </p>
           <p className="my-2">
-            <b>Tổng thành tiền: </b>
+            <b>{t("cartPage.totalPrice") + ": "}</b>
             {formatter.formatPrice(cart.total)} VND
           </p>
         </div>
@@ -208,7 +213,7 @@ const CartPage = () => {
               .length > 0 || (cart.variants || []).length < 1
           }
         >
-          Đặt hàng
+          {t("cartPage.order")}
         </Button>
       </div>
     </div>

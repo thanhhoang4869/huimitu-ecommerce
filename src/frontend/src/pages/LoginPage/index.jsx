@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "components/GoogleLoginButton";
 import authService from "services/auth";
@@ -9,7 +9,16 @@ import { useContext } from "react";
 import { AccountContext } from "context/AccountContext";
 import { validateEmail } from "utils/validator";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const LoginPage = () => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const { login } = useContext(AccountContext);
   const { state } = useLocation();
   const navigator = useNavigate();
@@ -22,7 +31,7 @@ const LoginPage = () => {
     if (!email) {
       swal.fire({
         title: "Error",
-        text: "Vui lòng nhập email",
+        text: t("loginPage.pleaseEnterEmail"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -31,7 +40,7 @@ const LoginPage = () => {
     if (!password) {
       swal.fire({
         title: "Error",
-        text: "Vui lòng nhập password",
+        text: t("loginPage.pleaseEnterPass"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -40,7 +49,7 @@ const LoginPage = () => {
     if (!validateEmail(email)) {
       swal.fire({
         title: "Error",
-        text: "Vui lòng nhập email hợp lệ",
+        text: t("loginPage.enterValidEmail"),
         icon: "error",
         confirmButtonText: "OK",
       });
@@ -65,7 +74,7 @@ const LoginPage = () => {
           }
           case 101: {
             swal.fire({
-              text: "Email hoặc mật khẩu không chính xác",
+              text: t("loginPage.wrongEmailPass"),
               icon: "error",
               confirmButtonText: "OK",
             });
@@ -73,7 +82,7 @@ const LoginPage = () => {
           }
           case 102: {
             swal.fire({
-              text: "Email chưa được xác thực",
+              text: t("loginPage.unverifiedEmail"),
               icon: "error",
               confirmButtonText: "OK",
             });
@@ -111,7 +120,7 @@ const LoginPage = () => {
         className="d-flex flex-column justify-content-center align-items-center form_container col-xl-4 col-md-6 col-xs-12 row"
         onSubmit={onSubmit}
       >
-        <h2 className="mb-4 color-key">Đăng nhập</h2>
+        <h2 className="mb-4 color-key">{t("loginPage.login")}</h2>
 
         <div className="login-input d-flex align-items-center input-group mb-3 p-2">
           <i className="fa fa-envelope"></i>
@@ -128,29 +137,29 @@ const LoginPage = () => {
           <input
             name="password"
             type="password"
-            placeholder="Mật khẩu"
+            placeholder={t("loginPage.pass")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <a href="/#" className="text-key mb-3 align-self-end">
-          Quên mật khẩu?
-        </a>
+        {/* <a href="/#" className="text-key mb-3 align-self-end">
+          {t("loginPage.forgotPass")}
+        </a> */}
         <button className="primary-btn bg-key login-btn col-6" type="submit">
-          Đăng nhập
+          {t("loginPage.login")}
         </button>
       </form>
       <div className="my-2 d-flex flex-column justify-content-center align-items-center">
-        <p>hoặc</p>
+        <p>{t("loginPage.or")}</p>
         <GoogleLoginButton
           onError={handleGoogleError}
           onSuccess={handleGoogleSuccess}
         />
 
         <p className="mt-5">
-          Chưa có tài khoản?
+          {t("loginPage.noAccount")}
           <Link to="/signup" className="text-key pointer pl-1">
-            Đăng ký
+            {t("loginPage.signup")}
           </Link>
         </p>
       </div>

@@ -11,9 +11,9 @@ const product = {
     return response;
   },
 
-  async getProductReviews(productId) {
-    const respone = await api.post("/review/getReview", { productId });
-    return respone;
+  async deleteProduct(productId) {
+    const response = await api.delete(`/product/${productId}`);
+    return response;
   },
 
   async getProducts(request) {
@@ -46,8 +46,18 @@ const product = {
     return response;
   },
 
-  async createProduct(data) {
-    const response = await api.post("/product", data);
+  async createProduct(data, description, selectedImages) {
+    const formData = new FormData();
+    for (const key in data) {
+      if (data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
+    }
+    formData.append("description", description);
+    selectedImages.forEach((img) => {
+      formData.append("productImg", img);
+    });
+    const response = await api.post("/product", formData);
     return response;
   },
 
@@ -66,6 +76,8 @@ const product = {
     const response = await api.patch(`/product/${data.id}`, formData);
     return response;
   },
+
+  
 };
 
 export default product;

@@ -1,0 +1,10 @@
+.order-header {
+    position: relative;
+}
+
+.order-status {
+    position: absolute;
+    right: 0;
+    top: 1rem;
+    color: green;
+}

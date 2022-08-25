@@ -1,4 +1,5 @@
 import db from '#src/utils/db'
+import { removeUndefined } from '#src/utils/utils'
 
 export default {
     async getByProductId(productId) {
@@ -50,13 +51,15 @@ export default {
         return result || null;
     },
 
-    async getByOrderId(orderId) {
+    async getByOrderId({ orderId, variantId }) {
+        const query = removeUndefined({
+            'order_id': orderId,
+            'variant_id': variantId
+        })
         const result = await db('order')
             .join('order_variant', 'order.id', 'order_variant.order_id')
             .join('product_variant', 'order_variant.variant_id', 'product_variant.id')
-            .where({
-                "order.id": orderId,
-            })
+            .where(query)
             .select(
                 "product_variant.id",
                 "product_variant.product_id",
@@ -65,19 +68,13 @@ export default {
                 "product_variant.price",
                 "product_variant.discount_price",
                 "order_variant.variant_price",
+                "order_variant.reviewed",
                 "order_variant.quantity"
             )
         return result || null;
     },
 
-    async createVariant(entity) {
-        const {
-            productId,
-            variantName,
-            price,
-            discountPrice,
-            stock
-        } = entity
+    async createVariant({ productId, variantName, price, discountPrice, stock }) {
         const result = await db('product_variant').insert({
             product_id: productId,
             variant_name: variantName,
@@ -85,11 +82,7 @@ export default {
             discount_price: discountPrice,
             stock: stock
         }).returning('id')
-        try {
-            return result[0].id;
-        } catch (err) {
-            return null;
-        }
+        return result[0]?.id || null;
     },
 
     async updateVariant(variantId, entity) {

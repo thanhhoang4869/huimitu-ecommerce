@@ -14,17 +14,24 @@ const orderService = {
         return response;
     },
 
-    async getOrderList(limit, offset) {
-        const requestBody = {
-            limit: limit,
-            offset: offset
+    async getOrderList(query) {
+        const params = {
+            email: query?.email,
+            orderState: query?.orderState,
+            limit: query?.limit,
+            offset: query?.offset
         }
-        const response = await api.post("/order/", requestBody);
+        const response = await api.get("/order", { params });
         return response;
     },
 
-    async getTotalOrder() {
-        const response = await api.get('/order/');
+    async getTotalOrder(query) {
+        const params = {
+            email: query?.email,
+            orderState: query?.orderState,
+            getTotal: true
+        }
+        const response = await api.get('/order', { params });
         return response;
     }
 

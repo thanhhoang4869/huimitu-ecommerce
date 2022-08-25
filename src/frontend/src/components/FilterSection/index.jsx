@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 import { Input, InputNumber, Select, Button } from "antd";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const FilterSection = (props) => {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
+  }, []);
+
   const { Option } = Select;
   const [selected, setSelected] = useState("default");
 
@@ -18,41 +27,41 @@ const FilterSection = (props) => {
       <Select
         allowClear
         value={selected}
+        className="mb-2"
         style={{
           width: "150px",
         }}
         onChange={handleChange}
       >
         <Option key="1" value="default">
-          Mặc định
+          {t("filterSection.default")}
         </Option>
         <Option key="2" value="asc">
-          Giá thấp đến cao
+          {t("filterSection.lowToHigh")}
         </Option>
         <Option key="3" value="desc">
-          Giá cao đến thấp
+          {t("filterSection.highToLow")}
         </Option>
       </Select>
-
       <div className="filter-container">
-        <div className="mr-2">
+        <div className="mb-2">
           <Input.Group compact>
             <Input
               disabled
+              className="price-filter"
               style={{
-                width: 100,
                 textAlign: "center",
                 pointerEvents: "none",
               }}
-              placeholder="Giá từ"
+              placeholder={t("filterSection.from")}
             />
             <InputNumber
               min={0}
               controls={false}
-              style={{ width: 100 }}
+              className="price-filter"
               value={minPrice !== 0 ? minPrice : undefined}
               onChange={(value) => setMinPrice(value)}
-              placeholder="Thấp nhất"
+              placeholder={t("filterSection.lowest")}
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
@@ -74,26 +83,23 @@ const FilterSection = (props) => {
               value={maxPrice !== 0 ? maxPrice : undefined}
               onChange={(value) => setMaxPrice(value)}
               controls={false}
+              className="price-filter"
               formatter={(value) =>
                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
               }
               parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
-              className="site-input-right"
-              style={{
-                width: 100,
-              }}
-              placeholder="Cao nhất"
+              placeholder={t("filterSection.highest")}
             />
+            <Button
+              type="primary"
+              onClick={() => {
+                props.onFilter();
+              }}
+            >
+              {t("filterSection.filter")}
+            </Button>
           </Input.Group>
         </div>
-        <Button
-          type="primary"
-          onClick={() => {
-            props.onFilter();
-          }}
-        >
-          Lọc
-        </Button>
       </div>
     </div>
   );

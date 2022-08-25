@@ -10,7 +10,12 @@ import checkoutService from "services/checkout";
 import { validatePhone } from "utils/validator";
 import orderService from "services/order";
 
+import i18n from "lang/i18n";
+import { useTranslation } from "react-i18next";
+
 const CheckoutPage = () => {
+  const { t } = useTranslation();
+
   const { cart, account, fetchCart } = useContext(AccountContext);
 
   const [searchParams] = useSearchParams();
@@ -64,6 +69,7 @@ const CheckoutPage = () => {
   }, [account]);
 
   useEffect(() => {
+    i18n.changeLanguage(localStorage.getItem("language"));
     if (variantId && quantity) {
       fetchVariant();
     }
@@ -79,7 +85,6 @@ const CheckoutPage = () => {
   }, [cart]);
 
   useEffect(() => {
-    console.log(listVariant);
     fetchPrice();
   }, [listVariant, shippingAddressId, voucherCode]);
 
@@ -98,7 +103,7 @@ const CheckoutPage = () => {
     try {
       if (!receiverName || !receiverPhone || !shippingAddressId) {
         swal.fire({
-          text: "Vui Lòng điền đầy đủ các thông tin",
+          text: t("checkoutPage.pleaseEnterAll"),
           icon: "info",
           confirmButtonText: "OK",
         });
@@ -106,7 +111,7 @@ const CheckoutPage = () => {
       }
       if (!validatePhone(receiverPhone)) {
         swal.fire({
-          text: "Số điện thoại không hợp lệ",
+          text: t("checkoutPage.invalidPhoneNumber"),
           icon: "error",
           confirmButtonText: "OK",
         });
@@ -140,8 +145,8 @@ const CheckoutPage = () => {
             }
             case 3: {
               await swal.fire({
-                title: "Đặt hàng thành công",
-                text: `Đơn hàng của bạn là: ${orderId}`,
+                title: t("checkoutPage.orderSuccess"),
+                text: `${t("checkoutPage.yourOrder")}: ${orderId}`,
                 icon: "info",
                 confirmButtonText: "OK",
               });
@@ -155,7 +160,7 @@ const CheckoutPage = () => {
         // eslint-disable-next-line no-fallthrough
         case 103: {
           swal.fire({
-            text: "Không đủ hàng để thanh toán",
+            text: t("checkoutPage.outStock"),
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -189,11 +194,14 @@ const CheckoutPage = () => {
           setShippingPrice(shippingPrice);
           setTotalPrice(totalPrice);
           setDiscountPrice(discountPrice);
+          if (totalPrice === 0) {
+            navigator("/account/cart");
+          }
           break;
         }
         case 101: {
           swal.fire({
-            text: "Không tìm thấy voucher",
+            text: t("checkoutPage.voucherNotFound"),
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -202,7 +210,7 @@ const CheckoutPage = () => {
         }
         case 102: {
           swal.fire({
-            text: "Đơn của bạn chưa đủ điều kiện để áp dụng",
+            text: t("checkoutPage.notEligible"),
             icon: "error",
             confirmButtonText: "OK",
           });
@@ -211,7 +219,7 @@ const CheckoutPage = () => {
         }
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
   };
 
