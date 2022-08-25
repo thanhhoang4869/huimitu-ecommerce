@@ -1,5 +1,9 @@
 # Huimitu
 
+<p align="center">
+<img src="./res/logo.png" width="10%">
+</p>
+
 ## Introduction
 
 An Ecommerce website to sell bakery accessories with B2B model. Because of being a SPA (Single Page Application) website, we have decided to use 3-tiers model (PERN stack application) to build it up:
@@ -56,8 +60,9 @@ Futhermore, we also implements advanced features:
 ## Video demo
 
 <div align="center">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/chOa7hNwW34" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <a href="https://youtu.be/chOa7hNwW34"><img width="50%" src="./res/thumbnail.png"/></a>
 </div>
+
 ## Tech stack
 
 <div align="center">
