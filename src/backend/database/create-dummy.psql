@@ -22,7 +22,6 @@ INSERT INTO "account"("email","password","phone","fullname","birthday","gender",
 INSERT INTO "payment"("provider") VALUES('paypal');
 INSERT INTO "payment"("provider") VALUES('momo');
 INSERT INTO "payment"("provider") VALUES('cod');
-INSERT INTO "payment"("provider") VALUES('nowpayment');
 
 INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ trang trí',NULL);
 INSERT INTO "category"("parent_id","category_name","description") VALUES(NULL,'Dụng cụ làm bánh',NULL);
