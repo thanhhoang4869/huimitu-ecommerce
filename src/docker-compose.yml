@@ -1,0 +1,61 @@
+services:
+  database:
+    image: postgres
+    restart: always
+    ports:
+    - 5432:5432
+    environment:
+      POSTGRES_USER: phuc16102001
+      POSTGRES_PASSWORD: 161026
+      POSTGRES_DB: huimitu
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 8080:8080
+
+  backend:
+    image: huimitu-backend
+    ports:
+      - 3001:3001
+    depends_on:
+      - database
+    environment:
+      - PORT=3001
+      - DB_PASSWORD=161026
+      - JWT_SECRET=HUIMITU
+
+      - GOOGLE_CLIENT_ID=906493479295-ecuv0861lfipkggceaakth6q18882vop.apps.googleusercontent.com
+      - GOOGLE_CLIENT_SECRET=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
+      - GOOGLE_REFRESH_TOKEN=1//04_68idY-SCluCgYIARAAGAQSNwF-L9IrHuqWPr16coR4jCMH42hF1C2A_JDTXObDwADERG9MuXfbAs1MK-Sg4O1svM1zRA1K7dQ
+
+      - GMAIL_USERNAME=huimitu01@gmail.com
+
+      - CLOUDINARY_CLOUD_NAME=phuc16102001
+      - CLOUDINARY_API_KEY=863988362383961
+      - CLOUDINARY_API_SECRET=_bRwnO7jk_AZan7zzOmLsOuSszs
+
+      - MOMO_PARTNER_CODE=MOMOTCD020220624
+      - MOMO_ACCESS_KEY=ilO6yIY8Rsdh0Bbn
+      - MOMO_SECRET_KEY=iAeXTSF20sfiviiA5noz4g2iFq7xbDTQ
+
+      - PAYPAL_CLIENT_ID=AePn3H20PfNlsQZMfwkdjRFGaGvRJ-wfgTqiUpqMjJH0Ea5h9U4jB_QNRRPnEEiQkrWCrB5eEG6NR3RJ
+      - PAYPAL_SECRET=EDmSHyPreAhhh7O90FNwY8lNKfya6NJxYFcH64qjzIqgklkBZIwhqH5ChLh_Wzflte5NOEph-L0j5xFh
+
+      - OPENROUTESERVICE_API_KEY=5b3ce3597851110001cf62482faa2a8f922644de8bd3e5aab6bfd10e
+
+  frontend:
+    image: huimitu-frontend
+    ports:
+      - 80:3000
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_GOOGLE_CLIENT_ID=906493479295-ecuv0861lfipkggceaakth6q18882vop.apps.googleusercontent.com
+      - REACT_APP_PAYPAL_CLIENT_ID=AePn3H20PfNlsQZMfwkdjRFGaGvRJ-wfgTqiUpqMjJH0Ea5h9U4jB_QNRRPnEEiQkrWCrB5eEG6NR3RJ
+      - REACT_APP_SERVER_PATH=http://localhost:3001
+      - REACT_APP_STATISTIC_PATH=https://public.tableau.com/views/Huimitustatistic/Dashboard?:language=en-US&:display_count=n&:origin=viz_share_link
+  
