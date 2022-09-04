@@ -6,7 +6,7 @@
 
 ## Introduction
 
-An Ecommerce website to sell bakery accessories with B2B model. Because of being a SPA (Single Page Application) website, we have decided to use 3-tiers model (PERN stack application) to build it up:
+This is an ECommerce website selling bakery accessories with B2C model. Huimitu is a SPA in which 3-tiers model is applied using PERN stack:
 
 - ReactJS to build up the front-end
 - ExpressJS to create RESTful API
@@ -18,7 +18,7 @@ An Ecommerce website to sell bakery accessories with B2B model. Because of being
 
 ## Features
 
-The website statisfied all the basic features of an Ecommerce website including:
+The website statisfies basic features of an ECommerce website including:
 
 - Sign up account
 - Login account
@@ -32,7 +32,7 @@ The website statisfied all the basic features of an Ecommerce website including:
 - Buy now
 - Rating product after buying
 
-Futhermore, we also implements advanced features:
+Advanced features:
 
 - Admin features
 - Upload user avatar
@@ -85,7 +85,7 @@ Futhermore, we also implements advanced features:
 
 ## Contribution
 
-The project belongs to our Huimitu teams including:
+The project belongs to Huimitu team:
 
 - [thanhhoang4869](https://github.com/thanhhoang4869)
 - [phuc16102001](https://github.com/phuc16102001)
@@ -93,4 +93,4 @@ The project belongs to our Huimitu teams including:
 - [nnhatdu](https://github.com/nnhatdu)
 - [nhkduy201](https://github.com/nhkduy201)
 
-**Please do not copy without asking for permission**
+**Please do not copy without asking for permission!**
